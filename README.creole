@@ -8,7 +8,7 @@ Test reporting application for the MeeGo QA teams. See trailer at
 === Getting the source code
 * Install [[http://git-scm.com/|git]]
 * Clone the source tree
-{{{ git clone http://github.com/leonidas/meego-qa-reports.git }}}
+{{{ git clone http://git.gitorious.org/meego-quality-assurance/qa-reports.git }}}
 
 === Installing the dependencies
 * Install [[http://www.ruby-lang.org/|ruby]]
