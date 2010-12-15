@@ -61,7 +61,7 @@ class IndexController < ApplicationController
     @headers = []
     @sessions = {}
    
-    chosen, days = find_trend_sessions(@sessions)
+    chosen, days = find_trend_sessions(sessions)
 
     if chosen.length > 0 
       @trend_graph_url_abs = generate_trend_graph(chosen, days, false)
