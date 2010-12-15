@@ -29,7 +29,7 @@ module CsvGenerator
               "Test type",
               "Hardware",
               "Test report name",
-              "Category",
+              "Feature",
               "Test case",
               "Pass",
               "Fail",

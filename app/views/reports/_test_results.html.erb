@@ -1,9 +1,6 @@
 <div class="section emphasized_section">
 
   <h2 id="test_results">Test Results
-    <!--
-  	<span class="sort"><a class="sort_btn active">Categories</a> <a href="" class="sort_btn">Features</a></span>
-  	-->
   	<span class="heading_actions"><%= back_to_top %></span></h2>
 
   <div class="container">
@@ -54,12 +51,12 @@
       </table>
     </div>
 
-    <h3 id="test_categories">Test Results by Category</h3>
+    <h3 id="test_features">Test Results by Feature</h3>
 
     <table id="test_results">
       <thead class="even">
       <tr>
-        <th class="th_category">Category</th>
+        <th class="th_feature">Feature</th>
         <th class="th_total">Total</th>
         <th class="th_passed">Passed</th>
         <th class="th_failed">Failed</th>
@@ -68,7 +65,7 @@
       </tr>
       </thead>
 
-      <%= render :partial => 'category_summary', :collection => @test_session.meego_test_sets %>
+      <%= render :partial => 'feature_summary', :collection => @test_session.meego_test_sets %>
 
     </table>
   </div>

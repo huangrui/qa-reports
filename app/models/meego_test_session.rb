@@ -152,7 +152,7 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   ###############################################
-  # List category tags                          #
+  # List feature tags                           #
   ###############################################
   def self.list_targets(release_version)
     (published.all_lowercase(:select => 'DISTINCT target', :conditions=>{:release_version => release_version}).map{|s| s.target.gsub(/\b\w/){$&.upcase}}).uniq
@@ -468,7 +468,7 @@ class MeegoTestSession < ActiveRecord::Base
     ]
 
     rows = meego_test_cases.map do |test_case|
-      test_case.meego_test_set.feature #category
+      test_case.meego_test_set.feature # feature
       test_case.name # test case name
       test_case.result # result
     end
@@ -498,22 +498,22 @@ private
   # Uploaded data parsing                       #
   ###############################################
   def parse_csv_file(filename)
-    prev_category = nil
+    prev_feature = nil
     test_set = nil
 
     rows = CSV.read(filename);
     rows.shift
     rows.each do |row|
-      category = row[0].toutf8.strip
+      feature = row[0].toutf8.strip
       summary = row[1].toutf8.strip
       comments = row[2].toutf8.strip if row[2]
       passed = row[3]
       failed = row[4]
       na = row[5]
-      if category != prev_category
-        prev_category = category
+      if feature != prev_feature
+        prev_feature = feature
         test_set = self.meego_test_sets.build(
-          :feature => category
+          :feature => feature
         )
       end
       if passed

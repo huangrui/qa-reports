@@ -1,4 +1,4 @@
-Category,Check points,Notes (bugs),Pass,Fail,N/A
+Feature,Check points,Notes (bugs),Pass,Fail,N/A
 Create Image,Create image with MIC2,,1,,
 System startup,Image boot from SD card,5705- [REG] Unable to display home screen automatically unless tapping the screen,,1,
 Home screen,"Check if core applications* (Dialer, SMS, fennec browser, photo viewer, audio player, video player, contacts, email, Terminal) can be launched from app-launcher",[[5856]] [[3551]] [[3551]],,1,

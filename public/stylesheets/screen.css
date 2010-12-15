@@ -1163,7 +1163,7 @@ td.inc em{
 td.dec em{ 
 	background-image: url(../images/dec.png); }
 
-th.th_category { 
+th.th_feature { 
 	width: 20%; }
 
 .th_total,
@@ -1191,7 +1191,7 @@ td.na {
 
 #th_notes { }
 
-tr.category_name td{ 
+tr.feature_name td{ 
 	font-weight: bold; 
 	font-size: 13px; 
 	border-bottom: 1px solid #eee; 

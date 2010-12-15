@@ -23,13 +23,13 @@
 #
 %>
 <tbody>
-<tr class="category_name" id="test-set-<%=category.id%>">
+<tr class="feature_name" id="test-set-<%=feature.id%>">
 	<td colspan="3">
-		<%= category.feature %>
+		<%= feature.feature %>
 		<a href="#" class="see_all_toggle">+ see passing tests</a>
 	</td>
 </tr>
 </tbody>
 <tbody>
-<%= render :partial => "testcase", :collection => category.meego_test_cases %>
+<%= render :partial => "testcase", :collection => feature.meego_test_cases %>
 </tbody>

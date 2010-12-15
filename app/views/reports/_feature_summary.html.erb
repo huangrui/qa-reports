@@ -22,15 +22,15 @@
 # 02110-1301 USA
 #
 %>
-<tr class="<%=row_class(category_summary_counter)%>" >
+<tr class="<%=row_class(feature_summary_counter)%>" >
 	<%if @email%>
-	<td><%= category_summary.name %></td>
+	<td><%= feature_summary.name %></td>
 	<%else%>
-	<td><a href="<%= category_summary.test_set_link %>"><%= category_summary.name %></a></td>
+	<td><a href="<%= feature_summary.test_set_link %>"><%= feature_summary.name %></a></td>
 	<%end%>
-	<td class="total"><%= category_summary.total_cases %></td>
-	<td class="pass"><%= category_summary.total_passed %></td>
-	<td class="fail"><%= category_summary.total_failed %></td>
-	<td class="na"><%= category_summary.total_na %></td>
-	<td><%= category_summary.graph_img_tag %></td>
+	<td class="total"><%= feature_summary.total_cases %></td>
+	<td class="pass"><%= feature_summary.total_passed %></td>
+	<td class="fail"><%= feature_summary.total_failed %></td>
+	<td class="na"><%= feature_summary.total_na %></td>
+	<td><%= feature_summary.graph_img_tag %></td>
 </tr>

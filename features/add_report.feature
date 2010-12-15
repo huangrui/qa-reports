@@ -43,7 +43,7 @@ Feature:
 #
 #    And submit the form at "upload_report_submit"
 #
-#    When I follow "<expected show link>" within ".category_name"
+#    When I follow "<expected show link>" within ".feature_name"
 #
 #    Then I should see "<expected text>" within ".testcase"
 #    And I should see "<expected link>" within ".testcase"
