@@ -28,7 +28,7 @@
         <% if feature.bugzilla_feature? %>
           <a class="bugzilla fetch" target="_blank" href="http://bugs.meego.com/show_bug.cgi?id=<%=feature.name%>"><%=feature.name%></a>
         <% else %>
-            <%= feature.feature %>
+            <%= feature.name %>
         <% end %>
         <% if feature.bugzilla_feature? %>
           </a>

@@ -444,26 +444,9 @@ function handleTextEditSubmit() {
 
     $markup.text(text);
 
-    //text = text.replace('<','&lt;').replace('>','gt;').replace('\n', '<br>');
-    //$original.html(text);
-    //$form.detach();
-    //$original.show();
     var data = $form.serialize();
     var action = $form.attr("action");
-    /*$form.attr("disabled","disabled");
-
-     $.post(action, data, function(data, status, xhr){
-     $form.detach();
-     $original.html(data);
-     $original.show();
-
-     fetchBugzillaInfo();
-     });
-     */
-    //$button.text("Saving...");
-    $.post(action, data, function() {
-        //$button.text("Edit");
-    });
+    $.post(action, data, function() {});
 
     $original.html(formatMarkup(text));
     $form.detach();
@@ -485,10 +468,17 @@ function applyBugzillaInfo(node, info) {
         } else {
             $node.addClass("unresolved");
         }
+
+        var text = info.summary;
+        if($node.hasClass("bugzilla_status")) {
+            text = text + " (" + status + ")";
+        }
         if ($node[0].tagName == 'a') {
-            $node.attr("title", "" + info.summary + " (" + status + ")")
+            $node.attr("title", text);
+        } else if($node.hasClass("bugzilla_append")) {
+            $node.after("<span> - "  + text +"</span>");
         } else {
-            $node.after("<span> - " + info.summary + " (" + status + ")</span>");
+            $node.text(text);
         }
     }
     $node.removeClass("fetch");

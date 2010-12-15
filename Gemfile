@@ -41,3 +41,5 @@ gem 'bitly'
 gem 'devise', '1.1.3'
 gem 'fastercsv'
 gem 'rack', :git => "git://github.com/rack/rack.git" # Use next release when available
+gem "will_paginate", "3.0.pre"
+

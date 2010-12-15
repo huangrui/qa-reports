@@ -49,18 +49,19 @@ class IndexController < ApplicationController
     end
 
     if @hwproduct
+      #sessions = MeegoTestSession.paginate :page => params[:page], :hwproduct => @hwproduct
       sessions = MeegoTestSession.by_release_version_target_test_type_product(@selected_release_version, @target, @testtype, @hwproduct)
     elsif @testtype
       sessions = MeegoTestSession.published_by_release_version_target_test_type(@selected_release_version, @target, @testtype)
     else
       sessions = MeegoTestSession.published_by_release_version_target(@selected_release_version, @target)
     end
-    # .group_by{|s| s.created_at.beginning_of_month}
+
     
     @headers = []
     @sessions = {}
    
-    chosen, days = find_trend_sessions(sessions)
+    chosen, days = find_trend_sessions(@sessions)
 
     if chosen.length > 0 
       @trend_graph_url_abs = generate_trend_graph(chosen, days, false)

@@ -302,27 +302,32 @@ tt {
 
 /* @group editables */
 
-a.bugzilla {
+.bugzilla {
 	background-repeat: no-repeat;
 	background-position: right 0;
 	padding-right: 20px; 
 	padding-top: 1px;
 	 }
 
-a.bugzilla.fetch { 
+.bugzilla.fetch {
 	background-image: url(../images/progress.gif); 
 	color: #ccc; }
 
-a.bugzilla.invalid {
+.bugzilla.invalid {
 	color: #ccc;
 }
 
-a.bugzilla.unresolved {
+.bugzilla.unresolved {
 	background-image: url(../images/icon_alert.gif);
-	 }
+    background-repeat: no-repeat;
+}
 
-a.bugzilla.resolved { 
-	background-image: url(../images/icon_accept.gif); }
+.bugzilla.resolved {
+	background-image: url(../images/icon_accept.gif);
+    background-repeat: no-repeat;
+}
+
+
 
 form.txt_form { 
 	margin-bottom: 20px; 
@@ -1164,7 +1169,8 @@ td.dec em{
 	background-image: url(../images/dec.png); }
 
 th.th_feature { 
-	width: 20%; }
+	width: 35%; 
+}
 
 .th_total,
 .th_passed,

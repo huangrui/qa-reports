@@ -55,11 +55,10 @@ module MeegoTestReport
       line.gsub! /'''''(.+?)'''''/, "<b><i>\\1</i></b>"
       line.gsub! /'''(.+?)'''/, "<b>\\1</b>"
       line.gsub! /''(.+?)''/, "<i>\\1</i>"
-      line.gsub! /http\:\/\/bugs.meego.com\/show_bug\.cgi\?id=(\d+)/, "<a class=\"bugzilla fetch\" href=\"http://bugs.meego.com/show_bug.cgi?id=\\1\">\\1</a>"
+      line.gsub! /http\:\/\/bugs.meego.com\/show_bug\.cgi\?id=(\d+)/, "<a class=\"bugzilla fetch bugzilla_status bugzilla_append\" href=\"http://bugs.meego.com/show_bug.cgi?id=\\1\">\\1</a>"
       line.gsub! /\[\[(http:\/\/.+?) (.+?)\]\]/, "<a href=\"\\1\">\\2</a>"
-      line.gsub! /\[\[(\d+)\]\]/, "<a class=\"bugzilla fetch\" href=\"http://bugs.meego.com/show_bug.cgi?id=\\1\">\\1</a>"
-      #line.gsub! /\[\[(\d+)\]\]/, "<a class=\"bugzilla\" href=\"http://bugs.meego.com/show_bug.cgi?id=\\1\">\\1</a>"
-      
+      line.gsub! /\[\[(\d+)\]\]/, "<a class=\"bugzilla fetch bugzilla_status bugzilla_append\" href=\"http://bugs.meego.com/show_bug.cgi?id=\\1\">\\1</a>"
+
       if line =~ /^====\s*(.+)\s*====$/
         html << "<h5>#{$1}</h5>"
       elsif line =~ /^===\s*(.+)\s*===$/
