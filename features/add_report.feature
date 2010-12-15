@@ -29,10 +29,11 @@ Feature:
     And I should see "Handset Test Report: N990 Smokey 2010-11-22"
 
   Examples:
-    | attachment     | expected text                    | expected link |
-    | sample.csv     | Check home screen                | 3921          |    
-    | filesystem.xml | NFT-FS-Create_Directory_TMP-LATE | Fail          |
-    | sim.xml        | SMOKE-SIM-Get_IMSI               | Fail          |
+    | attachment                | expected text                    | expected link |
+    | sample.csv                | Check home screen                | 3921          |
+    | filesystem.xml            | NFT-FS-Create_Directory_TMP-LATE | Fail          |
+    | sim.xml                   | SMOKE-SIM-Get_IMSI               | Fail          |
+    | bug9767_result.xml        | case#1.1.1               | Fail          |
 
 #  @javascript
 #  Scenario Outline: Add new report with valid data, passing tests should not be visible by default

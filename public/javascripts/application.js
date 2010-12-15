@@ -485,8 +485,7 @@ function applyBugzillaInfo(node, info) {
         } else {
             $node.addClass("unresolved");
         }
-        var $parent = $node.closest('table');
-        if ($parent.length != 0) {
+        if ($node[0].tagName == 'a') {
             $node.attr("title", "" + info.summary + " (" + status + ")")
         } else {
             $node.after("<span> - " + info.summary + " (" + status + ")</span>");
@@ -498,11 +497,10 @@ function applyBugzillaInfo(node, info) {
 function fetchBugzillaInfo() {
     var bugIds = [];
     var searchUrl = "/fetch_bugzilla_data";
-    var data = "bugids[]="
 
-    var links = $('a.bugzilla.fetch');
+    var links = $('.bugzilla.fetch');
     links.each(function(i, node) {
-        var id = $(node).text();
+        var id = $(node).text().trim();
         if (id in bugzillaCache) {
             applyBugzillaInfo(node, bugzillaCache[id]);
         } else {
@@ -511,11 +509,10 @@ function fetchBugzillaInfo() {
     });
 
     if (bugIds.length == 0) return;
-
-    $.get(searchUrl, data + bugIds.toString(), function(csv) {
+    $.get(searchUrl, "bugids[]=" + bugIds.toString(), function(csv) {
         var data = CSVToArray(csv);
         var hash = [];
-        for (var i = 0; i < data.length; i++) {
+        for (var i = 1; i < data.length; i++) {
             var row = data[i];
             var id = row[0];
             var summary = row[1];
@@ -523,9 +520,10 @@ function fetchBugzillaInfo() {
             var resolution = row[3];
             hash[id.toString()] = {summary: row[1], status:row[2], resolution:row[3]};
         }
-        $('a.bugzilla.fetch').each(function(i, node) {
+
+        $('.bugzilla.fetch').each(function(i, node) {
             var info;
-            var id = $(node).text();
+            var id = $(node).text().trim();
             if (id in bugzillaCache) {
                 info = bugzillaCache[id];
             } else {

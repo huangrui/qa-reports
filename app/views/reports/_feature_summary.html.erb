@@ -24,9 +24,20 @@
 %>
 <tr class="<%=row_class(feature_summary_counter)%>" >
 	<%if @email%>
-	<td><%= feature_summary.name %></td>
+	<td>
+      <%= feature_summary.name %></td>
 	<%else%>
-	<td><a href="<%= feature_summary.test_set_link %>"><%= feature_summary.name %></a></td>
+    	<td>
+          <a href="<%= feature_summary.test_set_link %>">
+            <% if feature_summary.bugzilla_feature? %>
+              <span class="bugzilla fetch">
+            <% end %>
+            <%= feature_summary.name %>
+            <% if feature_summary.bugzilla_feature? %>
+              </span>
+            <% end %>
+        </a>
+    </td>
 	<%end%>
 	<td class="total"><%= feature_summary.total_cases %></td>
 	<td class="pass"><%= feature_summary.total_passed %></td>

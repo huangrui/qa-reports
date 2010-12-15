@@ -25,7 +25,14 @@
 <tbody>
 <tr class="feature_name" id="test-set-<%=feature.id%>">
 	<td colspan="3">
-		<%= feature.feature %>
+        <% if feature.bugzilla_feature? %>
+          <a class="bugzilla fetch" target="_blank" href="http://bugs.meego.com/show_bug.cgi?id=<%=feature.name%>"><%=feature.name%></a>
+        <% else %>
+            <%= feature.feature %>
+        <% end %>
+        <% if feature.bugzilla_feature? %>
+          </a>
+        <% end %>
 		<a href="#" class="see_all_toggle">+ see passing tests</a>
 	</td>
 </tr>

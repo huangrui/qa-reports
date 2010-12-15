@@ -42,6 +42,10 @@ class MeegoTestSet < ActiveRecord::Base
     feature
   end
 
+  def bugzilla_feature?
+    name.to_i > 0
+  end
+
   def max_cases
     meego_test_session.meego_test_sets.map{|item| item.total_cases}.max
   end

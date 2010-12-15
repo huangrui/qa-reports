@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testresults version="1.0" environment="scratchbox" hwbuild="unknown" hwproduct="unknown">
+ <suite manual="false" timeout="90" name="suite#1" insignificant="false">
+  <set environment="scratchbox" manual="false" timeout="90" feature="9767,10301" name="set#1.1" insignificant="false">
+   <case manual="false" bugzilla_id="1234" timeout="90" comment="" name="case#1.1.1" insignificant="false" result="FAIL">
+    <step manual="false" command="pwd" result="FAIL">
+     <expected_result>0</expected_result>
+     <return_code>1</return_code>
+     <start>2010-12-13 14:24:30</start>
+     <end>2010-12-13 14:24:30</end>
+     <stdout></stdout>
+     <stderr/>
+    </step>
+   </case>
+   <case manual="false" bugzilla_id="9767" timeout="90" comment="" name="case#1.1.2" insignificant="false" result="PASS">
+    <step manual="false" command="ls" result="PASS">
+     <expected_result>0</expected_result>
+     <return_code>0</return_code>
+     <start>2010-12-13 14:24:30</start>
+     <end>2010-12-13 14:24:30</end>
+     <stdout>bin
+bug9767_result.xml
+bugXXXX.xml
+demos
+demoSlides.odp
+demoSlides.pdf
+demotmp
+Desktop
+Documents
+Downloads
+lws
+meegotemplate2.odp
+meegotemplate.odp
+Music
+mygitclones
+personal
+Pictures
+Public
+qtuitest.log
+reports-header.png
+reports-results.png
+result.xml
+simple_result.xml
+suni
+Templates
+temp.xml
+testplannercommits.txt
+testplanner.png
+testplan.png
+testplans
+testplans.tar.gz
+testrunner-lite-output.txt
+testrunner-ui.png
+tests
+tmp
+tmp.xml
+Videos
+without_suffix.xml
+with_suffix.xml
+with_wrong_suffix.pdf
+workspace
+workUbuntu804
+</stdout>
+     <stderr/>
+    </step>
+   </case>
+  </set>
+ </suite>
+ <hwiddetect>/usr/bin/hwidetect_executable</hwiddetect>
+ <description>This is the description</description>
+</testresults>
