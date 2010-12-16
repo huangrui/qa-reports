@@ -29,7 +29,8 @@ class ReportComparisonSpec < ActiveSupport::TestCase
     end
 
     it "should compare two reports and list changed tests" do
-      comparison = ReportComparison.new(@session1, @session2)
+      comparison = ReportComparison.new()
+      comparison.add_pair(@session1.hwproduct, @session1, @session2)
       results = comparison.changed_test_cases
       results[0].name.should == "SMOKE-SIM-Query_SIM_card_status"
       results[1].name.should == "SMOKE-SIM-Get_IMSI"
@@ -42,7 +43,8 @@ class ReportComparisonSpec < ActiveSupport::TestCase
     end
 
     it "should be able to compare two different reports and group items" do
-      comparison = ReportComparison.new(@session1, @session2)
+      comparison = ReportComparison.new()
+      comparison.add_pair(@session1.hwproduct, @session1, @session2)
       groups = comparison.groups
       groups.map{|group| group.name}.should == ['SIM']
       group = groups.first
@@ -53,7 +55,8 @@ class ReportComparisonSpec < ActiveSupport::TestCase
     end
 
     it "should be able to compare two similar reports and group items" do
-      comparison = ReportComparison.new(@session1, @session1)
+      comparison = ReportComparison.new()
+      comparison.add_pair(@session1.hwproduct, @session1, @session1)
       groups = comparison.groups
       groups.map{|group| group.name}.should == ['SIM']
       group = groups.first

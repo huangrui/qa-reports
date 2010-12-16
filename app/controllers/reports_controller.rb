@@ -223,7 +223,8 @@ class ReportsController < ApplicationController
     if @report_id = params[:id].try(:to_i)
       @report = MeegoTestSession.find(@report_id)
       @other = @report.prev_session
-      @comparison = ReportComparison.new(@other, @report)
+      @comparison = ReportComparison.new()
+      @comparison.add_pair(@report.hwproduct, @report, @other)
       @groups = @comparison.groups
       render :layout => "report"
     else

@@ -20,6 +20,7 @@
 
 class ComparisonResult
   include MeegoTestCaseHelper
+
   def initialize(left, right, changed)
     @left    = left
     @right   = right
@@ -73,9 +74,7 @@ end
 
 class ReportComparison
 
-  def initialize(old_report, new_report)
-    @old_report      = old_report
-    @new_report      = new_report
+  def initialize()
     @new_failing     = 0
     @new_passing     = 0
     @new_na          = 0
@@ -83,9 +82,10 @@ class ReportComparison
     @changed_to_fail = 0
     @changed_to_na   = 0
     @groups          = []
+  end
 
+  def add_pair(title, old_report, new_report)
     reference        = Hash[*new_report.meego_test_cases.collect { |test_case| [test_case.name, test_case] }.flatten]
-
     @changed_cases   = old_report.meego_test_cases.select { |test_case|
       update_summary(test_case, reference.delete(test_case.name))
     }.push(*reference.values.select { |test_case|
