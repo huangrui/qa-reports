@@ -20,6 +20,8 @@
 # 02110-1301 USA
 #
 
+require 'report_parser'
+
 module ReportsHelper
 
   def edit_button
@@ -27,24 +29,48 @@ module ReportsHelper
       '<a href="" class="edit">Edit</a>'.html_safe
     end
   end
-  
+
   def back_to_top
     unless @email
       '<a href="#top">Back to top</a>'.html_safe
     end
   end
-  
+
   def editable_txt(field)
-  	html_field = field+'_html'
-  	txt_field = field+'_txt'
-  	html = '<div class="editcontent" id="' +txt_field+ '">' + \
-  	  @report.send(html_field) + '</div>'
-  	
-  	if @editing
-  	  html += '<div class="editmarkup" style="display:none;">' + \
-  	    @report.send(txt_field) + '</div>'
-  	end
-  	
-  	html.html_safe
+    html_field = field+'_html'
+    txt_field  = field+'_txt'
+    html       = '<div class="editcontent" id="' +txt_field+ '">' + \
+      @report.send(html_field) + '</div>'
+
+    if @editing
+      html += '<div class="editmarkup" style="display:none;">' + \
+        @report.send(txt_field) + '</div>'
+    end
+
+    html.html_safe
   end
+
+  def print_title_link(title)
+    if bugzilla_title?(title)
+      ('<a class="bugzilla fetch" target="_blank" href="http://bugs.meego.com/show_bug.cgi?id='+title+'">' + title + '</a>').html_safe
+    else
+      title
+    end
+  end
+
+  def print_title(title)
+    if bugzilla_title?(title)
+      ('<span class="bugzilla fetch">' + title + '</span>').html_safe
+    else
+      title
+    end
+  end
+
+  private
+
+  def bugzilla_title?(title)
+    result = ReportParser::parse_features(title)
+    result.length != 1 || result.first.is_a?(Fixnum)
+  end
+
 end

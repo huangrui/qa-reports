@@ -29,14 +29,8 @@
 	<%else%>
     	<td>
           <a href="<%= feature_summary.test_set_link %>">
-            <% if feature_summary.bugzilla_feature? %>
-              <span class="bugzilla fetch">
-            <% end %>
-            <%= feature_summary.name %>
-            <% if feature_summary.bugzilla_feature? %>
-              </span>
-            <% end %>
-        </a>
+            <%=print_title(feature_summary.name) %>
+          </a>
     </td>
 	<%end%>
 	<td class="total"><%= feature_summary.total_cases %></td>
