@@ -11,7 +11,7 @@ When /^I should be able to compare between branches "([^"]*)" and "([^"]*)"$/ do
   visit("/1.2/Core/#{branch1}/compare/#{branch2}")
 end
 
-Then /^I should see vales "([^"]*)" in columns of "([^"]*)"$/ do |columns, scope|
+Then /^I should see values "([^"]*)" in columns of "([^"]*)"$/ do |columns, scope|
   columns.split(",").each_with_index{|column, index|
       And %{I should see "#{column}" within "#{scope}.column_#{index}"}
   }

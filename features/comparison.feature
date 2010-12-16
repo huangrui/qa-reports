@@ -9,13 +9,13 @@ Feature: Consolidated reports
     Then I should see "-2" within "#changed_to_fail"
     And I should see "+1" within "#changed_to_pass"
 
-    And I should see vales "N900,N910,N900,N910" in columns of "tr.compare_testtype th"       
+    And I should see values "N900,N910,N900,N910" in columns of "tr.compare_testtype th"
 
     And I should see "SMOKE-SIM-Disable_PIN_query" within "#row_2 .testcase_name"
-    And I should see vales "Fail,Fail,Fail,Pass" in columns of "#row_2 td"
+    And I should see values "Fail,Fail,Fail,Pass" in columns of "#row_2 td"
 
     And I should see "SMOKE-SIM-Get_IMSI" within "#row_10 .testcase_name"
-    And I should see vales "Pass,Pass,Pass,Fail" in columns of "#row_10 td"
+    And I should see values "Pass,Pass,Pass,Fail" in columns of "#row_10 td"
 
 
 
