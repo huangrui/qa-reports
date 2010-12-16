@@ -67,5 +67,21 @@ class ReportComparisonSpec < ActiveSupport::TestCase
       first.changed.should == false
       group.changed.should == false
     end
+
+    it "should be able to add reports into multiple columns" do
+      comparison = ReportComparison.new()
+      comparison.add_pair("column1", @session1, @session1)
+      comparison.add_pair("column2", @session1, @session2)
+      groups = comparison.groups
+      groups.map{|group| group.name}.should == ['SIM']
+      group = groups.first
+      column1 = group.values['column1'].first
+      column1.left.name.should == column1.right.name
+      column1.changed.should == false
+      column2 = group.values['column2'].first
+      column2.left.name.should == column2.right.name
+      column2.changed.should == true
+      group.changed.should == true
+    end
   end
 end
