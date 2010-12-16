@@ -118,10 +118,10 @@ class ReportComparison
 
   def add_pair(column, old_report, new_report)
     add_column(column)
-    reference      = Hash[*new_report.meego_test_cases.collect { |test_case| [test_case.name, test_case] }.flatten]
+    reference      = Hash[*new_report.meego_test_cases.collect { |test_case| [test_case.unique_id, test_case] }.flatten]
     @changed_cases = old_report.meego_test_cases.select { |test_case|
       old     = test_case
-      new     = reference.delete(test_case.name)
+      new     = reference.delete(test_case.unique_id)
       changed = update_summary(old, new)
       update_group(column, old, new, changed)
       changed

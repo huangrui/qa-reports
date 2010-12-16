@@ -24,5 +24,11 @@ require 'testreport'
 
 class MeegoTestCase < ActiveRecord::Base
   belongs_to :meego_test_set
-  belongs_to :meego_test_session 
+  belongs_to :meego_test_session
+
+  def unique_id
+    (meego_test_set.name + "_" + name).downcase
+  end
+
 end
+
