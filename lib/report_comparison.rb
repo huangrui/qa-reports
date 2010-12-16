@@ -44,13 +44,13 @@ class ComparisonResult
       @left.name
     else
       @right.name
-    end    
+    end
   end
 end
 
 class ComparisonRow
   def initialize(name)
-    @name = name
+    @name   = name
     @values = {}
   end
 
@@ -73,7 +73,7 @@ end
 
 class ComparisonGroup
   def initialize(name)
-    @name    = name
+    @name = name
     @rows = {}
   end
 
@@ -82,7 +82,7 @@ class ComparisonGroup
   end
 
   def names
-    rows.map{|row| row.name}
+    rows.map { |row| row.name }
   end
 
   def rows
@@ -90,7 +90,7 @@ class ComparisonGroup
   end
 
   def row(name)
-    rows = @rows[name.downcase] || ComparisonRow.new(name)
+    rows                 = @rows[name.downcase] || ComparisonRow.new(name)
     @rows[name.downcase] = rows
   end
 
@@ -109,7 +109,7 @@ class ReportComparison
     @changed_to_fail = 0
     @changed_to_na   = 0
     @groups          = []
-    @columns = []
+    @columns         = []
   end
 
   def columns
@@ -118,14 +118,22 @@ class ReportComparison
 
   def add_pair(column, old_report, new_report)
     add_column(column)
-    reference      = Hash[*new_report.meego_test_cases.collect { |test_case| [test_case.unique_id, test_case] }.flatten]
-    @changed_cases = old_report.meego_test_cases.select { |test_case|
-      old     = test_case
-      new     = reference.delete(test_case.unique_id)
-      changed = update_summary(old, new)
-      update_group(column, old, new, changed)
-      changed
-    }.push(*reference.values.select { |test_case|
+    reference = {}
+    if new_report != nil
+      reference = Hash[*new_report.meego_test_cases.collect { |test_case| [test_case.unique_id, test_case] }.flatten]
+    end
+
+    if old_report!=nil
+      @changed_cases = old_report.meego_test_cases.select { |test_case|
+        old     = test_case
+        new     = reference.delete(test_case.unique_id)
+        changed = update_summary(old, new)
+        update_group(column, old, new, changed)
+        changed
+      }
+    end
+
+    @changed_cases.push(*reference.values.select { |test_case|
       new = test_case
       update_summary(nil, new)
       update_group(column, nil, new, true)
@@ -190,14 +198,14 @@ class ReportComparison
   end
 
   def update_group(column, old, new, changed)
-    name  = if new!=nil
-              new.meego_test_set.name
-            elsif old!=nil
-              old.meego_test_set.name
-            else
-              "N/A"
-            end
-    group = @groups.select { |group| group.name.casecmp(name) == 0 }.first || @groups.push(ComparisonGroup.new(name)).last
+    name   = if new!=nil
+               new.meego_test_set.name
+             elsif old!=nil
+               old.meego_test_set.name
+             else
+               "N/A"
+             end
+    group  = @groups.select { |group| group.name.casecmp(name) == 0 }.first || @groups.push(ComparisonGroup.new(name)).last
     result = ComparisonResult.new(old, new, changed)
     group.row(result.name).add_value(column, result)
   end
