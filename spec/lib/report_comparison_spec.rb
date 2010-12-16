@@ -37,9 +37,11 @@ class ReportComparisonSpec < ActiveSupport::TestCase
       results[2].name.should == "SMOKE-SIM-Disable_PIN_query"
       results[3].name.should == "SMOKE-SIM-Query_Service_Provider_name"      
       results.length.should == 4
-      comparison.new_failing.should == "1"
       comparison.changed_to_fail.should == "-2"
       comparison.changed_to_pass.should == "+1"
+      comparison.new_passing.should == "0"
+      comparison.new_na.should == "0"
+      comparison.new_failing.should == "1"
     end
 
     it "should be able to compare two different reports and group items" do
@@ -48,7 +50,7 @@ class ReportComparisonSpec < ActiveSupport::TestCase
       groups = comparison.groups
       groups.map{|group| group.name}.should == ['SIM']
       group = groups.first
-      first = group.values.first
+      first = group.values[@session1.hwproduct].first
       first.left.name.should == first.right.name
       first.changed.should == true
       group.changed.should == true
@@ -60,7 +62,7 @@ class ReportComparisonSpec < ActiveSupport::TestCase
       groups = comparison.groups
       groups.map{|group| group.name}.should == ['SIM']
       group = groups.first
-      first = group.values.first
+      first = group.values[@session1.hwproduct].first
       first.left.name.should == first.right.name
       first.changed.should == false
       group.changed.should == false

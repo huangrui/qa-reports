@@ -51,7 +51,7 @@ end
 class ComparisonGroup
   def initialize(name)
     @name   = name
-    @values = []
+    @values = {}
   end
 
   def name
@@ -62,15 +62,16 @@ class ComparisonGroup
     @values
   end
 
-  def add_value(value)
-    @values << value
+  def add_value(title, value)
+    values = @values[title] || []
+    @values[title] = values
+    values << value
   end
 
   def changed
-    @values.select { |item| item.changed }.length > 0
+    @values.select{|key, value| value.select { |item| item.changed }.length > 0 }.length > 0
   end
 end
-
 
 class ReportComparison
 
@@ -87,9 +88,16 @@ class ReportComparison
   def add_pair(title, old_report, new_report)
     reference        = Hash[*new_report.meego_test_cases.collect { |test_case| [test_case.name, test_case] }.flatten]
     @changed_cases   = old_report.meego_test_cases.select { |test_case|
-      update_summary(test_case, reference.delete(test_case.name))
+      old = test_case
+      new = reference.delete(test_case.name)
+      changed = update_summary(old, new)
+      update_group(title, old, new, changed)
+      changed
     }.push(*reference.values.select { |test_case|
-      update_summary(nil, test_case)
+      new = test_case
+      update_summary(nil, new)
+      update_group(title, nil, new, true)
+      true
     })
   end
 
@@ -143,7 +151,7 @@ class ReportComparison
     end
   end
 
-  def update_group(old, new, changed)
+  def update_group(title, old, new, changed)
     name  = if new!=nil
               new.meego_test_set.name
             elsif old!=nil
@@ -152,13 +160,11 @@ class ReportComparison
               "N/A"
             end
     group = @groups.select { |group| group.name.casecmp(name) == 0 }.first || @groups.push(ComparisonGroup.new(name)).last
-    group.add_value(ComparisonResult.new(old, new, changed))
+    group.add_value(title, ComparisonResult.new(old, new, changed))
   end
 
   def update_summary(old, new)
-    changed = true
     if old == nil
-      changed = true
       case new.result
         when -1 then
           @new_failing += 1
@@ -169,7 +175,7 @@ class ReportComparison
         else
           throw :invalid_value
       end
-    elsif new== nil
+    elsif new == nil
       # test disappeared
       @changed_to_na += 1
     elsif new.result!=old.result
@@ -184,9 +190,8 @@ class ReportComparison
           throw :invalid_value
       end
     else
-      changed = false
+      return false
     end
-    update_group(old, new, changed)
-    changed
+    true
   end
 end
