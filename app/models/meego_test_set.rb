@@ -21,7 +21,7 @@
 #
 
 require 'testreport'
-
+require 'report_parser'
 class MeegoTestSet < ActiveRecord::Base
   belongs_to :meego_test_session
    
@@ -43,7 +43,8 @@ class MeegoTestSet < ActiveRecord::Base
   end
 
   def bugzilla_feature?
-    name.to_i > 0
+    result = ReportParser::parse_features(name)
+    result.length != 1 || result.first.is_a?(Fixnum)
   end
 
   def max_cases
