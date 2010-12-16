@@ -10,33 +10,7 @@
 <% content_for :page_content do %>
     <h1><em>Testing vs. Trunk:</em> Handset Aava</h1>
 
-    <div class="report_head">
-      <h2>Contents</h2>
-      <dl class="meta_info">
-        <h3>
-          <a href="<%= url_for :controller=>'reports', :action=>'view', :release_version=>@selected_release_version, :target=>@report.target, :testtype=>@report.testtype, :hwproduct=>@report.hwproduct, :id=>@report.id %>">Testing</a>
-        </h3>
-        <dt>Author:</dt>
-        <dd><%= @comparison.old_report.author.name %></dd>
-        <dd><a href="mailto:<%= @comparison.old_report.author.email %>"><%= @comparison.old_report.author.email %></a>
-        </dd>
-        <dt>Test execution date</dt>
-        <dd><span class="un"><%= @comparison.old_report.tested_at.strftime("%d %B %Y") %></span></dd>
-      </dl>
-
-      <dl class="meta_info">
-        <h3>
-          <a href="<%= url_for :controller=>'reports', :action=>'view', :release_version=>@selected_release_version, :target=>@other.target, :testtype=>@other.testtype, :hwproduct=>@other.hwproduct, :id=>@other.id %>">Trunk</a>
-        </h3>
-        <dt>Author:</dt>
-        <dd><%= @comparison.new_report.author.name %></dd>
-        <dd><a href="mailto:<%= @comparison.new_report.author.email %>"><%= @comparison.new_report.author.email %></a>
-        </dd>
-        <dt>Test execution date</dt>
-        <dd><span class="un"><%= @comparison.new_report.tested_at.strftime("%d %B %Y") %></span></dd>
-      </dl>
-    </div>
-
+    
     <h2>Summary</h2>
 
     <div class="clearfix">
@@ -64,10 +38,19 @@
     <table class="detailed_results">
       <thead>
       <tr>
-        <th><th>
-        <th colspan="2" class="column_head_1">Testing</th>
-        <th colspan="2" class="column_head_1">Trunk</th>
+        <th></th>
+        <th colspan="<%=@comparison.columns.length%>" class="column_head_1">Testing</th>
+        <th colspan="<%=@comparison.columns.length%>" class="column_head_1">Trunk</th>
       </tr>
+      <tr>
+        <th></th>
+        <% @comparison.columns.each{|name| %>
+            <th><%=name%></th>
+        <% } %>
+        <% @comparison.columns.each{|name| %>
+            <th><%=name%></th>
+        <% } %>
+      </tr>      
       </thead>
       <tbody>
 
@@ -84,14 +67,6 @@
                     $this.text("see changed only");
                 }
                 $tbody.find("tr").not(".has_changes").toggle();
-                return false;
-            });
-
-            $("a.collapse_toggle").click(function() {
-                $this = $(this);
-                $tbody = $this.toggleClass("close").toggleClass("open").parents("tbody");
-                $tbody.find("a.see_all_toggle").toggle();
-                $tbody.next("tbody").toggle($this.hasClass("open"));
                 return false;
             });
         });

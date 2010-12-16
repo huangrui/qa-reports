@@ -50,7 +50,7 @@ class ReportComparisonSpec < ActiveSupport::TestCase
       groups = comparison.groups
       groups.map{|group| group.name}.should == ['SIM']
       group = groups.first
-      first = group.values[@session1.hwproduct].first
+      first = group.row("SMOKE-SIM-Query_SIM_card_status").value(@session1.hwproduct)
       first.left.name.should == first.right.name
       first.changed.should == true
       group.changed.should == true
@@ -62,7 +62,7 @@ class ReportComparisonSpec < ActiveSupport::TestCase
       groups = comparison.groups
       groups.map{|group| group.name}.should == ['SIM']
       group = groups.first
-      first = group.values[@session1.hwproduct].first
+      first = group.row("SMOKE-SIM-Query_SIM_card_status").value(@session1.hwproduct)
       first.left.name.should == first.right.name
       first.changed.should == false
       group.changed.should == false
@@ -75,10 +75,10 @@ class ReportComparisonSpec < ActiveSupport::TestCase
       groups = comparison.groups
       groups.map{|group| group.name}.should == ['SIM']
       group = groups.first
-      column1 = group.values['column1'].first
+      column1 = group.row("SMOKE-SIM-Query_SIM_card_status").value("column1")
       column1.left.name.should == column1.right.name
       column1.changed.should == false
-      column2 = group.values['column2'].first
+      column2 = group.row("SMOKE-SIM-Query_SIM_card_status").value("column2")
       column2.left.name.should == column2.right.name
       column2.changed.should == true
       group.changed.should == true

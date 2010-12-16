@@ -145,6 +145,12 @@ class MeegoTestSession < ActiveRecord::Base
       published.where(:release_version => release_version, :target => target, :testtype => testtype).order("tested_at DESC")
     end
 
+    def published_hwversion_by_release_version_target_test_type(release_version, target, testtype)
+      target   = target.downcase
+      testtype = testtype.downcase
+      published.where(:release_version => release_version, :target => target, :testtype => testtype).select("DISTINCT hwproduct").order("tested_at DESC")
+    end
+
     def published_by_release_version_target(release_version, target)
       target = target.downcase
       published.where(:release_version => release_version, :target => target).order("tested_at DESC")

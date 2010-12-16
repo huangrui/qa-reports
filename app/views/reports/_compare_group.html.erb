@@ -1,7 +1,31 @@
 <tr class="feature_name">
-  <td colspan="5"><a href="#" class="collapse_toggle open">[+]</a><%=group.name%><a href="#" class="see_all_toggle">+ see all</a></td>
+  <td colspan="<%= 2 + 2*@comparison.columns.length %>"><%=group.name%><a href="#" class="see_all_toggle">+ see all</a></td>
 </tr>
 </tbody>
 <tbody>
-    <%= render :partial => "compare_testcase", :collection => group.values, :as => :testcase %>
+    <% group.names.each{|row_name|
+        row = group.row(row_name)
+    %>
+        <tr class="testcase<%= " has_changes" if row.changed %>" style="<%= 'display:none;' if !row.changed%>">
+            <td char="testcase_name"><%=row_name%></td>
+            <% @comparison.columns.each{|column|
+                testcase = row.value(column).left
+            %>
+                <td class="testcase_result <%=result_class(testcase)%>"><%=result_html(testcase)%></td>
+            <% } %>
+            <% @comparison.columns.each_with_index{|column, index|
+                testcase = row.value(column).right
+            %>
+            <td class="testcase_result <%=result_class(testcase)%>">
+              <% if index==0 %>
+                  <span class="<%= (row.changed ? 'changed_result' : 'unchanged_result') %>">
+              <% end %>
+              <%=result_html(testcase)%>
+              <% if index==0 %>
+                  </span>
+              <% end %>
+            </td>
+            <% } %>
+        </tr>
+    <%} %>
 </tbody>
