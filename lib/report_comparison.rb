@@ -40,11 +40,7 @@ class ComparisonResult
   end
 
   def name
-    if @left!=nil
-      @left.name
-    else
-      @right.name
-    end
+    @left.name || @right.name
   end
 end
 
@@ -208,6 +204,9 @@ class ReportComparison
       end
     elsif new == nil
       # test disappeared
+      if old.result == 0
+        return false
+      end
       @changed_to_na += 1
     elsif new.result!=old.result
       case new.result

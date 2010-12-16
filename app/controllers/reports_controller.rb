@@ -221,9 +221,14 @@ class ReportsController < ApplicationController
 
   def compare
     @comparison = ReportComparison.new()
-    MeegoTestSession.published_hwversion_by_release_version_target_test_type(params[:release_version], params[:target], params[:testtype]).each{|hardware|
-        new = MeegoTestSession.by_release_version_target_test_type_product(params[:release_version], params[:target], params[:testtype], hardware.hwproduct).first
-        old = MeegoTestSession.by_release_version_target_test_type_product(params[:release_version], params[:target], params[:testtype], hardware.hwproduct).first
+    @release_version = params[:release_version]
+    @target = params[:target]
+    @testtype = params[:testtype]
+    @comparison_testtype = params[:comparetype]    
+
+    MeegoTestSession.published_hwversion_by_release_version_target_test_type(@release_version, @target, @testtype).each{|hardware|
+        new = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @testtype, hardware.hwproduct).first
+        old = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @comparison_testtype, hardware.hwproduct).first
         @comparison.add_pair(hardware.hwproduct, old, new)
     }
     @groups = @comparison.groups

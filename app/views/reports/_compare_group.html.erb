@@ -17,13 +17,9 @@
                 testcase = row.value(column).right
             %>
             <td class="testcase_result <%=result_class(testcase)%>">
-              <% if index==0 %>
-                  <span class="<%= (row.changed ? 'changed_result' : 'unchanged_result') %>">
-              <% end %>
+              <% if index==0 %><span class="<%= (row.changed ? 'changed_result' : 'unchanged_result') %>"><% end %>
               <%=result_html(testcase)%>
-              <% if index==0 %>
-                  </span>
-              <% end %>
+              <% if index==0 %></span><% end %>
             </td>
             <% } %>
         </tr>
