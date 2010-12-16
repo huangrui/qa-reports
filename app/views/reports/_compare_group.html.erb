@@ -3,11 +3,9 @@
 </tr>
 </tbody>
 <tbody>
-    <% group.names.each{|row_name|
-        row = group.row(row_name)
-    %>
+    <% group.rows.each{|row| %>
         <tr class="testcase<%= " has_changes" if row.changed %>" style="<%= 'display:none;' if !row.changed%>">
-            <td char="testcase_name"><%=row_name%></td>
+            <td char="testcase_name"><%=row.name%></td>
             <% @comparison.columns.each{|column|
                 testcase = row.value(column).left
             %>

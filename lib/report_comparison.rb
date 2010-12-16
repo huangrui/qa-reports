@@ -62,6 +62,10 @@ class ComparisonRow
     @values[column.downcase] =value
   end
 
+  def name
+    @name
+  end
+
   def changed
     @values.select { |key, value| value.changed }.length > 0
   end
@@ -78,7 +82,11 @@ class ComparisonGroup
   end
 
   def names
-    @rows.keys
+    rows.map{|row| row.name}
+  end
+
+  def rows
+    @rows.values
   end
 
   def row(name)
