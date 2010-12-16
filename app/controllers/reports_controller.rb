@@ -28,19 +28,19 @@ require 'report_comparison'
 
 module AjaxMixin
   def remove_attachment
-    @preview_id = params[:id].to_i
+    @preview_id   = params[:id].to_i
     @test_session = MeegoTestSession.find(@preview_id)
-    files = FileStorage.new()    
+    files         = FileStorage.new()
     files.remove_file(@test_session, params[:name])
-    render :json => { :ok => '1'}
+    render :json => {:ok => '1'}
   end
 
   def update_title
-    @preview_id = params[:id].to_i
+    @preview_id   = params[:id].to_i
     @test_session = MeegoTestSession.find(@preview_id)
 
-    field = params[:meego_test_session]
-    field = field.keys()[0]
+    field         = params[:meego_test_session]
+    field         = field.keys()[0]
     @test_session.update_attribute(field, params[:meego_test_session][field])
     @test_session.updated_by(current_user)
     expire_caches_for(@test_session)
@@ -50,8 +50,8 @@ module AjaxMixin
   end
 
   def update_case_comment
-    case_id = params[:id]
-    comment = params[:comment]
+    case_id  = params[:id]
+    comment  = params[:comment]
     testcase = MeegoTestCase.find(case_id)
     testcase.update_attribute(:comment, comment)
 
@@ -63,8 +63,8 @@ module AjaxMixin
   end
 
   def update_case_result
-    case_id = params[:id]
-    result = params[:result]
+    case_id  = params[:id]
+    result   = params[:result]
     testcase = MeegoTestCase.find(case_id)
     testcase.update_attribute(:result, result.to_i)
 
@@ -76,11 +76,11 @@ module AjaxMixin
   end
 
   def update_txt
-    @preview_id = params[:id]
+    @preview_id   = params[:id]
     @test_session = MeegoTestSession.find(@preview_id)
 
-    field = params[:meego_test_session]
-    field = field.keys()[0]
+    field         = params[:meego_test_session]
+    field         = field.keys()[0]
     @test_session.update_attribute(field, params[:meego_test_session][field])
     @test_session.updated_by(current_user)
     expire_caches_for(@test_session)
@@ -89,8 +89,8 @@ module AjaxMixin
 
     render :text => @test_session.send(sym)
   end
-  
-  
+
+
   def update_tested_at
     logger.info("called update_tested_at with #{params.inspect}")
     @preview_id = params[:id]
@@ -98,7 +98,7 @@ module AjaxMixin
     if @preview_id
       @test_session = MeegoTestSession.find(@preview_id)
 
-      field = params[:meego_test_session].keys.first
+      field         = params[:meego_test_session].keys.first
       logger.warn("Updating #{field} with #{params[:meego_test_session][field]}")
       @test_session.update_attribute(field, params[:meego_test_session][field])
       @test_session.updated_by(current_user)
@@ -122,17 +122,17 @@ class ReportsController < ApplicationController
   #caches_page :index, :upload_form, :email, :filtered_list
   #caches_page :view, :if => proc {|c|!c.just_published?}
   caches_action :fetch_bugzilla_data,
-      :cache_path => Proc.new { |controller| controller.params },
-      :expires_in => 1.hour
+                :cache_path => Proc.new { |controller| controller.params },
+                :expires_in => 1.hour
 
   def preview
     @preview_id = session[:preview_id] || params[:id]
-    @editing = true
-    @wizard = true
+    @editing    = true
+    @wizard     = true
 
     if @preview_id
-      @test_session = MeegoTestSession.find(@preview_id)
-      @report = @test_session
+      @test_session   = MeegoTestSession.find(@preview_id)
+      @report         = @test_session
       @no_upload_link = true
 
       render :layout => "report"
@@ -142,19 +142,19 @@ class ReportsController < ApplicationController
   end
 
   def publish
-    report_id = params[:report_id]
+    report_id    = params[:report_id]
     test_session = MeegoTestSession.find(report_id)
     test_session.update_attribute(:published, true)
-    
+
     expire_caches_for(test_session, true)
     expire_index_for(test_session)
 
-    redirect_to :action => 'view',
-        :id => report_id,
-        :release_version => test_session.release_version,
-        :target => test_session.target,
-        :testtype => test_session.testtype,
-        :hwproduct => test_session.hwproduct
+    redirect_to :action          => 'view',
+                :id              => report_id,
+                :release_version => test_session.release_version,
+                :target          => test_session.target,
+                :testtype        => test_session.testtype,
+                :hwproduct       => test_session.hwproduct
   end
 
   def view
@@ -163,23 +163,23 @@ class ReportsController < ApplicationController
 
       if preview_id == @report_id
         session[:preview_id] = nil
-        @published = true
+        @published           = true
       else
         @published = false
       end
-      
+
       @test_session = MeegoTestSession.find(@report_id)
 
       return render_404 unless @selected_release_version == @test_session.release_version
 
-      @target = @test_session.target
-      @testtype = @test_session.testtype
+      @target    = @test_session.target
+      @testtype  = @test_session.testtype
       @hwproduct = @test_session.hwproduct
 
-      @report = @test_session
+      @report    = @test_session
       @files = FileStorage.new().list_files(@test_session) or []
       @editing = false
-      @wizard = false
+      @wizard  = false
 
       render :layout => "report"
     else
@@ -191,11 +191,11 @@ class ReportsController < ApplicationController
     if @report_id = params[:id].try(:to_i)
       @test_session = MeegoTestSession.find(@report_id)
 
-      @report = @test_session
-      @editing = false
+      @report       = @test_session
+      @editing      = false
       @files = FileStorage.new().list_files(@test_session) or []
       @wizard = false
-      @email = true
+      @email  = true
 
       render :layout => "report"
     else
@@ -205,14 +205,14 @@ class ReportsController < ApplicationController
 
   def edit
     @editing = true
-    @wizard = false
+    @wizard  = false
 
     if id = params[:id].try(:to_i)
-      @test_session = MeegoTestSession.find(id)
-      @report = @test_session
+      @test_session   = MeegoTestSession.find(id)
+      @report         = @test_session
       @no_upload_link = true
       @files = FileStorage.new().list_files(@test_session) or []
-      
+
       render :layout => "report"
     else
       redirect_to :action => :index
@@ -220,28 +220,23 @@ class ReportsController < ApplicationController
   end
 
   def compare
-    if @report_id = params[:id].try(:to_i)
-      @report = MeegoTestSession.find(@report_id)
-      @other = @report.prev_session
-      @comparison = ReportComparison.new()
-      @comparison.add_pair(@report.hwproduct, @report, @other)
-      @groups = @comparison.groups
-      render :layout => "report"
-    else
-      redirect_to :action => :index
-    end
+    @comparison = ReportComparison.new()
+    
+    # @comparison.add_pair(@report.hwproduct, @report, @other)
+    @groups = @comparison.groups
+    render :layout => "report"
   end
 
 
   def fetch_bugzilla_data
-    ids = params[:bugids]
+    ids       = params[:bugids]
     searchUrl = "http://bugs.meego.com/buglist.cgi?bugidtype=include&columnlist=short_desc%2Cbug_status%2Cresolution&query_format=advanced&ctype=csv&bug_id=" + ids.join(',')
-    data = open(searchUrl)
+    data      = open(searchUrl)
     render :text => data.read(), :content_type => "text/csv"
   end
 
   def delete
-    id = params[:id]
+    id           = params[:id]
 
     test_session = MeegoTestSession.find(id)
 
