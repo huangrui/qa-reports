@@ -40,7 +40,11 @@ class ComparisonResult
   end
 
   def name
-    @left.name || @right.name
+    if @left != nil
+      @left.name
+    else
+      @right.name
+    end    
   end
 end
 
