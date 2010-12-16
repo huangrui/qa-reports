@@ -116,27 +116,25 @@ class ReportComparison
     @columns
   end
 
-  def add_pair(column, old_report, new_report)
+  def add_pair(column, left_report, right_report)
     add_column(column)
     reference = {}
-    if new_report != nil
-      reference = Hash[*new_report.meego_test_cases.collect { |test_case| [test_case.unique_id, test_case] }.flatten]
+    if right_report != nil
+      reference = Hash[*right_report.meego_test_cases.collect { |test_case| [test_case.unique_id, test_case] }.flatten]
     end
 
-    if old_report!=nil
-      @changed_cases = old_report.meego_test_cases.select { |test_case|
-        old     = test_case
-        new     = reference.delete(test_case.unique_id)
-        changed = update_summary(old, new)
-        update_group(column, old, new, changed)
+    if left_report!=nil
+      @changed_cases = left_report.meego_test_cases.select { |left|
+        right     = reference.delete(left.unique_id)
+        changed = update_summary(left, right)
+        update_group(column, left, right, changed)
         changed
       }
     end
 
-    @changed_cases.push(*reference.values.select { |test_case|
-      new = test_case
-      update_summary(nil, new)
-      update_group(column, nil, new, true)
+    @changed_cases.push(*reference.values.select { |right|
+      update_summary(nil, right)
+      update_group(column, nil, right, true)
       true
     })
   end
@@ -169,14 +167,6 @@ class ReportComparison
     @changed_cases
   end
 
-  def old_report
-    @old_report
-  end
-
-  def new_report
-    @new_report
-  end
-
   def groups
     @groups
   end
@@ -197,22 +187,22 @@ class ReportComparison
     end
   end
 
-  def update_group(column, old, new, changed)
-    name   = if new!=nil
-               new.meego_test_set.name
-             elsif old!=nil
-               old.meego_test_set.name
+  def update_group(column, left, right, changed)
+    name   = if right!=nil
+               right.meego_test_set.name
+             elsif left!=nil
+               left.meego_test_set.name
              else
                "N/A"
              end
     group  = @groups.select { |group| group.name.casecmp(name) == 0 }.first || @groups.push(ComparisonGroup.new(name)).last
-    result = ComparisonResult.new(old, new, changed)
+    result = ComparisonResult.new(left, right, changed)
     group.row(result.name).add_value(column, result)
   end
 
-  def update_summary(old, new)
-    if old == nil
-      case new.result
+  def update_summary(left, right)
+    if left == nil
+      case right.result
         when -1 then
           @new_failing += 1
         when 0 then
@@ -222,14 +212,14 @@ class ReportComparison
         else
           throw :invalid_value
       end
-    elsif new == nil
+    elsif right == nil
       # test disappeared
-      if old.result == 0
+      if left.result == 0
         return false
       end
       @changed_to_na += 1
-    elsif new.result!=old.result
-      case new.result
+    elsif right.result!=left.result
+      case right.result
         when 1 then
           @changed_to_pass += 1
         when 0 then

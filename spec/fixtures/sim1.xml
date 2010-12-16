@@ -212,7 +212,7 @@ Contact: min-support@lists.sourceforge.net
      <stderr></stderr>
 </step>
 </case>
-   <case name="SMOKE-SIM-Disable_PIN_query" description="Purpose          This test case disables PIN query.         Method         Uses Cellular-Qt API to disable PIN query.         Pre-/Post-Conditions         SIM card inserted to device and pin code entered.          Pass/Fail Criteria         MIN returns passed/failed.         " manual="false" insignificant="false" result="FALL" subfeature="Phonebook" level="Feature">
+   <case name="SMOKE-SIM-Disable_PIN_query" description="Purpose          This test case disables PIN query.         Method         Uses Cellular-Qt API to disable PIN query.         Pre-/Post-Conditions         SIM card inserted to device and pin code entered.          Pass/Fail Criteria         MIN returns passed/failed.         " manual="false" insignificant="false" result="FAIL" subfeature="Phonebook" level="Feature">
     <step command="min -c -t 'SMOKE-SIM-Disable_PIN_query'" result="FAIL">
      <expected_result>0</expected_result>
      <return_code>1</return_code>

@@ -3,18 +3,18 @@
 </tr>
 </tbody>
 <tbody>
-    <% group.rows.each{|row| %>
-        <tr class="testcase<%= " has_changes" if row.changed %>" style="<%= 'display:none;' if !row.changed%>">
-            <td char="testcase_name"><%=row.name%></td>
-            <% @comparison.columns.each{|column|
+    <% group.rows.each_with_index{|row, index| %>
+        <tr id="row_<%=index%>" class="testcase<%= " has_changes" if row.changed %>" style="<%= 'display:none;' if !row.changed%>">
+            <td class="testcase_name"><%=row.name%></td>
+            <% @comparison.columns.each_with_index{|column, column_index|
                 testcase = row.value(column).left
             %>
-                <td class="testcase_result <%=result_class(testcase)%>"><%=result_html(testcase)%></td>
+                <td class="testcase_result <%=result_class(testcase)%> column_<%=column_index%>"><%=result_html(testcase)%></td>
             <% } %>
-            <% @comparison.columns.each_with_index{|column, index|
+            <% @comparison.columns.each_with_index{|column, column_index|
                 testcase = row.value(column).right
             %>
-            <td class="testcase_result <%=result_class(testcase)%>">
+            <td class="testcase_result <%=result_class(testcase)%> column_<%= (column_index + @comparison.columns.length)%>">
               <% if index==0 %><span class="<%= (row.changed ? 'changed_result' : 'unchanged_result') %>"><% end %>
               <%=result_html(testcase)%>
               <% if index==0 %></span><% end %>
