@@ -1224,6 +1224,29 @@ table#detailed_results,
 #detailed_results th:first-child { 
 	border-left-style: none; }	
 
+.feature_record td {
+        border-bottom: 1px solid #eee;
+        border-left: 1px solid #ddd;
+        vertical-align: top; }
+
+.feature_record td:first-child {
+                border-left: 1px none #ddd;}
+
+td.feature_record_notes {
+        font-size: 11px;
+        margin-bottom: 10px;
+        padding-right: 33px;
+                margin-bottom: 0;}
+
+td.feature_record_notes.edit:hover {
+        background: #fff8de url(../images/edit_icon.png) no-repeat 97% 5px;
+        cursor: pointer;}
+
+td.feature_record_notes p {
+        margin-bottom: 0; }
+
+
+
 .testcase td { 
 	border-bottom: 1px solid #eee; 
 	border-left: 1px solid #ddd; 

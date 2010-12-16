@@ -22,7 +22,7 @@
 # 02110-1301 USA
 #
 %>
-<tr class="<%=row_class(feature_summary_counter)%>" >
+<tr class="feature_record <%=row_class(feature_summary_counter)%>" id="feature-<%= feature_summary.id %>" >
 	<%if @email%>
 	<td>
       <%= feature_summary.name %></td>
@@ -44,4 +44,12 @@
 	<td class="fail"><%= feature_summary.total_failed %></td>
 	<td class="na"><%= feature_summary.total_na %></td>
 	<td><%= feature_summary.graph_img_tag %></td>
+	
+	<!-- Added by Joey for category comments Dec 18, 2010 -->
+        <td class="feature_record_notes <%= 'edit' if @editing %>">
+    	<div class="content"><%= feature_summary.comments %></div>
+    	<% if @editing %>
+        <div class="comment_markup" style="display:none;"><%= MeegoTestReport::format_txt(feature_summary.comments).html_safe %></div>
+    <% end %>
+    </td>
 </tr>
