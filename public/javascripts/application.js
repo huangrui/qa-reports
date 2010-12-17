@@ -586,26 +586,16 @@ function CSVToArray(strData, strDelimiter) {
     strDelimiter = (strDelimiter || ",");
 
     // Create a regular expression to parse the CSV values.
-    var objPattern = new RegExp(
-            (
-                // Delimiters.
-                    "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
-
+    var objPattern = new RegExp(("(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
                         // Quoted fields.
                             "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
-
                         // Standard fields.
-                            "([^\"\\" + strDelimiter + "\\r\\n]*))"
-                    ),
-            "gi"
-            );
+                            "([^\"\\" + strDelimiter + "\\r\\n]*))"),"gi");
 
 
     // Create an array to hold our data. Give the array
     // a default empty first row.
-    var arrData = [
-        []
-    ];
+    var arrData = [[]];
 
     // Create an array to hold our individual pattern
     // matching groups.
@@ -623,45 +613,78 @@ function CSVToArray(strData, strDelimiter) {
         // (is not the start of string) and if it matches
         // field delimiter. If id does not, then we know
         // that this delimiter is a row delimiter.
-        if (
-                strMatchedDelimiter.length &&
-                        (strMatchedDelimiter != strDelimiter)
-                ) {
-
+        if (strMatchedDelimiter.length && (strMatchedDelimiter != strDelimiter)) {
             // Since we have reached a new row of data,
             // add an empty row to our data array.
             arrData.push([]);
-
         }
-
 
         // Now that we have our delimiter out of the way,
         // let's check to see which kind of value we
         // captured (quoted or unquoted).
         if (arrMatches[ 2 ]) {
-
             // We found a quoted value. When we capture
             // this value, unescape any double quotes.
-            var strMatchedValue = arrMatches[ 2 ].replace(
-                    new RegExp("\"\"", "g"),
-                    "\""
-                    );
-
+            var strMatchedValue = arrMatches[ 2 ].replace(new RegExp("\"\"", "g"),"\"");
         } else {
-
             // We found a non-quoted value.
             strMatchedValue = arrMatches[ 3 ];
-
         }
-
 
         // Now that we have our value string, let's add
         // it to the data array.
         arrData[ arrData.length - 1 ].push(strMatchedValue);
     }
-
     // Return the parsed data.
     return( arrData );
+}
+
+function filterResults(rowsToHide, typeText) {
+    var updateToggle = function($tbody, $this) {
+        var count = $tbody.find("tr:hidden").length;
+        if(count > 0) {
+            $this.text("+ see " + count + " " + typeText);
+        } else {
+            $this.text("- hide " + typeText);
+        }
+        if($tbody.find(rowsToHide).length == 0) {
+            $this.hide();
+        }
+    }
+
+    var updateToggles = function() {
+        $("a.see_all_toggle").each(function() {
+          $tbody = $(this).parents("tbody").next("tbody");
+          updateToggle($tbody, $(this));
+        });
+    }
+
+    $("#see_all_button").click(function(){
+        $("a.sort_btn").removeClass("active");
+        $(this).addClass("active");
+        $(rowsToHide).show();
+        updateToggles();
+        return false;
+    });
+
+    $("#see_only_failed_button").click(function(){
+        $("a.sort_btn").removeClass("active");
+        $(this).addClass("active");
+        $(rowsToHide).hide();
+        updateToggles();
+        return false;
+    });
+
+    updateToggles();
+    $("a.see_all_toggle").each(function() {
+        $(this).click(function(index, item) {
+            var $this = $(this);
+            $tbody = $this.parents("tbody").next("tbody");
+            $tbody.find(rowsToHide).toggle();
+            updateToggle($tbody, $this);
+            return false;
+        });
+    });
 }
 
 jQuery(function($) {
@@ -804,6 +827,5 @@ jQuery(function($) {
     } else {
         // Fallback to normal file input
         $('#dragndrop_and_browse').remove();
-
     }    
 });

@@ -4,7 +4,7 @@
 </tbody>
 <tbody>
     <% group.rows.each_with_index{|row, index| %>
-        <tr id="row_<%=index%>" class="testcase<%= " has_changes" if row.changed %>" style="<%= 'display:none;' if !row.changed%>">
+    <tr id="row_<%=index%>" class="testcase<%= " has_changes" if row.changed %>" style="<%= 'display:none;' if !row.changed%>">
             <td class="testcase_name"><%=row.name%></td>
             <% @comparison.columns.each_with_index{|column, column_index|
                 testcase = row.value(column).left

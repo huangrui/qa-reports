@@ -52,55 +52,6 @@
 		<%= render :partial => "feature", :collection => @test_session.meego_test_sets %>
 
       </table>
-      <script type="text/javascript">
-          $(document).ready(function() {
-              var updateToggle = function($tbody, $this) {
-                  var count = $tbody.find("tr:hidden").length;
-                  if(count > 0) {
-                      $this.text("+ see " + count + " passing tests");
-                  } else {
-                      $this.text("- hide passing tests");
-                  }
-                  if($tbody.find("tr.result_pass").length==0) {
-                      $this.hide();
-                  }
-              }
-
-              var updateToggles = function() {
-                  $("a.see_all_toggle").each(function() {
-                    $tbody = $(this).parents("tbody").next("tbody");
-                    updateToggle($tbody, $(this));
-                  });
-              }
-
-              $("#see_all_button").click(function(){
-                  $("a.sort_btn").removeClass("active");
-                  $(this).addClass("active");
-                  $("tr.result_pass").show();
-                  updateToggles();
-                  return false;
-              });
-
-              $("#see_only_failed_button").click(function(){
-                  $("a.sort_btn").removeClass("active");
-                  $(this).addClass("active");                                    
-                  $("tr.result_pass").hide();
-                  updateToggles();
-                  return false;
-              });
-
-              updateToggles();
-              $("a.see_all_toggle").each(function() {
-                  $(this).click(function(index, item) {
-                      var $this = $(this);
-                      $tbody = $this.parents("tbody").next("tbody");
-                      $tbody.find("tr.result_pass").toggle();
-                      updateToggle($tbody, $this);
-                      return false;
-                  });
-              });              
-          });
-      </script>
       <%= render :partial => 'editable_text', :locals => {:anchor => 'issue_summary', :title => "Issue Summary", :field => 'issue_summary'} %>
 
 	<%= yield :wizard_actions %>

@@ -75,7 +75,8 @@
 <%= javascript_include_tag 'jqModal.js'%>
 <script language="javascript" type="text/javascript">
 $(document).ready(function(){
-	fetchBugzillaInfo();
+	filterResults("tr.result_pass");
+    fetchBugzillaInfo();
 	$('#delete-dialog').jqm({
 		modal:true
 	}).jqmAddTrigger('#delete-button');

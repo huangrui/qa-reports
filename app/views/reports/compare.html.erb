@@ -55,26 +55,12 @@
 
       <%= render :partial => "compare_group", :collection => @groups, :as => :group %>
     </table>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $("a.see_all_toggle").click(function() {
-                $this = $(this);
-                $tbody = $this.parents("tbody").next("tbody");
-                if($tbody.find("tr:hidden").length==0) {
-                    $this.text("+ see all");
-                } else {
-                    $this.text("see changed only");
-                }
-                $tbody.find("tr").not(".has_changes").toggle();
-                return false;
-            });
-        });
-    </script>
 <% end %>
 
 <% content_for :view_specific_js do %>
 <script language="javascript" type="text/javascript">
 $(document).ready(function(){
+    filterResults("tr:not(.has_changes)", "changed tests");
 	fetchBugzillaInfo();
 });
 </script>

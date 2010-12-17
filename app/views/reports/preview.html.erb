@@ -89,6 +89,7 @@
 <% content_for :view_specific_js do %>
     <script language="javascript" type="text/javascript">
         $(document).ready(function(){
+            filterResults("tr.result_pass", "passing tests");
             linkEditButtons();
             fetchBugzillaInfo();
         });
