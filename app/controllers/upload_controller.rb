@@ -87,7 +87,10 @@ class UploadController < ApplicationController
     session = MeegoTestSession.find(params[:id]);
     files.add_file(session, request['Filedata'], request['Filename'])
     @editing = true
-    render :partial => 'reports/file_attachment_list', :locals => {:report => session, :files => files.list_files(session)}
+
+    # full file name of template has to be given because flash uploader can pass header HTTP_ACCEPT: text/*
+    # file is not found because render :formats=>[:"text/*"]
+    render :partial => 'reports/file_attachment_list.html.erb', :locals => {:report => session, :files => files.list_files(session)}
   end
   
   def upload
