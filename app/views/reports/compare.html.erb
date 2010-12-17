@@ -60,7 +60,7 @@
 <% content_for :view_specific_js do %>
 <script language="javascript" type="text/javascript">
 $(document).ready(function(){
-    filterResults("tr:not(.has_changes)", "changed tests");
+    filterResults("tr.testcase:not(.has_changes)", "changed tests");
 	fetchBugzillaInfo();
 });
 </script>
