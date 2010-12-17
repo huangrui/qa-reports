@@ -58,9 +58,8 @@ class IndexController < ApplicationController
     params[:page] = 1 if params[:page].to_i <= 0    
     current_page = params[:page].to_i
     per_page = 25
-    @paginated_sessions = WillPaginate::Collection.create(current_page, per_page, sessions.count()) do |pager|
-      start = (current_page-1) * per_page
-      pager.replace(sessions.all(:offset => start, :limit => per_page))
+    @paginated_sessions = WillPaginate::Collection.create(current_page, per_page, sessions.count()) do |pager| 
+      pager.replace(sessions.all(:offset => (current_page-1) * per_page, :limit => per_page))
     end
 
     sessions = @paginated_sessions
