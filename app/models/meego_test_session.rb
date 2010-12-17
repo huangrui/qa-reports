@@ -99,7 +99,7 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def self.targets
-    ['Core', 'Handset', 'Netbook', 'IVI']
+    ['Core', 'Handset', 'Netbook', 'IVI', 'SDK']
   end  
 
   def self.release_versions

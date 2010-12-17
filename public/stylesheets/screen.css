@@ -224,14 +224,35 @@ tr.even td {
 tfoot {
 	font-style:italic; }
 
-.column_head_1 {
-	background: url("../images/bt_shade.png") repeat-x left bottom transparent;
-	font-size: 2.1666em;
+.column_head_1,
+.column_head_2 {
 	font-family: Arial, sans-serif;
-	text-shadow: #fff 1px 1px 1px;
 	padding-left: 1em;
+	text-align: center;}
+
+.column_head_1,
+.column_head_separate {
+	border-bottom: none;
+	background: url("../images/bt_shade.png") repeat-x left bottom transparent;}
+
+.column_head_1 {
 	border-left: 1px solid #cacaca;
-	behavior: url(javascripts/pie.htc);}
+	text-shadow: #fff 1px 1px 1px;
+	font-size: 1.83333em;
+	behavior: url(javascripts/pie.htc);
+	padding-bottom:0.5em; }
+
+.column_head_2,
+.column_head_separate_2 {
+	background-color: #e0dfdf;}
+
+.column_head_2{
+	background-color: #e0dfdf;
+	font-size: 1em;
+	border-left: 1px solid #cacaca;}
+
+
+
 
 /* @end */
 
@@ -1276,9 +1297,10 @@ td.testcase_result {
 	
 .changed_result, 
 .unchanged_result {
-	background: url('../images/changed_arrow.png') 0 60% no-repeat;
-	padding-left: 20px;
-	text-align:left;}
+	background: url('../images/changed_arrow.png') 50% 60% no-repeat;}
+	
+.testcase td.changed_result {
+		border-left:none;}
 
 .unchanged_result {
 	background-image: none;}

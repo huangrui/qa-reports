@@ -11,11 +11,12 @@
             %>
                 <td class="testcase_result <%=result_class(testcase)%> column_<%=column_index%>"><%=result_html(testcase)%></td>
             <% } %>
+            <td class="change_indicator <%= " changed_result" if row.changed %>"></td>
             <% @comparison.columns.each_with_index{|column, column_index|
                 testcase = row.value(column).right
-            %>
+            %>         
             <td class="testcase_result <%=result_class(testcase)%> column_<%= (column_index + @comparison.columns.length)%>">
-              <% if column_index==0 %><span class="<%= (row.changed ? 'changed_result' : 'unchanged_result') %>"><% end %>
+              <% if column_index==0 %><% end %>
               <%=result_html(testcase)%>
               <% if column_index==0 %></span><% end %>
             </td>

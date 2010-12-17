@@ -39,15 +39,17 @@
       <tr>
         <th></th>
         <th colspan="<%=@comparison.columns.length%>" class="column_head_1"><%= @testtype %></th>
+         <th class="column_head_separate"></th>
         <th colspan="<%=@comparison.columns.length%>" class="column_head_1"><%=@comparison_testtype%></th>
       </tr>
       <tr class="compare_testtype">
-        <th></th>
+        <th class="first_col"></th>
         <% @comparison.columns.each_with_index{|name, index| %>
-            <th class="column_<%=index%>"><%=name%></th>
+            <th class="column_<%=index%> column_head_2"><%=name%></th>
         <% } %>
+        <th class="column_head_separate_2"></th>
         <% @comparison.columns.each_with_index{|name, index| %>
-            <th class="column_<%= (index + @comparison.columns.length)%>"><%=name%></th>
+            <th class="column_<%= (index + @comparison.columns.length)%> column_head_2"><%=name%></th>
         <% } %>
       </tr>      
       </thead>
