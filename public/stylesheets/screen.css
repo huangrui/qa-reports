@@ -1281,7 +1281,7 @@ td.feature_record_notes p {
 
 .testcase td { 
 	border-bottom: 1px solid #eee; 
-	border-left: 1px solid #ddd; 
+	border-left: none; 
 	vertical-align: top; }
 
 .testcase td:first-child { 
@@ -1472,13 +1472,15 @@ p.next_step {
 #compare_view_test_case {
 	width: 35%;}
 
+#compare_details #th_test_case {
+	vertical-align: middle;
+	padding-left:1em;}
 /* @end */
 
 /* @end */
 
 div.uploadify_button_wrapper {
-    position:relative;
-}
+    position:relative;}
 
 /* fake button */
 div.uploadify_button_wrapper a {
