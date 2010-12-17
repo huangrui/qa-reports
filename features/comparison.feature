@@ -6,9 +6,11 @@ Feature: Consolidated reports
   Scenario: Comparing results between two branches with differences
     When report files "spec/fixtures/sim1.xml,features/resources/bluetooth.xml" are uploaded to branch "Sanity" for hardware "N900"
     And report files "spec/fixtures/sim1.xml,features/resources/bluetooth.xml" are uploaded to branch "Sanity" for hardware "N910"
-    And report files "spec/fixtures/sim1.xml,features/resources/bluetooth.xml" are uploaded to branch "SanityTesting" for hardware "N900"
-    And report files "spec/fixtures/sim2.xml,features/resources/bluetooth.xml" are uploaded to branch "SanityTesting" for hardware "N910"
-    And I am comparing branches "Sanity" and "SanityTesting"
+    And report files "spec/fixtures/sim1.xml,features/resources/bluetooth.xml" are uploaded to branch "Sanity:Testing" for hardware "N900"
+    And report files "spec/fixtures/sim2.xml,features/resources/bluetooth.xml" are uploaded to branch "Sanity:Testing" for hardware "N910"
+
+    When I am on the front page
+    And I follow "compare"
 
     Then I should see "-2" within "#changed_to_fail"
     And I should see "+1" within "#changed_to_pass"
@@ -25,8 +27,10 @@ Feature: Consolidated reports
   Scenario: Comparing results between two branches where data is missing for one device
     When report files "spec/fixtures/sim1.xml,features/resources/bluetooth.xml" are uploaded to branch "Sanity" for hardware "N900"
     And report files "spec/fixtures/sim1.xml,features/resources/bluetooth.xml" are uploaded to branch "Sanity" for hardware "N910"
-    And report files "spec/fixtures/sim2.xml,features/resources/bluetooth.xml" are uploaded to branch "SanityTesting" for hardware "N910"
-    And I am comparing branches "Sanity" and "SanityTesting"
+    And report files "spec/fixtures/sim2.xml,features/resources/bluetooth.xml" are uploaded to branch "Sanity:Testing" for hardware "N910"
+
+    When I am on the front page
+    And I follow "compare"
 
     And I should see "+1" within "#changed_to_pass"
     Then I should see "-2" within "#changed_to_fail"

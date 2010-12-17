@@ -211,7 +211,6 @@ class MeegoTestSession < ActiveRecord::Base
     tested_at ? tested_at.strftime("%Y-%m-%d") : 'n/a'
   end
 
-
   ###############################################
   # Chart visualization methods                 #
   ###############################################
