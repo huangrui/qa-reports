@@ -21,7 +21,6 @@
 # 02110-1301 USA
 #
 
-
 class IndexController < ApplicationController
   #caches_page :index, :filtered_list
   caches_action :filtered_list, :layout => false
@@ -49,7 +48,6 @@ class IndexController < ApplicationController
     end
 
     if @hwproduct
-      #sessions = MeegoTestSession.paginate :page => params[:page], :hwproduct => @hwproduct
       sessions = MeegoTestSession.by_release_version_target_test_type_product(@selected_release_version, @target, @testtype, @hwproduct)
     elsif @testtype
       sessions = MeegoTestSession.published_by_release_version_target_test_type(@selected_release_version, @target, @testtype)
@@ -57,7 +55,16 @@ class IndexController < ApplicationController
       sessions = MeegoTestSession.published_by_release_version_target(@selected_release_version, @target)
     end
 
-    
+    params[:page] = 1 if params[:page].to_i <= 0    
+    current_page = params[:page].to_i
+    per_page = 25
+    @paginated_sessions = WillPaginate::Collection.create(current_page, per_page, sessions.count()) do |pager|
+      start = (current_page-1) * per_page
+      pager.replace(sessions.all(:offset => start, :limit => per_page))
+    end
+
+    sessions = @paginated_sessions
+
     @headers = []
     @sessions = {}
    

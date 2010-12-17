@@ -27,6 +27,7 @@ require 'bitly'
 require 'trimmer'
 require 'report_parser'
 require 'validation/date_time_validator'
+require 'will_paginate'
 
 #noinspection Rails3Deprecated
 class MeegoTestSession < ActiveRecord::Base
