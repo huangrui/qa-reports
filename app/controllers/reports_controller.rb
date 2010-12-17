@@ -112,6 +112,19 @@ module AjaxMixin
     end
   end
 
+  def update_feature_comment
+    set_id = params[:id]
+    comments = params[:comment]
+    testset = MeegoTestSet.find(set_id)
+    testset.update_attribute(:comments, comments)
+
+    test_session = testset.meego_test_session
+    test_session.updated_by(current_user)
+    expire_caches_for(test_session)
+
+    render :text => "OK"
+  end
+
 end
 
 class ReportsController < ApplicationController
