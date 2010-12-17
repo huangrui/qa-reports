@@ -816,7 +816,18 @@ div.formError, #error, form .error {
 .new_tests {
 	margin-top: 3.7em;
 	margin-left:3em;}
-	
+
+.compare {
+	padding-right: 13px;
+	padding-left: 0.5em;
+	background: transparent url(../images/compare_icon.png) no-repeat right 70%;
+	text-decoration:none;
+	color:#989898;
+	font-size:0.91666em;}
+
+.compare:hover {
+	background-image:url(../images/compare_icon_hover.png);}	
+
 /* @group sort & collapse */
 
 .sort {
