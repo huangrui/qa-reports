@@ -44,7 +44,7 @@ class IndexController < ApplicationController
     @hwproduct = params[:hwproduct]
 
     unless MeegoTestSession.filters_exist?(@target, @testtype, @hwproduct)
-      return render_404      
+      return render_404
     end
 
     if @hwproduct
@@ -55,21 +55,20 @@ class IndexController < ApplicationController
       sessions = MeegoTestSession.published_by_release_version_target(@selected_release_version, @target)
     end
 
-    params[:page] = 1 if params[:page].to_i <= 0    
-    current_page = params[:page].to_i
+    current_page = if params[:page].to_i <= 0 then 1 else params[:page].to_i end
     per_page = 25
-    @paginated_sessions = WillPaginate::Collection.create(current_page, per_page, sessions.count()) do |pager| 
-      pager.replace(sessions.all(:offset => (current_page-1) * per_page, :limit => per_page))
+    @paginated_sessions = WillPaginate::Collection.create(current_page, per_page, sessions.count()) do |pager|
+      pager.replace(sessions.all(:offset => ((current_page-1) * per_page), :limit => per_page))
     end
 
     sessions = @paginated_sessions
 
     @headers = []
     @sessions = {}
-   
+
     chosen, days = find_trend_sessions(sessions)
 
-    if chosen.length > 0 
+    if chosen.length > 0
       @trend_graph_url_abs = generate_trend_graph(chosen, days, false)
       @trend_graph_url_rel = generate_trend_graph(chosen, days, true)
     end
@@ -87,9 +86,9 @@ class IndexController < ApplicationController
         @sessions[header] << s
       end
     end
-    
+
   end
-  
+
 private
 
   def find_trend_sessions(sessions)
@@ -102,7 +101,7 @@ private
 
     first = sessions[0].tested_at.yday
     prev_day = nil
-    
+
     sessions.each do |s|
       day = (first - s.tested_at.yday)*2
       if day == prev_day
@@ -123,7 +122,7 @@ private
     failed = []
     na = []
     total = []
-    
+
     sessions.each do |s|
       if relative
         rpass = s.total_passed*100/s.total_cases
@@ -142,13 +141,13 @@ private
     if total_days == 0
       total_days = 1
     end
-    
+
     if relative
       max_total = 100
     else
       max_total = total.max
     end
-    
+
     chart_type = 'cht=lxy'
     colors = '&chco=CACACA,ec4343,73a20c'
     size = '&chs=700x120'
@@ -172,7 +171,7 @@ private
     #linefill = '&chm=B,CACACA,0,0,0'
 
     data = '&chd=s:' + encode(days, passed, failed, na, max_total, total_days)
-    
+
     "http://chart.apis.google.com/chart?" + chart_type + size + colors + legend + legend_pos + axes + axrange + linefill + data + axlabel
   end
 
@@ -195,7 +194,7 @@ private
     end
     result << daydata
     result << data.join('')
-    
+
     data = []
     failed.reverse_each do |v|
       data << simple_encode(v,max)
@@ -209,7 +208,7 @@ private
     end
     result << daydata
     result << data.join('')
-    
+
     result.join(',')
   end
 
