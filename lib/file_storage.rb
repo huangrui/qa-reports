@@ -18,7 +18,9 @@ class FileStorage
   end
 
   def list_files(model)
-    Dir[File.join(get_directory(model, false).path, '*')].entries.sort{|a,b| File.ctime(a) - File.ctime(b) }.map{|file|
+    dir = get_directory(model, false)
+    return [] if dir == nil
+    Dir[File.join(dir.path, '*')].entries.sort{|a,b| File.ctime(a) - File.ctime(b) }.map{|file|
       path = file.slice(@dir.length+1, file.length)
       {   :name => File.basename(file),
           :path => path,
@@ -34,8 +36,12 @@ class FileStorage
 
   def get_directory(model, create = false)
     path = @dir + "/" + model.class.table_name + "/" + model.id.to_s + "/"
-    if !File.directory?(path) || create
-      FileUtils.mkdir_p(path, :mode => 0755)
+    if !File.directory?(path)
+      if create
+        FileUtils.mkdir_p(path, :mode => 0755)
+      else
+        return nil
+      end
     end
     Dir.new(path)
   end  
