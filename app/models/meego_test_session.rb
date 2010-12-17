@@ -98,6 +98,10 @@ class MeegoTestSession < ActiveRecord::Base
     result
   end
 
+  def self.targets
+    ['Core', 'Handset', 'Netbook', 'IVI']
+  end  
+
   def self.release_versions
     # Add new release versions to the beginning of the array.
     ["1.2", "1.1", "1.0"]

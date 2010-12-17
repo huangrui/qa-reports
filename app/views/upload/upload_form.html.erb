@@ -39,16 +39,10 @@
     </div>
     <div class="field">
       <label for="report_test_target">Target profile:</label>
-
-      <%= f.radio_button :target, "Core", :id => 'core_target' %>
-      <label for="core_target" class="inline_label">Core</label>
-      <%= f.radio_button :target, "Handset", :id => 'handset_target' %>
-      <label for="handset_target" class="inline_label">Handset</label>
-      <%= f.radio_button :target, "Netbook", :id => 'netbook_target' %>
-      <label for="netbook_target" class="inline_label">Netbook</label>
-      <%= f.radio_button :target, "IVI", :id => 'ivi_target' %>
-      <label for="ivi_target" class="inline_label">IVI</label>
-
+      <% MeegoTestSession::targets.each{|target| %>
+        <%= f.radio_button :target, target, :id => target.downcase+'_target' %>
+        <label for="<%=target.downcase%>_target" class="inline_label"><%=target%></label>
+      <% } %>
       <%= f.error_message_on :target %>
 
     </div>
