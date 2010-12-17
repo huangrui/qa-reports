@@ -112,7 +112,6 @@ module AjaxMixin
     end
   end
 
-  #The feature comments update  Joey
   def update_feature_comment
     set_id = params[:id]
     comments = params[:comment]

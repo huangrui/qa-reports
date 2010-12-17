@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101203103241) do
+ActiveRecord::Schema.define(:version => 20101214075606) do
 
   create_table "meego_test_cases", :force => true do |t|
     t.integer "meego_test_set_id",                                     :null => false
@@ -55,6 +55,7 @@ ActiveRecord::Schema.define(:version => 20101203103241) do
     t.integer "total_fail",            :default => 0,  :null => false
     t.integer "total_na",              :default => 0,  :null => false
     t.integer "meego_test_session_id", :default => 0,  :null => false
+    t.string  "comments",              :default => ""
   end
 
   add_index "meego_test_sets", ["feature"], :name => "index_meego_test_sets_on_feature"
