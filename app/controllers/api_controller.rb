@@ -42,11 +42,12 @@ class ApiController < ApplicationController
       return
     end
 
-    expire_caches_for(@test_session, true)
-
     begin
       @test_session.save!
 
+      expire_caches_for(@test_session, true)
+      expire_index_for(@test_session)
+      
       files = FileStorage.new()
       attachments.each{|file|
         files.add_file(@test_session, file, file.original_filename)
