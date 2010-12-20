@@ -32,9 +32,12 @@ Meegoqa::Application.routes.draw do
     match '/:release_version/:target/:testtype/:hwproduct/:id/delete' => 'reports#delete', :via => "post"
     match '/:release_version/:target/:testtype/:hwproduct/:id/print' => 'reports#print', :via => "get"
 
-    match '/:release_version/:target/:testtype/:hwproduct/pages/:page' => 'index#filtered_list', :via => "get"
-    match '/:release_version/:target/:testtype/:hwproduct' => 'index#filtered_list', :via => "get"
+    match '/:release_version/:target/:testtype/:hwproduct/paging/:page' => 'index#filtered_list', :via => "get"
+    match '/:release_version/:target/:testtype/paging/:page' => 'index#filtered_list', :via => "get"
+    match '/:release_version/:target/paging/:page' => 'index#filtered_list', :via => "get"
+
     match '/:release_version/:target/:testtype' => 'index#filtered_list', :via => "get"
+    match '/:release_version/:target/:testtype/:hwproduct' => 'index#filtered_list', :via => "get"
     match '/:release_version/:target' => 'index#filtered_list', :via => "get"
     match '/:release_version' => 'index#index', :via => "get"
   end
