@@ -141,13 +141,13 @@ img.bhs {
 	position: relative;
 	top: 1px;
 	height: 14px;
-	width: 386px;
+	/*width: 386px;*/
+	width: 100%;
 }
 
 .bhs_wrap {
 	overflow:hidden;
-	height: 14px;
-}
+	height: 14px;}
 
 .bvs_wrap {
 	float: left; 
@@ -238,9 +238,10 @@ tfoot {
 .column_head_1 {
 	border-left: 1px solid #cacaca;
 	text-shadow: #fff 1px 1px 1px;
-	font-size: 1.83333em;
+	font-size: 1.666667em;
 	behavior: url(javascripts/pie.htc);
-	padding-bottom:0.5em; }
+	padding-bottom:0.5em; 
+	width:30%;}
 
 .column_head_2,
 .column_head_separate_2 {
@@ -461,7 +462,7 @@ textarea.comment_field {
 	line-height: 1.5em; 
 	padding: 5px; 
 	margin-bottom: 10px; 
-	width: 100%; 
+	width: 95%; 
 	float: none; 
 	display: block; }
 
@@ -559,12 +560,12 @@ margin-left: 0;}
 	background-color: #ed0089; 
 	width: auto; 
 	overflow: visible; 
-	display: block;
+	display: inline-block;
 	float: left;
 	text-decoration: none;
-	line-height: 1;
+	line-height: 18px !important;
 	margin: 0; 
-	padding: 5px 15px 6px 14px; }
+	padding: 3px 10px;}
 
 .big_btn.cancel,
 .small_btn.cancel,
@@ -585,6 +586,10 @@ margin-left: 0;}
 
 .big_btn.back {
 	display: none; }
+
+.small_btn.last {
+	margin-right: 0;}
+
 
 .big_btn:hover, 
 .small_btn:hover,
@@ -1200,9 +1205,11 @@ td.inc em{
 td.dec em{ 
 	background-image: url(../images/dec.png); }
 
-th.th_feature { 
-	width: 35%; 
+.th_feature { 
+	width: 30%; 
 }
+
+
 
 .th_total,
 .th_passed,
@@ -1218,6 +1225,13 @@ td.fail,
 td.na {
 	text-align: center; }
 
+.th_graph {
+	width:25%;
+}
+
+.th_notes { 
+	width: 25%;}
+
 /* @group detailed results */
 
 #th_result { 
@@ -1227,7 +1241,7 @@ td.na {
 #th_test_case { 
 	width: 50%; }
 
-#th_notes { }
+
 
 tr.feature_name td{ 
 	font-weight: bold; 
@@ -1267,8 +1281,8 @@ table#detailed_results,
 td.feature_record_notes {
         font-size: 11px;
         margin-bottom: 10px;
-        padding-right: 33px;
-                margin-bottom: 0;}
+        padding-right: 10px;
+        margin-bottom: 0;}
 
 td.feature_record_notes.edit:hover {
         background: #fff8de url(../images/edit_icon.png) no-repeat 97% 5px;
@@ -1297,7 +1311,7 @@ td.testcase_result {
 	
 .changed_result, 
 .unchanged_result {
-	background: url('../images/changed_arrow.png') 50% 60% no-repeat;}
+	background: url('../images/changed_arrow.png') 50% 0.7em no-repeat;}
 	
 .testcase td.changed_result {
 		border-left:none;}
@@ -1474,7 +1488,8 @@ p.next_step {
 
 #compare_details #th_test_case {
 	vertical-align: middle;
-	padding-left:1em;}
+	padding-left:1em;	
+	width:40%;}
 /* @end */
 
 /* @end */
