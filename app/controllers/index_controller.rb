@@ -23,7 +23,7 @@
 
 class IndexController < ApplicationController  
   #caches_page :index, :filtered_list
-  caches_action :filtered_list, :layout => false
+  caches_action :filtered_list, :layout => false, :expires_in => 1.hour
 
   def index
     @types = {}
