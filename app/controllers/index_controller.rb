@@ -21,7 +21,7 @@
 # 02110-1301 USA
 #
 
-class IndexController < ApplicationController
+class IndexController < ApplicationController  
   #caches_page :index, :filtered_list
   caches_action :filtered_list, :layout => false
 

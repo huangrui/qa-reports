@@ -19,7 +19,10 @@
 #
 
 require 'file_storage'
+require 'cache_helper'
 class ApiController < ApplicationController
+  include CacheHelper
+
   before_filter :authenticate_user!
 
   def import_data
@@ -38,6 +41,8 @@ class ApiController < ApplicationController
       render :json => {:ok => '0', :errors => error.message}
       return
     end
+
+    expire_caches_for(@test_session, true)
 
     begin
       @test_session.save!
