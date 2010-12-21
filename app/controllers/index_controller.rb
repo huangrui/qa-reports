@@ -54,7 +54,11 @@ class IndexController < ApplicationController
     end
 
     current_page = if params[:page].to_i <= 0 then 1 else params[:page].to_i end
-    per_page = 25
+    per_page = 50
+    
+    WillPaginate::ViewHelpers.pagination_options[:previous_label] = 'Prev'
+    WillPaginate::ViewHelpers.pagination_options[:next_label] = 'Next'    
+    
     @paginated_sessions = WillPaginate::Collection.create(current_page, per_page, sessions.count()) do |pager|
       pager.replace(sessions.all(:offset => ((current_page-1) * per_page), :limit => per_page))
     end
