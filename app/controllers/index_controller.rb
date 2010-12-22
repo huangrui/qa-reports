@@ -126,17 +126,20 @@ private
     total = []
 
     sessions.each do |s|
-      if relative
-        rpass = s.total_passed*100/s.total_cases
-        rfail = s.total_failed*100/s.total_cases
-        passed << rpass
-        failed << rpass + rfail
-        na << 100
-      else
-        total << s.total_cases
-        passed << s.total_passed
-        failed << s.total_failed + s.total_passed
-        na << s.total_na + s.total_failed + s.total_passed
+      total_cases = s.total_cases
+      if total_cases > 0
+        if relative
+          rpass = s.total_passed*100/total_cases
+          rfail = s.total_failed*100/total_cases
+          passed << rpass
+          failed << rpass + rfail
+          na << 100
+        else
+          total << s.total_cases
+          passed << s.total_passed
+          failed << s.total_failed + s.total_passed
+          na << s.total_na + s.total_failed + s.total_passed
+        end
       end
     end
     total_days = days[-1]
