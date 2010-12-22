@@ -185,7 +185,7 @@ private
       if max_days < 60
         data << simple_encode(max_days-v, 60)
       else
-        data << simple_encode(max_days-v,max_days)
+        data << simple_encode(max_days-v, max_days)
       end
     end
     daydata = data.join('')
@@ -215,6 +215,9 @@ private
   end
 
   def simple_encode(value, max)
+    if(max<1)
+      max = 1
+    end
     v = value*61/max
     if v <= 25
       ('A'[0] + v).chr
