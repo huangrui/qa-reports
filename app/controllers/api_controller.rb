@@ -50,7 +50,7 @@ class ApiController < ApplicationController
       
       files = FileStorage.new()
       attachments.each{|file|
-        files.add_file(@test_session, file, file.original_filename)
+        files.add_file(@test_session, file, MeegoTestSession::get_filename(file))
       }
       render :json => {:ok => '1'}
     rescue ActiveRecord::RecordInvalid => invalid

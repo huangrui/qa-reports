@@ -390,13 +390,7 @@ class MeegoTestSession < ActiveRecord::Base
 
   def allowed_filename_extensions
     @files.each do |f|
-      filename = if f.respond_to?(:original_filename)
-                   f.original_filename
-                 elsif f.respond_to?(:path)
-                   f.path
-                 else
-                   f.gsub(/\#.*/, '')
-                 end
+      filename = MeegoTestSession::get_filename(f)
       filename = filename.downcase.strip
       if filename == ""
         errors.add :uploaded_files, "can't be blank"
@@ -500,6 +494,16 @@ class MeegoTestSession < ActiveRecord::Base
     self.author    = user
     self.editor    = user
     self.published = published
+  end
+
+  def self.get_filename(file)
+    if file.respond_to?(:original_filename)
+      file.original_filename
+    elsif file.respond_to?(:path)
+      file.path
+    else
+      file.gsub(/\#.*/, '')
+    end
   end
 
   private
