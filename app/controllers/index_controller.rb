@@ -215,7 +215,7 @@ private
   end
 
   def simple_encode(value, max)
-    if(max<1)
+    if(max<60)
       max = 1
     end
     v = value*61/max
