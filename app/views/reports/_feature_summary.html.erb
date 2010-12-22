@@ -39,9 +39,16 @@
 	<td class="na"><%= feature_summary.total_na %></td>
 	<td><%= feature_summary.graph_img_tag %></td>
 	<td class="feature_record_notes <%= 'edit' if @editing %>">
-        <div class="content"><%= feature_summary.comments %></div>
-    	<% if @editing %>
-        <div class="comment_markup" style="display:none;"><%= MeegoTestReport::format_txt(feature_summary.comments).html_safe %></div>
-    <% end %>
-    </td>
+          <div class="content"><%= feature_summary.comments %></div>
+    	  <% if @editing %>
+            <div class="comment_markup" style="display:none;"><%= MeegoTestReport::format_txt(feature_summary.comments).html_safe %></div>
+          <% end %>
+        </td>
+        <!-- Added by Joey for feature grading Dec 20, 2010  grading_in_color -->
+        <td class="feature_record_grading <%= 'edit' if @editing %>">
+          <span class="content <%= grading_class(feature_summary) %>">&nbsp;&nbsp;</span>
+          <% if @editing %>
+            <div class="feature_record_grading_content" style="display:none;"><%= grading_html(feature_summary) %></div>
+          <% end %>
+        </td>
 </tr>

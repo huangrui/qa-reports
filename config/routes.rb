@@ -56,6 +56,9 @@ Meegoqa::Application.routes.draw do
   # For submit the comments of features
   match '/ajax_update_feature_comment' => 'reports#update_feature_comment', :via => "post"
 
+  # For submit the grading of features
+  match '/ajax_update_feature_grading' => 'reports#update_feature_grading', :via => "post"
+
   # to test exception notifier
   match '/raise_exception' => 'exceptions#index' unless Rails.env.production?
 

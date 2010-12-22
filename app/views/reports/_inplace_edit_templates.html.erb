@@ -74,4 +74,18 @@
                         <input type="button" class="small_btn cancel last" value="Cancel"/>
                 </form>
         </div>
+
+        <!-- Added by Joey for updating feature grading -->
+        <div id="feature_grading_edit_form">
+                <form method="post" action="<%=url_for :controller => 'reports', :action=>'update_feature_grading'%>" class="result_form">
+                        <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
+                        <input class="id_field" type="hidden" name="id" value="" />
+                        <select name="grading">
+                               <option class="grading_white" value="0">N/A</option>
+                                <option class="grading_red" value="1">Red</option>
+                                <option class="grading_yellow" value="2">Yellow</option>
+                                <option class="grading_green" value="3">Green</option>
+                        </select>
+                </form>
+        </div>
 </div>

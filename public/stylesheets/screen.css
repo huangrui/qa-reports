@@ -1346,7 +1346,43 @@ td.feature_record_notes.edit:hover {
 td.feature_record_notes p {
         margin-bottom: 0; }
 
+td.feature_record_grading {
+        font-size: 11px;
+        margin-bottom: 10px;
+        padding-right: 33px;
+                margin-bottom: 0;}
 
+td.feature_record_grading.edit:hover {
+       background: #fff8de url(../images/edit_icon.png) no-repeat 97% 5px;
+        cursor: pointer;}
+
+td.feature_record_grading p {
+        margin-bottom: 0; }
+
+.grading_red {
+       background-color:#ec4343; color:#ec4343;
+       font-size: 11px;
+        margin-bottom: 10px;
+        padding-right: 33px;
+        margin-bottom: 0;}
+.grading_yellow {
+       background-color:yellow; color:yellow;
+       font-size: 11px;
+       margin-bottom: 10px;
+       padding-right: 33px;
+       margin-bottom: 0;}
+.grading_green {
+       background-color:#73a20c; color:#73a20c;
+       font-size: 11px;
+       margin-bottom: 10px;
+       padding-right: 33px;
+       margin-bottom: 0;}
+.grading_white {}
+
+option.grading_red {background-color:#ec4343; color:#ec4343;}
+option.grading_yellow {background-color:yellow; color:yellow;}
+option.grading_green {background-color:#73a20c; color:#73a20c;}
+option.grading_white {}
 
 .testcase td { 
 	border-bottom: 1px solid #eee; 
