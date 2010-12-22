@@ -28,9 +28,17 @@ class ApiController < ApplicationController
   def import_data
     data = request.query_parameters.merge(request.request_parameters)
     data.delete(:auth_token)
-    
-    data[:uploaded_files] = collect_files(data, "report")
-    attachments = collect_files(data, "attachment")
+
+    errors = []
+
+    data[:uploaded_files] = collect_files(data, "report", errors)
+    attachments = collect_files(data, "attachment", errors)
+
+    if !errors.empty?
+      render :json => {:ok => '0', :errors => "Request contained invalid files for fields " + errors.join(',')}
+      return
+    end
+
     data[:tested_at] = data[:tested_at] || Time.now
 
     begin
@@ -60,10 +68,23 @@ class ApiController < ApplicationController
 
   private
 
-  def collect_files(parameters, name)
+  def collect_file(parameters, key, errors)
+    file = parameters.delete(key)
+    if(file!=nil)
+      if(!file.respond_to?(:path))
+        puts file
+          errors << "Invalid file attachment for key " + key
+        end
+    end
+    file
+  end
+
+  def collect_files(parameters, name, errors)
     results = []
-    results << parameters.delete(name)
-    20.times{|i| results << parameters.delete(name + "." + i.to_s)}
+    results << collect_file(parameters, name, errors)
+    20.times{|i|
+        results << collect_file(parameters, name + "." + i.to_s, errors)
+   }
     results.compact
   end
 end
