@@ -565,17 +565,16 @@ class MeegoTestSession < ActiveRecord::Base
           total_count = 0
 
           set.cases.each do |testcase|
+            result = MeegoTestSession.map_result(testcase.result)
             set_model.meego_test_cases.build(
                 :name               => testcase.name,
-                :result             => MeegoTestSession.map_result(testcase.result),
+                :result             => result,
                 :comment            => testcase.comment,
                 :meego_test_session => self
             )
-
-            pass_count += 1 if MeegoTestSession.map_result(testcase.result) == 1
+            pass_count += 1 if result == 1
             total_count += 1
           end
-
           set_model.grading = calculate_grading(pass_count, total_count)
         end
       end
