@@ -1361,21 +1361,18 @@ td.feature_record_grading p {
 .grading_red {
     background-color:#ec4343; color:#ec4343;
     font-size: 11px;
-    margin-bottom: 10px;
     padding-right: 33px;
     margin-bottom: 0;}
 
 .grading_yellow {
     background-color:yellow; color:yellow;
     font-size: 11px;
-    margin-bottom: 10px;
     padding-right: 33px;
     margin-bottom: 0;}
 
 .grading_green {
     background-color:#73a20c; color:#73a20c;
     font-size: 11px;
-    margin-bottom: 10px;
     padding-right: 33px;
     margin-bottom: 0;}
 
