@@ -575,28 +575,28 @@ class MeegoTestSession < ActiveRecord::Base
             if 1 == MeegoTestSession.map_result(testcase.result)
               pass_num += 1
             end
-
             total_num += 1
-          end # end of testcase loop
+          end
+
+          set_model.grading = 0
           if 0 != total_num
             pass_rate = (pass_num * 1.00) / total_num
-            # rate < 0.4 , Grading = Red (1)
-            if (pass_rate - 0.4) <= 0.0000001
-              set_model.grading = 1
-            elsif (pass_rate - 0.9) <= 0.0000001
-              # 0.4 < rate < 0.9 , Grading = Yellow (2)
-              set_model.grading = 2
-            elsif (pass_rate - 1) <= 0.0000001
-              # rate > 0.9, Grading = Green (3)
-              set_model.grading = 3
-            else
-              set_model.grading = 0
-            end
-          else
-            set_model.grading = 0
+            set_model.grading = parse_grading(pass_rate)
           end
-        end # end of feature loop
-      end # end of set loop
-    end # end of suite loop
+        end
+      end
+    end
+  end
+
+  def parse_grading(pass_rate)
+    if (pass_rate - 0.4) <= 0.0000001
+      1
+    elsif (pass_rate - 0.9) <= 0.0000001
+      2
+    elsif (pass_rate - 1) <= 0.0000001
+      3
+    else
+      0
+    end
   end
 end
