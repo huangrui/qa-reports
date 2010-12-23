@@ -49,6 +49,15 @@ When /^the client sends file with attachments via the REST API$/ do
   response.should be_success
 end
 
+When /^the client sends a request with string value instead of a filevia the REST API$/ do
+    post "/api/import?auth_token=foobar", {
+      "report.1"        => "Foo!",
+      "release_version" => "1.2",
+      "target"          => "Core",
+      "testtype"        => "automated",
+      "hwproduct"       => "N900"
+  }
+end
 
 When /^the client sends a request without file via the REST API$/ do
   post "/api/import?auth_token=foobar", {

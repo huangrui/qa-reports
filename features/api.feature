@@ -29,7 +29,13 @@ Feature: REST API
 
     And I should see "ajax-loader.gif" within "#file_attachment_list"
     And I should see "icon_alert.gif" within "#file_attachment_list"
-    
+
+  Scenario: Sending REST import with string values instead of files
+    When the client sends a request with string value instead of a filevia the REST API
+
+    Then the REST result "ok" is "0"
+    Then the REST result "errors" is "Request contained invalid files: Invalid file attachment for field report.1"
+
   Scenario: Sending REST import without valid report file
     When the client sends a request without file via the REST API
 

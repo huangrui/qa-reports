@@ -35,7 +35,7 @@ class ApiController < ApplicationController
     attachments = collect_files(data, "attachment", errors)
 
     if !errors.empty?
-      render :json => {:ok => '0', :errors => "Request contained invalid files for fields " + errors.join(',')}
+      render :json => {:ok => '0', :errors => "Request contained invalid files: " + errors.join(',')}
       return
     end
 
@@ -72,8 +72,7 @@ class ApiController < ApplicationController
     file = parameters.delete(key)
     if(file!=nil)
       if(!file.respond_to?(:path))
-        puts file
-          errors << "Invalid file attachment for key " + key
+          errors << "Invalid file attachment for field " + key
         end
     end
     file
