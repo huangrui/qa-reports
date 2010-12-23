@@ -30,7 +30,6 @@ module MeegoTestReport
     txt.scan /\[\[(\d+)\]\]/.each do |match|
       ids << match[0]
     end
-    
     ids
   end
   
@@ -116,15 +115,27 @@ module ReportSummary
   end
   
   def run_rate_value
-    (total_executed*100.0/total_cases)      
+    if total_cases > 0
+      (total_executed*100.0/total_cases)
+    else
+      0
+    end
   end
   
   def total_pass_rate_value
-    (total_passed*100.0/total_cases)  
+    if total_cases > 0
+      (total_passed*100.0/total_cases)
+    else
+      0
+    end
   end
   
   def executed_pass_rate_value
-    (total_passed*100.0/total_executed)
+    if total_cases > 0
+      (total_passed*100.0/total_executed)
+    else
+      0
+    end
   end
   
   def total_change_class
