@@ -561,8 +561,8 @@ class MeegoTestSession < ActiveRecord::Base
             sets[feature] = self.meego_test_sets.build(:feature => feature)
           end
 
-          pass_num = 0
-          total_num = 0
+          pass_count = 0
+          total_count = 0
 
           set.cases.each do |testcase|
             set_model.meego_test_cases.build(
@@ -572,29 +572,26 @@ class MeegoTestSession < ActiveRecord::Base
                 :meego_test_session => self
             )
 
-            if 1 == MeegoTestSession.map_result(testcase.result)
-              pass_num += 1
-            end
-            total_num += 1
+            pass_count += 1 if MeegoTestSession.map_result(testcase.result) == 1
+            total_count += 1
           end
 
-          set_model.grading = 0
-          if 0 != total_num
-            pass_rate = (pass_num * 1.00) / total_num
-            set_model.grading = parse_grading(pass_rate)
-          end
+          set_model.grading = calculate_grading(pass_count, total_count)
         end
       end
     end
   end
 
-  def parse_grading(pass_rate)
-    if (pass_rate - 0.4) <= 0.0000001
-      1
-    elsif (pass_rate - 0.9) <= 0.0000001
-      2
-    elsif (pass_rate - 1) <= 0.0000001
-      3
+  def calculate_grading(pass_count, total_count)
+    if total_count > 0
+      pass_rate = pass_count * 100 / total_count
+      if pass_rate < 40
+        1
+      elsif pass_rate < 90
+        2
+      else
+        3
+      end
     else
       0
     end
