@@ -30,8 +30,15 @@ Feature: REST API
     And I should see "ajax-loader.gif" within "#file_attachment_list"
     And I should see "icon_alert.gif" within "#file_attachment_list"
 
+  Scenario: Adding a report with tests that do not belong to any feature
+    When the client sends reports "spec/fixtures/no_features.xml" via the REST API to test type "Automated" and hardware "N900"
+    And I should be able to view the created report
+
+    Then I should see "N/A" within ".feature_name"
+    And I should see "8" within "td.total"
+    
   Scenario: Sending REST import with string values instead of files
-    When the client sends a request with string value instead of a filevia the REST API
+    When the client sends a request with string value instead of a files via the REST API
 
     Then the REST result "ok" is "0"
     Then the REST result "errors" is "Request contained invalid files: Invalid file attachment for field report.1"

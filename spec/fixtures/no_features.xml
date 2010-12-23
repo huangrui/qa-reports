@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testresults environment="hardware" hwproduct="unknown" hwbuild="unknown" version="1.0">
+ <suite name="Test-definition-tests" timeout="90" manual="false" insignificant="false">
+  <set name="Check-schema-files-existence" timeout="90" manual="false" insignificant="false" environment="hardware">
+   <case name="Check-basic-schema" timeout="90" manual="false" insignificant="false" result="PASS">
+    <step manual="false" command="[ -f /usr/share/test-definition/testdefinition-syntax.xsd ]" result="PASS">
+     <expected_result>0</expected_result>
+     <return_code>0</return_code>
+     <start>2010-12-22 14:03:01</start>
+     <end>2010-12-22 14:03:01</end>
+     <stdout></stdout>
+     <stderr></stderr>
+    </step>
+   </case>
+   <case name="Check-strict-schema" timeout="90" manual="false" insignificant="false" result="PASS">
+    <step manual="false" command="[ -f /usr/share/test-definition/testdefinition-tm_terms.xsd ]" result="PASS">
+     <expected_result>0</expected_result>
+     <return_code>0</return_code>
+     <start>2010-12-22 14:03:01</start>
+     <end>2010-12-22 14:03:01</end>
+     <stdout></stdout>
+     <stderr></stderr>
+    </step>
+   </case>
+   <case name="Check-result-schema" timeout="90" manual="false" insignificant="false" result="PASS">
+    <step manual="false" command="[ -f /usr/share/test-definition/testdefinition-results.xsd ]" result="PASS">
+     <expected_result>0</expected_result>
+     <return_code>0</return_code>
+     <start>2010-12-22 14:03:02</start>
+     <end>2010-12-22 14:03:02</end>
+     <stdout></stdout>
+     <stderr></stderr>
+    </step>
+   </case>
+  </set>
+  <set name="Schema-validation" timeout="90" manual="false" insignificant="false" environment="hardware">
+   <case name="Validate-basic-schema" timeout="90" manual="false" insignificant="false" result="PASS">
+    <step manual="false" command="xmllint --noout --schema /usr/share/test-definition-tests/data/w3_XMLSchema.xsd /usr/share/test-definition/testdefinition-syntax.xsd" result="PASS">
+     <expected_result>0</expected_result>
+     <return_code>0</return_code>
+     <start>2010-12-22 14:03:02</start>
+     <end>2010-12-22 14:03:02</end>
+     <stdout></stdout>
+     <stderr>/usr/share/test-definition/testdefinition-syntax.xsd validates
+</stderr>
+    </step>
+   </case>
+   <case name="Validate-strict-schema" timeout="90" manual="false" insignificant="false" result="PASS">
+    <step manual="false" command="xmllint --noout --schema /usr/share/test-definition-tests/data/w3_XMLSchema.xsd /usr/share/test-definition/testdefinition-tm_terms.xsd" result="PASS">
+     <expected_result>0</expected_result>
+     <return_code>0</return_code>
+     <start>2010-12-22 14:03:02</start>
+     <end>2010-12-22 14:03:02</end>
+     <stdout></stdout>
+     <stderr>/usr/share/test-definition/testdefinition-tm_terms.xsd validates
+</stderr>
+    </step>
+   </case>
+   <case name="Validate-results-schema" timeout="90" manual="false" insignificant="false" result="PASS">
+    <step manual="false" command="xmllint --noout --schema /usr/share/test-definition-tests/data/w3_XMLSchema.xsd /usr/share/test-definition/testdefinition-results.xsd" result="PASS">
+     <expected_result>0</expected_result>
+     <return_code>0</return_code>
+     <start>2010-12-22 14:03:03</start>
+     <end>2010-12-22 14:03:03</end>
+     <stdout></stdout>
+     <stderr>/usr/share/test-definition/testdefinition-results.xsd validates
+</stderr>
+    </step>
+   </case>
+   <case name="misc-problems" timeout="90" manual="false" insignificant="false" result="PASS">
+    <step manual="false" command="xmllint --noout --schema /usr/share/test-definition/testdefinition-tm_terms.xsd /usr/share/test-definition-tests/data/misc_problems.xml" result="PASS">
+     <expected_result>0</expected_result>
+     <return_code>0</return_code>
+     <start>2010-12-22 14:03:03</start>
+     <end>2010-12-22 14:03:03</end>
+     <stdout></stdout>
+     <stderr>/usr/share/test-definition-tests/data/misc_problems.xml validates
+</stderr>
+    </step>
+   </case>
+   <case name="meego_template" description="Check that test-definition based on wiki.meego.com/TestCaseTemplate validates" timeout="90" manual="false" insignificant="false" result="PASS">
+    <step manual="false" command="xmllint --noout --schema /usr/share/test-definition/testdefinition-tm_terms.xsd /usr/share/test-definition-tests/data/meego_tmpl.xml" result="PASS">
+     <expected_result>0</expected_result>
+     <return_code>0</return_code>
+     <start>2010-12-22 14:03:03</start>
+     <end>2010-12-22 14:03:03</end>
+     <stdout></stdout>
+     <stderr>/usr/share/test-definition-tests/data/meego_tmpl.xml validates
+</stderr>
+    </step>
+   </case>
+  </set>
+ </suite>
+</testresults>

@@ -20,10 +20,16 @@
 
 module ReportParser
   def self.parse_features(features)
-    begin
-      features.split(',').map{|item| Integer(item.strip)}
+    result = begin
+        features.split(',').map { |item| Integer(item.strip) }
     rescue
-      [features]
-    end      
+        [features]
+    end
+
+    if result.empty?
+      ['N/A']
+    else
+      result
+    end
   end
 end

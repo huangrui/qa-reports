@@ -8,6 +8,11 @@ describe ReportParser do
     result.should == [1234, 2345]
   end
 
+  it "should create feature N/A when no feature is not available" do
+    result = ReportParser::parse_features("")
+    result.should == ["N/A"]
+  end
+
   it "should return string containing commas as a single item" do
     result = ReportParser::parse_features("Feature, Funny feature")
     result.length.should == 1
