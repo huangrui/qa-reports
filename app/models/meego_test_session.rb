@@ -514,6 +514,8 @@ class MeegoTestSession < ActiveRecord::Base
   def parse_csv_file(filename)
     prev_feature = nil
     test_set     = nil
+    set_counts = {}
+    sets       = {}
 
     rows         = CSV.read(filename);
     rows.shift
@@ -525,18 +527,30 @@ class MeegoTestSession < ActiveRecord::Base
       failed = row[4]
       na     = row[5]
       if feature != prev_feature
+        test_set = if sets.has_key? feature
+          sets[feature]
+        else
+          sets[feature] = self.meego_test_sets.build(:feature => feature)
+        end
         prev_feature = feature
-        test_set     = self.meego_test_sets.build(
-            :feature => feature
-        )
       end
+
+      set_counter = if set_counts.has_key? feature
+        set_counts[feature]
+      else
+        set_counts[feature] = Counter.new()
+      end
+
       if passed
         result = 1
+        set_counter.add_pass_count()
       elsif failed
         result = -1
       else
         result = 0
       end
+      set_counter.add_total_count()
+
       if summary == ""
         raise "Missing test case name in CSV"
       end
@@ -545,6 +559,14 @@ class MeegoTestSession < ActiveRecord::Base
           :result             => result,
           :comment            => comments || "",
           :meego_test_session => self
+      )
+    end
+    
+    sets.each do |feature, set_model|
+      feature_counter = set_counts[feature]
+      set_model.grading = calculate_grading(
+                  feature_counter.get_pass_count(),
+                  feature_counter.get_total_count()
       )
     end
   end
@@ -596,3 +618,27 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 end
+
+class Counter
+  def initialize()
+    @pass_count = 0
+    @total_count   = 0
+  end
+  
+  def add_pass_count()
+    @pass_count += 1
+  end
+  
+  def add_total_count()
+    @total_count +=1
+  end
+
+  def get_pass_count()
+    @pass_count
+  end
+
+  def get_total_count()
+    @total_count
+  end
+end  
+
