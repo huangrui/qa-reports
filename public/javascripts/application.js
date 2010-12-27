@@ -97,7 +97,6 @@ function handleFeatureGradingEdit() {
     } else if (grading == 'Green') {
         code = "3";
     }
-
     $select.find('option[selected="selected"]').removeAttr("selected");
     $select.find('option[value="' + code + '"]').attr("selected", "selected");
 
@@ -126,7 +125,6 @@ function handleFeatureGradingEdit() {
     $span.hide();
     $form.insertAfter($div);
     $select.focus();
-
     return false;
 }
 
@@ -164,7 +162,6 @@ function handleFeatureGradingSubmit() {
     $form.detach();
     $span.show();
     $.post(url, data);
-
     return false;
 }
 
