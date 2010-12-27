@@ -32,9 +32,8 @@
       <%= render :partial => 'editable_text', :locals => {:anchor => 'qa_summary', :title => "Quality Summary", :field => 'qa_summary'} %>
 
 
-  <% cache("test_results_for_#{@report.id}") do %>
-    <%= render :partial => 'reports/test_results' %>
-  <% end %>
+   <%= render :partial => 'reports/test_results' %>
+
 
    <%= yield :result_edit_notification %>
 
