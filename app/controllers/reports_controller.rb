@@ -113,7 +113,6 @@ module AjaxMixin
     end
   end
 
-  #The feature comments update   Joey
   def update_feature_comment
     set_id = params[:id]
     comments = params[:comment]
@@ -127,7 +126,6 @@ module AjaxMixin
     render :text => "OK"
   end
 
-  #The feature grading update   Joey
   def update_feature_grading
     set_id = params[:id]
     grading = params[:grading]
