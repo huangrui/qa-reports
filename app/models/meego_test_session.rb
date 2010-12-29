@@ -453,7 +453,6 @@ class MeegoTestSession < ActiveRecord::Base
         end
       end
       @xmlpath = filenames.join(',')
-      #save
     end
   end
 
@@ -592,7 +591,8 @@ class MeegoTestSession < ActiveRecord::Base
                 :name               => testcase.name,
                 :result             => result,
                 :comment            => testcase.comment,
-                :meego_test_session => self
+                :meego_test_session => self,
+                :source_link        => testcase.source_url
             )
             pass_count += 1 if result == 1
             total_count += 1

@@ -11,7 +11,7 @@ Feature: REST API
 
     Then the REST result "ok" is "1"
     And I should be able to view the created report
-
+    And I should see "src" within ".dl_link"
 
   Scenario: Uploading test report with HTTP POST with RESTful parameters
     When the client sends file "bluetooth.xml" via the REST API with RESTful parameters

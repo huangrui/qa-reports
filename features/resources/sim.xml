@@ -2,7 +2,7 @@
 <testresults version="1.0" environment="hardware" hwproduct="RX-71" hwbuild="0720">
  <suite name="mwts-sim-tests" domain="System">
   <set name="Functional" description="Functional testing of SIM services" feature="SIM" environment="hardware">
-   <case name="SMOKE-SIM-Query_SIM_card_status" description="Purpose          This test case reads basic SIM status query.         Method         Uses Cellular-Qt API to get SIM status.         Pre-/Post-Conditions         SIM card inserted to device.          Pass/Fail Criteria         MIN returns passed/failed.         " manual="false" insignificant="false" result="PASS" subfeature="Identity" level="Feature">
+   <case name="SMOKE-SIM-Query_SIM_card_status" vcsurl="http://meego.gitorious.org/meegotouch/libmeegotouch" description="Purpose          This test case reads basic SIM status query.         Method         Uses Cellular-Qt API to get SIM status.         Pre-/Post-Conditions         SIM card inserted to device.          Pass/Fail Criteria         MIN returns passed/failed.         " manual="false" insignificant="false" result="PASS" subfeature="Identity" level="Feature">
     <step command="min -c -t 'SMOKE-SIM-Query_SIM_card_status'" result="PASS">
      <expected_result>0</expected_result>
      <return_code>0</return_code>

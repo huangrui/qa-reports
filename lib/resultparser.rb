@@ -111,6 +111,10 @@ class TestCase
     @node['name'] || ""
   end
 
+  def source_url
+    @node['vcsurl'] || ""
+  end
+
   def description
     @node['description'] || ""
   end
