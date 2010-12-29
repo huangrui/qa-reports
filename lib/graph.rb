@@ -143,7 +143,7 @@ module Graph
   end
 
   def simple_encode(value, max)
-    if (max<60)
+    if (max<1)
       max = 1
     end
     v = value*61/max
