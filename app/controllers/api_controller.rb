@@ -29,10 +29,10 @@ class ApiController < ApplicationController
     data = request.query_parameters.merge(request.request_parameters)
     data.delete(:auth_token)
 
-    errors = []
+    errors                = []
 
     data[:uploaded_files] = collect_files(data, "report", errors)
-    attachments = collect_files(data, "attachment", errors)
+    attachments           = collect_files(data, "attachment", errors)
 
     if !errors.empty?
       render :json => {:ok => '0', :errors => "Request contained invalid files: " + errors.join(',')}
@@ -55,9 +55,9 @@ class ApiController < ApplicationController
 
       expire_caches_for(@test_session, true)
       expire_index_for(@test_session)
-      
+
       files = FileStorage.new()
-      attachments.each{|file|
+      attachments.each { |file|
         files.add_file(@test_session, file, MeegoTestSession::get_filename(file))
       }
       render :json => {:ok => '1'}
@@ -70,10 +70,10 @@ class ApiController < ApplicationController
 
   def collect_file(parameters, key, errors)
     file = parameters.delete(key)
-    if(file!=nil)
-      if(!file.respond_to?(:path))
-          errors << "Invalid file attachment for field " + key
-        end
+    if (file!=nil)
+      if (!file.respond_to?(:path))
+        errors << "Invalid file attachment for field " + key
+      end
     end
     file
   end
@@ -81,9 +81,11 @@ class ApiController < ApplicationController
   def collect_files(parameters, name, errors)
     results = []
     results << collect_file(parameters, name, errors)
-    20.times{|i|
-        results << collect_file(parameters, name + "." + i.to_s, errors)
-   }
+    parameters.keys.select { |key|
+      key.starts_with?(name+'.')
+    }.sort.each { |key|
+      results << collect_file(parameters, key, errors)
+    }
     results.compact
   end
 end
