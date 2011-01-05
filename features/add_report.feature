@@ -79,6 +79,30 @@ Feature:
     
     Then I should see "Incorrect file format"
 
+
+  Scenario: Add new CSV report with no test cases
+
+    When I follow "Add report"
+    
+    And I select target "Core", test type "Smokey" and hardware "n990"
+    And I attach the report "empty.csv"
+    
+    And submit the form at "upload_report_submit"
+    
+    Then I should see "Incorrect file format"
+
+  Scenario: Add new XML report with no test cases
+
+    When I follow "Add report"
+    
+    And I select target "Core", test type "Smokey" and hardware "n990"
+    And I attach the report "empty.xml"
+    
+    And submit the form at "upload_report_submit"
+    
+    Then I should see "Incorrect file format"
+
+
   Scenario: Add new XML report with invalid content
 
     When I follow "Add report"

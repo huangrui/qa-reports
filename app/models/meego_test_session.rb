@@ -515,9 +515,10 @@ class MeegoTestSession < ActiveRecord::Base
     test_set     = nil
     set_counts = {}
     sets       = {}
+    total = 0
 
     rows         = CSV.read(filename);
-    rows.shift
+    rows.shift # skip header row
     rows.each do |row|
       feature = row[0].toutf8.strip
       summary = row[1].toutf8.strip
@@ -559,8 +560,13 @@ class MeegoTestSession < ActiveRecord::Base
           :comment            => comments || "",
           :meego_test_session => self
       )
+      total += 1
     end
     
+    if total == 0
+      raise "File didn't contain any test cases"
+    end
+
     sets.each do |feature, set_model|
       feature_counter = set_counts[feature]
       set_model.grading = calculate_grading(
@@ -572,6 +578,7 @@ class MeegoTestSession < ActiveRecord::Base
 
   def parse_xml_file(filename)
     sets = {}
+    file_total = 0
     TestResults.new(File.open(filename)).suites.each do |suite|
       suite.sets.each do |set|
         ReportParser::parse_features(set.feature).each do |feature|
@@ -596,10 +603,14 @@ class MeegoTestSession < ActiveRecord::Base
             )
             pass_count += 1 if result == 1
             total_count += 1
+            file_total += 1
           end
           set_model.grading = calculate_grading(pass_count, total_count)
         end
       end
+    end
+    if file_total == 0
+      raise "The XML file didn't contain any test cases"
     end
   end
 
