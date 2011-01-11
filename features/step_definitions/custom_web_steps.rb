@@ -4,7 +4,7 @@ end
 
 When /submit the form(?: at "([^"]*)")?$/ do |form_id|
   target = form_id || "input[@type='submit']"
-  click(target)
+  click_button(target)
 end
 
 
@@ -21,4 +21,9 @@ Then /^the link "([^"]*)" within "([^"]*)" should point to the report "([^"]*)"/
     field[:href].should == "/#{version.capitalize}/#{target.capitalize}/#{test_type.capitalize}/#{hardware.capitalize}/#{report.id}"
   end
 end
+
+When /^I click the element "([^"]*)"$/ do |selector|
+  find(selector).click
+end
+
 
