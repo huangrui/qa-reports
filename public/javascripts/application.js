@@ -658,7 +658,7 @@ function fetchBugzillaInfo() {
 
     var links = $('.bugzilla.fetch');
     links.each(function(i, node) {
-        var id = $(node).text().trim();
+        var id = $.trim($(node).text());
         if (id in bugzillaCache) {
             applyBugzillaInfo(node, bugzillaCache[id]);
         } else {
@@ -681,7 +681,7 @@ function fetchBugzillaInfo() {
 
         $('.bugzilla.fetch').each(function(i, node) {
             var info;
-            var id = $(node).text().trim();
+            var id = $.trim($(node).text());
             if (id in bugzillaCache) {
                 info = bugzillaCache[id];
             } else {
