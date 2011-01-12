@@ -888,6 +888,7 @@ div.formError, #error, form .error {
     margin-top: 50px;}
 
 .emphasized_section {
+    margin-top: 20px;
     border:1px solid #ccc;
     overflow:hidden;}
 
