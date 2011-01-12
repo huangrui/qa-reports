@@ -22,8 +22,9 @@ Feature:
 
     And submit the form at "upload_report_submit"
 
-    Then I should see "<expected text>" within ".testcase"
-    And I should see "<expected link>" within ".testcase"
+    Then show me the page
+    Then I should see "<expected text>"
+    And I should see "<expected link>"
 
     And I should see "Publish"
     And I should see "Handset Test Report: N990 Smokey 2010-11-22"
@@ -132,7 +133,7 @@ Feature:
     And submit the form at "upload_report_submit"
     And submit the form at "upload_report_submit"
 
-    Then I should see "Check home screen" within ".testcase"
+    Then I should see "Check home screen"
     And I should see "Handset" within "h1"
 
     When I follow "Add report"
@@ -141,7 +142,7 @@ Feature:
     And I attach the report "sample.csv"
     And submit the form at "upload_report_submit"
 
-    Then I should see "Check home screen" within ".testcase"
+    Then I should see "Check home screen" 
     And I should see "Handset" within "h1"
 
 
