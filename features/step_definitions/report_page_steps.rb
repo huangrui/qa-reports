@@ -26,6 +26,8 @@ end
 Given /^I have created the "([^"]*)" report(?: using "([^"]*)")?$/ do |report_name, report_template|
 #Given /^I have created the "([^"]*)" report$/ do |report_name|
 
+  version, target, test_type, hardware = report_name.split('/')
+
   if not report_template
     report_template = "sample.csv"
   end

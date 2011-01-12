@@ -38,7 +38,8 @@ Feature: Logging in
     Given I have one user "Timothy Dalton" with email "jamesbond@mi6.co.uk" and password "octopussy"
     And there exists a report for "1.1/Handset/Sanity/N900"
 
-    When I log in with email "jamesbond@mi6.co.uk" and password "octopussy"
+    When I go to the front page
+    And I log in with email "jamesbond@mi6.co.uk" and password "octopussy"
     And I view the report "1.1/Handset/Sanity/N900"
 
     When I follow "Sign out" within "#session"

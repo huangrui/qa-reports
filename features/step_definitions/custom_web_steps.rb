@@ -3,8 +3,8 @@ Then /^show me the response$/ do
 end
 
 When /submit the form(?: at "([^"]*)")?$/ do |form_id|
-  target = form_id || "input[@type='submit']"
-  click_button(target)
+  target = form_id ? "#"+form_id : "input[@type='submit']"
+  find(target).click
 end
 
 
