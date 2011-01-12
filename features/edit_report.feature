@@ -10,20 +10,14 @@ Feature: Edit Report
     And I select target "Core", test type "Sanity" and hardware "Aava"
     And I attach the report "sim.xml"
     And I submit the form at "upload_report_submit"
-    #Then show me the page
-
-    Then I should see "finalize the report"
-
-    When I submit the form at "upload_report_submit"
-    #Then show me the page
-
-    When I view the report "1.1/Core/Sanity/Aava"
-    #Then show me the page
-    When I click to edit the report
+    And I submit the form at "upload_report_submit"
+    And I view the report "1.1/Core/Sanity/Aava"
 
   @selenium
   Scenario: Edit title
-    When I click the element "h1"
+    When I click to edit the report
+    And I click the element "h1"
     And fill in "meego_test_session[title]" with "Test title" within "h1"
     And I press "Save"
+
     Then I should see "Test title" within "h1"
