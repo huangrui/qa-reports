@@ -74,7 +74,7 @@ When /^I click to delete the report$/ do
 end
 
 When /^I attach the report "([^"]*)"$/ do |file|
-  And "attach the file \"features/resources/#{file}\" to \"meego_test_session[uploaded_files][]\" within \"#browse\""
+  And "attach the file \"#{Dir.getwd}/features/resources/#{file}\" to \"meego_test_session[uploaded_files][]\""
 end
 
 Given /^I select target "([^"]*)", test type "([^"]*)" and hardware "([^"]*)"(?: with date "([^\"]*)")?/ do |target, test_type, hardware, date|

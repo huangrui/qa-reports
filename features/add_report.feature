@@ -22,7 +22,6 @@ Feature:
 
     And submit the form at "upload_report_submit"
 
-    Then show me the page
     Then I should see "<expected text>"
     And I should see "<expected link>"
 

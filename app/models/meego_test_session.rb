@@ -441,6 +441,16 @@ class MeegoTestSession < ActiveRecord::Base
         else
           FileUtils.copy(f.local_path, path_to_file)
         end
+
+        # XXX: ugly hack to circumvent capybara/envjs bug in file uploading
+        if ::Rails.env == 'test'
+          data = File.read(path_to_file)
+          if data =~ /^Content-Type:/
+            data = data.sub /Content-Type: .*?\r\nContent-Length: .*?\r\n\r\n/, ""
+            count = File.open(path_to_file, 'w') {|f| f.write(data)}
+          end
+        end
+
         begin
           if filename =~ /.csv$/
             total_cases += parse_csv_file(path_to_file)
@@ -450,7 +460,8 @@ class MeegoTestSession < ActiveRecord::Base
         rescue
           logger.error "ERROR in file parsing"
           logger.error $!, $!.backtrace
-          errors.add :uploaded_files, "Incorrect file format for #{origfn}"
+          content = File.open(path_to_file).read
+          errors.add :uploaded_files, "Incorrect file format for #{origfn}: #{content}"
         end
       end
       @xmlpath = filenames.join(',')
