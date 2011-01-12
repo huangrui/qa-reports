@@ -89,7 +89,7 @@ Feature:
     
     And submit the form at "upload_report_submit"
     
-    Then I should see "Incorrect file format"
+    Then I should see "didn't contain any valid test cases"
 
   Scenario: Add new XML report with no test cases
 
@@ -100,7 +100,7 @@ Feature:
     
     And submit the form at "upload_report_submit"
     
-    Then I should see "Incorrect file format"
+    Then I should see "didn't contain any valid test cases"
 
 
   Scenario: Add new XML report with invalid content

@@ -406,6 +406,7 @@ class MeegoTestSession < ActiveRecord::Base
   def save_uploaded_files
     @parsing_failed = false
     return unless @files
+    total_cases = 0
     MeegoTestSession.transaction do
       filenames     = []
       @parse_errors = []
@@ -442,9 +443,9 @@ class MeegoTestSession < ActiveRecord::Base
         end
         begin
           if filename =~ /.csv$/
-            parse_csv_file(path_to_file)
+            total_cases += parse_csv_file(path_to_file)
           else
-            parse_xml_file(path_to_file)
+            total_cases += parse_xml_file(path_to_file)
           end
         rescue
           logger.error "ERROR in file parsing"
@@ -453,6 +454,13 @@ class MeegoTestSession < ActiveRecord::Base
         end
       end
       @xmlpath = filenames.join(',')
+      if @files.size > 0 and total_cases == 0
+        if @files.size == 1
+          errors.add :uploaded_files, "The uploaded file didn't contain any valid test cases"
+        else
+          errors.add :uploaded_files, "None of the uploaded files contained any valid test cases"
+        end
+      end
     end
   end
 
@@ -563,9 +571,9 @@ class MeegoTestSession < ActiveRecord::Base
       total += 1
     end
     
-    if total == 0
-      raise "File didn't contain any test cases"
-    end
+    #if total == 0
+    #  raise "File didn't contain any test cases"
+    #end
 
     sets.each do |feature, set_model|
       feature_counter = set_counts[feature]
@@ -574,6 +582,7 @@ class MeegoTestSession < ActiveRecord::Base
                   feature_counter.get_total_count()
       )
     end
+    total
   end
 
   def parse_xml_file(filename)
@@ -609,9 +618,10 @@ class MeegoTestSession < ActiveRecord::Base
         end
       end
     end
-    if file_total == 0
-      raise "The XML file didn't contain any test cases"
-    end
+    #if file_total == 0
+    #  raise "The XML file didn't contain any test cases"
+    #end
+    file_total
   end
 
   def calculate_grading(pass_count, total_count)
