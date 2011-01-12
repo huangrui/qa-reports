@@ -631,22 +631,22 @@ function applyBugzillaInfo(node, info) {
     } else {
         var status = info.status;
         if (status == 'RESOLVED' || status == 'VERIFIED') {
-            status = info.resolution;
             $node.addClass("resolved");
+            status = info.resolution;
         } else {
             $node.addClass("unresolved");
         }
 
         var text = info.summary;
-        if($node.hasClass("bugzilla_status")) {
+        if ($node.closest('td.testcase_notes').length != 0) {
             text = text + " (" + status + ")";
-        }
-        if ($node[0].tagName == 'a') {
             $node.attr("title", text);
         } else if($node.hasClass("bugzilla_append")) {
+            text = text + " (" + status + ")";
             $node.after("<span> - "  + text +"</span>");
         } else {
             $node.text(text);
+            $node.attr("title", status);
         }
     }
     $node.removeClass("fetch");
@@ -717,9 +717,9 @@ function formatMarkup(s) {
         line = line.replace(/'''''(.+?)'''''/g, "<b><i>$1</i></b>");
         line = line.replace(/'''(.+?)'''/g, "<b>$1</b>");
         line = line.replace(/''(.+?)''/g, "<i>$1</i>");
-        line = line.replace(/http\:\/\/bugs.meego.com\/show_bug\.cgi\?id=(\d+)/g, "<a class=\"bugzilla fetch\" href=\"http://bugs.meego.com/show_bug.cgi?id=$1\">$1</a>");
+        line = line.replace(/http\:\/\/bugs.meego.com\/show_bug\.cgi\?id=(\d+)/g, "<a class=\"bugzilla fetch bugzilla_append\" href=\"http://bugs.meego.com/show_bug.cgi?id=$1\">$1</a>");
         line = line.replace(/\[\[(http:\/\/.+?) (.+?)\]\]/g, "<a href=\"$1\">$2</a>");
-        line = line.replace(/\[\[(\d+)\]\]/g, "<a class=\"bugzilla fetch\" href=\"http://bugs.meego.com/show_bug.cgi?id=$1\">$1</a>");
+        line = line.replace(/\[\[(\d+)\]\]/g, "<a class=\"bugzilla fetch bugzilla_append\" href=\"http://bugs.meego.com/show_bug.cgi?id=$1\">$1</a>");
 
         var match;
         line = line.replace(/^====\s*(.+)\s*====$/, "<h5>$1</h5>");
