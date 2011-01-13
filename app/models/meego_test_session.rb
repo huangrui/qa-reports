@@ -137,17 +137,17 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   class << self
-    def by_release_version_target_test_type_product(release_version, target, testtype, hwproduct)
+    def by_release_version_target_test_type_product(release_version, target, testtype, hwproduct, order_by = "tested_at DESC", limit = nil)
       target    = target.downcase
       testtype  = testtype.downcase
       hwproduct = hwproduct.downcase
-      published.where(:release_version => release_version, :target => target, :testtype => testtype, :hwproduct => hwproduct).order("tested_at DESC")
+      published.where(:release_version => release_version, :target => target, :testtype => testtype, :hwproduct => hwproduct).order(order_by).limit(limit)
     end
 
-    def published_by_release_version_target_test_type(release_version, target, testtype)
+    def published_by_release_version_target_test_type(release_version, target, testtype, order_by = "tested_at DESC", limit = nil)
       target   = target.downcase
       testtype = testtype.downcase
-      published.where(:release_version => release_version, :target => target, :testtype => testtype).order("tested_at DESC")
+      published.where(:release_version => release_version, :target => target, :testtype => testtype).order(order_by).limit(limit)
     end
 
     def published_hwversion_by_release_version_target_test_type(release_version, target, testtype)
@@ -156,9 +156,9 @@ class MeegoTestSession < ActiveRecord::Base
       published.where(:release_version => release_version, :target => target, :testtype => testtype).select("DISTINCT hwproduct").order("hwproduct")
     end
 
-    def published_by_release_version_target(release_version, target)
+    def published_by_release_version_target(release_version, target, order_by = "tested_at DESC", limit = nil)
       target = target.downcase
-      published.where(:release_version => release_version, :target => target).order("tested_at DESC")
+      published.where(:release_version => release_version, :target => target).order(order_by).limit(limit)
     end
   end
 

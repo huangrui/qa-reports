@@ -31,13 +31,11 @@ class RssController < ApplicationController
     end
 
     if @hwproduct
-      @sessions = MeegoTestSession.by_release_version_target_test_type_product(@selected_release_version, @target, @testtype, @hwproduct)
+      @sessions = MeegoTestSession.by_release_version_target_test_type_product(@selected_release_version, @target, @testtype, @hwproduct, "created_at DESC", 10)
     elsif @testtype
-      @sessions = MeegoTestSession.published_by_release_version_target_test_type(@selected_release_version, @target, @testtype)
-    elsif @target
-      @sessions = MeegoTestSession.published_by_release_version_target(@selected_release_version, @target)
+      @sessions = MeegoTestSession.published_by_release_version_target_test_type(@selected_release_version, @target, @testtype, "created_at DESC", 10)
     else
-      @sessions = MeegoTestSession.published_by_release_version_target(@selected_release_version)
+      @sessions = MeegoTestSession.published_by_release_version_target(@selected_release_version, @target, "created_at DESC", 10)
     end
 
     @sessions.each
