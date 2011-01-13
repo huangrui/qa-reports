@@ -34,3 +34,13 @@ Feature: Edit Report
 
     Then I should see "testing" within ".editable_area ul li"
 
+  @selenium
+  Scenario: Create a dynamic link to bugzilla
+    When I view the report "1.1/Core/Sanity/Aava"
+    And I click to edit the report
+    And I click the element "#test_objective"
+    And fill in "meego_test_session[objective_txt]" with "* [[9353]]" within ".editable_area"
+    And I press "Save"
+
+    Then I should see "[FEA] Automatic reporting interface to MeeGo QA reports" within ".editable_area ul li"
+
