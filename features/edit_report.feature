@@ -11,11 +11,11 @@ Feature: Edit Report
     And I attach the report "sim.xml"
     And I submit the form at "upload_report_submit"
     And I submit the form at "upload_report_submit"
-    And I view the report "1.1/Core/Sanity/Aava"
 
   @selenium
   Scenario: Edit title
-    When I click to edit the report
+    When I view the report "1.1/Core/Sanity/Aava"
+    And I click to edit the report
     And I click the element "h1"
     And fill in "meego_test_session[title]" with "Test title" within "h1"
     And I press "Save"
