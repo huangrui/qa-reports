@@ -11,4 +11,8 @@
   	  <li><a href="#detailed_results">Detailed Test Results</a></li>
   	</ol>
   <li><a href="#issue_summary">Issue Summary</a></li>
+  
+<% if (@files != nil && @files.length > 0) || @editing %>
+  <li><a href="#attachments">Attachments</a></li>
+<% end %>
 </ol>
