@@ -35,7 +35,8 @@
 <%= javascript_include_tag 'application'%>
 <%= csrf_meta_tag %>
 <% if @target %>
-<link rel="alternate" type="application/rss+xml" title="RSS" href="rss"/>
+<link rel="alternate" type="application/rss+xml" title="RSS" 
+      href="/<%= @selected_release_version %>/<%= @target %><% if @testtype %>/<%= @testtype %><% end %><% if @hwproduct %>/<%= @hwproduct %><% end %>/rss"/>
 <% end %>
 </head>
 <body>

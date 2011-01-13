@@ -38,7 +38,6 @@ class RssController < ApplicationController
       @sessions = MeegoTestSession.published_by_release_version_target(@selected_release_version, @target, "created_at DESC", 10)
     end
 
-    @sessions.each
     render :layout => false
     response.headers["Content-Type"] = "application/xml; charset=utf-8"
   end
