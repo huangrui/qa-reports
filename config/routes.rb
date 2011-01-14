@@ -24,6 +24,10 @@ Meegoqa::Application.routes.draw do
     match '/:release_version/:target/:testtype/:hwproduct/csv' => 'csv_export#export', :via => "get"
     match '/:release_version/:target/:testtype/csv' => 'csv_export#export', :via => "get"
     match '/:release_version/:target/csv' => 'csv_export#export', :via => "get"
+
+    match '/:release_version/:target/:testtype/:hwproduct/rss' => 'rss#rss', :via => "get"
+    match '/:release_version/:target/:testtype/rss' => 'rss#rss', :via => "get"
+    match '/:release_version/:target/rss' => 'rss#rss', :via => "get"
     
     match '/:release_version/:target/:testtype/compare/:comparetype' => 'reports#compare', :via => "get"
 
