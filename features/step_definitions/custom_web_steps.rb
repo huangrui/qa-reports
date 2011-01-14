@@ -26,4 +26,9 @@ When /^I click the element "([^"]*)"$/ do |selector|
   find(selector).click
 end
 
+When /^fill in "([^"]*)" within "([^"]*)" with:$/ do |field, selector, data|
+  with_scope(selector) do
+    fill_in(field, :with => data)
+  end
+end
 
