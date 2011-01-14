@@ -626,7 +626,15 @@ input#report_test_data.file {
     background-position: top;}
 
 .ui_btn.inactive {
-    color: #999;}
+    color: #999;
+    cursor:default;}
+
+.ui_btn.inactive:hover {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    filter: none;}
+
 
 /* @end buttons */
 

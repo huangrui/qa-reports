@@ -1,0 +1,122 @@
+/* This CSS overrides screen.css in order to provide Nokia theme for Meego QA Reports */
+
+/* @group links */
+a {	
+	color: #14D;
+	text-decoration:none;}
+	
+a:focus, a:hover, a:active {
+	color: #14D;
+	text-decoration:underline;}
+
+/* @end links*/
+
+/* @group notifications and errors */
+
+div.formError, #error, form .error {
+    color: #e25d0c;}
+  
+.notification {
+    background-color: #00a31f;
+    color: #fff;
+    border-color:#00a822;}
+
+/* @end */
+
+/* @group buttons */
+
+
+.big_btn{
+    background-color: #00a31f;}
+
+.big_btn.submit {
+    background-image: url(../images/btn_ok.png);
+ }
+
+.small_btn,
+.dialog-cancel,
+.dialog-delete{
+    background-color: #00a31f;}
+
+.big_btn:hover,
+.small_btn:hover,
+.dialog-delete:hover,
+div.uploadify_button_wrapper a.hover {
+    background-color: #006f02;
+    text-decoration:none;}
+
+.big_btn:active,
+.small_btn:active,
+.dialog-delete:active {
+    background-color: #14D;}
+    
+.ui_btn:hover {
+	text-decoration:none;}
+
+/* @end buttons */
+
+
+#logo h3 a {
+    background-image: url(/images/nokia/meego_logo.png);}
+
+#logo h3 a.hover {
+    background-image: url(/images/nokia/meego_logo.png);}
+
+.compare:hover {
+    background-image:url(/images/nokia/compare_icon_hover.png);
+    text-decoration:none;}
+   
+.dl_link:hover {
+	background-image:url('/images/nokia/download_hover_arrow.png');}
+
+a.edit {
+    background-image: url(/images/nokia/edit_icon.png);}
+
+.editable_text:hover {
+   background-image: url(/images/nokia/edit_icon.png);} 
+
+.remove_list_item:hover {
+    background-image:url(/images/nokia/remove_list_item_hover.png);}
+    
+.see_all_toggle:hover {
+	text-decoration:none;}
+
+
+
+/* @group sort & collapse */
+
+a.sort_btn {
+	text-decoration: none;}
+
+.sort_btn:hover {
+    color: #14D;}  
+   
+.active:hover {
+	color: #fff;} 
+/* @end */
+
+.toc {border-top-color: #00ba2c;}
+
+span#wizard_upload {
+    background: url(/images/nokia/progress_1.png) no-repeat;}
+
+span#wizard_finalize {
+    background: url(/images/nokia/progress_2.png) no-repeat;}
+
+
+/* @group Page structure */
+
+#header {
+    border-color:#00a31f;}
+
+#footer {
+	border-color:#00a31f;}
+
+/* @group version navigation */
+
+#version_navi ul li.current a {
+    color: #005e00;}
+    
+/* @end version navigation */
+
+/* @end page structure */
