@@ -166,7 +166,7 @@ class ReportsController < ApplicationController
 
       render :layout => "report"
     else
-      redirect_to :action => :upload_form
+      redirect_to :controller => 'upload', :action => :upload_form
     end
   end
 

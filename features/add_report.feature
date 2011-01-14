@@ -22,8 +22,8 @@ Feature:
 
     And submit the form at "upload_report_submit"
 
-    Then I should see "<expected text>" within ".testcase"
-    And I should see "<expected link>" within ".testcase"
+    Then I should see "<expected text>"
+    And I should see "<expected link>"
 
     And I should see "Publish"
     And I should see "Handset Test Report: N990 Smokey 2010-11-22"
@@ -79,6 +79,30 @@ Feature:
     
     Then I should see "Incorrect file format"
 
+
+  Scenario: Add new CSV report with no test cases
+
+    When I follow "Add report"
+    
+    And I select target "Core", test type "Smokey" and hardware "n990"
+    And I attach the report "empty.csv"
+    
+    And submit the form at "upload_report_submit"
+    
+    Then I should see "didn't contain any valid test cases"
+
+  Scenario: Add new XML report with no test cases
+
+    When I follow "Add report"
+    
+    And I select target "Core", test type "Smokey" and hardware "n990"
+    And I attach the report "empty.xml"
+    
+    And submit the form at "upload_report_submit"
+    
+    Then I should see "didn't contain any valid test cases"
+
+
   Scenario: Add new XML report with invalid content
 
     When I follow "Add report"
@@ -108,7 +132,7 @@ Feature:
     And submit the form at "upload_report_submit"
     And submit the form at "upload_report_submit"
 
-    Then I should see "Check home screen" within ".testcase"
+    Then I should see "Check home screen"
     And I should see "Handset" within "h1"
 
     When I follow "Add report"
@@ -117,7 +141,7 @@ Feature:
     And I attach the report "sample.csv"
     And submit the form at "upload_report_submit"
 
-    Then I should see "Check home screen" within ".testcase"
+    Then I should see "Check home screen" 
     And I should see "Handset" within "h1"
 
 

@@ -12,7 +12,6 @@ Feature: REST API
     Then the REST result "ok" is "1"
     And I should be able to view the created report
 
-
   Scenario: Uploading test report with HTTP POST with RESTful parameters
     When the client sends file "bluetooth.xml" via the REST API with RESTful parameters
 
@@ -24,8 +23,8 @@ Feature: REST API
     Then the REST result "ok" is "1"
     And I should be able to view the created report
 
-    Then I should see "SIM" within ".feature_name"
-    And I should see "BT" within ".feature_name"
+    Then I should see "SIM"
+    And I should see "BT"
 
     And I should see "ajax-loader.gif" within "#file_attachment_list"
     And I should see "icon_alert.gif" within "#file_attachment_list"

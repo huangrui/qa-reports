@@ -10,9 +10,9 @@ Feature: Manage reports
     Then I should see "MeeGo" within "#version_navi"
     And I should see the header
 
-    And I should see "Check home screen" within ".testcase"
-    And I should see "Fail" within ".testcase"
-    And I should see "3921" within ".testcase"
+    And I should see "Check home screen"
+    And I should see "Fail"
+    And I should see "3921"
 
   @smoke
   Scenario: Printing a report
@@ -20,9 +20,9 @@ Feature: Manage reports
 
     And I should not see the header
 
-    And I should see "Check home screen" within ".testcase"
-    And I should see "Fail" within ".testcase"
-    And I should see "3921" within ".testcase"
+    And I should see "Check home screen"
+    And I should see "Fail"
+    And I should see "3921"
 
   @smoke
   Scenario: Editing a report

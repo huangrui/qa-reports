@@ -23,16 +23,21 @@ When /I view the report "([^"]*)"$/ do |report_string|
   visit("/#{version}/#{target}/#{test_type}/#{hardware}/#{report.id}")
 end
 
-Given /^I have created the "([^"]*)" report$/ do |report_name|
+Given /^I have created the "([^"]*)" report(?: using "([^"]*)")?$/ do |report_name, report_template|
+#Given /^I have created the "([^"]*)" report$/ do |report_name|
 
   version, target, test_type, hardware = report_name.split('/')
+
+  if not report_template
+    report_template = "sample.csv"
+  end
 
   Given "I am on the front page"
   When %{I follow "Add report"}
   And %{I fill in "report_test_execution_date" with "2010-02-02"}
   And %{I choose "#{version}"}
   And %{I select target "#{target}", test type "#{test_type}" and hardware "#{hardware}"}
-  And %{I attach the report "sample.csv"}
+  And %{I attach the report "#{report_template}"}
   And %{I submit the form at "upload_report_submit"}
   And %{I submit the form at "upload_report_submit"}
 end
@@ -69,7 +74,7 @@ When /^I click to delete the report$/ do
 end
 
 When /^I attach the report "([^"]*)"$/ do |file|
-  And "attach the file \"features/resources/#{file}\" to \"meego_test_session[uploaded_files][]\" within \"#browse\""
+  And "attach the file \"#{Dir.getwd}/features/resources/#{file}\" to \"meego_test_session[uploaded_files][]\""
 end
 
 Given /^I select target "([^"]*)", test type "([^"]*)" and hardware "([^"]*)"(?: with date "([^\"]*)")?/ do |target, test_type, hardware, date|

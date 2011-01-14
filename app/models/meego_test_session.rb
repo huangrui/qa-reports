@@ -406,6 +406,7 @@ class MeegoTestSession < ActiveRecord::Base
   def save_uploaded_files
     @parsing_failed = false
     return unless @files
+    total_cases = 0
     MeegoTestSession.transaction do
       filenames     = []
       @parse_errors = []
@@ -440,20 +441,37 @@ class MeegoTestSession < ActiveRecord::Base
         else
           FileUtils.copy(f.local_path, path_to_file)
         end
+
+        # XXX: ugly hack to circumvent capybara/envjs bug in file uploading
+        if ::Rails.env == 'test'
+          data = File.read(path_to_file)
+          if data =~ /^Content-Type:/
+            data = data.sub /Content-Type: .*?\r\nContent-Length: .*?\r\n\r\n/, ""
+            count = File.open(path_to_file, 'w') {|f| f.write(data)}
+          end
+        end
+
         begin
           if filename =~ /.csv$/
-            parse_csv_file(path_to_file)
+            total_cases += parse_csv_file(path_to_file)
           else
-            parse_xml_file(path_to_file)
+            total_cases += parse_xml_file(path_to_file)
           end
         rescue
           logger.error "ERROR in file parsing"
           logger.error $!, $!.backtrace
-          errors.add :uploaded_files, "Incorrect file format for #{origfn}"
+          content = File.open(path_to_file).read
+          errors.add :uploaded_files, "Incorrect file format for #{origfn}: #{content}"
         end
       end
       @xmlpath = filenames.join(',')
-      #save
+      if @files.size > 0 and total_cases == 0
+        if @files.size == 1
+          errors.add :uploaded_files, "The uploaded file didn't contain any valid test cases"
+        else
+          errors.add :uploaded_files, "None of the uploaded files contained any valid test cases"
+        end
+      end
     end
   end
 
@@ -516,9 +534,10 @@ class MeegoTestSession < ActiveRecord::Base
     test_set     = nil
     set_counts = {}
     sets       = {}
+    total = 0
 
     rows         = CSV.read(filename);
-    rows.shift
+    rows.shift # skip header row
     rows.each do |row|
       feature = row[0].toutf8.strip
       summary = row[1].toutf8.strip
@@ -560,8 +579,13 @@ class MeegoTestSession < ActiveRecord::Base
           :comment            => comments || "",
           :meego_test_session => self
       )
+      total += 1
     end
     
+    #if total == 0
+    #  raise "File didn't contain any test cases"
+    #end
+
     sets.each do |feature, set_model|
       feature_counter = set_counts[feature]
       set_model.grading = calculate_grading(
@@ -569,10 +593,12 @@ class MeegoTestSession < ActiveRecord::Base
                   feature_counter.get_total_count()
       )
     end
+    total
   end
 
   def parse_xml_file(filename)
     sets = {}
+    file_total = 0
     TestResults.new(File.open(filename)).suites.each do |suite|
       suite.sets.each do |set|
         ReportParser::parse_features(set.feature).each do |feature|
@@ -592,15 +618,21 @@ class MeegoTestSession < ActiveRecord::Base
                 :name               => testcase.name,
                 :result             => result,
                 :comment            => testcase.comment,
-                :meego_test_session => self
+                :meego_test_session => self,
+                :source_link        => testcase.source_url
             )
             pass_count += 1 if result == 1
             total_count += 1
+            file_total += 1
           end
           set_model.grading = calculate_grading(pass_count, total_count)
         end
       end
     end
+    #if file_total == 0
+    #  raise "The XML file didn't contain any test cases"
+    #end
+    file_total
   end
 
   def calculate_grading(pass_count, total_count)

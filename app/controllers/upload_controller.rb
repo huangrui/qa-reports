@@ -113,7 +113,11 @@ class UploadController < ApplicationController
       expire_action :controller => "index", :action => "filtered_list", :release_version => params[:meego_test_session][:release_version], :target => params[:meego_test_session][:target], :testtype => params[:meego_test_session][:testtype], :hwproduct => params[:meego_test_session][:hwproduct]
       expire_action :controller => "index", :action => "filtered_list", :release_version => params[:meego_test_session][:release_version], :target => params[:meego_test_session][:target], :testtype => params[:meego_test_session][:testtype]
       expire_action :controller => "index", :action => "filtered_list", :release_version => params[:meego_test_session][:release_version], :target => params[:meego_test_session][:target]
-      redirect_to :controller => 'reports', :action => 'preview'
+      if ::Rails.env == "test"
+        redirect_to :controller => 'reports', :action => 'preview', :id => @test_session.id
+      else
+        redirect_to :controller => 'reports', :action => 'preview'
+      end
     else
       init_form_values
       render :upload_form

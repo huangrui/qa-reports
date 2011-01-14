@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testresults version="1.0" environment="hardware" hwproduct="RX-71" hwbuild="0720">
+ <suite name="mwts-bluetooth" domain="Local Connectivity">
+  <set name="Functional_Tests" description="Functional and Dataflow test cases for Bluetooth" feature="BT" environment="hardware"></set>
+  <set name="Iterative_Tests" description="Iterative test cases for Bluetooth" feature="BT" environment="hardware">
+</set>
+</suite>
+</testresults>

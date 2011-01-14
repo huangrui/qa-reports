@@ -34,6 +34,7 @@ group :test do
   gem 'autotest-rails'
   gem 'metric_fu', :git => "git://github.com/pyykkis/metric_fu.git"
   gem 'ruby-debug'
+  gem 'database_cleaner'
 end
 
 gem 'nokogiri'

@@ -24,7 +24,8 @@
 %>
 <tr class="testcase <%= result_class(testcase, "result_") %>" id="testcase-<%= testcase.id %>" style="<%= hide_passing(testcase) %>">
   <td class="testcase_name"><%= testcase.name %>
-  	<a href="" class="dl_link">src</a><a href="" class="dl_link">rpm</a>
+    <% if not testcase.source_link.blank? %><a href="<%=testcase.source_link%>" class="dl_link">src</a><% end %>
+    <% if not testcase.binary_link.blank? %><a href="<%=testcase.binary_link%>" class="dl_link">rpm</a><% end %>
   </td>
   <td class="testcase_result <%= result_class(testcase) %> <%= 'edit' if @editing %>"><span class="content"><%= result_html(testcase) %></span> </td>
   <td class="testcase_notes <%= 'edit' if @editing %>">

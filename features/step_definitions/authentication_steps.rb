@@ -3,6 +3,7 @@ Given /^I am a new, authenticated user$/ do
   password = 'secretpass'
 
   Given %{I have one user "John Longbottom" with email "#{email}" and password "#{password}"}
+  When %{I go to the front page}
   When %{I log in with email "#{email}" and password "#{password}"}
 end
 
