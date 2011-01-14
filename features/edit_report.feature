@@ -29,10 +29,15 @@ Feature: Edit Report
     When I view the report "1.1/Core/Sanity/Aava"
     And I click to edit the report
     And I click the element "#test_objective"
-    And fill in "meego_test_session[objective_txt]" with "* testing" within ".editable_area"
+    And fill in "meego_test_session[objective_txt]" within ".editable_area" with:
+      """
+      == Test Header ==
+      * testing list
+      """
     And I press "Save"
 
-    Then I should see "testing" within ".editable_area ul li"
+    Then I should see "testing list" within ".editable_area ul li"
+    And I should see "Test Header" within ".editable_area h3"
 
   @selenium
   Scenario: Create a dynamic link to bugzilla
