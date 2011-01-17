@@ -269,7 +269,10 @@ class ReportsController < ApplicationController
     ids       = params[:bugids]
     searchUrl = "http://bugs.meego.com/buglist.cgi?bugidtype=include&columnlist=short_desc%2Cbug_status%2Cresolution&query_format=advanced&ctype=csv&bug_id=" + ids.join(',')
     data      = open(searchUrl)
-    render :text => data.read(), :content_type => "text/csv"
+    # XXX: bugzilla seems to encode its exported csv to utf-8 twice
+    # so we convert from utf-8 to iso-8859-1, which is then interpreted
+    # as utf-8
+    render :text => Iconv.iconv("iso-8859-1", "utf-8", data.read()), :content_type => "text/csv"
   end
 
   def delete
