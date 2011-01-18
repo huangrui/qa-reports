@@ -30,11 +30,15 @@
 	<%= release_version_navigation(@selected_release_version, @target, @testtype, @hwproduct) %>
   </div>
 <% end %>
-
+ 
 <table id="report_filtered_navigation" class="filtered">
     <thead>
     <tr>
-      <th scope="col" class="filtered"><%=@target%></th>
+      <th scope="col" class="filtered"><%=@target%>
+      	<a href="/<%= @selected_release_version %>/<%= @target %><% if @testtype
+	      %>/<%= @testtype %><% end %><% if @hwproduct %>/<%=@hwproduct %><% end
+	      %>/rss" class="rss" title="RSS feed">RSS feed</a>
+      </th>
     </tr>
     </thead>
     <tr>

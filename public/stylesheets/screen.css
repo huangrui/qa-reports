@@ -972,6 +972,17 @@ div.formError, #error, form .error {
 .compare:hover {
     background-image:url(../images/compare_icon_hover.png);}
 
+.rss {
+	background:transparent no-repeat top left url('../images/rss_icon.png');
+	width:21px;
+	height:21px;
+	display:inline-block;
+	text-indent:-9999px;
+	margin-left:0.35em;
+	line-height:0.6;}
+
+.rss:hover {
+	background-image:url('../images/rss_icon_hover.png');}
 
 
 /* @end */
