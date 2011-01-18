@@ -36,12 +36,14 @@ class IndexController < ApplicationController
     @target = params[:target]
     @testtype = params[:testtype]
     @hwproduct = params[:hwproduct]
+    @show_rss = true
   end
 
   def filtered_list
     @target = params[:target]
     @testtype = params[:testtype]
     @hwproduct = params[:hwproduct]
+    @show_rss = true
 
     unless MeegoTestSession.filters_exist?(@target, @testtype, @hwproduct)
       return render_404

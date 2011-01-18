@@ -35,9 +35,9 @@
 <%= javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js"%>
 <%= javascript_include_tag 'application'%>
 <%= csrf_meta_tag %>
-<% if @target %>
+<% if @show_rss %>
 <link rel="alternate" type="application/rss+xml" title="RSS" 
-      href="/<%= @selected_release_version %>/<%= @target %><% if @testtype %>/<%= @testtype %><% end %><% if @hwproduct %>/<%= @hwproduct %><% end %>/rss"/>
+      href="<%=rss_url%>"/>
 <% end %>
 </head>
 <body>

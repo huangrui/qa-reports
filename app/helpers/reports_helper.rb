@@ -66,6 +66,15 @@ module ReportsHelper
     end
   end
 
+  def rss_url
+    href = "/#{@selected_release_version}"
+    href += "/#{@target}" if @target
+    href += "/#{@testtype}" if @testtype
+    href += "/#{@hwproduct}" if @hwproduct
+    href += "/rss"
+    href
+  end
+
   private
 
   def bugzilla_title?(title)

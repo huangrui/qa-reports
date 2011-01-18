@@ -112,7 +112,7 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def self.filters_exist?(target, testtype, hwproduct)
-    filters_exist = false
+    filters_exist = true
 
     if target.present?
       filters_exist = find_by_target(target.downcase).present?
@@ -159,6 +159,10 @@ class MeegoTestSession < ActiveRecord::Base
     def published_by_release_version_target(release_version, target, order_by = "tested_at DESC", limit = nil)
       target = target.downcase
       published.where(:release_version => release_version, :target => target).order(order_by).limit(limit)
+    end
+
+    def published_by_release_version(release_version, order_by = "tested_at DESC", limit = nil)
+      published.where(:release_version => release_version).order(order_by).limit(limit)
     end
   end
 
