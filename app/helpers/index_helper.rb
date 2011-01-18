@@ -18,5 +18,12 @@
 
 module IndexHelper
 
+  def current_filter_path
+    path = @target
+    path += " / #{@testtype}" if @testtype.present?
+    path += " / #{@hwproduct}" if @hwproduct.present?
+    path
+  end
+
 end
 
