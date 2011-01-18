@@ -34,7 +34,7 @@
     <thead>
     <tr>
       <% MeegoTestSession::targets.each { |target| %>
-          <th scope="col"><a href="<%=url_for :controller=>'index', :action=>'filtered_list', :target=>target%>"><%= target %></a></th>
+          <th scope="col"><a href="<%=filtered_index_url target%>"><%= target %></a></th>
       <% } %>
     </tr>
     </thead>
