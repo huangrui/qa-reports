@@ -112,7 +112,9 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def self.filters_exist?(target, testtype, hwproduct)
-    filters_exist = true
+    return true if target.blank? and testtype.blank? and hwproduct.blank?
+    
+    filters_exist = false
 
     if target.present?
       filters_exist = find_by_target(target.downcase).present?
