@@ -3,7 +3,7 @@ When /^I fetch the rss feed for "([^"]*)"$/ do |filter|
 end
 
 Then /^I should see (\d+) instance(?:s)? of "([^"]*)"$/ do |num, selector|
-  page.has_css?(selector, :count => num.to_i)
+  assert page.has_css?(selector, :count => num.to_i)
 end
 
 

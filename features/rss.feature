@@ -11,18 +11,24 @@ Feature: RSS Feed
 
   Scenario: Fetch RSS feed for leaf level filter
     When I fetch the rss feed for "1.1/Core/Sanity/Aava"
-    Then I should see 1 instance of "channel"
+    Then I should see 1 instance of "item"
 
   Scenario: Fetch RSS feed for test type level filter
     When I fetch the rss feed for "1.1/Core/Sanity"
-    Then I should see 2 instances of "channel"
+    Then I should see 2 instances of "item"
     And I should see "Aava"
     And I should see "N900"
 
   Scenario: Fetch RSS feed for target level filter
     When I fetch the rss feed for "1.1/Core"
-    Then I should see 3 instances of "channel"
+    Then I should see 3 instances of "item"
     And I should see "Aava"
     And I should see "N900"
     And I should see "Sanity"
     And I should see "Weekly"
+
+  Scenario: Fetch RSS feed for all reports in specific version
+    When I fetch the rss feed for "1.1"
+    Then I should see 6 instances of "item"
+    And I should see "Core"
+    And I should see "Handset"
