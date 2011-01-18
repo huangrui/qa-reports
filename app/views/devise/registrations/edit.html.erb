@@ -1,7 +1,12 @@
 <div class="page_content">
 <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f| %>
-	<h1>Edit <%= resource_name.to_s.humanize %></h1>
+	<h1><%= resource_name.to_s.humanize %> profile</h1>
   <%= devise_error_messages! %>
+
+	<div class="field last">
+		<%= f.label :user_name %>
+		<span class="static_text"><strong><%= resource.name %></strong></span>
+	</div>
 
 	<div class="field last">
 		<%= f.label :email %>
@@ -25,16 +30,15 @@
 		<small>we need your current password to confirm your changes</small>
  	</div>
 
+	<div class="field last">
+		<label>API token</label>
+		<span class="static_text"><%=resource.token%></span>
+		<!-- <small>What is API token?</small>-->
+	</div>
+
 	<div id="wizard_actions">
 		<%= f.submit "Update", :class => "big_btn login" %>
 	</div>
 <% end %>
-
-	<!-- <%= link_to "Back", :back %>-->
-  
-  <div id="wizard_actions">
-    Your API token is <b><%=resource.token%></b>
-  </div>
-
-
+ 
 </div>
