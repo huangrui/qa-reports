@@ -63,7 +63,9 @@ describe MeegoTestSession do
 
 
     it "should fail if testtype is not found and target and hwproduct exist" do
-      @testtype = ''
+      @testtype = 'InvalidType'
+      @target = 'SomeTarget'
+      @hwproduct = 'SomeHwProduct'
       MeegoTestSession.stub!(:find_by_testtype).and_return(nil)
       MeegoTestSession.filters_exist?(@target, @testtype, @hwproduct).should be_false
     end
