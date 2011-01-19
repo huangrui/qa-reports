@@ -42,9 +42,9 @@ Feature: Logging in
     And I log in with email "jamesbond@mi6.co.uk" and password "octopussy"
     And I view the report "1.1/Handset/Sanity/N900"
 
-    When I follow "Sign out" within "#session"
+    When I follow "Sign out" within ".h-navi"
     Then I should be on the front page
-    And I should see "Sign In" within "#session"
+    And I should see "Sign In" within ".h-navi"
     
 #    And there's MeeGo 1.0, 1.1, and 1.2 releases
 #    And I'm viewing MeeGo 1.1 test results
