@@ -56,8 +56,8 @@ Then /^I should return to report "([^\"]*)" and see "([^\"]*)" and a "Sign out" 
 
   current_path.should == "/#{version}/#{target}/#{test_type}/#{hardware}/#{report.id}"
 
-  And %{I should see "#{user_name}" within "#session"}
-  And %{I should see "Sign out" within "#session"}
+  And %{I should see "#{user_name}" within ".h-navi"}
+  And %{I should see "Sign out" within ".h-navi"}
 end
 
 Given /^there is no user with email "([^"]*)"$/ do |email|
