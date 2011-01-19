@@ -1039,7 +1039,8 @@ div.formError, #error, form .error {
     position: relative;}
 
 #upper_header_wrap {
-	background-color: #d7d7d7;}
+	border-bottom: 1px solid #eee;
+	}
 
 #upper_header {
 	font-size: 11px;
@@ -1054,12 +1055,14 @@ div.formError, #error, form .error {
 	float: right;}
 
 #upper_header li {
-	background: url(../images/upper_header_div.png) no-repeat left 0;
+	/*background: url(../images/upper_header_div.png) no-repeat left 0;*/
+	border-left: 1px solid #ccc;
 	padding:0.5em 0 0.5em 15px;
 	margin-left:15px;}
 
 #upper_header li:first-child {
-	background: none;}
+	background: none;
+	border:none;}
 
 .username {
 	padding-right: 1em;}
