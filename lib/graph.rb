@@ -37,7 +37,7 @@ module Graph
       prev_day = day
       chosen << s
       days << day
-      if chosen.size >= 30
+      if chosen.size >= 20
         break
       end
     end
@@ -45,6 +45,64 @@ module Graph
   end
 
   def generate_trend_graph(sessions, days, relative=false)
+    passed = []
+    failed = []
+    na     = []
+    total  = []
+
+    sessions.each do |s|
+      total_cases = s.total_cases
+      if total_cases > 0
+        if relative
+          rpass = s.total_passed*100/total_cases
+          rfail = s.total_failed*100/total_cases
+          passed << rpass
+          failed << rpass + rfail
+          na << 100
+        else
+          total << s.total_cases
+          passed << s.total_passed
+          failed << s.total_failed
+          na << s.total_na
+        end
+      end
+    end
+    total_days = days[-1]
+    if total_days == 0
+      total_days = 1
+    end
+
+    if relative
+      max_total = 100
+    else
+      max_total = [passed.max, failed.max, na.max].max
+    end
+
+    chart_type = 'cht=bvg'
+    colors     = '&chco=CACACA,ec4343,73a20c'
+    spacing    = '&chbh=6,1,12'
+    size       = '&chs=700x240'
+    legend     = '&chdl=na|fail|pass'
+    legend_pos = '&chdlp=b'
+    axes       = '&chxt=y,r,x'
+    axrange    = "&chxr=0,0,#{max_total}|1,0,#{max_total}"
+
+    if sessions.size == 1
+      axlabel = "&chxl=2:|#{sessions[-1].format_date}"
+    else
+      axlabel = "&chxl=2:|#{sessions.reverse.collect {|s| s.format_date}.join('|')}"
+      if days.size < 25
+        axlabel += '|' * (25-days.size)
+      end
+    end
+
+    linefill = '&chm=b,CACACA,0,1,0|b,ec4343,1,2,0|B,73a20c,2,0,0'
+    data     = '&chd=s:' + encode(days, passed, failed, na, max_total, total_days)
+
+    "http://chart.apis.google.com/chart?" + chart_type + size + spacing + colors + legend + legend_pos + axes + axrange + data + axlabel
+  end
+
+  def generate_trend_graph_old(sessions, days, relative=false)
     passed = []
     failed = []
     na     = []
@@ -106,6 +164,35 @@ module Graph
   end
 
   def encode(days, passed, failed, na, max, max_days)
+    result = []
+    data   = []
+    if days.size < 20
+      filler = simple_encode(0,max)*(20-days.size)
+    else
+      filler = ''
+    end
+    
+    na.reverse_each do |v|
+      data << simple_encode(v, max)
+    end
+    result << data.join('') + filler
+
+    data = []
+    failed.reverse_each do |v|
+      data << simple_encode(v, max)
+    end
+    result << data.join('') + filler
+
+    data = []
+    passed.reverse_each do |v|
+      data << simple_encode(v, max)
+    end
+    result << data.join('') + filler
+
+    result.join(',')
+  end
+  
+  def encode_old(days, passed, failed, na, max, max_days)
     result = []
 
     data   = []
