@@ -80,6 +80,25 @@ body {
 
 a {color: #515151;text-decoration:underline; outline: none;}
 a:focus, a:hover, a:active {color: #ed0089;}
+a.external,
+a.mailto {
+	background-color: transparent;
+	background-repeat: no-repeat;
+	background-position: right 1px;}
+
+a.external {
+	background-image: url('../images/external_icon.png');
+	padding-right:15px;}
+	
+a.mailto {
+	background-image: url('../images/mailto_icon.png');
+	padding-right:20px;}
+
+a.mailto:hover {
+	background-image: url('../images/mailto_icon_hover.png');}
+
+a.external:hover {
+	background-image: url('../images/external_icon_hover.png');}
 
 /* @end */
 
@@ -990,6 +1009,12 @@ div.formError, #error, form .error {
 .rss:hover {
 	background-image:url('../images/rss_icon_hover.png');}
 
+.h-navi {
+	list-style-type: none;
+	margin:0;}
+
+.h-navi li {
+	float: left;}
 
 /* @end */
 
@@ -998,7 +1023,8 @@ div.formError, #error, form .error {
 
 /* @group Page structure */
 
-#wrapper {
+#wrapper,
+#upper_header {
     min-width: 780px;
     max-width: 1200px;
     margin-right: auto;
@@ -1011,6 +1037,32 @@ div.formError, #error, form .error {
     padding-top: 0;
     height: 112px;
     position: relative;}
+
+#upper_header_wrap {
+	background-color: #d7d7d7;}
+
+#upper_header {
+	font-size: 11px;
+	font-family: arial, sans-serif;
+	overflow:hidden;}
+
+#upper_header a {
+	text-decoration:none;
+	font-weight:bold;}
+	
+#upper_header ul {
+	float: right;}
+
+#upper_header li {
+	background: url(../images/upper_header_div.png) no-repeat left 0;
+	padding:0.5em 0 0.5em 15px;
+	margin-left:15px;}
+
+#upper_header li:first-child {
+	background: none;}
+
+.username {
+	padding-right: 1em;}
 
 #footer {
     border-top: 7px solid #ED0089;
@@ -1037,6 +1089,7 @@ div.formError, #error, form .error {
     background: url(../images/hdiv_3.png) no-repeat 50% bottom; }
 
 /* @group header */
+
 #logo {
     float: left;
     width: 498px;
@@ -1078,7 +1131,7 @@ div.formError, #error, form .error {
 
 #session .username {
     font-size: 11px;
-    padding-right: 1em;}
+    padding-right: 2em;}
 
 #action {
     top: 72px;}
