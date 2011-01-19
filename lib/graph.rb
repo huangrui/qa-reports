@@ -26,11 +26,11 @@ module Graph
       return chosen, days
     end
 
-    first    = sessions[0].tested_at.yday
+    first    = sessions[0].tested_at
     prev_day = nil
 
     sessions.each do |s|
-      day = (first - s.tested_at.yday)*2
+      day = ((first - s.tested_at)*2).to_i/86400
       if day == prev_day
         next
       end
@@ -80,7 +80,7 @@ module Graph
 
     chart_type = 'cht=lxy'
     colors     = '&chco=CACACA,ec4343,73a20c'
-    size       = '&chs=700x120'
+    size       = '&chs=700x240'
     legend     = '&chdl=na|fail|pass'
     legend_pos = '&chdlp=b'
     axes       = '&chxt=y,r,x'
