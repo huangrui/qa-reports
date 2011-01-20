@@ -72,11 +72,11 @@ class IndexController < ApplicationController
     @headers = []
     @sessions = {}
 
-    chosen, days = find_trend_sessions(sessions)
+    chosen, days = find_trend_sessions(sessions, 20)
 
     if chosen.length > 0
-      @trend_graph_url_abs = generate_trend_graph(chosen, days, false)
-      @trend_graph_url_rel = generate_trend_graph(chosen, days, true)
+      @trend_graph_url_abs = generate_trend_graph_stacked_bars(chosen, days, false)
+      @trend_graph_url_rel = generate_trend_graph_stacked_bars(chosen, days, true)
     end
 
 
