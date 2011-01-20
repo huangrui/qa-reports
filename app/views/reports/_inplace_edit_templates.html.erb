@@ -1,25 +1,26 @@
 <div id="templates" style="display:none;">
   <div id="txt_edit_form">
     <form method="post" action="<%=url_for :controller => 'reports', :action=>'update_txt'%>" class="txt_form">
-      <div class="help">
-        <strong>Markup Reference</strong>
-<pre>== Header ==
+
+	  <div class="editables">
+	      <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
+	      <input class="id_field" type="hidden" name="id" value="<%=@test_session.id%>" />
+	      <textarea class="txt_edit"></textarea>
+	      <input type="submit" class="small_btn save" value="Save"/>
+	      <input type="button" class="small_btn cancel" value="Cancel"/>
+	  </div>
+	  <div class="help">
+	    <strong>Markup Reference</strong>
+	  	<pre>
+== Header ==
 === Subheader ===
 ''italics''
 '''bold'''
-
 * bulleted list
-
 [[http://foo.bar/ Link]]
-[[1234]] (Bugzilla issue link)</pre>
-      </div>
-
-      <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
-      <input class="id_field" type="hidden" name="id" value="<%=@test_session.id%>" />
-      <textarea class="txt_edit"></textarea>
-      <input type="submit" class="small_btn save" value="Save"/>
-      <input type="button" class="small_btn cancel" value="Cancel"/>
-
+[[1234]] (Bugzilla issue link)
+	</pre>
+	  </div>
     </form>
   </div>
   <div id="title_edit_form">

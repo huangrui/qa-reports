@@ -492,12 +492,15 @@ input.cancel {
     clear: none; }
 
 .help {
-    float: right;
-    position: relative;
-    right: 0;
-    width: 200px;
+    float: left;
+	margin-left: 2em;
+    width: 150px;
     font-size: 10px;
     color: #515151;}
+
+.editables {
+	float: left;
+}
 
 .static_text {
 	font-size:14px;
