@@ -75,8 +75,14 @@ class IndexController < ApplicationController
     chosen, days = find_trend_sessions(sessions, 20)
 
     if chosen.length > 0
-      @trend_graph_url_abs = generate_trend_graph_stacked_bars(chosen, days, false)
-      @trend_graph_url_rel = generate_trend_graph_stacked_bars(chosen, days, true)
+      #@trend_graph_url_abs = generate_trend_graph_lines(chosen, days, false)
+      #@trend_graph_url_rel = generate_trend_graph_lines(chosen, days, true)
+      #@trend_graph_url_abs = generate_trend_graph_stacked_bars(chosen, days, false)
+      #@trend_graph_url_rel = generate_trend_graph_stacked_bars(chosen, days, true)
+      #@trend_graph_url_abs = generate_trend_graph_grouped_bars(chosen, days, false)
+      #@trend_graph_url_rel = generate_trend_graph_grouped_bars(chosen, days, true)
+      @trend_graph_url_abs = generate_trend_graph_area(chosen, days, false)
+      @trend_graph_url_rel = generate_trend_graph_area(chosen, days, true)
     end
 
 
