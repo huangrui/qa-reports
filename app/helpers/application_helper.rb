@@ -121,4 +121,8 @@ module ApplicationHelper
   def format_date_to_input(date)
     date ? date.strftime('%Y-%m-%d') : ''
   end
+
+  def use_nokia_layout?
+    request.host.include? "maemo" or request.host.include? "nokia"
+  end
 end
