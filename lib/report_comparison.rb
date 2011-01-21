@@ -117,6 +117,7 @@ class ReportComparison
   end
 
   def add_pair(column, left_report, right_report)
+    return unless right_report and left_report
     add_column(column)
     reference = {}
     if right_report != nil
