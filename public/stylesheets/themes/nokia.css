@@ -81,6 +81,10 @@ a.edit {
 .see_all_toggle:hover {
 	text-decoration:none;}
 
+.ui-widget-content .ui-state-highlight {
+	background-color: #a1c8a8;
+	border-color: #00a31f;
+}
 
 
 /* @group sort & collapse */
