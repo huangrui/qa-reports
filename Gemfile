@@ -3,7 +3,7 @@ source 'http://rubygems.org'
 gem 'rails', '3.0.1'
 
 group :staging, :production do
-  gem 'mysql'
+  gem 'mysql2'
   gem 'newrelic_rpm'
 end
 
@@ -12,7 +12,7 @@ group :development do
   gem 'capistrano'
   gem 'capistrano-ext'
   gem 'ruby-debug'
-  gem 'mysql'
+  gem 'mysql2'
 end
 
 group :development, :test do # so that we can call rspec tasks from dev env

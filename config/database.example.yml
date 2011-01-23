@@ -16,13 +16,21 @@ test:
   timeout: 5000
 
 staging:
-  adapter: sqlite3
-  database: db/staging.sqlite3
+  adapter: mysql2
+  encoding: utf8
+  reconnect: false
+  database: qa_reports_development
   pool: 5
-  timeout: 5000
+  username: qa_reports
+  password: <password_of_your_choosing>
+  socket: /var/run/mysqld/mysqld.sock
 
 production:
-  adapter: sqlite3
-  database: db/production.sqlite3
+  adapter: mysql2
+  encoding: utf8
+  reconnect: false
+  database: qa_reports_development
   pool: 5
-  timeout: 5000
+  username: qa_reports
+  password: <password_of_your_choosing>
+  socket: /var/run/mysqld/mysqld.sock
