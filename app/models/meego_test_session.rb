@@ -400,19 +400,25 @@ class MeegoTestSession < ActiveRecord::Base
       filename = filename.downcase.strip
       if filename == ""
         errors.add :uploaded_files, "can't be blank"
+        "File name can't be blank"
         return
       end
       unless filename =~ /\.csv$/ or filename =~ /\.xml$/
         errors.add :uploaded_files, "You can only upload files with the extension .xml or .csv"
+        filename
         return
       end
     end if @files
+    nil
   end
 
   def save_uploaded_files
     @parsing_failed = false
     return unless @files
     total_cases = 0
+    
+    error_msgs = []
+
     MeegoTestSession.transaction do
       filenames     = []
       @parse_errors = []
@@ -468,6 +474,7 @@ class MeegoTestSession < ActiveRecord::Base
           logger.error $!, $!.backtrace
           content = File.open(path_to_file).read
           errors.add :uploaded_files, "Incorrect file format for #{origfn}: #{content}"
+          error_msgs << "Incorrect file format for #{origfn}: #{content}"
         end
       end
       @xmlpath = filenames.join(',')
@@ -477,6 +484,11 @@ class MeegoTestSession < ActiveRecord::Base
         else
           errors.add :uploaded_files, "None of the uploaded files contained any valid test cases"
         end
+      end
+      if !error_msgs.empty?
+          error_msgs.join(',')
+      else
+          nil
       end
     end
   end
@@ -518,6 +530,28 @@ class MeegoTestSession < ActiveRecord::Base
     self.author    = user
     self.editor    = user
     self.published = published
+  end
+
+  def update_report_result(user, resultfiles, published = true)
+    @files = resultfiles
+    parsing_errors = []
+    temp_err = allowed_filename_extensions
+    if (nil != temp_err)
+       parsing_errors << temp_err
+    end
+    temp_err = save_uploaded_files
+    if (nil != temp_err)
+       parsing_errors << temp_err
+    end
+    user.update_attribute(:default_target, self.target) if self.target.present?
+    self.editor    = user
+    self.published = published
+    
+    if !parsing_errors.empty?
+       parsing_errors.join(',')
+    else
+       nil
+    end
   end
 
   def self.get_filename(file)
