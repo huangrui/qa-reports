@@ -118,7 +118,6 @@ class ApiController < ApplicationController
         end
         render :json => {:ok => '1'}
       else
-        puts "@@@@@@@@@@@ Error:  " + parse_err
         render :json => {:ok => '0', :errors => "Request contained invalid files: " + parse_err}
         return
       end
