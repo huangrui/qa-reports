@@ -16,3 +16,4 @@ db/test.sqlite3-journal
 capybara-*.html
 coverage
 cucumber
+rerun.txt
