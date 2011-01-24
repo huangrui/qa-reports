@@ -8,7 +8,7 @@ set :use_sudo, false
 set :copy_compression, :zip
 
 set :scm, :git
-set :repository, "git://gitorious.org/meego-quality-assurance/qa-reports.git"
+set :repository, "https://gitorious.org/meego-quality-assurance/qa-reports.git"
 set :deploy_via, :remote_cache
 
 ssh_options[:forward_agent] = true

@@ -32,7 +32,7 @@ group :test do
   gem 'ZenTest', '4.4.0'
   gem 'autotest'
   gem 'autotest-rails'
-  gem 'metric_fu', :git => "git://github.com/pyykkis/metric_fu.git"
+  gem 'metric_fu', :git => "https://github.com/pyykkis/metric_fu.git"
   gem 'ruby-debug'
   gem 'database_cleaner'
 end
@@ -41,6 +41,6 @@ gem 'nokogiri'
 gem 'bitly'
 gem 'devise', '1.1.3'
 gem 'fastercsv'
-gem 'rack', :git => "git://github.com/rack/rack.git" # Use next release when available
+gem 'rack', :git => "https://github.com/rack/rack.git" # Use next release when available
 gem "will_paginate", "3.0.pre"
 
