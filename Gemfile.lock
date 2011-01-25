@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/pyykkis/metric_fu.git
+  remote: https://github.com/pyykkis/metric_fu.git
   revision: b790518f1cc65f9de292a9640fe5deba471d5f80
   specs:
     metric_fu (1.5.1)
@@ -15,8 +15,8 @@ GIT
       roodi (>= 2.1.0)
 
 GIT
-  remote: git://github.com/rack/rack.git
-  revision: 812ac75b327c9f3d6ff5074def9721bf6f19e1de
+  remote: https://github.com/rack/rack.git
+  revision: 1c2715778d3753dce4d8df19e3d3cc698aed20c6
   specs:
     rack (1.2.1)
 
