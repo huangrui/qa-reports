@@ -107,11 +107,19 @@ module ReportSummary
   end
   
   def total_pass_rate
-    "%i%%" % total_pass_rate_value
+    if total_cases == 0
+      "n/a"
+    else
+      "%i%%" % total_pass_rate_value
+    end
   end
   
   def executed_pass_rate
-    "%i%%" % executed_pass_rate_value
+    if total_executed == 0
+      "n/a"
+    else
+      "%i%%" % executed_pass_rate_value
+    end
   end
   
   def run_rate_value
@@ -131,7 +139,7 @@ module ReportSummary
   end
   
   def executed_pass_rate_value
-    if total_cases > 0
+    if total_executed > 0
       (total_passed*100.0/total_executed)
     else
       0
@@ -232,7 +240,7 @@ module ReportSummary
   end
 
   def executed_pass_rate_change_class
-    if not prev_summary or executed_pass_rate_value == prev_summary.executed_pass_rate_value
+    if not prev_summary or total_executed == 0 or prev_summary.total_executed == 0 or executed_pass_rate_value == prev_summary.executed_pass_rate_value
       "unchanged"
     elsif executed_pass_rate_value < prev_summary.executed_pass_rate_value
       "dec"

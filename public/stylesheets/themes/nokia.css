@@ -9,6 +9,12 @@ a:focus, a:hover, a:active {
 	color: #14D;
 	text-decoration:underline;}
 
+a.mailto:hover {
+	background-image: url('/images/nokia/mailto_icon_hover.png');}
+
+a.external:hover {
+	background-image: url('/images/nokia/external_icon_hover.png');}
+
 /* @end links*/
 
 /* @group notifications and errors */
@@ -57,10 +63,10 @@ div.uploadify_button_wrapper a.hover {
 
 
 #logo h3 a {
-    background-image: url(/images/nokia/meego_logo.png);}
+    background-image: url(/images/meego_logo.png);}
 
-#logo h3 a.hover {
-    background-image: url(/images/nokia/meego_logo.png);}
+/*#logo h3 a.hover {
+    background-image: url(/images/meego_logo.png);}*/
 
 .compare:hover {
     background-image:url(/images/nokia/compare_icon_hover.png);
@@ -81,6 +87,10 @@ a.edit {
 .see_all_toggle:hover {
 	text-decoration:none;}
 
+.ui-widget-content .ui-state-highlight {
+	background-color: #a1c8a8;
+	border-color: #00a31f;
+}
 
 
 /* @group sort & collapse */
@@ -108,6 +118,10 @@ span#wizard_finalize {
 
 #header {
     border-color:#00a31f;}
+
+#upper_header {
+	background: transparent no-repeat top 30px url('/images/nokia/nokia_logo.png');
+}
 
 #footer {
 	border-color:#00a31f;}

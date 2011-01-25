@@ -254,7 +254,7 @@ module Graph
     if relative
       max_total = 100
     else
-      max_total = total.max
+      max_total = (total.max*1.1+5).to_i
     end
 
     chart_type = 'cht=lxy'

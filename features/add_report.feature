@@ -33,7 +33,8 @@ Feature:
     | sample.csv                | Check home screen                | 3921          |
     | filesystem.xml            | NFT-FS-Create_Directory_TMP-LATE | Fail          |
     | sim.xml                   | SMOKE-SIM-Get_IMSI               | Fail          |
-    | bug9767_result.xml        | case#1.1.1               | Fail          |
+    | all_na.xml                | NFT-BT-Device_Scan_C-ITER        | N/A           |
+    | bug9767_result.xml        | case#1.1.1                       | Fail          |
 
 #  @javascript
 #  Scenario Outline: Add new report with valid data, passing tests should not be visible by default
