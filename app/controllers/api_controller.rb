@@ -110,14 +110,14 @@ class ApiController < ApplicationController
       end
       
       if nil == parse_err
-        original_sets.each do |tset|
-           tset.delete
-        end
-        original_cases.each do |tcase|
-           tcase.delete
-        end
+        delete_dirty_data(original_sets)
+        delete_dirty_data(original_cases)
         render :json => {:ok => '1'}
       else
+        dirty_sets = @test_session.meego_test_sets   - original_sets
+        delete_dirty_data(dirty_sets)
+        dirty_cases = @test_session.meego_test_cases - original_cases
+        delete_dirty_data(dirty_cases)
         render :json => {:ok => '0', :errors => "Request contained invalid files: " + parse_err}
         return
       end
@@ -125,6 +125,12 @@ class ApiController < ApplicationController
   end
 
   private
+
+  def delete_dirty_data(dirty_array)
+    dirty_array.each do |dirty_item|
+       dirty_item.delete
+    end
+  end
 
   def collect_file(parameters, key, errors)
     file = parameters.delete(key)
