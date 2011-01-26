@@ -1,4 +1,5 @@
 When /^the client sends a updated file "([^\"]*)" with the id (\d+) via the REST API$/ do |file, report_id|
+  report_id = MeegoTestSession.find(:first).id
   post "/api/update/#{report_id}?auth_token=foobar", {
       "report"          => Rack::Test::UploadedFile.new("features/resources/#{file}", "text/xml")
   }
@@ -16,6 +17,7 @@ And /^I have sent the file "([^\"]*)" via the REST API$/ do |file|
 end
 
 When /^the client sends several updated files with the id (\d+) via the REST API$/ do |report_id|
+  report_id = MeegoTestSession.find(:first).id
   post "/api/update/#{report_id}?auth_token=foobar", {
       "report.1"        => Rack::Test::UploadedFile.new("features/resources/sim_new.xml", "text/xml"),
       "report.2"        => Rack::Test::UploadedFile.new("features/resources/bluetooth.xml", "text/xml"),
@@ -24,6 +26,7 @@ When /^the client sends several updated files with the id (\d+) via the REST API
 end
 
 When /^the client sends 1 updated valid file, and 1 invalid file with the id (\d+) via the REST API$/ do |report_id|
+  report_id = MeegoTestSession.find(:first).id
   post "/api/update/#{report_id}?auth_token=foobar", {
       "report.1"        => Rack::Test::UploadedFile.new("features/resources/sim_new.xml", "text/xml"),
       "report.2"        => Rack::Test::UploadedFile.new("features/resources/invalid.xml", "text/xml"),
