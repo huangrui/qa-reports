@@ -83,7 +83,7 @@ module Graph
     colors     = '&chco=73a20c,ec4343,CACACA'
     spacing    = '&chbh=20,12,0'
     size       = '&chs=700x240'
-    legend     = '&chdl=na|fail|pass'
+    legend     = '&chdl=pass|fail|na'
     legend_pos = '&chdlp=b'
     axes       = '&chxt=y,r,x'
     axrange    = "&chxr=0,0,#{max_total}|1,0,#{max_total}"
