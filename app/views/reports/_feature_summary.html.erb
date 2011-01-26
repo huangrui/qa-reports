@@ -39,7 +39,7 @@
 	<td class="na"><%= feature_summary.total_na %></td>
 	<td><%= feature_summary.graph_img_tag %></td>
 	<td class="feature_record_notes <%= 'edit' if @editing %>">
-          <div class="content"><%= feature_summary.comments %></div>
+          <div class="content"><%= MeegoTestReport::format_txt(feature_summary.comments).html_safe %></div>
     	  <% if @editing %>
             <div class="comment_markup" style="display:none;"><%= MeegoTestReport::format_txt(feature_summary.comments).html_safe %></div>
           <% end %>
