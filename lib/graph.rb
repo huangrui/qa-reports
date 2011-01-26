@@ -54,9 +54,20 @@ module Graph
       total_cases = s.total_cases
       if total_cases > 0
         if relative
-          rpass = s.total_passed*100/total_cases
-          rfail = s.total_failed*100/total_cases
-          rna = s.total_na*100/total_cases
+          rpass = s.total_passed*61/total_cases
+          rfail = s.total_failed*61/total_cases
+          rna = s.total_na*61/total_cases
+          delta = 61 - (rpass+rfail+rna)
+          if delta > 0
+            m = [rpass,rfail,rna].max
+            if m == rpass
+              rpass += delta
+            elsif m == rfail
+              rfail += delta
+            else
+              rna += delta
+            end
+          end
           passed << rpass
           failed << rfail
           na << rna
@@ -97,6 +108,7 @@ module Graph
       end
     end
 
+    max_total = 61 if relative
     data     = '&chd=s:' + encode_stacked_bars(days, passed, failed, na, max_total, total_days)
 
     "http://chart.apis.google.com/chart?" + chart_type + size + spacing + colors + legend + legend_pos + axes + axrange + data + axlabel
