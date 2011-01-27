@@ -125,7 +125,7 @@ h2 {
     font-size: 1.6666em;
     line-height:1;
     color: #000;
-    margin:0.75em 0;
+    margin:1.5em 0 0.75em 0;
     border-top: 1px solid #ccc;
     padding-top: 10px;}
 
@@ -1377,6 +1377,21 @@ td.na {
 
 /* @group detailed results */
 
+.th_to_target,
+.th_target,
+.th_measured,
+.th_result {
+	text-align: center;}
+
+.th_to_target {
+	width: 8%;}
+
+.th_target {
+	width: 7%;}
+
+.th_measured {
+	width:7%;}
+
 #th_result {
     width: 5%;
     text-align: left; }
@@ -1384,6 +1399,8 @@ td.na {
 #th_test_case {
     width: 50%; }
 
+#th_nft_test_case {
+    width: 40%; }
 
 
 tr.feature_name td{
@@ -1395,22 +1412,21 @@ tr.feature_name td{
     padding-left: 14px;
     padding-bottom: 3px; }
 
-table#detailed_results,
-.detailed_results  {
+table.detailed_results  {
     border: 1px solid #ccc;
     margin-bottom: 40px;}
 
-#detailed_results th {
-    text-align: left;
+.detailed_results th {
+/*    text-align: left;*/
     border-left: 1px solid #ddd;
     padding-top: 0.8em;
     padding-bottom: 0.8em; }
 
-#detailed_results .sort {
+.detailed_results .sort {
     position:absolute;
     right:1em;}
 
-#detailed_results th:first-child {
+.detailed_results th:first-child {
     border-left-style: none; }
 
 .feature_record td {
@@ -1479,7 +1495,9 @@ td.testcase_name {
     padding-left: 20px; }
 
 
-td.testcase_result {
+td.testcase_result,
+.testcase_target,
+.testcase_to_target {
 /*background: none no-repeat 94% 5px; */
     text-align: center;	}
 
@@ -1512,7 +1530,7 @@ td.testcase_result.edit:hover {
     background: #fff8de;
     cursor: pointer;}
 
-td.testcase_result span {
+td.testcase_result span.content {
     position: relative;
     display: block; }
 
@@ -1538,6 +1556,9 @@ td.fail {
 
 .fail {
     color: #ec4343; }
+
+.unit {
+	color: #aaa;}
 
 #test_results .sort {
     margin-left: 3em;}
