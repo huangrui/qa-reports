@@ -1433,6 +1433,13 @@ td.feature_record_notes.edit:hover {
 td.feature_record_notes p {
     margin-bottom: 0; }
 
+.float_container {
+	position:relative;}
+	
+.float_above {
+	position: absolute;
+	left:-10%;}
+
 td.feature_record_grading {
 	text-align:center;}
 
