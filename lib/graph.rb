@@ -18,6 +18,12 @@
 # 02110-1301 USA
 #
 module Graph
+
+  class Data
+    attr_accessor :passed, :failed, :na, :total
+    attr_accessor :days
+  end
+
   def find_trend_sessions(sessions, num=20)
     chosen = []
     days   = []
@@ -42,6 +48,55 @@ module Graph
       end
     end
     return chosen, days
+  end
+
+  def generate_trend_graph_data(sessions, days, relative=false)
+    data = Data.new
+    data.passed = passed = []
+    data.failed = failed = []
+    data.na     = na     = []
+    data.total  = total  = []
+    data.days   = days   = [] 
+
+    sessions.reverse_each do |s|
+      days << s.format_date
+      total_cases = s.total_cases
+      if total_cases > 0
+        if relative
+          rpass = s.total_passed*100/total_cases
+          rfail = s.total_failed*100/total_cases
+          rna = s.total_na*100/total_cases
+          delta = 100 - (rpass+rfail+rna)
+          if delta > 0
+            m = [rpass,rfail,rna].max
+            if m == rpass
+              rpass += delta
+            elsif m == rfail
+              rfail += delta
+            else
+              rna += delta
+            end
+          end
+          passed << rpass
+          failed << rfail
+          na << rna
+        else
+          total << s.total_cases
+          passed << s.total_passed
+          failed << s.total_failed
+          na << s.total_na
+        end
+      end
+    end
+    filler = 20 - days.size
+    if filler > 0
+      days.concat [""] * filler
+      passed.concat [0] * filler
+      failed.concat [0] * filler
+      na.concat [0] * filler
+    end
+
+    data
   end
 
   def generate_trend_graph_stacked_bars(sessions, days, relative=false)
