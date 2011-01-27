@@ -449,7 +449,7 @@ legend {
     font-weight:bold;
     font-size:1.2em;}
 
-input.date, input.text, input.title, textarea, select, input.title_field {
+input.date, input.text, input.title, textarea, input.title_field {
     font-family: verdana, sans-serif;
     border:1px solid #bbb;
     background-color: #fff8de;
@@ -1351,18 +1351,14 @@ td.dec em{
     background-image: url(../images/dec.png); }
 
 .th_feature {
-    width: 30%;
-}
-
-
+    width: 30%;}
 
 .th_total,
 .th_passed,
 .th_failed,
-.th_not_testable
-{
+.th_not_testable{
     width:40px;
-    text-align: center; }
+    text-align: center;}
 
 td.total,
 td.pass,
@@ -1371,11 +1367,13 @@ td.na {
     text-align: center; }
 
 .th_graph {
-    width:25%;
-}
+    width:25%;}
 
 .th_notes {
     width: 25%;}
+
+.th_grading {
+	width: 30px;}
 
 /* @group detailed results */
 
@@ -1436,46 +1434,31 @@ td.feature_record_notes p {
     margin-bottom: 0; }
 
 td.feature_record_grading {
-    font-size: 11px;
-    padding-right: 33px;
-    margin-bottom: 0;}
+	text-align:center;}
 
 td.feature_record_grading.edit:hover {
     background: #fff8de url(../images/edit_icon.png) no-repeat 97% 5px;
     cursor: pointer;}
 
-td.feature_record_grading p {
-    margin-bottom: 0;
-}
+.grading_red,
+.grading_yellow,
+.grading_green {
+	background: transparent no-repeat center center;
+	padding:0 6px;}
 
 .grading_red {
-    background-color:#ec4343; color:#ec4343;
-    font-size: 11px;
-    padding-right: 33px;
-    margin-bottom: 0;}
+	background-image: url(../images/grade_red.png);}
 
 .grading_yellow {
-    background-color:yellow; color:yellow;
-    font-size: 11px;
-    padding-right: 33px;
-    margin-bottom: 0;}
+	background-image: url(../images/grade_yellow.png);}
 
 .grading_green {
-    background-color:#73a20c; color:#73a20c;
-    font-size: 11px;
-    padding-right: 33px;
-    margin-bottom: 0;}
+	background-image: url(../images/grade_green.png);}
 
 .grading_white {}
 
-option.grading_red {background-color:#ec4343; color:#ec4343;}
-option.grading_yellow {background-color:yellow; color:yellow;}
-option.grading_green {background-color:#73a20c; color:#73a20c;}
-option.grading_white {}
-
 select.grading_select {
-    font-size: 11px;
-}
+    font-size: 11px;}
 
 .testcase td {
     border-bottom: 1px solid #eee;
