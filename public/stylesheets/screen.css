@@ -1502,6 +1502,21 @@ td.testcase_result {
 
 .unchanged_result {
     background-image: none;}
+    
+.changed_from_fail,
+.changed_from_pass,
+.changed_from_na {
+	padding-left: 20px;
+	background: transparent no-repeat left 0.8em;}
+
+.changed_from_fail {
+	background-image: url(../images/changed_from_fail.png);}
+
+.changed_from_pass {
+	background-image: url(../images/changed_from_pass.png);}
+
+.changed_from_na {
+	background-image: url(../images/changed_from_na.png);}
 
 td.testcase_result.edit:hover {
     background: #fff8de;
