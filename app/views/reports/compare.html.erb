@@ -44,7 +44,9 @@
       <thead>
       <tr>
         <th id="th_test_case">
-        	<span class="sort"><a href="#" id="see_only_failed_button" class="sort_btn active">See only changed</a> <a href="#" id="see_all_button" class="sort_btn">See all</a></span>
+        	<span class="sort">
+        		<!--<a href="#" id="see_only_regression_button" class="sort_btn active">See regression</a>-->	
+        		<a href="#" id="see_only_failed_button" class="sort_btn active">See changed</a> <a href="#" id="see_all_button" class="sort_btn">See all</a></span>
         </th>
         <th colspan="<%=@comparison.columns.length%>" class="column_head_1"><%= @testtype %></th>
          <th class="column_head_separate"></th>

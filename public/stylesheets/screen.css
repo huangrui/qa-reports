@@ -263,7 +263,7 @@ tfoot {
     font-size: 1.666667em;
     behavior: url(javascripts/pie.htc);
     padding-bottom:0.5em;
-    width:30%;}
+    width:28%;}
 
 .column_head_2,
 .column_head_separate_2 {
@@ -778,11 +778,11 @@ div.formError, #error, form .error {
     text-decoration: none;
     font-size: 12px;
     font-weight: normal;
-    padding: 3px 12px 3px;
+    padding: 3px 10px 3px;
     -moz-border-radius: 8px;
     border-radius: 8px;
     color: #515151;
-    margin-right: 0.5em;
+    margin-right: 0.4em;
     behavior: url(javascripts/pie.htc);}
 
 .sort_btn:hover {
