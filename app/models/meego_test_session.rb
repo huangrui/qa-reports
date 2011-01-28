@@ -29,9 +29,12 @@ require 'report_parser'
 require 'validation/date_time_validator'
 require 'will_paginate'
 
+require 'graph'
+
 #noinspection Rails3Deprecated
 class MeegoTestSession < ActiveRecord::Base
   include Trimmer
+  include Graph
 
   has_many :meego_test_sets, :dependent => :destroy
   has_many :meego_test_cases
@@ -272,14 +275,7 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def small_graph_img_tag(max_cases)
-      pw = total_passed*386/max_cases
-      fw = total_failed*386/max_cases
-      nw = total_na*386/max_cases
-      ('<div class="htmlgraph">' + graph_div("passed", pw, total_passed) + graph_div("failed", fw, total_failed) + graph_div("na", nw, total_na) + '</div>').html_safe
-  end
-
-  def graph_div(cls, width, title)
-    "<div class=\"#{cls}\" style=\"width:#{width}px\" title=\"#{cls} #{title}\">&nbsp;</div>"
+    html_graph(total_passed, total_failed, total_na, max_cases)
   end
 
   ###############################################

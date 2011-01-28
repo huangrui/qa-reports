@@ -24,6 +24,17 @@ module Graph
     attr_accessor :days
   end
 
+  def html_graph(passed, failed, na, max_cases)
+      pw = passed*100/max_cases
+      fw = failed*100/max_cases
+      nw = na*100/max_cases
+      ('<div class="htmlgraph">' + graph_div("passed", pw, passed) + graph_div("failed", fw, failed) + graph_div("na", nw, na) + '</div>').html_safe
+  end
+
+  def graph_div(cls, width, title)
+    "<div class=\"#{cls}\" style=\"width:#{width}%\" title=\"#{cls} #{title}\">&nbsp;</div>"
+  end
+
   def find_trend_sessions(sessions, num=20)
     chosen = []
     days   = []
