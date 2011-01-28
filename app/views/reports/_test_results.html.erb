@@ -86,6 +86,7 @@ var summary_labels = <%= strs2js data.labels %> ;
 var g = new Bluff.StackedBar("summary_graph_canvas", "395x210");
 g.hide_title = true;
 g.tooltips = true;
+g.sort = false;
 g.bar_spacing = 0.7;
 g.marker_font_size = 18;
 g.legend_font_size = 24;
