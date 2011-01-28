@@ -54,10 +54,10 @@
     </form>
   </div>
   <div id="result_edit_form">
-    <form method="post" action="<%=url_for :controller => 'reports', :action=>'update_case_result'%>" class="result_form">
+    <form method="post" action="<%=url_for :controller => 'reports', :action=>'update_case_result'%>" class="result_form float_container">
       <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
       <input class="id_field" type="hidden" name="id" value="" />
-      <select name="result">
+      <select name="result" class="float_above">
         <option value="1">Pass</option>
         <option value="-1">Fail</option>
         <option value="0">N/A</option>
@@ -76,14 +76,14 @@
   </div>
 
   <div id="feature_grading_edit_form">
-    <form method="post" action="<%=url_for :controller => 'reports', :action=>'update_feature_grading'%>" class="result_form">
+    <form method="post" action="<%=url_for :controller => 'reports', :action=>'update_feature_grading'%>" class="result_form float_container">
       <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
       <input class="id_field" type="hidden" name="id" value="" />
-      <select name="grading" class="grading_select">
-        <option class="grading_white" value="0">N/A</option>
-        <option class="grading_red" value="1">Red</option>
-        <option class="grading_yellow" value="2">Yellow</option>
-        <option class="grading_green" value="3">Green</option>
+      <select name="grading" class="grading_select float_above">
+        <option value="0">N/A</option>
+        <option value="1">Red</option>
+        <option value="2">Yellow</option>
+        <option value="3">Green</option>
       </select>
     </form>
   </div>
