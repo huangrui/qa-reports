@@ -21,7 +21,7 @@ module Graph
 
   class Data
     attr_accessor :passed, :failed, :na, :total
-    attr_accessor :days
+    attr_accessor :labels
   end
 
   def html_graph(passed, failed, na, max_cases)
@@ -67,10 +67,10 @@ module Graph
     data.failed = failed = []
     data.na     = na     = []
     data.total  = total  = []
-    data.days   = days   = [] 
+    data.labels = labels = [] 
 
     sessions.reverse_each do |s|
-      days << s.format_date
+      labels << s.format_date
       total_cases = s.total_cases
       if total_cases > 0
         if relative
@@ -99,9 +99,9 @@ module Graph
         end
       end
     end
-    filler = 20 - days.size
+    filler = 20 - total.size
     if filler > 0
-      days.concat [""] * filler
+      labels.concat [""] * filler
       passed.concat [0] * filler
       failed.concat [0] * filler
       na.concat [0] * filler

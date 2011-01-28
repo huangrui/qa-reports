@@ -88,6 +88,11 @@ a img {
   float: left;
 }
 
+div.summary_graph_wrapper {
+  width: 405px;
+  height: 220px;
+}
+
 /* @group body styles */
 /* font/leading: 12/18px */
 body {

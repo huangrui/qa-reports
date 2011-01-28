@@ -35,6 +35,9 @@
   <% end %>
   <%= csrf_meta_tag %>
   <%= javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" %>
+  <%= javascript_include_tag 'bluff/js-class.js'%>
+  <%= javascript_include_tag 'bluff/excanvas.js'%>
+  <%= javascript_include_tag 'bluff/bluff-min.js'%>
   <%= yield :view_specific_js_head %>  
 </head>
 <body>

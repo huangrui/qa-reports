@@ -132,4 +132,12 @@ module ApplicationHelper
     nw = na*386/max_cases
     "<div class=\"htmlgraph\"><div class=\"passed\" width=\"#{pw}\"/><div class=\"failed\ width=\"#{fw}\"/><div class=\"na\" width=\"#{nw}\"/></div>"
   end
+
+  def ints2js(ints)
+    ('[' + ints.map{|v| v.to_s}.join(",") + ']').html_safe
+  end
+
+  def strs2js(strings)
+    ('[' + strings.map{|s| "\"#{s}\""}.join(",") + ']').html_safe
+  end
 end

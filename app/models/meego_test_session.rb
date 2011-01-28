@@ -223,6 +223,47 @@ class MeegoTestSession < ActiveRecord::Base
   ###############################################
   # Chart visualization methods                 #
   ###############################################
+  def summary_data
+    data = Graph::Data.new
+    data.passed = passed = []
+    data.failed = failed = []
+    data.na     = na     = []
+    data.labels = labels = []
+
+    prev = prev_session
+    if prev
+      pp = prev.prev_session
+      if pp
+        passed << pp.total_passed
+        failed << pp.total_failed
+        na     << pp.total_na
+        labels << pp.formatted_date
+      else
+        passed << 0
+        failed << 0
+        na     << 0
+        labels << ""
+      end
+
+      passed << prev.total_passed
+      failed << prev.total_failed
+      na     << prev.total_na
+      labels << prev.formatted_date
+    else
+      passed << 0
+      failed << 0
+      na     << 0
+      labels << ""
+    end
+    
+    passed << total_passed
+    failed << total_failed
+    na     << total_na
+    labels << "Current"
+
+    data
+  end
+
   def graph_img_tag(format_email)
     values = [0, 0, total_passed, 0, 0, total_failed, 0, 0, total_na]
     labels = ["", "", "Current"]

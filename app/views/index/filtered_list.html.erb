@@ -80,14 +80,14 @@ $(document).ready(function(){
 });
 
 // graph data
-var trend_abs_passed = [ <%=@trend_graph_data_abs.passed.map{|v| v.to_s}.join(",")  %> ];
-var trend_abs_failed = [ <%=@trend_graph_data_abs.failed.map{|v| v.to_s}.join(",")  %> ];
-var trend_abs_na     = [ <%=@trend_graph_data_abs.na.map    {|v| v.to_s}.join(",")  %> ];
-var trend_labels     = [ <%=@trend_graph_data_abs.days      {|d| "\"#{d}\""}.join(",") %> ];
+var trend_abs_passed = <%= ints2js @trend_graph_data_abs.passed) %> ;
+var trend_abs_failed = <%= ints2js @trend_graph_data_abs.failed) %> ;
+var trend_abs_na     = <%= ints2js @trend_graph_data_abs.na %> ;
+var trend_labels     = <%= strs2js @trend_graph_data_abs.labels %> ;
 
-var trend_rel_passed = [ <%=@trend_graph_data_rel.passed.map{|v| v.to_s}.join(",")  %> ];
-var trend_rel_failed = [ <%=@trend_graph_data_rel.failed.map{|v| v.to_s}.join(",")  %> ];
-var trend_rel_na     = [ <%=@trend_graph_data_rel.na.map    {|v| v.to_s}.join(",")  %> ];
+var trend_rel_passed = <%= ints2js @trend_graph_data_rel.passed %> ;
+var trend_rel_failed = <%= ints2js @trend_graph_data_rel.failed %> ;
+var trend_rel_na     = <%= ints2js @trend_graph_data_rel.na %> ;
 
 var g;
 
