@@ -125,4 +125,11 @@ module ApplicationHelper
   def use_nokia_layout?
     request.host.include? "maemo" or request.host.include? "nokia"
   end
+
+  def html_graph(passed, failed, na, max_cases)
+    pw = passed*386/max_cases
+    fw = failed*386/max_cases
+    nw = na*386/max_cases
+    "<div class=\"htmlgraph\"><div class=\"passed\" width=\"#{pw}\"/><div class=\"failed\ width=\"#{fw}\"/><div class=\"na\" width=\"#{nw}\"/></div>"
+  end
 end

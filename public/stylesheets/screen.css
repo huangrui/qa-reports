@@ -67,6 +67,27 @@ a img {
 /* @end */
 
 
+.htmlgraph {
+  width: 386px;
+  height: 12px;
+  overflow: hidden;
+}
+
+.htmlgraph .passed {
+  background-color: #73a20c;
+  float: left;
+}
+
+.htmlgraph .failed {
+  background-color: #ec4343;
+  float: left;
+}
+
+.htmlgraph .na {
+  background-color: #cacaca;
+  float: left;
+}
+
 /* @group body styles */
 /* font/leading: 12/18px */
 body {
