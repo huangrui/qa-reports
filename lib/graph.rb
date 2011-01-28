@@ -61,7 +61,7 @@ module Graph
     return chosen, days
   end
 
-  def generate_trend_graph_data(sessions, days, relative=false)
+  def generate_trend_graph_data(sessions, days, relative=false, num=20)
     data = Data.new
     data.passed = passed = []
     data.failed = failed = []
