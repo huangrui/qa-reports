@@ -264,56 +264,6 @@ class MeegoTestSession < ActiveRecord::Base
     data
   end
 
-  def graph_img_tag(format_email)
-    values = [0, 0, total_passed, 0, 0, total_failed, 0, 0, total_na]
-    labels = ["", "", "Current"]
-    totals = [0, 0, total_cases]
-    prev   = prev_session
-    if prev
-      values[1] = prev.total_passed
-      values[4] = prev.total_failed
-      values[7] = prev.total_na
-      labels[1] = prev.formatted_date
-      totals[1] = prev.total_cases
-      pp        = prev.prev_session
-      if pp
-        values[0] = pp.total_passed
-        values[3] = pp.total_failed
-        values[6] = pp.total_na
-        labels[0] = pp.formatted_date
-        totals[0] = prev.total_cases
-      end
-    end
-    scale = [totals.max, 10].max
-    step  = scale/9.0
-    step  = (step.to_i/5)*5
-    if (scale % 45) != 0
-      step += 5
-    end
-    scale        = (scale/step+1)*step
-    chart_size   = "385x200"
-    chart_type   = "bvs" # bar, vertical, stacked
-    chart_colors = "BCCD98|BCCD98|73a20c,E7ABAB|E7ABAB|ec4343,DBDBDB|DBDBDB|CACACA"
-    chart_data   = "t:%i,%i,%i|%i,%i,%i|%i,%i,%i" % values
-    chart_scale  = "0,%i" % scale
-    #chart_margins = "0,0,0,0"
-    chart_fill   = "bg,s,ffffffff"
-    chart_width  = "90,30,30"
-    chart_axis   = "x,y"
-    chart_labels = "%s|%s|%s" % labels
-    chart_range  = "1,0,%i,%i" % [scale, step]
-
-    #url = "http://chart.apis.google.com/chart?cht=#{chart_type}&chs=#{chart_size}&chco=#{chart_colors}&chd=#{chart_data}&chds=#{chart_scale}&chma=#{chart_margins}&chf=#{chart_fill}&chbh=#{chart_width}&chxt=#{chart_axis}&chl=#{chart_labels}&chxr=#{chart_range}"
-    url          = "http://chart.apis.google.com/chart?cht=#{chart_type}&chs=#{chart_size}&chco=#{chart_colors}&chd=#{chart_data}&chds=#{chart_scale}&chf=#{chart_fill}&chbh=#{chart_width}&chxt=#{chart_axis}&chl=#{chart_labels}&chxr=#{chart_range}"
-
-    if (format_email)
-      Bitly.use_api_version_3
-      bitly = Bitly.new("leonidasoy", "R_b1aca98d073e7a78793eec01f3340fb4")
-      url   = bitly.shorten(url).short_url
-    end
-
-    "<div class=\"bvs_wrap\"><img class=\"bvs\" src=\"#{url}\"/></div>".html_safe
-  end
 
   def small_graph_img_tag(max_cases)
     html_graph(total_passed, total_failed, total_na, max_cases)
