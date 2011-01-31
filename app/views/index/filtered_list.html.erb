@@ -63,7 +63,7 @@
 </div>
 <% if @trend_graph_data_abs %>
 <script language="javascript" type="text/javascript">
-$(document).ready(function(){
+$(window).load(function(){
   // graph data
   var trend_abs_passed = <%= ints2js @trend_graph_data_abs.passed %> ;
   var trend_abs_failed = <%= ints2js @trend_graph_data_abs.failed %> ;

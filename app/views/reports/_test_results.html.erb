@@ -76,7 +76,7 @@
 <% data = @report.summary_data %>
 
 <script language="javascript" type="text/javascript">
-$(document).ready(function() {
+$(window).load(function() {
   // graph data
   var summary_passed = <%= ints2js data.passed %> ;
   var summary_failed = <%= ints2js data.failed %> ;
