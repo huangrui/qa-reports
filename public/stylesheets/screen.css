@@ -68,23 +68,23 @@ a img {
 
 
 .htmlgraph {
-  width: 100%;
+  width: 35%;
   height: 12px;
   overflow: hidden;
 }
 
 .htmlgraph .passed {
-  background-color: #73a20c;
+  background-color: #bcd483;
   float: left;
 }
 
 .htmlgraph .failed {
-  background-color: #ec4343;
+  background-color: #f36c6c;
   float: left;
 }
 
 .htmlgraph .na {
-  background-color: #cacaca;
+  background-color: #ddd;
   float: left;
 }
 
@@ -187,7 +187,7 @@ img.bhs {
     top: 1px;
     height: 14px;
 /*width: 386px;*/
-    width: 100%;
+		    /*width: 100%;*/
 }
 
 .bhs_wrap {
@@ -1449,8 +1449,11 @@ table.detailed_results  {
     padding-bottom: 0.8em; }
 
 .detailed_results .sort {
-    position:absolute;
-    right:1em;}
+}
+   
+.detailed_results .sort.right {
+     position:absolute;
+     right:1em;}
 
 .detailed_results th:first-child {
     border-left-style: none; }
@@ -1735,6 +1738,11 @@ p.next_step {
 /* @group Comparison view */
 #compare_view_test_case {
     width: 35%;}
+
+#compare_details th {
+	padding-bottom: .5em;
+	padding-top: .2em;	
+}
 
 #compare_details #th_test_case {
     vertical-align: middle;

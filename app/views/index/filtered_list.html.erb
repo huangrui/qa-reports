@@ -101,7 +101,7 @@ function init_graph() {
   g.legend_font_size = 14;
   g.set_theme({
     colors: ['#acacac'],
-    marker_color: '#dedede',
+    marker_color: '#eee',
     font_color: '#6f6f6f',
     background_colors: ['white', 'white']
   });
@@ -109,9 +109,9 @@ function init_graph() {
 
 function draw_abs_graph() {
   init_graph();
-  g.data('pass', trend_abs_passed, '#73a20c');
-  g.data('fail', trend_abs_failed, '#ec4343');
-  g.data('n/a',  trend_abs_na,     '#cacaca');
+  g.data('pass', trend_abs_passed, '#bcd483');
+  g.data('fail', trend_abs_failed, '#f36c6c');
+  g.data('n/a',  trend_abs_na,     '#ddd');
   g.labels = trend_labels;
 
   g.draw();
@@ -119,9 +119,9 @@ function draw_abs_graph() {
 
 function draw_rel_graph() {
   init_graph();
-  g.data('pass', trend_rel_passed, '#73a20c');
-  g.data('fail', trend_rel_failed, '#ec4343');
-  g.data('n/a',  trend_rel_na,     '#cacaca');
+  g.data('pass', trend_rel_passed, '#bcd483');
+  g.data('fail', trend_rel_failed, '#f36c6c');
+  g.data('n/a',  trend_rel_na,     '#ddd');
   g.labels = trend_labels;
 
   g.draw();
