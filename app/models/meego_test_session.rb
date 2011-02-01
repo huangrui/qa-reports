@@ -102,11 +102,11 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def self.targets
-    TargetLabels.find(:all, :order => "sort_order ASC").map &:label
+    TargetLabel.find(:all, :order => "sort_order ASC").map &:label
   end  
 
   def self.release_versions
-    VersionLabels.find(:all, :order => "sort_order ASC").map &:label
+    VersionLabel.find(:all, :order => "sort_order ASC").map &:label
   end
 
   def self.latest_release_version
@@ -670,6 +670,32 @@ class MeegoTestSession < ActiveRecord::Base
     else
       0
     end
+  end
+
+  def create_version_label
+    verlabel = VersionLabel.find(:first, :conditions => {:normalized => release_version.downcase})
+    if verlabel
+      self.release_version = verlabel.label
+      save
+    else
+      verlabel = VersionLabel.new(:label => release_version, :normalized => release_version.downcase)
+      verlabel.save
+    end
+  end
+
+  def create_target_label
+    tarlabel = TargetLabel.find(:first, :conditions => {:normalized => target.downcase})
+    if tarlabel
+      self.target = tarlabel.label
+      save
+    else
+      tarlabel = TargetLabel.new(:label => target, :normalized => target.downcase)
+      tarlabel.save
+    end
+  end
+
+  def create_labels
+    create_version_label && create_target_label
   end
 end
 
