@@ -28,12 +28,6 @@ require 'report_comparison'
 require 'cache_helper'
 require 'iconv'
 
-#monkey-patch fix for https redirect
-def OpenURI.redirectable?(uri1, uri2) # :nodoc:
-    uri1.scheme.downcase == uri2.scheme.downcase ||
-    (/\A(?:http|ftp|https)\z/i =~ uri1.scheme && /\A(?:http|ftp|https)\z/i =~ uri2.scheme)
-end
-
 module AjaxMixin
   def remove_attachment
     @preview_id   = params[:id].to_i
@@ -274,7 +268,7 @@ class ReportsController < ApplicationController
 
   def fetch_bugzilla_data
     ids       = params[:bugids]
-    searchUrl = "http://bugs.meego.com/buglist.cgi?bugidtype=include&columnlist=short_desc%2Cbug_status%2Cresolution&query_format=advanced&ctype=csv&bug_id=" + ids.join(',')
+    searchUrl = "https://bugs.meego.com/buglist.cgi?bugidtype=include&columnlist=short_desc%2Cbug_status%2Cresolution&query_format=advanced&ctype=csv&bug_id=" + ids.join(',')
     data      = open(searchUrl)
     # XXX: bugzilla seems to encode its exported csv to utf-8 twice
     # so we convert from utf-8 to iso-8859-1, which is then interpreted
