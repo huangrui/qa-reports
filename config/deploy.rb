@@ -40,9 +40,9 @@ ssh_options[:forward_agent] = true
 
 after "deploy:setup" do
   # Create shared directories
-  run "mkdir #{shared_path}/reports"
-  run "mkdir #{shared_path}/files"
-  run "mkdir #{shared_path}/reports/tmp"
+  run "mkdir -p #{shared_path}/reports"
+  run "mkdir -p #{shared_path}/files"
+  run "mkdir -p #{shared_path}/reports/tmp"
 end
 
 after "deploy:symlink" do
