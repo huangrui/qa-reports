@@ -134,7 +134,7 @@ Capistrano::Configuration.instance.load do
         location = fetch(:template_dir, "config/deploy") + '/database.yml.erb'
         template = File.file?(location) ? File.read(location) : default_template
 
-        config = ERB.new(template)
+        config = ERB.new(template, 0, '%<>')
 
         run "mkdir -p #{shared_path}/db" 
         run "mkdir -p #{shared_path}/config" 
