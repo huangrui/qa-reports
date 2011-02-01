@@ -1,27 +1,16 @@
-development:
-  adapter: sqlite3
-  database: <%= "#{shared_path}/db/development.sqlite3" %>
-  pool: 5
-  timeout: 5000
-        
-test:
-  adapter: sqlite3
-  database: <%= "#{shared_path}/db/test.sqlite3" %> 
-  pool: 5
-  timeout: 5000
-        
+<% if fetch(:rails_env) == "staging" %>
 staging:
-  adapter: mysql
-  database: meego_qa_reports_staging 
-  username: meego
-  password: <%= Capistrano::CLI.ui.ask("Enter MySQL database password for staging: ")%>
-  encoding: utf8
-  timeout: 5000
-        
+<% elsif fetch(:rails_env) == "production" %>
 production:
-  adapter: mysql
-  database: meego_qa_reports_production
-  username: meego
-  password: <%= Capistrano::CLI.ui.ask("Enter MySQL database password for production: ")%>
+<% end %>
+  adapter: mysql2
   encoding: utf8
+  reconnect: true
+  pool: 5
+  host: <%= Capistrano::CLI.ui.ask("Enter QA Reports MySQL database host ip address (or localhost):")%>
+  port: <%= Capistrano::CLI.ui.ask("Enter QA Reports MySQL database port (usually 3306):")%>
+  database: <%= Capistrano::CLI.ui.ask("Enter QA Reports MySQL database name:")%>
+  username: <%= Capistrano::CLI.ui.ask("Enter QA Reports MySQL user name:")%>
+  password: <%= Capistrano::CLI.password_prompt("Enter QA Reports MySQL password: ")%>
   timeout: 5000
+
