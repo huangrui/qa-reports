@@ -102,12 +102,11 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def self.targets
-    ['Core', 'Handset', 'Netbook', 'IVI', 'SDK']
+    TargetLabels.find(:all, :order => "sort_order ASC").map &:label
   end  
 
   def self.release_versions
-    # Add new release versions to the beginning of the array.
-    ["1.2", "1.1", "1.0"]
+    VersionLabels.find(:all, :order => "sort_order ASC").map &:label
   end
 
   def self.latest_release_version
