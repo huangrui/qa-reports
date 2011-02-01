@@ -12,6 +12,7 @@ nbproject/
 .idea
 .rvmrc
 *.swp
+*.swo
 db/test.sqlite3-journal
 capybara-*.html
 coverage
