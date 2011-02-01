@@ -47,15 +47,16 @@ after "deploy:setup" do
 
   # Create newrelic configuration file
   enable_newrelic = Capistrano::CLI::ui.ask("Do you want to enable NewRelic performance monitoring? Please note this sends data to external service. Default: no")
-
   newrelic_config = YAML.load_file("config/newrelic.yml") 
-
   if enable_newrelic =~ /yes/i
     newrelic_config["production"]["monitor_mode"] = true
     newrelic_config["staging"]["monitor_mode"] = true
   end
-  
   put YAML::dump(newrelic_config), "#{shared_path}/config/newrelic.yml"
+  
+  # Create registeration token
+  registeration_token = Capistrano::CLI::ui.ask("What registeration token you want to use? (/users/<token>/register). Default: none")
+  put registeration_token, "#{shared_path}/config/registeration_token"
 end
 
 after "deploy:symlink" do
