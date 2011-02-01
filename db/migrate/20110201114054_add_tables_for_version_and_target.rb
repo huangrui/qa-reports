@@ -3,11 +3,13 @@ class AddTablesForVersionAndTarget < ActiveRecord::Migration
     create_table :version_labels do |t|
       t.string :label, :limit => 64, :null => false
       t.string :normalized, :limit => 64, :null => false
+      t.integer :sort_order, :null => false
     end
 
     create_table :target_labels do |t|
       t.string :label, :limit => 64, :null => false
-      t.string :normalized, :limit => 64, :null => false  
+      t.string :normalized, :limit => 64, :null => false
+      t.integer :sort_order, :null => false
     end
   end
 
