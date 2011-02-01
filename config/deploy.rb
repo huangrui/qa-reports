@@ -3,6 +3,7 @@ set :default_stage, "staging"
 require 'capistrano/ext/multistage'
 require 'config/deploy/capistrano_database_yml'
 require 'bundler/capistrano'
+require 'yaml'
 
 set :use_sudo, false
 set :copy_compression, :zip
@@ -43,6 +44,18 @@ after "deploy:setup" do
   run "mkdir -p #{shared_path}/reports"
   run "mkdir -p #{shared_path}/files"
   run "mkdir -p #{shared_path}/reports/tmp"
+
+  # Create newrelic configuration file
+  enable_newrelic = Capistrano::CLI::ui.ask("Do you want to enable NewRelic performance monitoring? Please note this sends data to external service. Default: no")
+
+  newrelic_config = YAML.load_file("config/newrelic.yml") 
+
+  if enable_newrelic =~ /yes/i
+    newrelic_config["production"]["monitor_mode"] = true
+    newrelic_config["staging"]["monitor_mode"] = true
+  end
+  
+  put YAML::dump(newrelic_config), "#{shared_path}/config/newrelic.yml"
 end
 
 after "deploy:symlink" do
@@ -58,6 +71,10 @@ after "deploy:symlink" do
 
   # Create symlink to token file in shared
   run "ln -nfs #{shared_path}/config/registeration_token #{current_path}/config/registeration_token"
+
+  # Remove current newrelic config file and symlink to shared
+  run "rm #{current_path}/config/newrelic.yml"
+  run "ln -nfs #{shared_path}/config/newrelic.yml #{current_path}/config/newrelic.yml"
 end
 
 namespace :deploy do
