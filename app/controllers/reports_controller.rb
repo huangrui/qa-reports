@@ -28,6 +28,12 @@ require 'report_comparison'
 require 'cache_helper'
 require 'iconv'
 
+#monkey-patch fix for https redirect
+def OpenURI.redirectable?(uri1, uri2) # :nodoc:
+    uri1.scheme.downcase == uri2.scheme.downcase ||
+    (/\A(?:http|ftp|https)\z/i =~ uri1.scheme && /\A(?:http|ftp|https)\z/i =~ uri2.scheme)
+end
+
 module AjaxMixin
   def remove_attachment
     @preview_id   = params[:id].to_i
