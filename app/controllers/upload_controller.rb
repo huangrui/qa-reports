@@ -109,6 +109,7 @@ class UploadController < ApplicationController
     @test_session.import_report(current_user)
     
     if @test_session.save
+      @test_session.create_labels
       session[:preview_id] = @test_session.id
       expire_action :controller => "index", :action => "filtered_list", :release_version => params[:meego_test_session][:release_version], :target => params[:meego_test_session][:target], :testtype => params[:meego_test_session][:testtype], :hwproduct => params[:meego_test_session][:hwproduct]
       expire_action :controller => "index", :action => "filtered_list", :release_version => params[:meego_test_session][:release_version], :target => params[:meego_test_session][:target], :testtype => params[:meego_test_session][:testtype]

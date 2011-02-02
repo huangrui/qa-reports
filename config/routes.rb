@@ -16,7 +16,7 @@ Meegoqa::Application.routes.draw do
   match '/publish' => 'reports#publish', :via => "post"
   
 
-  constraints(:release_version => /\d+\.{1}\d+/) do
+  constraints(:release_version => /[a-zA-Z0-9._-]+/) do
     match '/:release_version/:target/:testtype/:hwproduct/upload' => 'upload#upload_form', :via => "get"
     match '/:release_version/:target/:testtype/upload' => 'upload#upload_form', :via => "get"
     match '/:release_version/:target/upload' => 'upload#upload_form', :via => "get"
