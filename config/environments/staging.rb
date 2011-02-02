@@ -2,10 +2,11 @@ Meegoqa::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
 
   # Send exception notifications
+  email_addresses = eval File.open("config/exception_notifier").gets
   config.middleware.use "::ExceptionNotifier",
     :email_prefix => "[MeeGo QA Reports, staging] ",
     :sender_address => %{"Exception Notifier" <notifier@qa-reports.meego.com>},
-    :exception_recipients => %w{it@leonidasoy.fi}
+    :exception_recipients => email_addresses
 
   # The production environment is meant for finished, "live" apps.
   # Code is not reloaded between requests

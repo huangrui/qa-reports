@@ -57,6 +57,10 @@ after "deploy:setup" do
   # Create registeration token
   registeration_token = Capistrano::CLI::ui.ask("What registeration token you want to use? (/users/<token>/register). Default: none")
   put registeration_token, "#{shared_path}/config/registeration_token"
+
+  # Create Exception Notifier email list
+  email_addresses = Capistrano::CLI::ui.ask("Which email addresses should be notified in case of application errors? (Space separated list of email addresses)")
+  put "%w{#{email_addresses}}", "#{shared_path}/config/exception_notifier"
 end
 
 after "deploy:symlink" do
@@ -67,15 +71,16 @@ after "deploy:symlink" do
   run "ln -nfs #{shared_path}/reports #{current_path}/public/"
   run "ln -nfs #{shared_path}/files #{current_path}/public/"
 
-  # Remove empty token file that comes with deployment
+  # Remove empty token file that comes with deployment and symlink to shared
   run "rm -rf #{current_path}/config/registeration_token"
-
-  # Create symlink to token file in shared
   run "ln -nfs #{shared_path}/config/registeration_token #{current_path}/config/registeration_token"
 
   # Remove current newrelic config file and symlink to shared
   run "rm #{current_path}/config/newrelic.yml"
   run "ln -nfs #{shared_path}/config/newrelic.yml #{current_path}/config/newrelic.yml"
+  
+  # Symlink exception notifier config to shared
+  run "ln -nfs #{shared_path}/config/exception_notifier #{current_path}/config/exception_notifier"
 end
 
 namespace :deploy do
