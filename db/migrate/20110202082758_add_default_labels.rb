@@ -12,9 +12,9 @@ class AddDefaultLabels < ActiveRecord::Migration
   end
 
   def self.down
-    VersionLabel.find(:first, :conditions => {:label => "v1.2"}).destroy
-    VersionLabel.find(:first, :conditions => {:label => "v1.1"}).destroy
-    VersionLabel.find(:first, :conditions => {:label => "v1.0"}).destroy
+    VersionLabel.find(:first, :conditions => {:label => "1.2"}).destroy
+    VersionLabel.find(:first, :conditions => {:label => "1.1"}).destroy
+    VersionLabel.find(:first, :conditions => {:label => "1.0"}).destroy
 
     TargetLabel.find(:first, :conditions => {:label => "Core"}).destroy
     TargetLabel.find(:first, :conditions => {:label => "Handset"}).destroy
