@@ -139,15 +139,7 @@ Capistrano::Configuration.instance.load do
         run "mkdir -p #{shared_path}/db" 
         run "mkdir -p #{shared_path}/config" 
 
-        config_path = ""
-        run "cd #{shared_path}/config/ && pwd" do |ch, stream, data|
-          if stream == :out
-            config_path += data
-          end
-        end
-
-        config_path.chomp!
-        put config.result(binding), "#{config_path}/database.yml"
+        put config.result(binding), "#{shared_path}/config/database.yml"
       end
 
       desc <<-DESC
