@@ -1,8 +1,9 @@
 Meegoqa::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
 
-  # Send exception notifications
-  email_addresses = eval File.open("config/exception_notifier").gets
+  # Configure exception notifications
+  exception_notifier_config_file_path = File.expand_path('../../exception_notifier', __FILE__)
+  email_addresses = eval File.open(exception_notifier_config_file_path).gets
   config.middleware.use "::ExceptionNotifier",
     :email_prefix => "[MeeGo QA Reports] ",
     :sender_address => %{"Exception Notifier" <notifier@qa-reports.meego.com>},
