@@ -15,6 +15,25 @@ Meegoqa::Application.routes.draw do
   match '/finalize' => 'reports#preview', :via => "get"
   match '/publish' => 'reports#publish', :via => "post"
   
+  match '/upload' => 'upload#upload_form', :via => "get"
+  match '/ajax_update_tested_at' => 'reports#update_tested_at', :via => "post"
+
+  match '/ajax_update_txt' => 'reports#update_txt', :via => "post"
+  match '/ajax_update_title' => 'reports#update_title', :via => "post"
+  match '/ajax_update_comment' => 'reports#update_case_comment', :via => "post"
+  match '/ajax_update_result' => 'reports#update_case_result', :via => "post"
+  match '/ajax_remove_attachment' => 'reports#remove_attachment', :via => "post"
+  
+  match '/fetch_bugzilla_data' => 'reports#fetch_bugzilla_data', :via => "get"
+
+  # For submit the comments of features
+  match '/ajax_update_feature_comment' => 'reports#update_feature_comment', :via => "post"
+
+  # For submit the grading of features
+  match '/ajax_update_feature_grading' => 'reports#update_feature_grading', :via => "post"
+
+  # to test exception notifier
+  match '/raise_exception' => 'exceptions#index' unless Rails.env.production?
 
   constraints(:release_version => /[a-zA-Z0-9._-]+/) do
     match '/:release_version/:target/:testtype/:hwproduct/upload' => 'upload#upload_form', :via => "get"
@@ -48,25 +67,6 @@ Meegoqa::Application.routes.draw do
     match '/:release_version' => 'index#index', :via => "get"
   end
 
-  match '/upload' => 'upload#upload_form', :via => "get"
-  match '/ajax_update_tested_at' => 'reports#update_tested_at', :via => "post"
-
-  match '/ajax_update_txt' => 'reports#update_txt', :via => "post"
-  match '/ajax_update_title' => 'reports#update_title', :via => "post"
-  match '/ajax_update_comment' => 'reports#update_case_comment', :via => "post"
-  match '/ajax_update_result' => 'reports#update_case_result', :via => "post"
-  match '/ajax_remove_attachment' => 'reports#remove_attachment', :via => "post"
-  
-  match '/fetch_bugzilla_data' => 'reports#fetch_bugzilla_data', :via => "get"
-
-  # For submit the comments of features
-  match '/ajax_update_feature_comment' => 'reports#update_feature_comment', :via => "post"
-
-  # For submit the grading of features
-  match '/ajax_update_feature_grading' => 'reports#update_feature_grading', :via => "post"
-
-  # to test exception notifier
-  match '/raise_exception' => 'exceptions#index' unless Rails.env.production?
 
   root :to => "index#index"
 end
