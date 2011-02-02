@@ -78,7 +78,7 @@ after "deploy:symlink" do
   # Remove current newrelic config file and symlink to shared
   run "rm #{current_path}/config/newrelic.yml"
   run "ln -nfs #{shared_path}/config/newrelic.yml #{current_path}/config/newrelic.yml"
-  
+
   # Symlink exception notifier config to shared
   run "ln -nfs #{shared_path}/config/exception_notifier #{current_path}/config/exception_notifier"
 end
