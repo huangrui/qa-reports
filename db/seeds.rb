@@ -12,6 +12,17 @@ if Rails.env == "development" or Rails.env == "staging"
                :name => "Jean-Claude Van Damme" unless User.exists? :email => 'test@leonidasoy.fi'
 end
 
+
+VersionLabel.create! :label => "1.2", :normalized => "1.2", :sort_order => 0
+VersionLabel.create! :label => "1.1", :normalized => "1.1", :sort_order => 1
+VersionLabel.create! :label => "1.0", :normalized => "1.0", :sort_order => 2
+
+TargetLabel.create! :label => "Core", :normalized => "core", :sort_order => 0
+TargetLabel.create! :label => "Handset", :normalized => "handset", :sort_order => 1
+TargetLabel.create! :label => "Netbook", :normalized => "netbook", :sort_order => 2
+TargetLabel.create! :label => "IVI", :normalized => "ivi", :sort_order => 3
+TargetLabel.create! :label => "SDK", :normalized => "sdk", :sort_order => 4
+
 if Rails.env == "staging" and MeegoTestSession.count < 10000 # ensure there's always 10000 reports on database
   testuser = User.find_by_email("test@leonidasoy.fi")
 
