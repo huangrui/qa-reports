@@ -149,4 +149,11 @@ module ApplicationHelper
   def strs2js(strings)
     ('[' + strings.map{|s| "\"#{s}\""}.join(",") + ']').html_safe
   end
+
+  def google_analytics_tag
+    # only run analytics on the official server
+    if request.host.include? "qa-reports.meego.com"
+      render :partial => 'shared/google_analytics'
+    end
+  end
 end
