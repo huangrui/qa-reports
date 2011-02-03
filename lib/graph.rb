@@ -66,7 +66,6 @@ module Graph
     data.passed = passed = []
     data.failed = failed = []
     data.na     = na     = []
-    data.total  = total  = []
     data.labels = labels = [] 
 
     sessions.reverse_each do |s|
@@ -92,14 +91,13 @@ module Graph
           failed << rfail
           na << rna
         else
-          total << s.total_cases
           passed << s.total_passed
           failed << s.total_failed
           na << s.total_na
         end
       end
     end
-    filler = 20 - total.size
+    filler = 20 - sessions.size
     if filler > 0
       labels.concat [""] * filler
       passed.concat [0] * filler
