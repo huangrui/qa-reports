@@ -156,4 +156,18 @@ module ApplicationHelper
       render :partial => 'shared/google_analytics'
     end
   end
+
+  def clicktale_top_tag
+    # only run clicktale on the official server
+    if request.host.include? "qa-reports.meego.com"
+      render :partial => 'shared/clicktale_top'
+    end
+  end
+
+  def clicktale_bottom_tag
+    # only run clicktale on the official server
+    if request.host.include? "qa-reports.meego.com"
+      render :partial => 'shared/clicktale_bottom'
+    end
+  end
 end
