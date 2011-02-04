@@ -23,7 +23,6 @@
 require 'resultparser'
 require 'testreport'
 require 'csv'
-require 'bitly'
 require 'trimmer'
 require 'report_parser'
 require 'validation/date_time_validator'
