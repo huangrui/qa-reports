@@ -11,7 +11,6 @@ group :development do
   gem 'sqlite3-ruby', :require => 'sqlite3'
   gem 'capistrano'
   gem 'capistrano-ext'
-  #gem 'ruby-debug'
   gem 'mysql2'
 end
 
@@ -22,18 +21,10 @@ end
 
 group :test do
   gem 'capybara', '0.3.9'
-  #gem 'capybara-envjs'
   gem 'cucumber'
   gem 'rcov', :require => false
-  #gem 'culerity'
-  #gem 'celerity', :require => false
-  #gem 'launchy'
   gem 'cucumber-rails'
-  #gem 'ZenTest', '4.4.0'
-  #gem 'autotest'
-  #gem 'autotest-rails'
   gem 'metric_fu', :git => "https://github.com/pyykkis/metric_fu.git"
-  #gem 'ruby-debug'
   gem 'database_cleaner'
 end
 
