@@ -35,6 +35,7 @@ class MeegoTestCase < ActiveRecord::Base
     session.meego_test_cases.each do |tc|
       return tc if tc.name == name
     end
+    nil
   end
 
   def find_change_class(prev_session)
