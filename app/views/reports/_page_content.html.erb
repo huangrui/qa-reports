@@ -123,51 +123,11 @@
 <div id="category-dialog" style="display:none;" class="jqmWindow">
 	
 	
-	 <form accept-charset="UTF-8" action="/upload_post" class="new_meego_test_session" enctype="multipart/form-data" id="upload_report" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="U9s2DDXuKqMYRMaM/e4BJPjCEZpXgNgeogy6la8s6J8=" /></div> 
+  <%= form_for @test_session, :url=>{:action => "update_category"}, :html => {:id => 'upload_report'} do |f| %>
 	    <h1>Change test category</h1> 
-	    <div class="field"> 
-	      <label for="report_meego_version">MeeGo release:</label> 
-	        <input checked="checked" id="1.2" name="meego_test_session[release_version]" type="radio" value="1.2" /> 
-	        <label class="inline_label" for="1.2">1.2</label> 
-	        <input id="1.1" name="meego_test_session[release_version]" type="radio" value="1.1" /> 
-	        <label class="inline_label" for="1.1">1.1</label> 
-	        <input id="1.0" name="meego_test_session[release_version]" type="radio" value="1.0" /> 
-	        <label class="inline_label" for="1.0">1.0</label> 
-	    </div> 
-	    <div class="field"> 
-	      <label for="report_test_target">Target profile:</label> 
-	        <input checked="checked" id="core_target" name="meego_test_session[target]" type="radio" value="Core" /> 
-	        <label for="core_target" class="inline_label">Core</label> 
-	        <input id="handset_target" name="meego_test_session[target]" type="radio" value="Handset" /> 
-	        <label for="handset_target" class="inline_label">Handset</label> 
-	        <input id="netbook_target" name="meego_test_session[target]" type="radio" value="Netbook" /> 
-	        <label for="netbook_target" class="inline_label">Netbook</label> 
-	        <input id="ivi_target" name="meego_test_session[target]" type="radio" value="IVI" /> 
-	        <label for="ivi_target" class="inline_label">IVI</label> 
-	        <input id="sdk_target" name="meego_test_session[target]" type="radio" value="SDK" /> 
-	        <label for="sdk_target" class="inline_label">SDK</label> 
-	      
-	 
-	    </div> 
-	    <div class="field"> 
-	      <label for="report_test_execution_date">Test execution date:</label> 
-	      <input class="date" id="report_test_execution_date" name="meego_test_session[tested_at]" size="30" type="text" /> 
-	      
-	    </div> 
-	    <div class="field"> 
-	      <label for="report_test_type">Test type:</label> 
-	      <input class="text" id="report_test_type" name="meego_test_session[testtype]" size="30" tabindex="3" type="text" value="Acceptance" /> 
-	      <small class="suggestions">e.g. <a href="#">Acceptance</a>, <a href="#">Acceptance:Testing</a>, <a href="#">Sanity</a></small> 
-	      
-	    </div> 
-	    <div class="field last"> 
-	      <label for="report_test_hardware">Hardware:</label> 
-	      <input class="text" id="report_test_hardware" name="meego_test_session[hwproduct]" size="30" tabindex="5" type="text" value="Aava" /> 
-	      <small class="suggestions">e.g. <a href="#">Aava</a>, <a href="#">E865</a>, <a href="#">N900</a></small> 
-	      
-	    </div> 
+      <%= render :partial => 'shared/report_form', :object => f %>
 
-	</form>	
+	<% end %>
 	
 	<form>
 	<div id="wizard_actions">

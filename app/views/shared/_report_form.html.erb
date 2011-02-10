@@ -25,12 +25,12 @@
 <div class="field">
   <label for="report_test_type">Test type:</label>
   <%= f.text_field :testtype, :id => "report_test_type", :class => "text", :tabindex => 3 %>
-  <small class="suggestions">e.g. <%= render :partial=>'suggestion', :collection => @types[0,3], :spacer_template => 'comma' %></small>
+  <small class="suggestions">e.g. <%= render :partial=>'shared/suggestion', :collection => @types[0,3], :spacer_template => 'shared/comma' %></small>
   <%= f.error_message_on :testtype %>
 </div>
 <div class="field">
   <label for="report_test_hardware">Hardware:</label>
   <%= f.text_field :hwproduct, :id => "report_test_hardware", :class => "text", :tabindex => 5 %>
-  <small class="suggestions">e.g. <%= render :partial=>'suggestion', :collection => @hardware[0,3], :spacer_template => 'comma' %></small>
+  <small class="suggestions">e.g. <%= render :partial=>'shared/suggestion', :collection => @hardware[0,3], :spacer_template => 'shared/comma' %></small>
   <%= f.error_message_on :hwproduct %>
 </div>

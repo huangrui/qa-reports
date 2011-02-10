@@ -114,6 +114,9 @@ module AjaxMixin
     end
   end
 
+  def update_category
+  end
+
   def update_feature_comment
     set_id = params[:id]
     comments = params[:comment]
@@ -240,6 +243,10 @@ class ReportsController < ApplicationController
     if id = params[:id].try(:to_i)
       @test_session   = MeegoTestSession.find(id)
       @report         = @test_session
+      @targets = MeegoTestSession.list_targets @selected_release_version
+      @types = MeegoTestSession.list_types @selected_release_version
+      @hardware = MeegoTestSession.list_hardware @selected_release_version
+      @release_versions = MeegoTestSession.release_versions
       @no_upload_link = true
       @files = FileStorage.new().list_files(@test_session) or []
 
