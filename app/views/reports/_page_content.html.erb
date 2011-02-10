@@ -42,9 +42,13 @@
       <table id="functional_results" class="detailed_results">
         <thead>
 			<tr>
-			  <th id="th_test_case">Test case</th>
+			  <th id="th_test_case">
+			  	<span class="sort"><a href="#" id="see_only_failed_button" class="sort_btn active">See only failed</a> 
+			  		<a href="#" id="see_all_button" class="sort_btn">See all</a>
+			  	</span>
+			  </th>
 			  <th id="th_result">Result</th>
-			  <th id="th_notes"><div style="position:relative;">Notes <span class="sort right"><a href="#" id="see_only_failed_button" class="sort_btn active">See only failed</a> <a href="#" id="see_all_button" class="sort_btn">See all</a></span></div></th>
+			  <th id="th_notes">Notes</th>
         	</tr>
 		</thead>
 
@@ -60,23 +64,27 @@
 	    <table id="non-functional_results" class="detailed_results">
 	      <thead>
 				<tr>
-				  <th id="th_history_test_case">Test case</th>
+				  <th id="th_history_test_case">
+				  	<span class="sort">
+				   		<a href="#" id="see_only_failed_button" class="sort_btn">See only failed</a> 
+				   		<a href="#" id="see_all_button" class="sort_btn">See all</a>
+				   		<a href="#" id="see_history_button" class="sort_btn active">See history</a>
+				   	</span>
+				  </th>
 				  <th class="th_history_result"><a href="">03/01</a></th>
 				  <th class="th_history_result"><a href="">05/01</a></th>
 				  <th class="th_history_result"><a href="">12/01</a></th>
 				  <th class="th_history_result"><a href="">28/01</a></th>
-				  <th class="th_result">Latest result</th>
+				  <th class="th_result">Current</th>
 				  <th> 				  				  				      
 
-				 <div style="position:relative;">Notes <span class="sort">
-				  	<a href="#" id="see_history_button" class="sort_btn">See history</a>
-				  	<a href="#" id="see_only_failed_button" class="sort_btn active">See only failed</a> <a href="#" id="see_all_button" class="sort_btn">See all</a></span></div>
+				 <div style="position:relative;"></div>
 				  	</th>
 	      	</tr>
 			</thead>
 			
 			<tr class="feature_name">
-				<td colspan="6">
+				<td colspan="7">
 			        Run time status/Settings/Control Panel (Dummy)
 					<a href="#" class="see_all_toggle">+ see passing tests</a>
 				</td>
@@ -88,34 +96,36 @@
 				<td class="testcase_result fail history_result">Fail</td>   
 				<td class="testcase_result fail history_result">Fail</td>   			
 				<td class="testcase_result fail history_result">Fail</td> 
-				<td class="testcase_result pass" colspan="2">Pass</td> 		
-										
+				<td class="testcase_result pass current_result">Pass</td> 		
+				<td></td>		
 
 			</tr>
 	
 			<tr class="feature_name">
-				<td colspan="6">
+				<td colspan="7">
 			        Run time status/Settings/Control Panel (Dummy)
 					<a href="#" class="see_all_toggle">+ see passing tests</a>
 				</td>
 			</tr>
 	
 			<tr class="testcase">
-<td class="testcase_name">Check PIN activation/deactivation (Need GUI support)</td>
-<td class="testcase_result fail history_result">Fail</td> 
-<td class="testcase_result fail history_result">Fail</td>   
-<td class="testcase_result fail history_result">Fail</td>   			
-<td class="testcase_result fail history_result">Fail</td> 
-<td class="testcase_result pass" colspan="2">Pass</td> 								
+				<td class="testcase_name">Check PIN activation/deactivation (Need GUI support)</td>
+				<td class="testcase_result fail history_result">Fail</td> 
+				<td class="testcase_result fail history_result">Fail</td>   
+				<td class="testcase_result fail history_result">Fail</td>   			
+				<td class="testcase_result fail history_result">Fail</td> 
+				<td class="testcase_result pass current_result">Pass</td> 	
+				<td></td>							
 			</tr>
 			
 			<tr class="testcase">
-<td class="testcase_name">Check PIN activation/deactivation (Need GUI support)</td>
-<td class="testcase_result fail history_result">Fail</td> 
-<td class="testcase_result fail history_result">Fail</td>   
-<td class="testcase_result fail history_result">Fail</td>   			
-<td class="testcase_result fail history_result">Fail</td> 
-<td class="testcase_result pass" colspan="2">Pass</td> 								
+				<td class="testcase_name">Check PIN activation/deactivation (Need GUI support)</td>
+				<td class="testcase_result pass history_result">Pass</td> 
+				<td class="testcase_result fail history_result">Fail</td>   
+				<td class="testcase_result pass history_result">Pass</td>   			
+				<td class="testcase_result pass history_result">Pass</td> 
+				<td class="testcase_result fail current_result">fail</td> 	
+				<td></td>							
 			</tr>
 
 		

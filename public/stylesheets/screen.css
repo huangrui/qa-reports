@@ -1425,11 +1425,11 @@ td.na {
     width: 5%;
     text-align: left; }
 
-#th_test_case {
+#th_test_case,
+#th_history_test_case {
     width: 50%; }
 
-#th_nft_test_case,
-#th_history_test_case {
+#th_nft_test_case {
     width: 40%; }
 
 
@@ -1591,8 +1591,11 @@ td.fail {
     color: #ec4343; }
 
 .history_result {
-	background: transparent no-repeat right url(../images/history_arrow.png);
-}
+	background: transparent no-repeat right 0.8em url(../images/history_arrow.png);}
+
+.history_result,
+.current_result {
+	width:60px;}
 
 .unit {
 	color: #aaa;}
