@@ -1,13 +1,16 @@
 <% if @editing %>
-<div class="editable_text editable_date">
+<div class="editable_text editable_date" id="test_category">
 <% end %>
-<dt>Test execution date:</dt>
+<dt>Test execution date and category:</dt>
 <dd>
-  <span class="un content"><%= format_date_to_human_readable @report.tested_at %></span>
+  <%= format_date_to_human_readable @report.tested_at %>
 <% if @editing %>
   <span class="editmarkup" style="display:none;"><%= format_date_to_input @report.tested_at %></span>
 <% end %>
 </dd>
+
+<dd>1.2 &rsaquo; Core &rsaquo; Acceptance &rsaquo; Aava</dd>
+
 <% if @editing %>
 </div>
 <% end %>

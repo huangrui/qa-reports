@@ -1625,18 +1625,25 @@ td.fail {
     border-top-width: 7px;
     border-top-style: solid;
     width: 21em;
-    line-height: 20px; }
+    /*line-height: 20px;*/ }
 
 .toc {border-top-color: #ed0089;}
 
 .toc ol,
 .meta_info {
     list-style-type: none;
-    list-style-position: outside;
-}
+    list-style-position: outside;}
 
 .toc a:after {
     content: ' >'; }
+
+.meta_info dt {
+	font-size: 10px;
+	margin-top: 6px;
+	color: #999;}
+
+.meta_info #report_author {
+	margin-top: 0;}
 
 .meta_info {border-top-color: #9f9f9f;}
 
@@ -1647,6 +1654,14 @@ td.fail {
 
 .report_head {
     overflow: hidden;}
+
+#category-dialog .suggestions {
+	margin-left: 210px;}
+
+#category-dialog #wizard_actions {
+	margin-top: 15px;
+	padding-top: 15px;
+	padding-bottom: 10px;}
 
 
 /* @end */

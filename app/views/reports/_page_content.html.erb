@@ -14,7 +14,7 @@
 		<%= yield :table_of_contents %>
 
 		<dl class="meta_info">
-				<dt>Author:</dt>
+				<dt id="report_author">Author:</dt>
 				<dd><%= @report.author.name%><br/>
                   <span class="un"><%= format_date_to_human_readable @report.created_at %></span>
                 </dd>
@@ -23,7 +23,8 @@
                   <span class="un"><%= format_date_to_human_readable @report.updated_at %></span>
                 </dd>
 			     <%= render :partial => 'editable_date' %>
-		</dl>
+			    
+			  		</dl>
 	</div>
       <%= render :partial => 'editable_text', :locals => {:anchor => 'test_objective', :title => "Test Objective", :field => 'objective'} %>
       <%= render :partial => 'editable_text', :locals => {:anchor => 'build', :title => "Build (image)", :field => 'build'} %>
@@ -51,7 +52,7 @@
 
       </table>
       
-     <!-- <h2 id="detailed_results">Non-functional Test Results<span class="heading_actions"><%=back_to_top%></span></h2>
+   <h2 id="detailed_results">Non-functional Test Results<span class="heading_actions"><%=back_to_top%></span></h2>
       
 	      
 	    <table id="non-functional_results" class="detailed_results">
@@ -107,7 +108,7 @@
 	<td class="testcase_notes">Test case is not suitable for N900.</td>
 </tr>
 		
-	    </table>-->
+	    </table>
       
       
       <%= render :partial => 'editable_text', :locals => {:anchor => 'issue_summary', :title => "Issue Summary", :field => 'issue_summary'} %>
@@ -116,3 +117,102 @@
 	<%= yield :wizard_actions %>
 
 </div>
+
+
+<% content_for :category_dialog do %>
+<div id="category-dialog" style="display:none;" class="jqmWindow">
+	
+	
+	 <form accept-charset="UTF-8" action="/upload_post" class="new_meego_test_session" enctype="multipart/form-data" id="upload_report" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="U9s2DDXuKqMYRMaM/e4BJPjCEZpXgNgeogy6la8s6J8=" /></div> 
+	    <h1>Change test category</h1> 
+	    <div class="field"> 
+	      <label for="report_meego_version">MeeGo release:</label> 
+	        <input checked="checked" id="1.2" name="meego_test_session[release_version]" type="radio" value="1.2" /> 
+	        <label class="inline_label" for="1.2">1.2</label> 
+	        <input id="1.1" name="meego_test_session[release_version]" type="radio" value="1.1" /> 
+	        <label class="inline_label" for="1.1">1.1</label> 
+	        <input id="1.0" name="meego_test_session[release_version]" type="radio" value="1.0" /> 
+	        <label class="inline_label" for="1.0">1.0</label> 
+	    </div> 
+	    <div class="field"> 
+	      <label for="report_test_target">Target profile:</label> 
+	        <input checked="checked" id="core_target" name="meego_test_session[target]" type="radio" value="Core" /> 
+	        <label for="core_target" class="inline_label">Core</label> 
+	        <input id="handset_target" name="meego_test_session[target]" type="radio" value="Handset" /> 
+	        <label for="handset_target" class="inline_label">Handset</label> 
+	        <input id="netbook_target" name="meego_test_session[target]" type="radio" value="Netbook" /> 
+	        <label for="netbook_target" class="inline_label">Netbook</label> 
+	        <input id="ivi_target" name="meego_test_session[target]" type="radio" value="IVI" /> 
+	        <label for="ivi_target" class="inline_label">IVI</label> 
+	        <input id="sdk_target" name="meego_test_session[target]" type="radio" value="SDK" /> 
+	        <label for="sdk_target" class="inline_label">SDK</label> 
+	      
+	 
+	    </div> 
+	    <div class="field"> 
+	      <label for="report_test_execution_date">Test execution date:</label> 
+	      <input class="date" id="report_test_execution_date" name="meego_test_session[tested_at]" size="30" type="text" /> 
+	      
+	    </div> 
+	    <div class="field"> 
+	      <label for="report_test_type">Test type:</label> 
+	      <input class="text" id="report_test_type" name="meego_test_session[testtype]" size="30" tabindex="3" type="text" value="Acceptance" /> 
+	      <small class="suggestions">e.g. <a href="#">Acceptance</a>, <a href="#">Acceptance:Testing</a>, <a href="#">Sanity</a></small> 
+	      
+	    </div> 
+	    <div class="field last"> 
+	      <label for="report_test_hardware">Hardware:</label> 
+	      <input class="text" id="report_test_hardware" name="meego_test_session[hwproduct]" size="30" tabindex="5" type="text" value="Aava" /> 
+	      <small class="suggestions">e.g. <a href="#">Aava</a>, <a href="#">E865</a>, <a href="#">N900</a></small> 
+	      
+	    </div> 
+
+	</form>	
+	
+	<form>
+	<div id="wizard_actions">
+	  
+			<input type="button" value="Cancel" class="dialog-cancel jqmClose"/>
+			<input type="submit" value="Save" class="dialog-delete"/>
+		
+	</div>
+	</form>
+	</div>
+<% end %>
+
+<% content_for :view_specific_js do %>
+<%= javascript_include_tag 'jqModal.js'%>
+<script language="javascript" type="text/javascript">
+$(document).ready(function(){
+	$('#category-dialog').jqm({
+		modal:true
+	}).jqmAddTrigger('#test_category');
+});
+</script>
+
+<script type="text/javascript">
+
+  $(document).ready(function() {
+
+
+      $(".date").datepicker({
+        showOn: "both",
+        buttonImage: "/images/calendar_icon.png",
+        buttonImageOnly: true,
+        firstDay: 1,
+        selectOtherMonths: true,
+        dateFormat: "yy-mm-dd"
+      });
+
+      var myDate = new Date();
+      var prettyDate = myDate.getUTCFullYear() + '-' + (myDate.getUTCMonth()+1) + '-' + myDate.getUTCDate();
+      $(".date").val(prettyDate);
+
+
+      activateSuggestionLinks("div.field");
+});
+</script>
+
+
+
+<% end %>
