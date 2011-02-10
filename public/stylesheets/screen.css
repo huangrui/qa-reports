@@ -1405,7 +1405,8 @@ td.dec em{
 .th_to_target,
 .th_target,
 .th_measured,
-.th_result {
+.th_result,
+.th_limit	{
 	text-align: center;}
 
 .th_to_target {
@@ -1417,8 +1418,14 @@ td.dec em{
 .th_measured {
 	width:7%;}
 
+.th_limit {
+	width:7%;}
+
 .th_history_result {
 	text-align: center;}
+
+.th_result {
+	width: 5%;}
 
 #th_result {
     width: 5%;
@@ -1526,16 +1533,20 @@ select.grading_select {
 td.testcase_name {
     padding-left: 20px;
     padding-right: 20px; }
-    
-.multiple_results { 
-    vertical-align: middle;	
-		background-color:blue;}
+
+.multiple_results {
+	border-left:1px solid #eee !important;
+	border-right:1px solid #eee;
+	vertical-align: middle !important;}
+
+.multiple_rows td {
+	border-bottom: none;}
 
 .testcase_result,
 .testcase_target,
-.testcase_to_target {
-/*background: none no-repeat 94% 5px; */
-    text-align: center;	}
+.testcase_to_target,
+.testcase_limit {
+    text-align: center;}
 
 .changed_result,
 .unchanged_result {
