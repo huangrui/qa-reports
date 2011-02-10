@@ -1526,7 +1526,10 @@ select.grading_select {
 td.testcase_name {
     padding-left: 20px;
     padding-right: 20px; }
-
+    
+.multiple_results { 
+    vertical-align: middle;	
+		background-color:blue;}
 
 .testcase_result,
 .testcase_target,
