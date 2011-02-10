@@ -147,29 +147,22 @@ $(document).ready(function(){
 	$('#category-dialog').jqm({
 		modal:true
 	}).jqmAddTrigger('#test_category');
-});
-</script>
 
-<script type="text/javascript">
+  $(".date").datepicker({
+    showOn: "both",
+    buttonImage: "/images/calendar_icon.png",
+    buttonImageOnly: true,
+    firstDay: 1,
+    selectOtherMonths: true,
+    dateFormat: "yy-mm-dd"
+  });
 
-  $(document).ready(function() {
+  var myDate = new Date();
+  var prettyDate = myDate.getUTCFullYear() + '-' + (myDate.getUTCMonth()+1) + '-' + myDate.getUTCDate();
+  $(".date").val(prettyDate);
 
-
-      $(".date").datepicker({
-        showOn: "both",
-        buttonImage: "/images/calendar_icon.png",
-        buttonImageOnly: true,
-        firstDay: 1,
-        selectOtherMonths: true,
-        dateFormat: "yy-mm-dd"
-      });
-
-      var myDate = new Date();
-      var prettyDate = myDate.getUTCFullYear() + '-' + (myDate.getUTCMonth()+1) + '-' + myDate.getUTCDate();
-      $(".date").val(prettyDate);
-
-
-      activateSuggestionLinks("div.field");
+  activateSuggestionLinks("div.field");
+  handleCategoryEdit("#category_dialog")
 });
 </script>
 

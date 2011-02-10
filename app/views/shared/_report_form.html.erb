@@ -2,14 +2,14 @@
 <div class="field">
   <label for="report_meego_version">MeeGo release:</label>
   <% @release_versions.each do |release_version| %>
-    <%= f.radio_button :release_version, release_version, :id => release_version %>
+    <%= f.radio_button :release_version, release_version, :id => release_version, :class => "version" %>
     <%= f.label :release_version, release_version, :for => release_version, :class => "inline_label" %>
   <% end %>
 </div>
 <div class="field">
   <label for="report_test_target">Target profile:</label>
   <% MeegoTestSession::targets.each{|target| %>
-    <%= f.radio_button :target, target, :id => target.downcase+'_target' %>
+    <%= f.radio_button :target, target, :id => target.downcase+'_target', :class => "target" %>
     <label for="<%=target.downcase%>_target" class="inline_label"><%=target%></label>
   <% } %>
   <%= f.error_message_on :target %>
@@ -24,13 +24,13 @@
 </div>
 <div class="field">
   <label for="report_test_type">Test type:</label>
-  <%= f.text_field :testtype, :id => "report_test_type", :class => "text", :tabindex => 3 %>
+  <%= f.text_field :testtype, :id => "report_test_type", :class => "text testtype", :tabindex => 3 %>
   <small class="suggestions">e.g. <%= render :partial=>'shared/suggestion', :collection => @types[0,3], :spacer_template => 'shared/comma' %></small>
   <%= f.error_message_on :testtype %>
 </div>
 <div class="field">
   <label for="report_test_hardware">Hardware:</label>
-  <%= f.text_field :hwproduct, :id => "report_test_hardware", :class => "text", :tabindex => 5 %>
+  <%= f.text_field :hwproduct, :id => "report_test_hardware", :class => "text hwproduct", :tabindex => 5 %>
   <small class="suggestions">e.g. <%= render :partial=>'shared/suggestion', :collection => @hardware[0,3], :spacer_template => 'shared/comma' %></small>
   <%= f.error_message_on :hwproduct %>
 </div>

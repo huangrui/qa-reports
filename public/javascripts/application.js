@@ -40,6 +40,13 @@ function applySuggestion() {
     return false;
 }
 
+function handleCategoryUpdate(div) {
+    var $div = $(div);
+    var $save = $div.find(".dialog-delete");
+    var $cancel = $div.find(".dialog-cancel");
+
+}
+
 function linkEditButtons() {
     $('div.editable_area').each(function(i, node) {
         var $node = $(node);
