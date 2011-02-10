@@ -1418,6 +1418,9 @@ td.na {
 .th_measured {
 	width:7%;}
 
+.th_history_result {
+	text-align: center;}
+
 #th_result {
     width: 5%;
     text-align: left; }
@@ -1425,7 +1428,8 @@ td.na {
 #th_test_case {
     width: 50%; }
 
-#th_nft_test_case {
+#th_nft_test_case,
+#th_history_test_case {
     width: 40%; }
 
 
@@ -1585,6 +1589,10 @@ td.fail {
 
 .fail {
     color: #ec4343; }
+
+.history_result {
+	background: transparent no-repeat right url(../images/history_arrow.png);
+}
 
 .unit {
 	color: #aaa;}
