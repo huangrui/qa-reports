@@ -1386,10 +1386,10 @@ td.dec em{
     width:40px;
     text-align: center;}
 
-td.total,
-td.pass,
-td.fail,
-td.na {
+#test_results .total,
+#test_results .pass,
+#test_results .fail,
+#test_results .na {
     text-align: center; }
 
 .th_graph {
@@ -1423,7 +1423,7 @@ td.na {
 
 #th_result {
     width: 5%;
-    text-align: left; }
+    text-align: center; }
 
 #th_test_case,
 #th_history_test_case {
@@ -1525,10 +1525,11 @@ select.grading_select {
     border-left: 1px none #ddd;}
 
 td.testcase_name {
-    padding-left: 20px; }
+    padding-left: 20px;
+    padding-right: 20px; }
 
 
-td.testcase_result,
+.testcase_result,
 .testcase_target,
 .testcase_to_target {
 /*background: none no-repeat 94% 5px; */
@@ -1536,7 +1537,9 @@ td.testcase_result,
 
 .changed_result,
 .unchanged_result {
-    background: url('../images/changed_arrow.png') 50% 0.7em no-repeat;}
+		text-align: left;
+    background: url('../images/changed_arrow.png') 50% 0.7em no-repeat;
+   	padding-left: 20px;}
 
 .testcase td.changed_result {
     border-left:none;}
@@ -1547,7 +1550,6 @@ td.testcase_result,
 .changed_from_fail,
 .changed_from_pass,
 .changed_from_na {
-	padding-left: 20px;
 	background: transparent no-repeat left 0.8em;}
 
 .changed_from_fail {

@@ -133,18 +133,23 @@
    
    
    
-   <!--<h2 id="detailed_results">Non-functional Test Results<span class="heading_actions"><%=back_to_top%></span></h2>
+   <h2 id="detailed_results">Non-functional Test Results<span class="heading_actions"><%=back_to_top%></span></h2>
       
 	      
 	    <table id="non-functional_results" class="detailed_results">
 	      <thead>
 				<tr>
-				  <th id="th_nft_test_case">Test case</th>
+				  <th id="th_nft_test_case">
+				  	<span class="sort">
+				  		<a href="#" id="see_only_failed_button" class="sort_btn active">See only failed</a>
+				  		<a href="#" id="see_all_button" class="sort_btn">See all</a>
+				  	</span>
+				  </th>
 				  <th class="th_measured">Measured</th>
 				  <th class="th_target">Target</th>    
 				  <th class="th_result">Result</th>  			  
 				  <th class="th_to_target">% of target</th>      			  
-				  <th id="th_notes"><div style="position:relative;">Notes <span class="sort"><a href="#" id="see_only_failed_button" class="sort_btn active">See only failed</a> <a href="#" id="see_all_button" class="sort_btn">See all</a></span></div></th>
+				  <th id="th_notes">Notes</th>
 	      	</tr>
 			</thead>
 			
@@ -189,7 +194,7 @@
 				<td class="testcase_notes">Test case is not suitable for N900.</td>
 			</tr>
 		
-</table>-->
+</table>
       
       
       <%= render :partial => 'editable_text', :locals => {:anchor => 'issue_summary', :title => "Issue Summary", :field => 'issue_summary'} %>
