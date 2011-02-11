@@ -45,6 +45,7 @@ function handleCategoryUpdate(div) {
     var $save = $div.find(".dialog-delete");
     var $cancel = $div.find(".dialog-cancel");
 
+    
 }
 
 function linkEditButtons() {
