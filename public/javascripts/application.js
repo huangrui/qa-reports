@@ -40,12 +40,20 @@ function applySuggestion() {
     return false;
 }
 
-function handleCategoryUpdate(div) {
-    var $div = $(div);
-    var $save = $div.find(".dialog-delete");
-    var $cancel = $div.find(".dialog-cancel");
-
+prepareCategoryUpdate = function(div) {
+    var $div     = $(div);
+    var $save    = $div.find(".dialog-delete");
+    var $cancel  = $div.find(".dialog-cancel");
+    var $target  = $div.find(".field .target");
+    var $version = $div.find(".field .version");
+    var $date    = $div.find(".field .date");
     
+    $save.click(function() {
+       // validate
+       // send to server
+       // update DOM
+    });
+
 }
 
 function linkEditButtons() {
