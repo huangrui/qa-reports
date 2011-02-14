@@ -65,7 +65,7 @@
         modal:true
       }).jqmAddTrigger('#test_category');
 
-      $(".date").datepicker({
+      $("#report_test_execution_date").datepicker({
         showOn: "both",
         buttonImage: "/images/calendar_icon.png",
         buttonImageOnly: true,
@@ -76,7 +76,7 @@
 
       var myDate = new Date();
       var prettyDate = myDate.getUTCFullYear() + '-' + (myDate.getUTCMonth()+1) + '-' + myDate.getUTCDate();
-      $(".date").val(prettyDate);
+      $("#report_test_execution_date").val(prettyDate);
 
       activateSuggestionLinks("div.field");
       handleCategoryEdit("#category_dialog")
@@ -84,6 +84,7 @@
       filterResults("tr.result_pass", "passing tests");
       linkEditButtons();
       fetchBugzillaInfo();
+      prepareCategoryUpdate("#category-dialog");
     });
     </script>
 <% end %>

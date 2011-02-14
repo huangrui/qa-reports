@@ -94,7 +94,6 @@ module AjaxMixin
 
 
   def update_tested_at
-    logger.info("called update_tested_at with #{params.inspect}")
     @preview_id = params[:id]
 
     if @preview_id
@@ -115,6 +114,24 @@ module AjaxMixin
   end
 
   def update_category
+    @preview_id = params[:id]
+
+    if @preview_id
+      @test_session = MeegoTestSession.find(@preview_id)
+
+      data = params[:meego_test_session]
+      data.keys.each do |key|
+        @test_session.update_attribute(field, data[key])
+      end
+      @test_session.updated_by(current_user)
+
+      expire_caches_for(@test_session)
+      expire_index_for(@test_session)
+
+      render :text => @test_session.tested_at.strftime('%d %B %Y')
+    else
+      logger.warn "WARNING: report id #{@preview_id} not found"
+    end
   end
 
   def update_feature_comment

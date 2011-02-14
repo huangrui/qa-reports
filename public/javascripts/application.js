@@ -41,18 +41,50 @@ function applySuggestion() {
 }
 
 prepareCategoryUpdate = function(div) {
-    var $div     = $(div);
-    var $save    = $div.find(".dialog-delete");
-    var $cancel  = $div.find(".dialog-cancel");
-    var $target  = $div.find(".field .target");
-    var $version = $div.find(".field .version");
-    var $date    = $div.find(".field .date");
+    var $div      = $(div);
+    var $form     = $div.find("form");
+    var $save     = $div.find(".dialog-delete");
+    var $cancel   = $div.find(".dialog-cancel");
+    var $target   = $div.find(".field .target");
+    var $testtype = $div.find(".field .testtype");
+    var $version  = $div.find(".field .version");
+    var $date     = $div.find(".field .date");
+    var $catpath  = $div.find("dd.category");
+    var $datespan = $div.find("span.date");
     
     $save.click(function() {
-       // validate
-       // send to server
-       // update DOM
+      var targetval  = $target.val;
+      var versionval = $version.val;
+      var typeval    = $testtype.val;
+      var dateval    = $date.val;
+
+      // validate
+      // TODO: added placeholders to HTML for ajax errors
+      if (targetval == '') {
+        return false;
+      } else if (testtype == '') {
+        return false;
+      } else if (versionval == '') {
+        return false;
+      } else if (dateval == '') {
+        return false;
+      }
+
+      // send to server
+      var data = $form.serialize();
+      var url  = $form.attr('action');
+
+      // update DOM
+      //  - update bread crumbs
+      //  - update date
+      $.post(url, data, function(data) {
+          $datespan.text(data);
+          $catpath.text(versionval + " &rsaquot; " + targetval + " &rsaquot; " + $typeval;
+      });
+
+      return false;
     });
+
 
 }
 
