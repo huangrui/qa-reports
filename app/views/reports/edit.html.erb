@@ -79,7 +79,6 @@
       $("#report_test_execution_date").val(prettyDate);
 
       activateSuggestionLinks("div.field");
-      handleCategoryEdit("#category_dialog")
 
       filterResults("tr.result_pass", "passing tests");
       linkEditButtons();
@@ -93,7 +92,7 @@
 <div id="category-dialog" style="display:none;" class="jqmWindow">
 	
 	
-  <%= form_for @test_session, :url=>{:action => "update_category"}, :html => {:id => 'upload_report'} do |f| %>
+  <%= form_for @test_session, :url=>{:action => "update_category"}, :html => {:id => 'upload_report', :method=>'post'} do |f| %>
 	    <h1>Change test category</h1> 
       <%= render :partial => 'shared/report_form', :object => f %>
 

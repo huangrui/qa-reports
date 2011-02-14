@@ -53,16 +53,16 @@ prepareCategoryUpdate = function(div) {
     var $datespan = $div.find("span.date");
     
     $save.click(function() {
-      var targetval  = $target.val;
-      var versionval = $version.val;
-      var typeval    = $testtype.val;
-      var dateval    = $date.val;
+      var targetval  = $target.val();
+      var versionval = $version.val();
+      var typeval    = $testtype.val();
+      var dateval    = $date.val();
 
       // validate
-      // TODO: added placeholders to HTML for ajax errors
+      // TODO: add placeholders to HTML for ajax errors
       if (targetval == '') {
         return false;
-      } else if (testtype == '') {
+      } else if (typeval == '') {
         return false;
       } else if (versionval == '') {
         return false;
@@ -79,8 +79,10 @@ prepareCategoryUpdate = function(div) {
       //  - update date
       $.post(url, data, function(data) {
           $datespan.text(data);
-          $catpath.text(versionval + " &rsaquot; " + targetval + " &rsaquot; " + $typeval;
+          $catpath.text(versionval + " &rsaquot; " + targetval + " &rsaquot; " + typeval);
       });
+
+      $div.jqmHide();
 
       return false;
     });
