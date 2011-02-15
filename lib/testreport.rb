@@ -24,7 +24,7 @@ module MeegoTestReport
   
   def MeegoTestReport.find_bugzilla_ids(txt)
     ids = Set()
-    txt.scan /http\:\/\/bugs.meego.com\/show_bug\.cgi\?id=(\d+)/.each do |match|
+    txt.scan /#{BUGZILLA_CONFIG['link_uri']}(\d+)/.each do |match|
       ids << match[0]
     end
     txt.scan /\[\[(\d+)\]\]/.each do |match|
@@ -54,9 +54,9 @@ module MeegoTestReport
       line.gsub! /'''''(.+?)'''''/, "<b><i>\\1</i></b>"
       line.gsub! /'''(.+?)'''/, "<b>\\1</b>"
       line.gsub! /''(.+?)''/, "<i>\\1</i>"
-      line.gsub! /http\:\/\/bugs.meego.com\/show_bug\.cgi\?id=(\d+)/, "<a class=\"bugzilla fetch bugzilla_status bugzilla_append\" href=\"http://bugs.meego.com/show_bug.cgi?id=\\1\">\\1</a>"
+      line.gsub! /#{BUGZILLA_CONFIG['link_uri']}(\d+)/, "<a class=\"bugzilla fetch bugzilla_status bugzilla_append\" href=\""+BUGZILLA_CONFIG['link_uri']+"\\1\">\\1</a>"
       line.gsub! /\[\[(http:\/\/.+?) (.+?)\]\]/, "<a href=\"\\1\">\\2</a>"
-      line.gsub! /\[\[(\d+)\]\]/, "<a class=\"bugzilla fetch bugzilla_status bugzilla_append\" href=\"http://bugs.meego.com/show_bug.cgi?id=\\1\">\\1</a>"
+      line.gsub! /\[\[(\d+)\]\]/, "<a class=\"bugzilla fetch bugzilla_status bugzilla_append\" href=\""+BUGZILLA_CONFIG['link_uri']+"\\1\">\\1</a>"
 
       if line =~ /^====\s*(.+)\s*====$/
         html << "<h5>#{$1}</h5>"

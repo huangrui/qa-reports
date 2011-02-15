@@ -1,0 +1,22 @@
+# Configuration for Bugzilla integration
+
+# Bugzilla server config
+server: bugs.meego.com
+port: 80
+use_ssl: false
+
+# Query URI template (comma separated list of ids appended)
+uri: /buglist.cgi?bugidtype=include&columnlist=short_desc%2Cbug_status%2Cresolution&query_format=advanced&ctype=csv&bug_id=
+
+# The URL used to link to bugs (bug id appended)
+link_uri: http://bugs.meego.com/show_bug.cgi?id=
+
+# Proxy server address and port (leave empty if not needed)
+proxy_server: 
+proxy_port:
+  
+# HTTP Basic authentication. These are asked during deployment. Notice that
+# you need these only if you must login with HTTP Basic Auth to access
+# Bugzilla - i.e. your browsers displays a popup window asking for credentials.
+http_username: 
+http_password: 
