@@ -1,4 +1,7 @@
 <% f = report_form %>
+<% if @test_session %>
+  <input class="id_field" type="hidden" name="id" value="<%=@test_session.id%>" />
+<% end %>
 <div class="field">
   <label for="report_meego_version">MeeGo release:</label>
   <% @release_versions.each do |release_version| %>

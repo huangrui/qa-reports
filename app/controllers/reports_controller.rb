@@ -121,7 +121,7 @@ module AjaxMixin
 
       data = params[:meego_test_session]
       data.keys.each do |key|
-        @test_session.update_attribute(field, data[key])
+        @test_session.update_attribute(key, data[key])
       end
       @test_session.updated_by(current_user)
 

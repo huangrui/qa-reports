@@ -49,14 +49,18 @@ prepareCategoryUpdate = function(div) {
     var $testtype = $div.find(".field .testtype");
     var $version  = $div.find(".field .version");
     var $date     = $div.find(".field .date");
-    var $catpath  = $div.find("dd.category");
-    var $datespan = $div.find("span.date");
+    var $hardware = $div.find(".field .hwproduct");
+    var $catpath  = $("dd.category");
+    var $datespan = $("span.date");
+
+    var arrow     = $('<div/>').html(" &rsaquo; ").text();
     
     $save.click(function() {
       var targetval  = $target.val();
       var versionval = $version.val();
       var typeval    = $testtype.val();
       var dateval    = $date.val();
+      var hwval      = $hardware.val();
 
       // validate
       // TODO: add placeholders to HTML for ajax errors
@@ -68,6 +72,8 @@ prepareCategoryUpdate = function(div) {
         return false;
       } else if (dateval == '') {
         return false;
+      } else if (hwval == '') {
+        return false;
       }
 
       // send to server
@@ -78,8 +84,10 @@ prepareCategoryUpdate = function(div) {
       //  - update bread crumbs
       //  - update date
       $.post(url, data, function(data) {
+          console.log($catpath);
           $datespan.text(data);
-          $catpath.text(versionval + " &rsaquot; " + targetval + " &rsaquot; " + typeval);
+          
+          $catpath.html(escape(versionval) + arrow + escape(targetval) + arrow + escape(typeval) + arrow + escape(hwval));
       });
 
       $div.jqmHide();
@@ -100,7 +108,6 @@ function linkEditButtons() {
         $node.click(handleEditButton);
     });
     $('div.editable_title').click(handleTitleEdit);
-    $('div.editable_date').click(handleDateEdit);
     $('.testcase').each(function(i, node) {
         var $node = $(node);
         var $comment = $node.find('.testcase_notes');
