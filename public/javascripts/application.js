@@ -800,9 +800,9 @@ function formatMarkup(s) {
         line = line.replace(/'''''(.+?)'''''/g, "<b><i>$1</i></b>");
         line = line.replace(/'''(.+?)'''/g, "<b>$1</b>");
         line = line.replace(/''(.+?)''/g, "<i>$1</i>");
-        line = line.replace(/http\:\/\/bugs.meego.com\/show_bug\.cgi\?id=(\d+)/g, "<a class=\"bugzilla fetch bugzilla_append\" href=\"http://bugs.meego.com/show_bug.cgi?id=$1\">$1</a>");
+        line = line.replace(/http\:\/\/([^\/]+)\/show_bug\.cgi\?id=(\d+)/g, "<a class=\"bugzilla fetch bugzilla_append\" href=\"http://$1/show_bug.cgi?id=$2\">$2</a>");
         line = line.replace(/\[\[(http:\/\/.+?) (.+?)\]\]/g, "<a href=\"$1\">$2</a>");
-        line = line.replace(/\[\[(\d+)\]\]/g, "<a class=\"bugzilla fetch bugzilla_append\" href=\"http://bugs.meego.com/show_bug.cgi?id=$1\">$1</a>");
+        line = line.replace(/\[\[(\d+)\]\]/g, "<a class=\"bugzilla fetch bugzilla_append\" href=\"http://" + BUGZILLA_URI + "$1\">$1</a>");
 
         var match;
         line = line.replace(/^====\s*(.+)\s*====$/, "<h5>$1</h5>");
