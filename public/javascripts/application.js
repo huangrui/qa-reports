@@ -40,6 +40,92 @@ function applySuggestion() {
     return false;
 }
 
+function capitalize(s) {
+  return s.charAt(0).toUpperCase() + s.substr(1).toLowerCase();
+}
+
+function toTitlecase(s) {
+  return s.replace(/\w\S*/g, capitalize);
+}
+
+function htmlEscape(s) {
+    s = s.replace('&', '&amp;');
+    s = s.replace('<', '&lt;');
+    s = s.replace('>', '&gt;');
+    return s;
+}
+
+prepareCategoryUpdate = function(div) {
+    var $div      = $(div);
+    var $form     = $div.find("form");
+    var $save     = $div.find(".dialog-delete");
+    var $cancel   = $div.find(".dialog-cancel");
+    var $testtype = $div.find(".field .testtype");
+    var $date     = $div.find(".field .date");
+    var $hardware = $div.find(".field .hwproduct");
+    var $catpath  = $("dd.category");
+    var $datespan = $("span.date");
+    var $donebtn  = $('#wizard_buttons a');
+
+    var arrow     = $('<div/>').html(" &rsaquo; ").text();
+    
+    $testtype.val(toTitlecase($testtype.val()));
+    $hardware.val(toTitlecase($hardware.val()));
+
+    $save.click(function() {
+      var targetval  = $('.field .target:checked').val();
+      var versionval = $('.field .version:checked').val();
+      var typeval    = toTitlecase($testtype.val());
+      var hwval      = toTitlecase($hardware.val());
+      var dateval    = $date.val();
+
+      // validate
+      $div.find('.error').hide();
+      if (targetval == '') {
+        return false;
+      } else if (typeval == '') {
+        $('.error.testtype').text("Test type cannot be empty.").show();
+        return false;
+      } else if (versionval == '') {
+        return false;
+      } else if (dateval == '') {
+        $('.error.tested_at').text("Test date cannot be empty.").show();
+        return false;
+      } else if (hwval == '') {
+        $('.error.hwproduct').text("Hardware cannot be empty.").show();
+        return false;
+      }
+
+      // send to server
+      var data = $form.serialize();
+      var url  = $form.attr('action');
+
+      // update DOM
+      //  - update bread crumbs
+      //  - update date
+      $.post(url, data, function(data) {
+          console.log($catpath);
+          $datespan.text(data);
+          
+          $catpath.html(htmlEscape(versionval) + arrow + htmlEscape(targetval) 
+                                               + arrow + htmlEscape(typeval) 
+                                               + arrow + htmlEscape(hwval));
+
+          $donebtn.attr("href", "/" + encodeURI(versionval) + 
+                                "/" + encodeURI(targetval) + 
+                                "/" + encodeURI(typeval) + 
+                                "/" + encodeURI(hwval) +
+                                "/" + SESSION_ID);
+      });
+
+      $div.jqmHide();
+
+      return false;
+    });
+
+
+}
+
 function linkEditButtons() {
     $('div.editable_area').each(function(i, node) {
         var $node = $(node);
@@ -50,7 +136,6 @@ function linkEditButtons() {
         $node.click(handleEditButton);
     });
     $('div.editable_title').click(handleTitleEdit);
-    $('div.editable_date').click(handleDateEdit);
     $('.testcase').each(function(i, node) {
         var $node = $(node);
         var $comment = $node.find('.testcase_notes');
@@ -696,9 +781,7 @@ function fetchBugzillaInfo() {
 }
 
 function formatMarkup(s) {
-    s = s.replace('&', '&amp;');
-    s = s.replace('<', '&lt');
-    s = s.replace('>', '&gt');
+    s = htmlEscape(s);
 
     lines = s.split('\n');
     var html = "";

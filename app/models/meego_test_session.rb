@@ -75,7 +75,8 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def testtype
-    read_attribute(:testtype).try(:capitalize)
+    s = read_attribute(:testtype)
+    s.gsub(/\b\w/) { $&.upcase } if s
   end
 
   def hwproduct=(hwproduct)
@@ -84,7 +85,8 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def hwproduct
-    read_attribute(:hwproduct).try(:capitalize)
+    s = read_attribute(:hwproduct)
+    s.gsub(/\b\w/) { $&.upcase } if s
   end
 
   def prev_summary

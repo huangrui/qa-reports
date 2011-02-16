@@ -94,7 +94,6 @@ module AjaxMixin
 
 
   def update_tested_at
-    logger.info("called update_tested_at with #{params.inspect}")
     @preview_id = params[:id]
 
     if @preview_id
@@ -103,6 +102,27 @@ module AjaxMixin
       field         = params[:meego_test_session].keys.first
       logger.warn("Updating #{field} with #{params[:meego_test_session][field]}")
       @test_session.update_attribute(field, params[:meego_test_session][field])
+      @test_session.updated_by(current_user)
+
+      expire_caches_for(@test_session)
+      expire_index_for(@test_session)
+
+      render :text => @test_session.tested_at.strftime('%d %B %Y')
+    else
+      logger.warn "WARNING: report id #{@preview_id} not found"
+    end
+  end
+
+  def update_category
+    @preview_id = params[:id]
+
+    if @preview_id
+      @test_session = MeegoTestSession.find(@preview_id)
+
+      data = params[:meego_test_session]
+      data.keys.each do |key|
+        @test_session.update_attribute(key, data[key])
+      end
       @test_session.updated_by(current_user)
 
       expire_caches_for(@test_session)
@@ -240,6 +260,10 @@ class ReportsController < ApplicationController
     if id = params[:id].try(:to_i)
       @test_session   = MeegoTestSession.find(id)
       @report         = @test_session
+      @targets = MeegoTestSession.list_targets @selected_release_version
+      @types = MeegoTestSession.list_types @selected_release_version
+      @hardware = MeegoTestSession.list_hardware @selected_release_version
+      @release_versions = MeegoTestSession.release_versions
       @no_upload_link = true
       @files = FileStorage.new().list_files(@test_session) or []
 

@@ -62,7 +62,9 @@ class ApiController < ApplicationController
       }
       render :json => {:ok => '1'}
     rescue ActiveRecord::RecordInvalid => invalid
-      render :json => {:ok => '0', :errors => invalid.record.errors}
+      error_messages = {}
+      invalid.record.errors.each {|key, value| error_messages[key] = value}
+      render :json => {:ok => '0', :errors => error_messages}
     end
   end
 
@@ -94,8 +96,8 @@ class ApiController < ApplicationController
            original_cases << tcase
         end
         parse_err = @test_session.update_report_result(current_user, data[:uploaded_files], true)
-      rescue ActiveRecord::UnknownAttributeError => error
-        render :json => {:ok => '0', :errors => error.message}
+      rescue ActiveRecord::UnknownAttributeError => errors
+        render :json => {:ok => '0', :errors => errors.message}
         return
       end
 

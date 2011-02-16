@@ -1636,7 +1636,7 @@ td.fail {
     padding: 20px 40px;
     border-top-width: 7px;
     border-top-style: solid;
-    width: 21em;
+    width: 25em;
     /*line-height: 20px;*/ }
 
 .toc {border-top-color: #ed0089;}

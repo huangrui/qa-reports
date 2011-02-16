@@ -3,13 +3,13 @@
 <% end %>
 <dt>Test execution date and category:</dt>
 <dd>
-  <%= format_date_to_human_readable @report.tested_at %>
+  <span class="date"><%= format_date_to_human_readable @report.tested_at %></span>
 <% if @editing %>
   <span class="editmarkup" style="display:none;"><%= format_date_to_input @report.tested_at %></span>
 <% end %>
 </dd>
 
-<dd>1.2 &rsaquo; Core &rsaquo; Acceptance &rsaquo; Aava</dd>
+<dd class="category"><%=@test_session.release_version%> &rsaquo; <%=@test_session.target%> &rsaquo; <%=@test_session.testtype%> &rsaquo; <%=@test_session.hwproduct%></dd>
 
 <% if @editing %>
 </div>
