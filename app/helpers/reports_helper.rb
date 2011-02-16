@@ -52,7 +52,7 @@ module ReportsHelper
 
   def print_title_link(title)
     if bugzilla_title?(title)
-      ('<a class="bugzilla fetch" target="_blank" href="http://bugs.meego.com/show_bug.cgi?id='+title+'">' + title + '</a>').html_safe
+      ('<a class="bugzilla fetch" target="_blank" href="' + BUGZILLA_CONFIG['link_uri']+title+'">' + title + '</a>').html_safe
     else
       title
     end
