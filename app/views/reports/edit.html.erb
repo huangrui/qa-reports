@@ -60,6 +60,7 @@
     <%= javascript_include_tag 'datetime' %>
     <%= javascript_include_tag 'jqModal.js'%>
     <script language="javascript" type="text/javascript">
+    var SESSION_ID = "<%=@test_session.id%>";
     $(document).ready(function(){
       $('#category-dialog').jqm({
         modal:true
@@ -73,10 +74,6 @@
         selectOtherMonths: true,
         dateFormat: "yy-mm-dd"
       });
-
-      //var myDate = new Date();
-      //var prettyDate = myDate.getUTCFullYear() + '-' + (myDate.getUTCMonth()+1) + '-' + myDate.getUTCDate();
-      //$("#report_test_execution_date").val(prettyDate);
 
       activateSuggestionLinks("div.field");
 

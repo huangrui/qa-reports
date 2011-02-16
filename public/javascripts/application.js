@@ -40,27 +40,40 @@ function applySuggestion() {
     return false;
 }
 
+function capitalize(s) {
+  return s.charAt(0).toUpperCase() + s.substr(1);
+}
+
+function htmlEscape(s) {
+    s = s.replace('&', '&amp;');
+    s = s.replace('<', '&lt;');
+    s = s.replace('>', '&gt;');
+    return s;
+}
+
 prepareCategoryUpdate = function(div) {
     var $div      = $(div);
     var $form     = $div.find("form");
     var $save     = $div.find(".dialog-delete");
     var $cancel   = $div.find(".dialog-cancel");
-    var $target   = $div.find(".field .target");
     var $testtype = $div.find(".field .testtype");
-    var $version  = $div.find(".field .version");
     var $date     = $div.find(".field .date");
     var $hardware = $div.find(".field .hwproduct");
     var $catpath  = $("dd.category");
     var $datespan = $("span.date");
+    var $donebtn  = $('#wizard_buttons a');
 
     var arrow     = $('<div/>').html(" &rsaquo; ").text();
     
+    $testtype.val(capitalize($testtype.val()));
+    $hardware.val(capitalize($hardware.val()));
+
     $save.click(function() {
-      var targetval  = $target.val();
-      var versionval = $version.val();
-      var typeval    = $testtype.val();
+      var targetval  = $('.field .target:checked').val();
+      var versionval = $('.field .version:checked').val();
+      var typeval    = capitalize($testtype.val());
+      var hwval      = capitalize($hardware.val());
       var dateval    = $date.val();
-      var hwval      = $hardware.val();
 
       // validate
       // TODO: add placeholders to HTML for ajax errors
@@ -87,7 +100,15 @@ prepareCategoryUpdate = function(div) {
           console.log($catpath);
           $datespan.text(data);
           
-          $catpath.html(escape(versionval) + arrow + escape(targetval) + arrow + escape(typeval) + arrow + escape(hwval));
+          $catpath.html(htmlEscape(versionval) + arrow + htmlEscape(targetval) 
+                                               + arrow + htmlEscape(typeval) 
+                                               + arrow + htmlEscape(hwval));
+
+          $donebtn.attr("href", "/" + encodeURI(versionval) + 
+                                "/" + encodeURI(targetval) + 
+                                "/" + encodeURI(typeval) + 
+                                "/" + encodeURI(hwval) +
+                                "/" + SESSION_ID);
       });
 
       $div.jqmHide();
@@ -753,9 +774,7 @@ function fetchBugzillaInfo() {
 }
 
 function formatMarkup(s) {
-    s = s.replace('&', '&amp;');
-    s = s.replace('<', '&lt');
-    s = s.replace('>', '&gt');
+    s = htmlEscape(s);
 
     lines = s.split('\n');
     var html = "";
