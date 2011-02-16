@@ -170,4 +170,8 @@ module ApplicationHelper
       render :partial => 'shared/clicktale_bottom'
     end
   end
+
+  def form_ajax_error_msg(cls)
+    "<div style=\"display:none\" class=\"error #{cls}\">&nbsp;</div>".html_safe
+  end
 end

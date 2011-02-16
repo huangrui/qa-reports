@@ -75,6 +75,8 @@
         dateFormat: "yy-mm-dd"
       });
 
+      $('#report_test_execution_date').val("<%=@test_session.formatted_date%>");
+
       activateSuggestionLinks("div.field");
 
       filterResults("tr.result_pass", "passing tests");

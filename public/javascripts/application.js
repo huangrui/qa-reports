@@ -76,16 +76,19 @@ prepareCategoryUpdate = function(div) {
       var dateval    = $date.val();
 
       // validate
-      // TODO: add placeholders to HTML for ajax errors
+      $div.find('.error').hide();
       if (targetval == '') {
         return false;
       } else if (typeval == '') {
+        $('.error.testtype').text("Test type cannot be empty.").show();
         return false;
       } else if (versionval == '') {
         return false;
       } else if (dateval == '') {
+        $('.error.tested_at').text("Test date cannot be empty.").show();
         return false;
       } else if (hwval == '') {
+        $('.error.hwproduct').text("Hardware cannot be empty.").show();
         return false;
       }
 
