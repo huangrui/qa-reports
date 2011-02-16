@@ -41,7 +41,11 @@ function applySuggestion() {
 }
 
 function capitalize(s) {
-  return s.charAt(0).toUpperCase() + s.substr(1);
+  return s.charAt(0).toUpperCase() + s.substr(1).toLowerCase();
+}
+
+function toTitlecase(s) {
+  return s.replace(/\w\S*/g, capitalize);
 }
 
 function htmlEscape(s) {
@@ -65,14 +69,14 @@ prepareCategoryUpdate = function(div) {
 
     var arrow     = $('<div/>').html(" &rsaquo; ").text();
     
-    $testtype.val(capitalize($testtype.val()));
-    $hardware.val(capitalize($hardware.val()));
+    $testtype.val(toTitlecase($testtype.val()));
+    $hardware.val(toTitlecase($hardware.val()));
 
     $save.click(function() {
       var targetval  = $('.field .target:checked').val();
       var versionval = $('.field .version:checked').val();
-      var typeval    = capitalize($testtype.val());
-      var hwval      = capitalize($hardware.val());
+      var typeval    = toTitlecase($testtype.val());
+      var hwval      = toTitlecase($hardware.val());
       var dateval    = $date.val();
 
       // validate
