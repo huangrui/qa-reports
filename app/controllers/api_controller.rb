@@ -31,6 +31,12 @@ class ApiController < ApplicationController
 
     errors                = []
 
+    check_target_release(data, errors)
+    if !errors.empty?
+      render :json => {:ok => '0', :errors => errors.join('; ')}
+      return
+    end
+
     data[:uploaded_files] = collect_files(data, "report", errors)
     attachments           = collect_files(data, "attachment", errors)
 
@@ -153,5 +159,25 @@ class ApiController < ApplicationController
       results << collect_file(parameters, key, errors)
     }
     results.compact
+  end
+
+  # Check that the target and release_version given as parameters
+  # exist in label tables. Test session tables allow anything, but
+  # if using other than what's in the label tables, the results
+  # won't show up
+  def check_target_release(parameters, errors)
+
+    target = TargetLabel.find(:first, :conditions => {:normalized => parameters[:target].downcase})
+    version = VersionLabel.find(:first, :conditions => {:normalized => parameters[:release_version].downcase})
+
+    if not target
+      valid_targets = TargetLabel.labels.join(",")
+      errors << "Incorrect target '#{parameters[:target]}'. Valid ones are #{valid_targets}."
+    end
+
+    if not version
+      valid_versions = VersionLabel.versions.join(",")
+      errors << "Incorrect release version '#{parameters[:release_version]}'. Valid ones are #{valid_versions}."
+    end
   end
 end
