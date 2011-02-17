@@ -22,14 +22,15 @@
 # 02110-1301 USA
 #
 %>
+<% feature = feature_history %>
 <tbody>
 <tr class="feature_name" id="test-set-<%=feature.id%>">
-	<td colspan="3">
+	<td colspan="7">
         <%= print_title_link(feature.name)%>
 		<a href="#" class="see_all_toggle">+ see passing tests</a>
 	</td>
 </tr>
 </tbody>
 <tbody>
-<%= render :partial => "testcase", :collection => feature.meego_test_cases %>
+<%= render :partial => "testcase_history", :collection => feature.meego_test_cases %>
 </tbody>

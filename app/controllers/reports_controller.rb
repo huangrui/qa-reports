@@ -222,6 +222,8 @@ class ReportsController < ApplicationController
 
       return render_404 unless @selected_release_version == @test_session.release_version
 
+      @history = history(@test_session.prev_session)
+
       @target    = @test_session.target
       @testtype  = @test_session.testtype
       @hwproduct = @test_session.hwproduct
@@ -314,6 +316,15 @@ class ReportsController < ApplicationController
   end
 
   protected
+
+  def history(s)
+    h = []
+    while h.size < 5 
+      h << s
+      s = s.prev_session if s
+    end
+    return h
+  end
 
   def just_published?
     @published
