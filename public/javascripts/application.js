@@ -910,7 +910,14 @@ function filterResults(rowsToHide, typeText) {
         });
     }
 
-    $("#see_all_button").click(function(){
+    $(".see_history_button").click(function(){
+      $("table.detailed_results").hide();
+      $history.show();
+      $history.find(".see_history_button").addClass("active");      
+      return false;
+    });
+
+    $(".see_all_button").click(function(){
         $("a.sort_btn").removeClass("active");
         $(this).addClass("active");
         $(rowsToHide).show();
@@ -918,7 +925,7 @@ function filterResults(rowsToHide, typeText) {
         return false;
     });
 
-    $("#see_only_failed_button").click(function(){
+    $(".see_only_failed_button").click(function(){
         $("a.sort_btn").removeClass("active");
         $(this).addClass("active");
         $(rowsToHide).hide();
@@ -935,6 +942,19 @@ function filterResults(rowsToHide, typeText) {
             updateToggle($tbody, $this);
             return false;
         });
+    });
+
+    var $detail  = $("table.detailed_results").first(); 
+    var $history = $("table.detailed_results.history");
+    $history.find(".see_all_button").click(function(){
+        $history.hide();
+        $detail.show();
+        $detail.find(".see_all_button").click();
+    });
+    $history.find(".see_only_failed_button").click(function(){
+        $history.hide();
+        $detail.show();
+        $detail.find(".see_only_failed_button").click();
     });
 }
 

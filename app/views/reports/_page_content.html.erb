@@ -39,12 +39,14 @@
 
       <h2 id="detailed_results">Detailed Test Results<span class="heading_actions"><%=back_to_top%></span></h2>
 
-      <table id="functional_results" class="detailed_results">
+      <table class="detailed_results">
         <thead>
-			<tr>
+        <tr>
 			  <th id="th_test_case">
-			  	<span class="sort"><a href="#" id="see_only_failed_button" class="sort_btn active">See only failed</a> 
-			  		<a href="#" id="see_all_button" class="sort_btn">See all</a>
+			  	<span class="sort">
+            <a href="#" class="see_only_failed_button sort_btn active">See only failed</a> 
+			  		<a href="#" class="see_all_button sort_btn">See all</a>
+            <%if @history%><a href="#" class="see_history_button sort_btn">See history</a><%end%>
 			  	</span>
 			  </th>
 			  <th id="th_result">Result</th>
@@ -57,16 +59,15 @@
       </table>
       
 
-   <h2 id="detailed_results">Dummy table for five step regression view<span class="heading_actions"><%=back_to_top%></span></h2>
-      
-	    <table id="non-functional_results" class="detailed_results">
+      <% if @history %>
+	    <table class="detailed_results history" style="display:none;">
 	      <thead>
 				<tr>
 				  <th id="th_history_test_case">
 				  	<span class="sort">
-				   		<a href="#" id="see_only_failed_button" class="sort_btn">See only failed</a> 
-				   		<a href="#" id="see_all_button" class="sort_btn">See all</a>
-				   		<a href="#" id="see_history_button" class="sort_btn active">See history</a>
+            <a href="#" class="see_only_failed_button sort_btn">See only failed</a> 
+			  		<a href="#" class="see_all_button sort_btn">See all</a>
+            <a href="#" class="see_history_button sort_btn active">See history</a>
 				   	</span>
 				  </th>
           <%= history_headers(@history) %>
@@ -80,6 +81,7 @@
 			
 		<%= render :partial => "feature_history", :collection => @test_session.meego_test_sets %>
 		</table>
+    <% end %>
    
     <!--  
    <h2 id="detailed_results">Non-functional Test Results<span class="heading_actions"><%=back_to_top%></span></h2>
