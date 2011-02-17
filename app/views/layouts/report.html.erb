@@ -70,6 +70,9 @@
 </div>
 
 <%= javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js" %>
+<script type="text/javascript">
+  var BUGZILLA_URI = "<%=BUGZILLA_CONFIG['link_uri']%>";
+</script>
 <%= javascript_include_tag 'application' %>
 <%= yield :view_specific_js %>
 

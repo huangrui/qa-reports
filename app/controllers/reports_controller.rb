@@ -27,6 +27,8 @@ require 'file_storage'
 require 'report_comparison'
 require 'cache_helper'
 require 'iconv'
+require 'net/http'
+require 'net/https'
 
 module AjaxMixin
   def remove_attachment
@@ -291,15 +293,33 @@ class ReportsController < ApplicationController
     render :layout => "report"
   end
 
-
   def fetch_bugzilla_data
     ids       = params[:bugids]
-    searchUrl = "https://bugs.meego.com/buglist.cgi?bugidtype=include&columnlist=short_desc%2Cbug_status%2Cresolution&query_format=advanced&ctype=csv&bug_id=" + ids.join(',')
-    data      = open(searchUrl)
+
+    uri = BUGZILLA_CONFIG['uri'] + ids.join(',')
+
+    content = ""
+    if not BUGZILLA_CONFIG['proxy_server'].nil?
+      @http = Net::HTTP.Proxy(BUGZILLA_CONFIG['proxy_server'], BUGZILLA_CONFIG['proxy_port']).new(BUGZILLA_CONFIG['server'], BUGZILLA_CONFIG['port'])
+    else
+      @http = Net::HTTP.new(BUGZILLA_CONFIG['server'], BUGZILLA_CONFIG['port'])
+    end
+
+    @http.use_ssl = BUGZILLA_CONFIG['use_ssl']
+    @http.start() {|http|
+      req = Net::HTTP::Get.new(uri)
+      if not BUGZILLA_CONFIG['http_username'].nil?
+        req.basic_auth BUGZILLA_CONFIG['http_username'], BUGZILLA_CONFIG['http_password']
+      end
+      response = http.request(req)
+      content = response.body
+    }
+
     # XXX: bugzilla seems to encode its exported csv to utf-8 twice
     # so we convert from utf-8 to iso-8859-1, which is then interpreted
     # as utf-8
-    render :text => Iconv.iconv("iso-8859-1", "utf-8", data.read()), :content_type => "text/csv"
+     render :text => Iconv.iconv("iso-8859-1", "utf-8", content), :content_type => "text/csv"
+
   end
 
   def delete

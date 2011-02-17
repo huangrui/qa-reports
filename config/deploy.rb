@@ -62,6 +62,19 @@ after "deploy:setup" do
   # Create Exception Notifier email list
   email_addresses = Capistrano::CLI::ui.ask("Which email addresses should be notified in case of application errors? (Space separated list of email addresses)")
   put "%w{#{email_addresses}}", "#{shared_path}/config/exception_notifier"
+
+  # Bugzilla configuration - only HTTP auth
+  bugzilla_conf = YAML.load_file("config/bugzilla.yml")
+  bugzilla_auth = Capistrano::CLI::ui.ask("Do you want to define HTTP credentials to access Bugzilla? Note that you should have a separate user account for this since the credentials are stored as plain text. Default: No")
+
+  if bugzilla_auth =~ /yes/i
+    bugzilla_uname = Capistrano::CLI::ui.ask("Please enter your HTTP username")
+    bugzilla_passw = Capistrano::CLI::ui.ask("Please enter your HTTP password")
+    bugzilla_conf["http_username"] = bugzilla_uname
+    bugzilla_conf["http_password"] = bugzilla_passw
+  end
+  put YAML::dump(bugzilla_conf), "#{shared_path}/config/bugzilla.yml"
+
 end
 
 after "deploy:symlink" do
