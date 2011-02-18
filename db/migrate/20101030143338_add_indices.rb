@@ -3,7 +3,7 @@ class AddIndices < ActiveRecord::Migration
     add_index :meego_test_cases, :meego_test_set_id
     add_index :meego_test_cases, :meego_test_session_id
     
-    add_index :meego_test_sessions, [:release_version, :target, :testtype, :hwproduct]
+    add_index :meego_test_sessions, [:release_version, :target, :testtype, :hwproduct], :name => 'index_meego_test_sessions_key'
 
     add_index :meego_test_sets, :meego_test_session_id
     add_index :meego_test_sets, :feature
