@@ -21,6 +21,7 @@
 # 02110-1301 USA
 #
 
+require 'digest/sha1'
 require 'open-uri'
 require 'drag_n_drop_uploaded_file'
 require 'file_storage'
@@ -174,7 +175,7 @@ class ReportsController < ApplicationController
   #caches_page :index, :upload_form, :email, :filtered_list
   #caches_page :view, :if => proc {|c|!c.just_published?}
   caches_action :fetch_bugzilla_data,
-                :cache_path => Proc.new { |controller| controller.params },
+                :cache_path => Proc.new { |controller| controller.bugzilla_cache_key },
                 :expires_in => 1.hour
 
   def preview
@@ -283,6 +284,7 @@ class ReportsController < ApplicationController
     @target = params[:target]
     @testtype = params[:testtype]
     @comparison_testtype = params[:comparetype]    
+    @compare_cache_key = "compare_page_#{@release_version}_#{@target}_#{@testtype}_#{@comparison_test_type}"
 
     MeegoTestSession.published_hwversion_by_release_version_target_test_type(@release_version, @target, @testtype).each{|hardware|
         left = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @testtype, hardware.hwproduct).first
@@ -336,6 +338,11 @@ class ReportsController < ApplicationController
   end
 
   protected
+
+  def bugzilla_cache_key
+    h = Digest::SHA1.hexdigest params.to_hash.to_a.map{|k,v| if v.respond_to?(:join) then k+v.join(",") else k+v end}.join(';')
+    "bugzilla_#{h}"
+  end
 
   def history(s)
     h = []

@@ -50,6 +50,15 @@
 
   <%= yield :version_navi %>
 
+  <% action = controller.action_name 
+     if action == 'compare' 
+        cache_key = @compare_cache_key
+     else
+        cache_key = "#{action}_page_#{@test_session.id}"
+     end %> 
+
+  <% cache cache_key do %>
+
   <div id="page">
     <%= yield :breadcrumbs %>
 
@@ -67,6 +76,8 @@
   <div id="footer">
 
   </div>
+  <% end %>
+
 </div>
 
 <%= javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js" %>
