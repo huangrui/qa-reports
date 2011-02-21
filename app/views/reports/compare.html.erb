@@ -22,6 +22,12 @@
         <strong id="changed_to_fail" class="fail"><%= @comparison.changed_to_fail %></strong>
         Test result<br/> changed to <em>fail</em>
       </div>
+      
+      <div class="result_caption big_number">
+        <strong id="changed_to_na" class=""><%= @comparison.changed_to_na %></strong>
+        Test result<br/> changed to <em>N/A</em>
+      </div>
+            
       <div class="new_tests result_caption">
         <div class="result_caption_header"><strong>New tests:</strong></div>
         <div class="result_caption medium_number"><strong class="pass"><%= @comparison.new_passing %></strong> Passing
@@ -37,8 +43,10 @@
     <table class="detailed_results" id="compare_details">
       <thead>
       <tr>
-        <th id="th_test_case">
-        	<span class="sort"><a href="#" id="see_only_failed_button" class="sort_btn active">See only changed</a> <a href="#" id="see_all_button" class="sort_btn">See all</a></span>
+        <th id="th_test_case">  
+        	<span class="sort">
+ <!--       		<a href="#" id="see_only_regression_button" class="sort_btn active">Regression</a>	-->
+        		<a href="#" class="see_only_failed_button sort_btn active">Changed</a> <a href="#" class="see_all_button sort_btn">See all</a></span>
         </th>
         <th colspan="<%=@comparison.columns.length%>" class="column_head_1"><%= @testtype %></th>
          <th class="column_head_separate"></th>

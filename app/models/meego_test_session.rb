@@ -23,15 +23,17 @@
 require 'resultparser'
 require 'testreport'
 require 'csv'
-require 'bitly'
 require 'trimmer'
 require 'report_parser'
 require 'validation/date_time_validator'
 require 'will_paginate'
 
+require 'graph'
+
 #noinspection Rails3Deprecated
 class MeegoTestSession < ActiveRecord::Base
   include Trimmer
+  include Graph
 
   has_many :meego_test_sets, :dependent => :destroy
   has_many :meego_test_cases
@@ -46,6 +48,8 @@ class MeegoTestSession < ActiveRecord::Base
 
   validate :allowed_filename_extensions, :on => :create
   validate :save_uploaded_files, :on => :create
+
+  validate :validate_labels
 
   #after_create :save_uploaded_files
   after_destroy :remove_uploaded_files
@@ -73,7 +77,8 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def testtype
-    read_attribute(:testtype).try(:capitalize)
+    s = read_attribute(:testtype)
+    s.gsub(/\b\w/) { $&.upcase } if s
   end
 
   def hwproduct=(hwproduct)
@@ -82,7 +87,8 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def hwproduct
-    read_attribute(:hwproduct).try(:capitalize)
+    s = read_attribute(:hwproduct)
+    s.gsub(/\b\w/) { $&.upcase } if s
   end
 
   def prev_summary
@@ -99,12 +105,11 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def self.targets
-    ['Core', 'Handset', 'Netbook', 'IVI', 'SDK']
+    TargetLabel.find(:all, :order => "sort_order ASC").map &:label
   end  
 
   def self.release_versions
-    # Add new release versions to the beginning of the array.
-    ["1.2", "1.1", "1.0"]
+    VersionLabel.find(:all, :order => "sort_order ASC").map &:label
   end
 
   def self.latest_release_version
@@ -220,70 +225,50 @@ class MeegoTestSession < ActiveRecord::Base
   ###############################################
   # Chart visualization methods                 #
   ###############################################
-  def graph_img_tag(format_email)
-    values = [0, 0, total_passed, 0, 0, total_failed, 0, 0, total_na]
-    labels = ["", "", "Current"]
-    totals = [0, 0, total_cases]
-    prev   = prev_session
+  def summary_data
+    data = Graph::Data.new
+    data.passed = passed = []
+    data.failed = failed = []
+    data.na     = na     = []
+    data.labels = labels = []
+
+    prev = prev_session
     if prev
-      values[1] = prev.total_passed
-      values[4] = prev.total_failed
-      values[7] = prev.total_na
-      labels[1] = prev.formatted_date
-      totals[1] = prev.total_cases
-      pp        = prev.prev_session
+      pp = prev.prev_session
       if pp
-        values[0] = pp.total_passed
-        values[3] = pp.total_failed
-        values[6] = pp.total_na
-        labels[0] = pp.formatted_date
-        totals[0] = prev.total_cases
+        passed << pp.total_passed
+        failed << pp.total_failed
+        na     << pp.total_na
+        labels << pp.formatted_date
+      else
+        passed << 0
+        failed << 0
+        na     << 0
+        labels << ""
       end
-    end
-    scale = [totals.max, 10].max
-    step  = scale/9.0
-    step  = (step.to_i/5)*5
-    if (scale % 45) != 0
-      step += 5
-    end
-    scale        = (scale/step+1)*step
-    chart_size   = "385x200"
-    chart_type   = "bvs" # bar, vertical, stacked
-    chart_colors = "BCCD98|BCCD98|73a20c,E7ABAB|E7ABAB|ec4343,DBDBDB|DBDBDB|CACACA"
-    chart_data   = "t:%i,%i,%i|%i,%i,%i|%i,%i,%i" % values
-    chart_scale  = "0,%i" % scale
-    #chart_margins = "0,0,0,0"
-    chart_fill   = "bg,s,ffffffff"
-    chart_width  = "90,30,30"
-    chart_axis   = "x,y"
-    chart_labels = "%s|%s|%s" % labels
-    chart_range  = "1,0,%i,%i" % [scale, step]
 
-    #url = "http://chart.apis.google.com/chart?cht=#{chart_type}&chs=#{chart_size}&chco=#{chart_colors}&chd=#{chart_data}&chds=#{chart_scale}&chma=#{chart_margins}&chf=#{chart_fill}&chbh=#{chart_width}&chxt=#{chart_axis}&chl=#{chart_labels}&chxr=#{chart_range}"
-    url          = "http://chart.apis.google.com/chart?cht=#{chart_type}&chs=#{chart_size}&chco=#{chart_colors}&chd=#{chart_data}&chds=#{chart_scale}&chf=#{chart_fill}&chbh=#{chart_width}&chxt=#{chart_axis}&chl=#{chart_labels}&chxr=#{chart_range}"
-
-    if (format_email)
-      Bitly.use_api_version_3
-      bitly = Bitly.new("leonidasoy", "R_b1aca98d073e7a78793eec01f3340fb4")
-      url   = bitly.shorten(url).short_url
+      passed << prev.total_passed
+      failed << prev.total_failed
+      na     << prev.total_na
+      labels << prev.formatted_date
+    else
+      passed << 0
+      failed << 0
+      na     << 0
+      labels << ""
     end
+    
+    passed << total_passed
+    failed << total_failed
+    na     << total_na
+    labels << "Current"
 
-    "<div class=\"bvs_wrap\"><img class=\"bvs\" src=\"#{url}\"/></div>".html_safe
+    data
   end
 
+
   def small_graph_img_tag(max_cases)
-    chart_size    = "386x14"
-    chart_type    = "bhs:nda" # bar, horizontal, stacked
-    chart_colors  = "73a20c,ec4343,CACACA"
-    chart_data    = "t:%i|%i|%i" % [total_passed, total_failed, total_na]
-    chart_scale   = "0,%i" % ([max_cases, 15].max)
-    chart_margins = "0,0,0,0"
-    chart_fill    = "bg,s,ffffff00"
-    chart_width   = "14,0,0"
-
-    url           = "http://chart.apis.google.com/chart?cht=#{chart_type}&chs=#{chart_size}&chco=#{chart_colors}&chd=#{chart_data}&chds=#{chart_scale}&chma=#{chart_margins}&chf=#{chart_fill}&chbh=#{chart_width}"
-
-    "<div class=\"bhs_wrap\"><img class=\"bhs\" src=\"#{url}\"/></div>".html_safe
+    html_graph(total_passed, total_failed, total_na, max_cases)
   end
 
   ###############################################
@@ -351,6 +336,33 @@ class MeegoTestSession < ActiveRecord::Base
     self.save
   end
 
+  # Check that the target and release_version given as parameters
+  # exist in label tables. Test session tables allow anything, but
+  # if using other than what's in the label tables, the results
+  # won't show up
+  def validate_labels
+    if target.blank?
+      errors.add :target, "can't be blank"
+    else
+      label = TargetLabel.find(:first, :conditions => {:normalized => target.downcase})
+      if not label
+        valid_targets = TargetLabel.labels.join(",")
+        errors.add :target, "Incorrect target '#{target}'. Valid ones are #{valid_targets}."
+      end
+    end
+
+    if release_version.blank?
+      errors.add :release_version, "can't be blank"
+    else
+      label = VersionLabel.find(:first, :conditions => {:normalized => release_version.downcase})
+      if not label
+        valid_versions = VersionLabel.versions.join(",")
+        errors.add :release_version, "Incorrect release version '#{release_version}'. Valid ones are #{valid_versions}."
+      end
+    end
+
+  end
+
   def generate_defaults!
     time                 = tested_at || Time.now
     self.title           = "%s Test Report: %s %s %s" % [target, hwproduct, testtype, time.strftime('%Y-%m-%d')]
@@ -400,19 +412,25 @@ class MeegoTestSession < ActiveRecord::Base
       filename = filename.downcase.strip
       if filename == ""
         errors.add :uploaded_files, "can't be blank"
+        "File name can't be blank"
         return
       end
       unless filename =~ /\.csv$/ or filename =~ /\.xml$/
         errors.add :uploaded_files, "You can only upload files with the extension .xml or .csv"
+        filename
         return
       end
     end if @files
+    nil
   end
 
   def save_uploaded_files
     @parsing_failed = false
     return unless @files
     total_cases = 0
+    
+    error_msgs = []
+
     MeegoTestSession.transaction do
       filenames     = []
       @parse_errors = []
@@ -468,6 +486,7 @@ class MeegoTestSession < ActiveRecord::Base
           logger.error $!, $!.backtrace
           content = File.open(path_to_file).read
           errors.add :uploaded_files, "Incorrect file format for #{origfn}: #{content}"
+          error_msgs << "Incorrect file format for #{origfn}: #{content}"
         end
       end
       @xmlpath = filenames.join(',')
@@ -477,6 +496,11 @@ class MeegoTestSession < ActiveRecord::Base
         else
           errors.add :uploaded_files, "None of the uploaded files contained any valid test cases"
         end
+      end
+      if !error_msgs.empty?
+          error_msgs.join(',')
+      else
+          nil
       end
     end
   end
@@ -518,6 +542,28 @@ class MeegoTestSession < ActiveRecord::Base
     self.author    = user
     self.editor    = user
     self.published = published
+  end
+
+  def update_report_result(user, resultfiles, published = true)
+    @files = resultfiles
+    parsing_errors = []
+    temp_err = allowed_filename_extensions
+    if (nil != temp_err)
+       parsing_errors << temp_err
+    end
+    temp_err = save_uploaded_files
+    if (nil != temp_err)
+       parsing_errors << temp_err
+    end
+    user.update_attribute(:default_target, self.target) if self.target.present?
+    self.editor    = user
+    self.published = published
+    
+    if !parsing_errors.empty?
+       parsing_errors.join(',')
+    else
+       nil
+    end
   end
 
   def self.get_filename(file)
@@ -654,6 +700,32 @@ class MeegoTestSession < ActiveRecord::Base
     else
       0
     end
+  end
+
+  def create_version_label
+    verlabel = VersionLabel.find(:first, :conditions => {:normalized => release_version.downcase})
+    if verlabel
+      self.release_version = verlabel.label
+      save
+    else
+      verlabel = VersionLabel.new(:label => release_version, :normalized => release_version.downcase)
+      verlabel.save
+    end
+  end
+
+  def create_target_label
+    tarlabel = TargetLabel.find(:first, :conditions => {:normalized => target.downcase})
+    if tarlabel
+      self.target = tarlabel.label
+      save
+    else
+      tarlabel = TargetLabel.new(:label => target, :normalized => target.downcase)
+      tarlabel.save
+    end
+  end
+
+  def create_labels
+    create_version_label && create_target_label
   end
 end
 

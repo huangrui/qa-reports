@@ -23,7 +23,7 @@ common: &default_settings
   # it from running with Rake or the console.  Set to false to
   # completely turn the agent off regardless of the other settings.
   # Valid values are true, false and auto.
-  # agent_enabled: auto
+  agent_enabled: auto
   
   # Application Name
   # Set this to be the name of your application as you'd like it show
@@ -220,12 +220,12 @@ test:
 # incurring any user-visible performance degradation.
 production:
   <<: *default_settings
-  monitor_mode: true
+  monitor_mode: false 
 
 # Many applications have a staging environment which behaves
 # identically to production.  Support for that environment is provided
 # here.  By default, the staging environment has the agent turned on.
 staging:
   <<: *default_settings
-  monitor_mode: true
+  monitor_mode: false 
   app_name: MeeGo QA Reports (Staging)

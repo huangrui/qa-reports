@@ -21,12 +21,15 @@
 # 02110-1301 USA
 #
 
+require 'digest/sha1'
 require 'open-uri'
 require 'drag_n_drop_uploaded_file'
 require 'file_storage'
 require 'report_comparison'
 require 'cache_helper'
 require 'iconv'
+require 'net/http'
+require 'net/https'
 
 module AjaxMixin
   def remove_attachment
@@ -94,7 +97,6 @@ module AjaxMixin
 
 
   def update_tested_at
-    logger.info("called update_tested_at with #{params.inspect}")
     @preview_id = params[:id]
 
     if @preview_id
@@ -103,6 +105,27 @@ module AjaxMixin
       field         = params[:meego_test_session].keys.first
       logger.warn("Updating #{field} with #{params[:meego_test_session][field]}")
       @test_session.update_attribute(field, params[:meego_test_session][field])
+      @test_session.updated_by(current_user)
+
+      expire_caches_for(@test_session)
+      expire_index_for(@test_session)
+
+      render :text => @test_session.tested_at.strftime('%d %B %Y')
+    else
+      logger.warn "WARNING: report id #{@preview_id} not found"
+    end
+  end
+
+  def update_category
+    @preview_id = params[:id]
+
+    if @preview_id
+      @test_session = MeegoTestSession.find(@preview_id)
+
+      data = params[:meego_test_session]
+      data.keys.each do |key|
+        @test_session.update_attribute(key, data[key])
+      end
       @test_session.updated_by(current_user)
 
       expire_caches_for(@test_session)
@@ -152,7 +175,7 @@ class ReportsController < ApplicationController
   #caches_page :index, :upload_form, :email, :filtered_list
   #caches_page :view, :if => proc {|c|!c.just_published?}
   caches_action :fetch_bugzilla_data,
-                :cache_path => Proc.new { |controller| controller.params },
+                :cache_path => Proc.new { |controller| controller.bugzilla_cache_key },
                 :expires_in => 1.hour
 
   def preview
@@ -202,6 +225,8 @@ class ReportsController < ApplicationController
 
       return render_404 unless @selected_release_version == @test_session.release_version
 
+      @history = history(@test_session.prev_session)
+
       @target    = @test_session.target
       @testtype  = @test_session.testtype
       @hwproduct = @test_session.hwproduct
@@ -240,6 +265,10 @@ class ReportsController < ApplicationController
     if id = params[:id].try(:to_i)
       @test_session   = MeegoTestSession.find(id)
       @report         = @test_session
+      @targets = MeegoTestSession.list_targets @selected_release_version
+      @types = MeegoTestSession.list_types @selected_release_version
+      @hardware = MeegoTestSession.list_hardware @selected_release_version
+      @release_versions = MeegoTestSession.release_versions
       @no_upload_link = true
       @files = FileStorage.new().list_files(@test_session) or []
 
@@ -255,6 +284,7 @@ class ReportsController < ApplicationController
     @target = params[:target]
     @testtype = params[:testtype]
     @comparison_testtype = params[:comparetype]    
+    @compare_cache_key = "compare_page_#{@release_version}_#{@target}_#{@testtype}_#{@comparison_test_type}"
 
     MeegoTestSession.published_hwversion_by_release_version_target_test_type(@release_version, @target, @testtype).each{|hardware|
         left = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @testtype, hardware.hwproduct).first
@@ -265,15 +295,33 @@ class ReportsController < ApplicationController
     render :layout => "report"
   end
 
-
   def fetch_bugzilla_data
     ids       = params[:bugids]
-    searchUrl = "http://bugs.meego.com/buglist.cgi?bugidtype=include&columnlist=short_desc%2Cbug_status%2Cresolution&query_format=advanced&ctype=csv&bug_id=" + ids.join(',')
-    data      = open(searchUrl)
+
+    uri = BUGZILLA_CONFIG['uri'] + ids.join(',')
+
+    content = ""
+    if not BUGZILLA_CONFIG['proxy_server'].nil?
+      @http = Net::HTTP.Proxy(BUGZILLA_CONFIG['proxy_server'], BUGZILLA_CONFIG['proxy_port']).new(BUGZILLA_CONFIG['server'], BUGZILLA_CONFIG['port'])
+    else
+      @http = Net::HTTP.new(BUGZILLA_CONFIG['server'], BUGZILLA_CONFIG['port'])
+    end
+
+    @http.use_ssl = BUGZILLA_CONFIG['use_ssl']
+    @http.start() {|http|
+      req = Net::HTTP::Get.new(uri)
+      if not BUGZILLA_CONFIG['http_username'].nil?
+        req.basic_auth BUGZILLA_CONFIG['http_username'], BUGZILLA_CONFIG['http_password']
+      end
+      response = http.request(req)
+      content = response.body
+    }
+
     # XXX: bugzilla seems to encode its exported csv to utf-8 twice
     # so we convert from utf-8 to iso-8859-1, which is then interpreted
     # as utf-8
-    render :text => Iconv.iconv("iso-8859-1", "utf-8", data.read()), :content_type => "text/csv"
+     render :text => Iconv.iconv("iso-8859-1", "utf-8", content), :content_type => "text/csv"
+
   end
 
   def delete
@@ -290,6 +338,20 @@ class ReportsController < ApplicationController
   end
 
   protected
+
+  def bugzilla_cache_key
+    h = Digest::SHA1.hexdigest params.to_hash.to_a.map{|k,v| if v.respond_to?(:join) then k+v.join(",") else k+v end}.join(';')
+    "bugzilla_#{h}"
+  end
+
+  def history(s)
+    h = []
+    while h.size < 5 
+      h << s
+      s = s.prev_session if s
+    end
+    return h
+  end
 
   def just_published?
     @published

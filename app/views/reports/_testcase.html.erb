@@ -27,7 +27,7 @@
     <% if not testcase.source_link.blank? %><a href="<%=testcase.source_link%>" class="dl_link">src</a><% end %>
     <% if not testcase.binary_link.blank? %><a href="<%=testcase.binary_link%>" class="dl_link">rpm</a><% end %>
   </td>
-  <td class="testcase_result <%= result_class(testcase) %> <%= 'edit' if @editing %>"><span class="content"><%= result_html(testcase) %></span> </td>
+  <td class="testcase_result <%= result_class(testcase) %> <%= 'edit' if @editing %> <%= testcase.find_change_class(@test_session.prev_session) %> "><span class="content"><%= result_html(testcase) %></span> </td>
   <td class="testcase_notes <%= 'edit' if @editing %>">
     <div class="content"><%= comment_html(testcase) %></div>
     <% if @editing %>

@@ -52,7 +52,7 @@ module ReportsHelper
 
   def print_title_link(title)
     if bugzilla_title?(title)
-      ('<a class="bugzilla fetch" target="_blank" href="http://bugs.meego.com/show_bug.cgi?id='+title+'">' + title + '</a>').html_safe
+      ('<a class="bugzilla fetch" target="_blank" href="' + BUGZILLA_CONFIG['link_uri']+title+'">' + title + '</a>').html_safe
     else
       title
     end
@@ -75,7 +75,20 @@ module ReportsHelper
     href
   end
 
-  private
+
+  def history_headers(hist)
+    hist.reverse.map{|s|
+      if s
+        date = s.tested_at.strftime("%d/%m")
+        url  = report_url(s)
+        "<th class=\"th_history_result\"><a href=\"#{url}\">#{date}</a></th>"
+      else
+        "<th class=\"th_history_result\">-</th>"
+      end
+    }.join("\n").html_safe
+  end
+
+private
 
   def bugzilla_title?(title)
     result = ReportParser::parse_features(title)

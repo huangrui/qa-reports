@@ -21,22 +21,12 @@
 class ComparisonResult
   include MeegoTestCaseHelper
 
+  attr_reader :left, :right, :changed
+
   def initialize(left, right, changed)
     @left    = left
     @right   = right
     @changed = changed
-  end
-
-  def left
-    @left
-  end
-
-  def right
-    @right
-  end
-
-  def changed
-    @changed
   end
 
   def name
@@ -59,7 +49,7 @@ class ComparisonRow
   end
 
   def add_value(column, value)
-    @values[column.downcase] =value
+    @values[column.downcase] = value
   end
 
   def name

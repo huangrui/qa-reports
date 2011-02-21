@@ -40,6 +40,92 @@ function applySuggestion() {
     return false;
 }
 
+function capitalize(s) {
+  return s.charAt(0).toUpperCase() + s.substr(1).toLowerCase();
+}
+
+function toTitlecase(s) {
+  return s.replace(/\w\S*/g, capitalize);
+}
+
+function htmlEscape(s) {
+    s = s.replace('&', '&amp;');
+    s = s.replace('<', '&lt;');
+    s = s.replace('>', '&gt;');
+    return s;
+}
+
+prepareCategoryUpdate = function(div) {
+    var $div      = $(div);
+    var $form     = $div.find("form");
+    var $save     = $div.find(".dialog-delete");
+    var $cancel   = $div.find(".dialog-cancel");
+    var $testtype = $div.find(".field .testtype");
+    var $date     = $div.find(".field .date");
+    var $hardware = $div.find(".field .hwproduct");
+    var $catpath  = $("dd.category");
+    var $datespan = $("span.date");
+    var $donebtn  = $('#wizard_buttons a');
+
+    var arrow     = $('<div/>').html(" &rsaquo; ").text();
+    
+    $testtype.val(toTitlecase($testtype.val()));
+    $hardware.val(toTitlecase($hardware.val()));
+
+    $save.click(function() {
+      var targetval  = $('.field .target:checked').val();
+      var versionval = $('.field .version:checked').val();
+      var typeval    = toTitlecase($testtype.val());
+      var hwval      = toTitlecase($hardware.val());
+      var dateval    = $date.val();
+
+      // validate
+      $div.find('.error').hide();
+      if (targetval == '') {
+        return false;
+      } else if (typeval == '') {
+        $('.error.testtype').text("Test type cannot be empty.").show();
+        return false;
+      } else if (versionval == '') {
+        return false;
+      } else if (dateval == '') {
+        $('.error.tested_at').text("Test date cannot be empty.").show();
+        return false;
+      } else if (hwval == '') {
+        $('.error.hwproduct').text("Hardware cannot be empty.").show();
+        return false;
+      }
+
+      // send to server
+      var data = $form.serialize();
+      var url  = $form.attr('action');
+
+      // update DOM
+      //  - update bread crumbs
+      //  - update date
+      $.post(url, data, function(data) {
+          console.log($catpath);
+          $datespan.text(data);
+          
+          $catpath.html(htmlEscape(versionval) + arrow + htmlEscape(targetval) 
+                                               + arrow + htmlEscape(typeval) 
+                                               + arrow + htmlEscape(hwval));
+
+          $donebtn.attr("href", "/" + encodeURI(versionval) + 
+                                "/" + encodeURI(targetval) + 
+                                "/" + encodeURI(typeval) + 
+                                "/" + encodeURI(hwval) +
+                                "/" + SESSION_ID);
+      });
+
+      $div.jqmHide();
+
+      return false;
+    });
+
+
+}
+
 function linkEditButtons() {
     $('div.editable_area').each(function(i, node) {
         var $node = $(node);
@@ -50,7 +136,6 @@ function linkEditButtons() {
         $node.click(handleEditButton);
     });
     $('div.editable_title').click(handleTitleEdit);
-    $('div.editable_date').click(handleDateEdit);
     $('.testcase').each(function(i, node) {
         var $node = $(node);
         var $comment = $node.find('.testcase_notes');
@@ -696,9 +781,7 @@ function fetchBugzillaInfo() {
 }
 
 function formatMarkup(s) {
-    s = s.replace('&', '&amp;');
-    s = s.replace('<', '&lt');
-    s = s.replace('>', '&gt');
+    s = htmlEscape(s);
 
     lines = s.split('\n');
     var html = "";
@@ -717,9 +800,9 @@ function formatMarkup(s) {
         line = line.replace(/'''''(.+?)'''''/g, "<b><i>$1</i></b>");
         line = line.replace(/'''(.+?)'''/g, "<b>$1</b>");
         line = line.replace(/''(.+?)''/g, "<i>$1</i>");
-        line = line.replace(/http\:\/\/bugs.meego.com\/show_bug\.cgi\?id=(\d+)/g, "<a class=\"bugzilla fetch bugzilla_append\" href=\"http://bugs.meego.com/show_bug.cgi?id=$1\">$1</a>");
+        line = line.replace(/http\:\/\/([^\/]+)\/show_bug\.cgi\?id=(\d+)/g, "<a class=\"bugzilla fetch bugzilla_append\" href=\"http://$1/show_bug.cgi?id=$2\">$2</a>");
         line = line.replace(/\[\[(http:\/\/.+?) (.+?)\]\]/g, "<a href=\"$1\">$2</a>");
-        line = line.replace(/\[\[(\d+)\]\]/g, "<a class=\"bugzilla fetch bugzilla_append\" href=\"http://bugs.meego.com/show_bug.cgi?id=$1\">$1</a>");
+        line = line.replace(/\[\[(\d+)\]\]/g, "<a class=\"bugzilla fetch bugzilla_append\" href=\"http://" + BUGZILLA_URI + "$1\">$1</a>");
 
         var match;
         line = line.replace(/^====\s*(.+)\s*====$/, "<h5>$1</h5>");
@@ -827,7 +910,14 @@ function filterResults(rowsToHide, typeText) {
         });
     }
 
-    $("#see_all_button").click(function(){
+    $(".see_history_button").click(function(){
+      $("table.detailed_results").hide();
+      $history.show();
+      $history.find(".see_history_button").addClass("active");      
+      return false;
+    });
+
+    $(".see_all_button").click(function(){
         $("a.sort_btn").removeClass("active");
         $(this).addClass("active");
         $(rowsToHide).show();
@@ -835,7 +925,7 @@ function filterResults(rowsToHide, typeText) {
         return false;
     });
 
-    $("#see_only_failed_button").click(function(){
+    $(".see_only_failed_button").click(function(){
         $("a.sort_btn").removeClass("active");
         $(this).addClass("active");
         $(rowsToHide).hide();
@@ -852,6 +942,19 @@ function filterResults(rowsToHide, typeText) {
             updateToggle($tbody, $this);
             return false;
         });
+    });
+
+    var $detail  = $("table.detailed_results").first(); 
+    var $history = $("table.detailed_results.history");
+    $history.find(".see_all_button").click(function(){
+        $history.hide();
+        $detail.show();
+        $detail.find(".see_all_button").click();
+    });
+    $history.find(".see_only_failed_button").click(function(){
+        $history.hide();
+        $detail.show();
+        $detail.find(".see_only_failed_button").click();
     });
 }
 

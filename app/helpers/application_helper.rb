@@ -85,12 +85,21 @@ module ApplicationHelper
     html = '<ul class="clearfix">'
     link_text = ''
     @meego_releases.each do |release|
-      if release == current_version
-          html += '<li class="current">'
-          link_text = "MeeGo v#{release}"
+      if release =~ /\d+\.\d+/
+        if release == current_version
+            html += '<li class="current">'
+            link_text = "MeeGo v#{release}"
+        else
+            html += '<li>'
+            link_text = "v#{release}"
+        end
       else
+        if release == current_version
+          html += '<li class="current">'
+        else
           html += '<li>'
-          link_text = "v#{release}"
+        end
+        link_text = release
       end
 
       path = release
@@ -114,6 +123,10 @@ module ApplicationHelper
     html.html_safe
   end
 
+  def report_url(s)
+      url_for :controller=>'reports',:action=>'view', :release_version=>s.release_version, :target=>s.target, :testtype=>s.testtype, :hwproduct=>s.hwproduct, :id=>s.id
+  end
+
   def format_date_to_human_readable(date)
     date ? date.strftime('%d %B %Y') : 'n/a'
   end
@@ -124,5 +137,45 @@ module ApplicationHelper
 
   def use_nokia_layout?
     request.host.include? "maemo" or request.host.include? "nokia"
+  end
+
+  def html_graph(passed, failed, na, max_cases)
+    pw = passed*386/max_cases
+    fw = failed*386/max_cases
+    nw = na*386/max_cases
+    "<div class=\"htmlgraph\"><div class=\"passed\" width=\"#{pw}\"/><div class=\"failed\ width=\"#{fw}\"/><div class=\"na\" width=\"#{nw}\"/></div>"
+  end
+
+  def ints2js(ints)
+    ('[' + ints.map{|v| v.to_s}.join(",") + ']').html_safe
+  end
+
+  def strs2js(strings)
+    ('[' + strings.map{|s| "\"#{s}\""}.join(",") + ']').html_safe
+  end
+
+  def google_analytics_tag
+    # only run analytics on the official server
+    if request.host.include? "qa-reports.meego.com"
+      render :partial => 'shared/google_analytics'
+    end
+  end
+
+  def clicktale_top_tag
+    # only run clicktale on the official server
+    if request.host.include? "qa-reports.meego.com"
+      render :partial => 'shared/clicktale_top'
+    end
+  end
+
+  def clicktale_bottom_tag
+    # only run clicktale on the official server
+    if request.host.include? "qa-reports.meego.com"
+      render :partial => 'shared/clicktale_bottom'
+    end
+  end
+
+  def form_ajax_error_msg(cls)
+    "<div style=\"display:none\" class=\"error #{cls}\">&nbsp;</div>".html_safe
   end
 end

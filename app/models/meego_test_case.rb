@@ -30,5 +30,24 @@ class MeegoTestCase < ActiveRecord::Base
     (meego_test_set.name + "_" + name).downcase
   end
 
+  def find_matching_case(session)
+    return nil unless session
+    session.meego_test_cases.each do |tc|
+      return tc if tc.name == name
+    end
+    nil
+  end
+
+  def find_change_class(prev_session)
+    testcase = find_matching_case(prev_session)
+    return '' unless testcase
+    return case testcase.result
+      when result then 'unchanged_result'
+      when     -1 then 'changed_result changed_from_fail'
+      when      0 then 'changed_result changed_from_na'
+      when      1 then 'changed_result changed_from_pass'
+    end
+  end
+
 end
 

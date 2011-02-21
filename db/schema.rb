@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101229074157) do
+ActiveRecord::Schema.define(:version => 20110202082758) do
 
   create_table "meego_test_cases", :force => true do |t|
     t.integer "meego_test_set_id",                                     :null => false
@@ -64,6 +64,12 @@ ActiveRecord::Schema.define(:version => 20101229074157) do
   add_index "meego_test_sets", ["feature"], :name => "index_meego_test_sets_on_feature"
   add_index "meego_test_sets", ["meego_test_session_id"], :name => "index_meego_test_sets_on_meego_test_session_id"
 
+  create_table "target_labels", :force => true do |t|
+    t.string  "label",      :limit => 64, :null => false
+    t.string  "normalized", :limit => 64, :null => false
+    t.integer "sort_order",               :null => false
+  end
+
   create_table "users", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
     t.string   "encrypted_password",   :limit => 128, :default => "", :null => false
@@ -84,5 +90,11 @@ ActiveRecord::Schema.define(:version => 20101229074157) do
 
   add_index "users", ["authentication_token"], :name => "index_users_on_authentication_token", :unique => true
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
+
+  create_table "version_labels", :force => true do |t|
+    t.string  "label",      :limit => 64, :null => false
+    t.string  "normalized", :limit => 64, :null => false
+    t.integer "sort_order",               :null => false
+  end
 
 end

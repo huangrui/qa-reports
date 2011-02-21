@@ -6,7 +6,8 @@
 #
 # Category::    Capistrano
 # Package::     Database
-# Author::      Simone Carletti <weppos@weppos.net>
+# Authors::     Simone Carletti <weppos@weppos.net>
+#               Jarno Keskikangas <jarno.keskikangas@leonidasoy.fi>
 # Copyright::   2007-2010 The Authors
 # License::     MIT License
 # Link::        http://www.simonecarletti.com/
@@ -20,17 +21,6 @@
 # the file (for example to database.example.yml) and appending <tt>database.yml</tt>
 # value to your SCM ignore list.
 #
-#   # Example for Subversion
-#
-#   $ svn mv config/database.yml config/database.example.yml
-#   $ svn propset svn:ignore 'database.yml' config
-#
-#   # Example for Git
-#
-#   $ git mv config/database.yml config/database.example.yml
-#   $ echo 'config/database.yml' >> .gitignore 
-#
-# 
 # == Usage
 # 
 # Include this file in your <tt>deploy.rb</tt> configuration file.
@@ -86,7 +76,6 @@
 # hard coded (or stored in a variable) but asked on setup.
 # I don't like to store passwords in files under version control
 # because they will live forever in your history.
-# This is why I use the Capistrano::CLI utility.
 #
 
 unless Capistrano::Configuration.respond_to?(:instance)
@@ -134,20 +123,12 @@ Capistrano::Configuration.instance.load do
         location = fetch(:template_dir, "config/deploy") + '/database.yml.erb'
         template = File.file?(location) ? File.read(location) : default_template
 
-        config = ERB.new(template)
+        config = ERB.new(template, 0, '%<>')
 
         run "mkdir -p #{shared_path}/db" 
         run "mkdir -p #{shared_path}/config" 
 
-        config_path = ""
-        run "cd #{shared_path}/config/ && pwd" do |ch, stream, data|
-          if stream == :out
-            config_path += data
-          end
-        end
-
-        config_path.chomp!
-        put config.result(binding), "#{config_path}/database.yml"
+        put config.result(binding), "#{shared_path}/config/database.yml"
       end
 
       desc <<-DESC
@@ -159,7 +140,7 @@ Capistrano::Configuration.instance.load do
 
     end
 
-    after "deploy:setup",           "deploy:db:setup"   unless fetch(:skip_db_setup, false)
+    after "deploy:setup", "deploy:db:setup" unless fetch(:skip_db_setup, false)
     after "deploy:finalize_update", "deploy:db:symlink"
 
   end
