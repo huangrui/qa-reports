@@ -153,6 +153,11 @@ class TestCase
     @node['failure_info'] || ""
   end
   
+  def measurements
+    @node.css('measurement').map do |m|
+      Measurement.new(m)
+    end
+  end
 end
 
 
