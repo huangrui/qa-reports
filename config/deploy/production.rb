@@ -14,6 +14,11 @@ set :dbuser, "meego"
 set :dbhost, "localhost"
 set :database, "meego_qa_reports_production"
 
+after "deploy:symlink" do
+  # Allow robots to index qa-reports.meego.com
+  run "rm #{current_path}/public/robots.txt"
+end
+
 namespace :db do
   desc "Get the database password from user"
   task :get_password do
