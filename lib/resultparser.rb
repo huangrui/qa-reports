@@ -155,6 +155,33 @@ class TestCase
   
 end
 
+
+class Measurement
+  def initialize(node)
+    @node = node
+  end
+
+  def name
+    @node['name']
+  end
+
+  def value
+    @node['value'].try(:to_f)
+  end
+
+  def unit
+    @node['unit']
+  end
+
+  def target
+    @node['target'].try(:to_f)
+  end
+
+  def failure
+    @node['failure'].try(:to_f)
+  end
+end
+
 class TestStep
   def initialize(node)
     @node = node
