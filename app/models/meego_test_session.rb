@@ -95,6 +95,13 @@ class MeegoTestSession < ActiveRecord::Base
     prev_session
   end
 
+  def has_nft?
+    testcases.each do |tc|
+      return true if tc.measurements.exists?
+    end
+    false
+  end
+
   def self.import(attributes, files, user)
     attr             = attributes.merge!({:uploaded_files => files})
     result           = MeegoTestSession.new(attr)
@@ -666,7 +673,7 @@ class MeegoTestSession < ActiveRecord::Base
 
           set.cases.each do |testcase|
             result = MeegoTestSession.map_result(testcase.result)
-            set_model.meego_test_cases.build(
+            tc = set_model.meego_test_cases.build(
                 :name               => testcase.name,
                 :result             => result,
                 :comment            => testcase.comment,
@@ -676,6 +683,15 @@ class MeegoTestSession < ActiveRecord::Base
             pass_count += 1 if result == 1
             total_count += 1
             file_total += 1
+            tc.measurements.each do |m|
+              tc.measurements.build(
+                :name    => m.name,
+                :value   => m.value,
+                :unit    => m.unit
+                :target  => m.target,
+                :failure => m.failure,
+              )
+            end
           end
           set_model.grading = calculate_grading(pass_count, total_count)
         end
