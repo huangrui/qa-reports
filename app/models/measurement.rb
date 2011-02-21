@@ -25,3 +25,4 @@ require 'testreport'
 
 class Measurement < ActiveRecord::Base
   belongs_to :meego_test_case
+end
