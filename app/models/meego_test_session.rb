@@ -695,9 +695,9 @@ class MeegoTestSession < ActiveRecord::Base
               tc.measurements.build(
                 :name    => m.name,
                 :value   => m.value,
-                :unit    => m.unit
+                :unit    => m.unit,
                 :target  => m.target,
-                :failure => m.failure,
+                :failure => m.failure
               )
             end
           end
