@@ -84,70 +84,106 @@
     <% end %>
    
    <h2 id="detailed_nft_results">Non-functional Test Results<span class="heading_actions"><%=back_to_top%></span></h2>
-      
-	      
-	    <table id="non-functional_results" class="detailed_results">
-	      <thead>
-				<tr>
-				  <th id="th_nft_test_case">
-				  	<span class="sort">
-				  		<a href="#" class="see_only_failed_button sort_btn active">See only failed</a>
-				  		<a href="#" class="see_all_button sort_btn">See all</a>
-				  	</span>
-				  </th>
-				  <th class="th_measured">Measured</th>
-				  <th class="th_target">Target</th>    
-				  <th class="th_result">Result</th>  			  
-				  <th class="th_to_target">% of target</th>      			  
-				  <th id="th_notes">Notes</th>
-	      	</tr>
-			</thead>
-			
+   
+   
+   	    <table id="non-functional_results" class="detailed_results">
+   	      <thead>
+   				<tr>
+   				  <th id="th_nft_test_case">
+   				  	<span class="sort">
+   				  		<a href="#" id="see_only_failed_button" class="sort_btn active">See only failed</a>
+   				  		<a href="#" id="see_all_button" class="sort_btn">See all</a>
+   				  	</span>
+   				  </th>
+   				  <th class="th_measured">Measured</th>
+   				  <th class="th_target">Target</th>    
+   				  <th class="th_limit">Fail limit</th>	
+   				  <th class="th_to_target">% of target</th>  
+   				  <th class="th_result">Result</th>  			     			  
+   				  <th id="th_notes">Notes</th>
+   	      	</tr>
+   			</thead>
+   			
 		  <%= render :partial => "nft_feature", :collection => @test_session.nft_sets %>
 
-			<tr class="feature_name">
-				<td colspan="6">
-			        Run time status/Settings/Control Panel (Dummy)
-					<a href="#" class="see_all_toggle">+ see passing tests</a>
-				</td>
-			</tr>
-			
-			<tr class="testcase">
-				<td class="testcase_name">How many watts per second?</td>
-				<td class="testcase_result">5&nbsp;<span class="unit">W</span></td>
-				<td class="testcase_target">38&nbsp;<span class="unit">W</span></td>   
-				<td class="testcase_result fail">Fail</td>   			
-				<td class="testcase_to_target">11&nbsp;<span class="unit">%</span></td>      			
-				<td class="testcase_notes">Test case is not suitable for N900.</td>
-			</tr>
-	
-			<tr class="feature_name">
-				<td colspan="6">
-			        Run time status/Settings/Control Panel (Dummy)
-					<a href="#" class="see_all_toggle">+ see passing tests</a>
-				</td>
-			</tr>
-	
-			<tr class="testcase">
-				<td class="testcase_name">How many watts per second?</td>
-				<td class="testcase_result">34&nbsp;<span class="unit">W</span></td>
-				<td class="testcase_target">32&nbsp;<span class="unit">W</span></td>   
-				<td class="testcase_result pass">Pass</td>   			
-				<td class="testcase_to_target">108&nbsp;<span class="unit">%</span></td>      			
-				<td class="testcase_notes">Test case is not suitable for N900.</td>
-			</tr>
+   			<tr class="feature_name">
+   				<td colspan="7">
+   			        Run time status/Settings/Control Panel (Dummy)
+   					<a href="#" class="see_all_toggle">+ see passing tests</a>
+   				</td>
+   			</tr>
+   			
+   			<tr class="testcase multiple_rows">
+   				<td class="testcase_name">How many watts per second?</td>
+   				<td class="testcase_result">5&nbsp;<span class="unit">W</span></td>
+   				<td class="testcase_target">38&nbsp;<span class="unit">W</span></td> 
+   				<td class="testcase_limit">30&nbsp;<span class="unit">W</span></td>    
+   				<td class="testcase_to_target fail">11&nbsp;<span class="unit">%</span></td>
+   				<td class="testcase_result multiple_results fail" rowspan="3">Fail</td>       			
+   				<td class="testcase_notes">Test case is not suitable for N900.</td>
+   			</tr>
 
-			<tr class="testcase">
-				<td class="testcase_name">How many watts per second?</td>
-				<td class="testcase_result">-</td>
-				<td class="testcase_target">38&nbsp;<span class="unit">W</span></td>   
-				<td class="testcase_result na">N/A</td>   			
-				<td class="testcase_to_target">-</td>      			
-				<td class="testcase_notes">Test case is not suitable for N900.</td>
-			</tr>
-		
-	    </table>-->
-      
+				<tr class="testcase multiple_rows">
+					<td class="testcase_name"></td>
+					<td class="testcase_result">5&nbsp;<span class="unit">A</span></td>
+					<td class="testcase_target">38&nbsp;<span class="unit">A</span></td>    
+					<td class="testcase_limit">30&nbsp;<span class="unit">W</span></td>	
+					<td class="testcase_to_target pass">120&nbsp;<span class="unit">%</span></td>
+					<td class="testcase_notes">Test case is not suitable for N900.</td>
+				</tr>
+				
+				<tr class="testcase multiple_rows">
+					<td class="testcase_name"></td>
+					<td class="testcase_result">5&nbsp;<span class="unit">A</span></td>
+					<td class="testcase_target">38&nbsp;<span class="unit">A</span></td>    
+   				<td class="testcase_limit">30&nbsp;<span class="unit">W</span></td>	
+					<td class="testcase_to_target pass">120&nbsp;<span class="unit">%</span></td>
+					<td class="testcase_notes">Test case is not suitable for N900.</td>
+				</tr>
+
+
+				<tr class="testcase multiple_rows even">
+   				<td class="testcase_name">Connection strength?</td>
+   				<td class="testcase_result">5&nbsp;<span class="unit">ms</span></td>
+   				<td class="testcase_target">5&nbsp;<span class="unit">ms</span></td>     
+   				<td class="testcase_limit">30&nbsp;<span class="unit">W</span></td>	
+   				<td class="testcase_to_target pass">110&nbsp;<span class="unit">%</span></td>
+   				<td class="testcase_result multiple_results pass" rowspan="2">Pass</td>       			
+   				<td class="testcase_notes">Test case is not suitable for N900.</td>
+   			</tr>
+
+				<tr class="testcase multiple_rows even">
+					<td class="testcase_name"></td>
+					<td class="testcase_result">0.04&nbsp;<span class="unit">A</span></td>
+					<td class="testcase_target">0.034&nbsp;<span class="unit">A</span></td>     			
+					<td class="testcase_limit">30&nbsp;<span class="unit">W</span></td>
+					<td class="testcase_to_target pass">500&nbsp;<span class="unit">%</span></td>
+       			
+					<td class="testcase_notes"></td>
+				</tr>
+
+
+   	
+   			<tr class="feature_name">
+   				<td colspan="7	">
+   			        Run time status/Settings/Control Panel (Dummy)
+   					<a href="#" class="see_all_toggle">+ see passing tests</a>
+   				</td>
+   			</tr>
+   	
+				<tr class="testcase multiple_rows">
+						<td class="testcase_name">Connection strength?</td>
+						<td class="testcase_result">5&nbsp;<span class="unit">ms</span></td>
+						<td class="testcase_target">5&nbsp;<span class="unit">ms</span></td>     
+						<td class="testcase_limit">30&nbsp;<span class="unit">W</span></td>	
+						<td class="testcase_to_target pass">110&nbsp;<span class="unit">%</span></td>
+						<td class="testcase_result multiple_results pass" rowspan="2">Pass</td>       			
+						<td class="testcase_notes">Test case is not suitable for N900.</td>
+					</tr>
+   
+
+   		
+   </table>
       
       <%= render :partial => 'editable_text', :locals => {:anchor => 'issue_summary', :title => "Issue Summary", :field => 'issue_summary'} %>
 
