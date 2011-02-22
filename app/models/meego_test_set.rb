@@ -31,6 +31,34 @@ class MeegoTestSet < ActiveRecord::Base
   include ReportSummary
   include Graph
    
+  def has_nft?
+    if @has_nft.nil?
+      @has_nft = false
+      meego_test_cases.each do |tc|
+        if tc.measurements.exists?
+          @has_nft = true
+          break
+        end
+      end
+    else
+      @has_nft
+    end
+  end
+
+  def has_non_nft?
+    if @has_non_nft.nil?
+      @has_non_nft = false
+      meego_test_cases.each do |tc|
+        if not tc.measurements.exists?
+          @has_non_nft = true
+          break
+        end
+      end
+    else
+      @has_non_nft
+    end
+  end
+
   def prev_summary
     prevs = meego_test_session.prev_session
     if prevs
@@ -38,7 +66,6 @@ class MeegoTestSet < ActiveRecord::Base
     else
       nil
     end
-  end
 
   def name
     feature

@@ -229,6 +229,14 @@ class MeegoTestSession < ActiveRecord::Base
     tested_at ? tested_at.strftime("%Y-%m-%d") : 'n/a'
   end
 
+  def nft_sets
+    meego_test_sets.select {|set| set.has_nft?}
+  end
+
+  def non_nft_sets
+    meego_test_sets.select {|set| set.has_non_nft?}
+  end
+
   ###############################################
   # Chart visualization methods                 #
   ###############################################
