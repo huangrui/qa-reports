@@ -21,6 +21,8 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 # 02110-1301 USA
 #
+
+testcase = nft_testcase
 %>
 <tr class="testcase <%= result_class(testcase, "result_") %>" id="testcase-<%= testcase.id %>" style="<%= hide_passing(testcase) %>">
   <td class="testcase_name"><%= testcase.name %>
@@ -34,4 +36,17 @@
         <div class="comment_markup" style="display:none;"><%= testcase.comment %></div>
     <% end %>
   </td>
+</tr>
+
+
+<tr class="testcase">
+  <td class="testcase_name"><%= testcase.name %>
+    <% if not testcase.source_link.blank? %><a href="<%=testcase.source_link%>" class="dl_link">src</a><% end %>
+    <% if not testcase.binary_link.blank? %><a href="<%=testcase.binary_link%>" class="dl_link">rpm</a><% end %>
+  </td>
+  <td class="testcase_value"><%= testcase.value %>&nbsp;<span class="unit">W</span></td>
+  <td class="testcase_target"><%= testcase.target %>&nbsp;<span class="unit">W</span></td>   
+  <td class="testcase_result <%= result_class(testcase) %>">result_html(testcase)</td>   			
+  <td class="testcase_to_target">11&nbsp;<span class="unit">%</span></td>      			
+  <td class="testcase_notes">comment_html(testcase)</td>
 </tr>

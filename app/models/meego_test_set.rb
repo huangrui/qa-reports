@@ -38,6 +38,8 @@ class MeegoTestSet < ActiveRecord::Base
         if tc.measurements.exists?
           @has_nft = true
           break
+        else
+          @has_non_nft = true
         end
       end
     else
@@ -52,11 +54,21 @@ class MeegoTestSet < ActiveRecord::Base
         if not tc.measurements.exists?
           @has_non_nft = true
           break
+        else
+          @has_nft = true
         end
       end
     else
       @has_non_nft
     end
+  end
+
+  def nft_cases
+    meego_test_cases.select {|tc| tc.measurements.exists?}
+  end
+
+  def non_nft_cases
+    meego_test_cases.select {|tc| not tc.measurements.exists?}
   end
 
   def prev_summary
