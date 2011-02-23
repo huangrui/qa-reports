@@ -24,7 +24,7 @@
 
 testcase = nft_testcase
 %>
-<tr class="testcase multiple_rows<%=" even" if (nft_testcase_counter%2) == 0 %>">
+<tr class="testcase multiple_rows<%=" even" if (nft_testcase_counter%2) == 0 %>" id="testcase-<%= testcase.id %>">
   <td class="testcase_name" rowspan="<%=testcase.measurements.size%>"><%= testcase.name %>
     <% if not testcase.source_link.blank? %><a href="<%=testcase.source_link%>" class="dl_link">src</a><% end %>
     <% if not testcase.binary_link.blank? %><a href="<%=testcase.binary_link%>" class="dl_link">rpm</a><% end %>
