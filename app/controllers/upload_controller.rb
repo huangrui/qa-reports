@@ -105,9 +105,12 @@ class UploadController < ApplicationController
       params[:meego_test_session][:uploaded_files] = files
     end
 
+    if params[:meego_test_session][:release_version]
+      params[:meego_test_session][:release_version] = VersionLabel.find(:first, :conditions => {:label => params[:meego_test_session][:release_version]}).id
+    end
+
     @test_session = MeegoTestSession.new(params[:meego_test_session])
     @test_session.import_report(current_user)
-    
     if @test_session.save
       session[:preview_id] = @test_session.id
       expire_action :controller => "index", :action => "filtered_list", :release_version => params[:meego_test_session][:release_version], :target => params[:meego_test_session][:target], :testtype => params[:meego_test_session][:testtype], :hwproduct => params[:meego_test_session][:hwproduct]
