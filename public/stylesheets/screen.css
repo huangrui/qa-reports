@@ -1537,7 +1537,7 @@ td.testcase_name {
 .multiple_results {
 	border-left:1px solid #eee !important;
 	border-right:1px solid #eee;
-	vertical-align: middle !important;}
+	vertical-align: top !important;}
 
 .multiple_rows td {
 	border-bottom: none;}
