@@ -42,9 +42,8 @@ class MeegoTestSet < ActiveRecord::Base
           @has_non_nft = true
         end
       end
-    else
-      @has_nft
     end
+    @has_nft
   end
 
   def has_non_nft?
@@ -58,9 +57,8 @@ class MeegoTestSet < ActiveRecord::Base
           @has_nft = true
         end
       end
-    else
-      @has_non_nft
     end
+    @has_non_nft   
   end
 
   def nft_cases

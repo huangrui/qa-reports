@@ -26,7 +26,7 @@ class MeegoTestCase < ActiveRecord::Base
   belongs_to :meego_test_set
   belongs_to :meego_test_session
 
-  has_many :measurements, :dependent => :destroy
+  has_many :measurements, :dependent => :destroy, :class_name => "::MeegoMeasurement"
 
   def unique_id
     (meego_test_set.name + "_" + name).downcase

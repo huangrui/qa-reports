@@ -21,6 +21,13 @@
 # 02110-1301 USA
 #
 
-class Measurement < ActiveRecord::Base
+class MeegoMeasurement < ActiveRecord::Base
   belongs_to :meego_test_case
+
+  def result
+    return 0 if target.nil? or failure.nil?
+    return 1 if target < failure and value < failure
+    return 1 if target > failure and value > failure
+    return -1
+  end
 end

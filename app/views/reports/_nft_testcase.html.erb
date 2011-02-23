@@ -24,29 +24,27 @@
 
 testcase = nft_testcase
 %>
-<tr class="testcase <%= result_class(testcase, "result_") %>" id="testcase-<%= testcase.id %>" style="<%= hide_passing(testcase) %>">
-  <td class="testcase_name"><%= testcase.name %>
+<tr class="testcase multiple_rows<%=" even" if (nft_testcase_counter%2) == 0 %>">
+  <td class="testcase_name" rowspan="<%=testcase.measurements.size%>"><%= testcase.name %>
     <% if not testcase.source_link.blank? %><a href="<%=testcase.source_link%>" class="dl_link">src</a><% end %>
     <% if not testcase.binary_link.blank? %><a href="<%=testcase.binary_link%>" class="dl_link">rpm</a><% end %>
   </td>
-  <td class="testcase_result <%= result_class(testcase) %> <%= 'edit' if @editing %> <%= testcase.find_change_class(@test_session.prev_session) %> "><span class="content"><%= result_html(testcase) %></span> </td>
-  <td class="testcase_notes <%= 'edit' if @editing %>">
-    <div class="content"><%= comment_html(testcase) %></div>
-    <% if @editing %>
-        <div class="comment_markup" style="display:none;"><%= testcase.comment %></div>
+  <% first = true
+  testcase.measurements.each do |m| %>
+    <td class="testcase_value"><%= m.value %>&nbsp;<span class="unit"><%=m.unit%></span></td>
+    <td class="testcase_result <%= result_class(m) %>">result_html(m)</td>   			
+    <td class="testcase_target"><%= m.target %>&nbsp;<span class="unit"><%=m.unit%></span></td>   
+    <td class="testcase_limit"><%= m.failure %>&nbsp;<span class="unit"><%=m.unit%></span></td>    
+    <td class="testcase_to_target">11&nbsp;<span class="unit">%</span></td>
+    <% if first
+      first = false %>
+      <td class="testcase_result multiple_results <%= result_class(testcase) %> <%= 'edit' if @editing %> <%= testcase.find_change_class(@test_session.prev_session) %> " rowspan="<%=testcase.measurements.size%>"><span class="content"><%= result_html(testcase) %></span> </td>       			
+      <td class="testcase_notes <%= 'edit' if @editing %>" rowspan="<%=testcase.measurements.size%>">
+        <div class="content"><%= comment_html(testcase) %></div>
+        <% if @editing %>
+            <div class="comment_markup" style="display:none;"><%= testcase.comment %></div>
+        <% end %>
+      </td>
     <% end %>
-  </td>
-</tr>
-
-
-<tr class="testcase">
-  <td class="testcase_name"><%= testcase.name %>
-    <% if not testcase.source_link.blank? %><a href="<%=testcase.source_link%>" class="dl_link">src</a><% end %>
-    <% if not testcase.binary_link.blank? %><a href="<%=testcase.binary_link%>" class="dl_link">rpm</a><% end %>
-  </td>
-  <td class="testcase_value"><%= testcase.value %>&nbsp;<span class="unit">W</span></td>
-  <td class="testcase_target"><%= testcase.target %>&nbsp;<span class="unit">W</span></td>   
-  <td class="testcase_result <%= result_class(testcase) %>">result_html(testcase)</td>   			
-  <td class="testcase_to_target">11&nbsp;<span class="unit">%</span></td>      			
-  <td class="testcase_notes">comment_html(testcase)</td>
+  <% end %>
 </tr>

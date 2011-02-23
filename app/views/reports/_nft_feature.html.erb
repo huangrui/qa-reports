@@ -21,6 +21,10 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 # 02110-1301 USA
 #
+
+feature = nft_feature
+
+if not feature.nft_cases.empty?
 %>
 <tbody>
 <tr class="feature_name" id="test-set-<%=feature.id%>">
@@ -33,3 +37,4 @@
 <tbody>
 <%= render :partial => "nft_testcase", :collection => feature.nft_cases %>
 </tbody>
+<% end %>

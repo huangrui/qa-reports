@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(:version => 20110221115505) do
 
-  create_table "measurements", :force => true do |t|
+  create_table "meego_measurements", :force => true do |t|
     t.integer "meego_test_case_id"
     t.string  "name",                             :null => false
     t.string  "unit",               :limit => 32, :null => false
@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(:version => 20110221115505) do
     t.float   "failure"
   end
 
-  add_index "measurements", ["meego_test_case_id"], :name => "index_measurements_on_meego_test_case_id"
+  add_index "meego_measurements", ["meego_test_case_id"], :name => "index_meego_measurements_on_meego_test_case_id"
 
   create_table "meego_test_cases", :force => true do |t|
     t.integer "meego_test_set_id",                                     :null => false
