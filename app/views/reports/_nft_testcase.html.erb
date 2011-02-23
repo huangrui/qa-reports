@@ -32,6 +32,7 @@ testcase.measurements.each do |m| %>
     <% if not testcase.binary_link.blank? %><a href="<%=testcase.binary_link%>" class="dl_link">rpm</a><% end %>
   </td>
   <% end %>
+    <td class="testcase_measurement"><%= m.name %></td>
     <td class="testcase_value"><%= m.value_html %></td>
     <td class="testcase_target"><%= m.target_html %></td>   
     <td class="testcase_limit"><%= m.failure_html %></td>    
