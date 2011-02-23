@@ -23,14 +23,15 @@
 #
 
 testcase = nft_testcase
-%>
-<tr class="testcase multiple_rows<%=" even" if (nft_testcase_counter%2) == 0 %>" id="testcase-<%= testcase.id %>">
+first = true
+testcase.measurements.each do |m| %>
+<tr class="testcase multiple_rows<%=" even" if (nft_testcase_counter%2) == 0 %>" <%if first%>id="testcase-<%= testcase.id %>"<%end%> >
+  <% if first %>
   <td class="testcase_name" rowspan="<%=testcase.measurements.size%>"><%= testcase.name %>
     <% if not testcase.source_link.blank? %><a href="<%=testcase.source_link%>" class="dl_link">src</a><% end %>
     <% if not testcase.binary_link.blank? %><a href="<%=testcase.binary_link%>" class="dl_link">rpm</a><% end %>
   </td>
-  <% first = true
-  testcase.measurements.each do |m| %>
+  <% end %>
     <td class="testcase_value"><%= m.value_html %></td>
     <td class="testcase_target"><%= m.target_html %></td>   
     <td class="testcase_limit"><%= m.failure_html %></td>    
