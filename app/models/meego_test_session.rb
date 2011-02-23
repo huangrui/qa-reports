@@ -96,10 +96,23 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def has_nft?
-    testcases.each do |tc|
-      return true if tc.measurements.exists?
+    return @has_nft unless @has_nft.nil?
+    meego_test_cases.each do |tc|
+      unless tc.measurements.empty?
+        return @has_nft = true
+      end
     end
-    false
+    @has_nft = false
+  end
+
+  def has_non_nft?
+    return @has_non_nft unless @has_non_nft.nil?
+    meego_test_cases.each do |tc|
+      if tc.measurements.empty?
+        return @has_non_nft = true
+      end
+    end
+    @has_non_nft = false 
   end
 
   def self.import(attributes, files, user)

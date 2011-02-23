@@ -8,7 +8,12 @@
   	<ol>
   	  <li><a href="#test_results">Result Summary</a></li>
 	  <li><a href="#test_features">Test Results by Feature</a></li>
+      <% if @test_session.has_non_nft? %>
   	  <li><a href="#detailed_results">Detailed Test Results</a></li>
+      <% end %>
+      <% if @test_session.has_nft? %>
+  	  <li><a href="#detailed_nft_results">Non-Functional Test Results</a></li>
+      <% end %>
   	</ol>
   <li><a href="#issue_summary">Issue Summary</a></li>
   

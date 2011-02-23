@@ -31,11 +31,10 @@ testcase = nft_testcase
   </td>
   <% first = true
   testcase.measurements.each do |m| %>
-    <td class="testcase_value"><%= m.value %>&nbsp;<span class="unit"><%=m.unit%></span></td>
-    <td class="testcase_result <%= result_class(m) %>">result_html(m)</td>   			
-    <td class="testcase_target"><%= m.target %>&nbsp;<span class="unit"><%=m.unit%></span></td>   
-    <td class="testcase_limit"><%= m.failure %>&nbsp;<span class="unit"><%=m.unit%></span></td>    
-    <td class="testcase_to_target">11&nbsp;<span class="unit">%</span></td>
+    <td class="testcase_value"><%= m.value_html %></td>
+    <td class="testcase_target"><%= m.target_html %></td>   
+    <td class="testcase_limit"><%= m.failure_html %></td>    
+    <td class="testcase_to_target <%=result_class(m.target_result)%>"><%= m.relative_html %></td>
     <% if first
       first = false %>
       <td class="testcase_result multiple_results <%= result_class(testcase) %> <%= 'edit' if @editing %> <%= testcase.find_change_class(@test_session.prev_session) %> " rowspan="<%=testcase.measurements.size%>"><span class="content"><%= result_html(testcase) %></span> </td>       			
