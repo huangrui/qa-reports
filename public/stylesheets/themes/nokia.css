@@ -120,7 +120,16 @@ span#wizard_finalize {
     border-color:#00a31f;}
 
 #upper_header {
-	background: transparent no-repeat top 30px url('/images/nokia/nokia_logo.png');
+/*	background: transparent no-repeat top 30px url('/images/nokia/nokia_logo.png');*/
+}
+
+#logo h3 a {
+	background-image: url(/images/nokia/nokia_header_logo.png);
+	-webkit-transition: none;
+}
+
+#logo h3 a:hover {
+	background-image: url(/images/nokia/nokia_header_logo.png);
 }
 
 #footer {
