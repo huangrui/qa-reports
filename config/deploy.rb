@@ -95,6 +95,10 @@ after "deploy:symlink" do
 
   # Symlink exception notifier config to shared
   run "ln -nfs #{shared_path}/config/exception_notifier #{current_path}/config/exception_notifier"
+  
+  # Remove current bugzilla config file and symlink to shared
+  run "rm #{current_path}/config/bugzilla.yml"
+  run "ln -nfs #{shared_path}/config/bugzilla.yml #{current_path}/config/bugzilla.yml"
 end
 
 namespace :deploy do
