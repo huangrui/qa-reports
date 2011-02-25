@@ -22,6 +22,8 @@ namespace :db do
         -p#{db_conf[::Rails.env]['username']} \
         #{db_conf[::Rails.env]['database']} \
         < qa_reports_production.sql`
+
+    `rm qa_reports_production.sql`
   end
 
 end

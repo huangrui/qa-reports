@@ -24,5 +24,6 @@ namespace :db do
   task :dump, :roles => :db, :only => {:primary => true} do
     run "rake db:dump"
     get "qa_reports_production.sql.bz2", "./qa_reports_production.sql.bz2"
+    run "rm qa_reports_production.sql.bz2"
   end
 end
