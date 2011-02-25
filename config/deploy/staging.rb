@@ -15,6 +15,5 @@ namespace :db do
   task :import, :roles => :db, :only => {:primary => true} do
     put "./qa_reports_production.sql.bz2", "#{current_path}/qa_reports_production.sql.bz2"
     run "cd #{current_path} && RAILS_ENV='staging' rake db:import_to_db"
-    run "rm #{current_path}/qa_reports_production.sql"
   end
 end
