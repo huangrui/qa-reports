@@ -61,6 +61,8 @@ ActiveRecord::Schema.define(:version => 20110221115505) do
     t.string   "release_version",                   :default => "",    :null => false
   end
 
+  add_index "meego_test_sessions", ["release_version", "target", "testtype", "hwproduct"], :name => "index_meego_test_sessions_key"
+
   create_table "meego_test_sets", :force => true do |t|
     t.string  "feature",               :default => ""
     t.integer "total_cases",           :default => 0,  :null => false
