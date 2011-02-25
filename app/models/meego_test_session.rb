@@ -169,28 +169,28 @@ class MeegoTestSession < ActiveRecord::Base
       target    = target.downcase
       testtype  = testtype.downcase
       hwproduct = hwproduct.downcase
-      published.where("version_labels.label" => release_version_label, :target => target, :testtype => testtype, :hwproduct => hwproduct).joins(:version_label).order(order_by).limit(limit)
+      published.where("version_labels.normalized" => release_version_label.downcase, :target => target, :testtype => testtype, :hwproduct => hwproduct).joins(:version_label).order(order_by).limit(limit)
     end
 
     def published_by_release_version_target_test_type(release_version_label, target, testtype, order_by = "tested_at DESC", limit = nil)
       target   = target.downcase
       testtype = testtype.downcase
-      published.where("version_labels.label" => release_version_label, :target => target, :testtype => testtype).joins(:version_label).order(order_by).limit(limit)
+      published.where("version_labels.normalized" => release_version_label.downcase, :target => target, :testtype => testtype).joins(:version_label).order(order_by).limit(limit)
     end
 
     def published_hwversion_by_release_version_target_test_type(release_version_label, target, testtype)
       target   = target.downcase
       testtype = testtype.downcase
-      published.where("version_labels.label" => release_version_label, :target => target, :testtype => testtype).select("DISTINCT hwproduct").joins(:version_label).order("hwproduct")
+      published.where("version_labels.normalized" => release_version_label.downcase, :target => target, :testtype => testtype).select("DISTINCT hwproduct").joins(:version_label).order("hwproduct")
     end
 
     def published_by_release_version_target(release_version_label, target, order_by = "tested_at DESC", limit = nil)
       target = target.downcase
-      published.where("version_labels.label" => release_version_label, :target => target).joins(:version_label).order(order_by).limit(limit)
+      published.where("version_labels.normalized" => release_version_label.downcase, :target => target).joins(:version_label).order(order_by).limit(limit)
     end
 
     def published_by_release_version(release_version_label, order_by = "tested_at DESC", limit = nil)
-      published.where("version_labels.label" => release_version_label).joins(:version_label).order(order_by).limit(limit)
+      published.where("version_labels.normalized" => release_version_label.downcase).joins(:version_label).order(order_by).limit(limit)
     end
   end
 

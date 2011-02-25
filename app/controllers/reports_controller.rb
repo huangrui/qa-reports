@@ -223,7 +223,7 @@ class ReportsController < ApplicationController
       end
 
       @test_session = MeegoTestSession.find(@report_id)
-      return render_404 unless @selected_release_version.eql? VersionLabel.find(@test_session.release_version).label
+      return render_404 unless @test_session.release_version.to_i() == VersionLabel.where(:normalized => @selected_release_version.downcase).first().id
 
       @history = history(@test_session.prev_session)
 
