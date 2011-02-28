@@ -46,6 +46,20 @@ class ApiController < ApplicationController
 
     data[:tested_at] = data[:tested_at] || Time.now
 
+    if data[:release_version]
+      version_label = VersionLabel.where(:normalized => data[:release_version].downcase).first()
+      if not version_label
+        labels = []
+        VersionLabel.find(:all).each{|ver|
+          labels << ver.label
+        }
+        render :json => {:ok => '0', :errors => "The release_version doesn't exist. possible release_version: "+ labels.join('; ') + errors.join('; ')}
+        return
+      else
+        data[:release_version] = version_label.id
+      end
+    end
+
     begin
       @test_session = MeegoTestSession.new(data)
       @test_session.import_report(current_user, true)
