@@ -17,28 +17,14 @@ set :database, "meego_qa_reports_production"
 after "deploy:symlink" do
   # Allow robots to index qa-reports.meego.com
   run "rm #{current_path}/public/robots.txt"
+  run "touch #{current_path}/public/robots.txt"
 end
 
 namespace :db do
-  desc "Get the database password from user"
-  task :get_password do
-    set(:dbpass) do
-      Capistrano::CLI.ui.ask "Enter mysql production password: "
-    end
-  end
-
-  task :backup_name, :only => { :primary => true } do
-    run "mkdir -p #{shared_path}/db_dumps"
-    set :backup_file, "#{shared_path}/db_dumps/#{database}.sql"
-  end
-
-  desc "Dump database to backup file"
+  desc "Dump and fetch production database"
   task :dump, :roles => :db, :only => {:primary => true} do
-    backup_name
-    get_password
-    run "mysqldump --add-drop-table -u #{dbuser} -h #{dbhost} -p#{dbpass} #{database} | bzip2 -c > #{backup_file}.bz2"
-    get "#{backup_file}.bz2", "./#{database}.sql.bz2"
+    run "cd #{current_path} && RAILS_ENV='production' rake db:dump"
+    get "#{current_path}/qa_reports_production.sql.bz2", "./qa_reports_production.sql.bz2"
+    run "rm #{current_path}/qa_reports_production.sql.bz2"
   end
-
-  desc "Fetch the file and dump it to the local database"
 end
