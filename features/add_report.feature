@@ -14,6 +14,25 @@ Feature:
 
     And I should see "Add report"
 
+  Scenario: Should see publish notification
+    When I follow "Add report"
+    And I select target "Handset", test type "Smokey" and hardware "N990" with date "2010-11-22"
+    And I attach the report "sim.xml"
+    And submit the form at "upload_report_submit"
+    And I press "Publish"
+
+    Then I should see "Your report has been successfully published"
+
+  Scenario: Should not see publish notification after reloading report
+    When I follow "Add report"
+    And I select target "Handset", test type "Smokey" and hardware "N990" with date "2010-11-22"
+    And I attach the report "sim.xml"
+    And submit the form at "upload_report_submit"
+    And I press "Publish"
+    And I view the report "1.2/Handset/Smokey/N990"
+
+    Then I should not see "Your report has been successfully published"
+
   Scenario Outline: Add new report with valid data
     When I follow "Add report"
 
