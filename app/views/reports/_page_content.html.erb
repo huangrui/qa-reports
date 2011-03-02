@@ -4,6 +4,14 @@
 
 	<%= yield :notification_area %>	
 
+    <% action = controller.action_name 
+     if action == 'compare' 
+        cache_key = @compare_cache_key
+     else
+        cache_key = "#{action}_page_#{@test_session.id}"
+     end %> 
+    <%= cache cache_key do %>
+
     <%= yield :button_area %>
     
     <%= render :partial => 'editable_title' %>
@@ -120,4 +128,4 @@
 
 	<%= yield :wizard_actions %>
 
-
+      <% end %>

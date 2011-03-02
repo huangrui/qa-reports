@@ -50,12 +50,6 @@
 
   <%= yield :version_navi %>
 
-  <% action = controller.action_name 
-     if action == 'compare' 
-        cache_key = @compare_cache_key
-     else
-        cache_key = "#{action}_page_#{@test_session.id}"
-     end %> 
 
 
   <div id="page">
@@ -63,7 +57,6 @@
 
     <%= yield :wizard_progress %>
 
-    <%= cache cache_key do %>
 
     <%= (out=yield :page_content)!='' ? out : render(:partial => 'page_content') %>
 
@@ -90,4 +83,3 @@
 <%= clicktale_bottom_tag %>
 </body>
 </html>
-<% end %>
