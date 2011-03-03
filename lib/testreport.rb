@@ -84,8 +84,10 @@ module ReportSummary
 
   def total_cases
     if meego_test_cases.loaded?
-      meego_test_cases.size
+      logger.debug "testcases loaded"
+      meego_test_cases.length
     else
+      logger.debug "testcases NOT loaded"
       meego_test_cases.count
     end
   end

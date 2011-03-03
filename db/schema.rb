@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110221115505) do
+ActiveRecord::Schema.define(:version => 20110303090254) do
 
   create_table "meego_measurements", :force => true do |t|
     t.integer "meego_test_case_id"
@@ -31,6 +31,7 @@ ActiveRecord::Schema.define(:version => 20110221115505) do
     t.integer "meego_test_session_id",                 :default => 0,  :null => false
     t.string  "source_link"
     t.string  "binary_link"
+    t.integer "measurements_count",                    :default => 0
   end
 
   add_index "meego_test_cases", ["meego_test_session_id"], :name => "index_meego_test_cases_on_meego_test_session_id"
@@ -60,8 +61,6 @@ ActiveRecord::Schema.define(:version => 20110221115505) do
     t.integer  "total_na",                          :default => 0,     :null => false
     t.string   "release_version",                   :default => "",    :null => false
   end
-
-  add_index "meego_test_sessions", ["release_version", "target", "testtype", "hwproduct"], :name => "index_meego_test_sessions_key"
 
   create_table "meego_test_sets", :force => true do |t|
     t.string  "feature",               :default => ""

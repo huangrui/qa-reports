@@ -43,10 +43,8 @@ class MeegoTestCase < ActiveRecord::Base
   def has_measurements?
     return @has_measurements unless @has_measurements.nil?
     if measurements.loaded?
-      logger.debug "Measurements already loaded"
       @has_measurements = measurements.length > 0
     else
-      logger.debug "Measurements NOT loaded"
       @has_measurements = !measurements.empty?
     end
   end

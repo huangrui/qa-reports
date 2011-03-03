@@ -64,7 +64,11 @@ class MeegoTestSession < ActiveRecord::Base
 
 
   def self.fetch_fully(id)
-    find(id, :include => [{:meego_test_cases => :measurements}, :meego_test_sets, :meego_test_cases])
+    find(id, :include => [
+         {:meego_test_sets => [
+           :meego_test_cases, {:meego_test_cases => :measurements}
+          ]
+         }, :meego_test_sets, :meego_test_cases])
   end
 
   def target=(target)
@@ -103,7 +107,7 @@ class MeegoTestSession < ActiveRecord::Base
   def has_nft?
     return @has_nft unless @has_nft.nil?
     meego_test_cases.each do |tc|
-      unless tc.measurements.empty?
+      if tc.has_measurements?
         return @has_nft = true
       end
     end
@@ -113,7 +117,7 @@ class MeegoTestSession < ActiveRecord::Base
   def has_non_nft?
     return @has_non_nft unless @has_non_nft.nil?
     meego_test_cases.each do |tc|
-      if tc.measurements.empty?
+      unless tc.has_measurements?
         return @has_non_nft = true
       end
     end
@@ -231,7 +235,9 @@ class MeegoTestSession < ActiveRecord::Base
     @prev_session = MeegoTestSession.find(:first, :conditions => [
         "tested_at < ? AND target = ? AND testtype = ? AND hwproduct = ? AND published = ? AND release_version = ?", time, target.downcase, testtype.downcase, hwproduct.downcase, true, release_version
     ],
-                          :order              => "tested_at DESC")
+                          :order              => "tested_at DESC", :include => [
+         {:meego_test_sets => :meego_test_cases}, :meego_test_sets, :meego_test_cases])
+
     @has_prev = !@prev_session.nil?
     @prev_session
   end
