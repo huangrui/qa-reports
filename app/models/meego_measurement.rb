@@ -30,7 +30,7 @@ class TargetResultWrapper
 end
 
 class MeegoMeasurement < ActiveRecord::Base
-  belongs_to :meego_test_case
+  belongs_to :meego_test_case, :counter_cache => true
 
   def result
     return 0 if target.nil? or failure.nil?
