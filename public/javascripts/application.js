@@ -824,6 +824,12 @@ function formatMarkup(s) {
     return html;
 }
 
+function setTableLoaderSize(tableID, loaderID) {
+		t = $(tableID);
+//		w = t.width();
+		h = t.height();
+		$(loaderID).height(h);
+	}
 
 // This will parse a delimited string into an array of
 // arrays. The default delimiter is the comma, but this
@@ -909,9 +915,14 @@ function filterResults(rowsToHide, typeText) {
           updateToggle($tbody, $(this));
         });
     }
+   
+    
 
     $(".see_history_button").click(function(){
-      $("table.detailed_results").hide();
+    	//setTableLoaderSize('#detailed_functional_test_results', '#history_loader');
+    	//$('#history_loader').show();  
+    	//history loader should be visible during AJAX loading
+    	$("table.detailed_results").hide(); 	     
       $history.show();
       $history.find(".see_history_button").addClass("active");      
       return false;

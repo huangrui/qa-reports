@@ -1533,6 +1533,13 @@ select.grading_select {
 td.testcase_name {
     padding-left: 20px;
     padding-right: 20px; }
+    
+.testcase_value,
+.testcase_limit,
+.testcase_target,
+.testcase_to_target {
+		font-family: arial, sans-serif;
+}
 
 .multiple_results {
 	border-left:1px solid #eee !important;
@@ -1613,7 +1620,8 @@ td.fail {
 	width:60px;}
 
 .unit {
-	color: #aaa;}
+	color: #aaa;
+	font-size:0.91666em;}
 
 #test_results .sort {
     margin-left: 3em;}
@@ -1634,6 +1642,24 @@ td.fail {
 
 .dl_link:hover {
 	background: transparent url('../images/download_hover_arrow.png') no-repeat right 50%;}
+
+.loading {
+	background: #fff; /* fallback for ancient browsers */
+	background: transparent url(../images/white_transp_70.png);
+	position: absolute;
+	z-index: 9999;
+	width: 2000px;
+	color:#f444;
+	padding-left: 200px;
+	padding-top:40px;
+	display:none;}
+
+.loading strong {
+	display: block;
+	background: transparent no-repeat 0 30px url(../images/table_preloader.gif);
+	height: 100px;
+}
+
 
 /* @end */
 
