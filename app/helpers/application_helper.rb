@@ -178,4 +178,13 @@ module ApplicationHelper
   def form_ajax_error_msg(cls)
     "<div style=\"display:none\" class=\"error #{cls}\">&nbsp;</div>".html_safe
   end
+
+  def cache_if(condition, name, &block)
+    if condition
+      cache(name, &block)
+    else
+      yield
+    end
+  end
+
 end

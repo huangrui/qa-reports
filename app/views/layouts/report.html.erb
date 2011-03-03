@@ -50,19 +50,13 @@
 
   <%= yield :version_navi %>
 
-  <% action = controller.action_name 
-     if action == 'compare' 
-        cache_key = @compare_cache_key
-     else
-        cache_key = "#{action}_page_#{@test_session.id}"
-     end %> 
 
-  <% cache cache_key do %>
 
   <div id="page">
     <%= yield :breadcrumbs %>
 
     <%= yield :wizard_progress %>
+
 
     <%= (out=yield :page_content)!='' ? out : render(:partial => 'page_content') %>
 
@@ -76,7 +70,6 @@
   <div id="footer">
 
   </div>
-  <% end %>
 
 </div>
 
