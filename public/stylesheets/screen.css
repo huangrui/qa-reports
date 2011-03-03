@@ -1537,7 +1537,8 @@ td.testcase_name {
 .testcase_value,
 .testcase_limit,
 .testcase_target,
-.testcase_to_target {
+.testcase_to_target,
+.nft_graph_key_figures {
 		font-family: arial, sans-serif;
 }
 
@@ -1547,7 +1548,11 @@ td.testcase_name {
 	vertical-align: top !important;}
 
 .multiple_rows td {
-	border-bottom: none;}
+/*	border-bottom: none;*/}
+
+.multiple_rows.first.odd td{
+	border-top: 1px solid #ccc;
+}
 
 .testcase_result,
 .testcase_target,
@@ -1660,6 +1665,59 @@ td.fail {
 	height: 100px;
 }
 
+table.nft_graph_key_figures {
+	width: auto;
+	margin-bottom: 0.35em;
+}
+
+.nft_graph_key_figures td {
+	width: 60px;
+	padding: 0 1px;
+	border: 0;
+}
+
+.nft_graph_key_figures td.unit {
+width: 35px;
+}
+
+.testcase_graph img {
+	width: 100%;
+}
+
+.nft_drilldown_modal_window {
+	width: 800px;
+	padding: 40px;
+	margin-left: -440px;
+}
+
+.modal_close {
+	position: absolute;
+	right: 10px;
+	top: 20px;
+	padding: 0;
+}
+
+.modal_close span {
+	display: block;
+	background: transparent no-repeat center center url(../images/close_icon.png);
+	text-indent: -9999px;
+	width: 23px;
+	height: 23px;
+}
+
+.nft_graph_options {
+	border-top:1px solid #b2b2b2;
+	background: transparent repeat-x top url(../images/gray_to_transp_short.png);
+	margin-top: 20px;
+	margin-left: -40px;
+	margin-right: -40px;
+	padding: 30px 40px;
+} 
+
+.nft_graph_options div {
+	width: 33%;
+	float: left;
+}
 
 /* @end */
 
