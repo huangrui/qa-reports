@@ -1682,6 +1682,7 @@ width: 35px;
 
 .testcase_graph img {
 	width: 100%;
+	cursor: pointer;
 }
 
 .nft_drilldown_modal_window {
