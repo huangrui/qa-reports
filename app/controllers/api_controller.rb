@@ -65,7 +65,8 @@ class ApiController < ApplicationController
       attachments.each { |file|
         files.add_file(@test_session, file, MeegoTestSession::get_filename(file))
       }
-      render :json => {:ok => '1'}
+      report_url = url_for :controller => 'reports', :action => 'view', :release_version => data[:release_version], :target => data[:target], :testtype => data[:testtype], :hwproduct => data[:hwproduct], :id => @test_session.id
+      render :json => {:ok => '1', :url => report_url}
     rescue ActiveRecord::RecordInvalid => invalid
       error_messages = {}
       invalid.record.errors.each {|key, value| error_messages[key] = value}
