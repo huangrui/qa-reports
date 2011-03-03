@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110303090254) do
+ActiveRecord::Schema.define(:version => 20110303131710) do
 
   create_table "meego_measurements", :force => true do |t|
     t.integer "meego_test_case_id"
@@ -24,14 +24,14 @@ ActiveRecord::Schema.define(:version => 20110303090254) do
   add_index "meego_measurements", ["meego_test_case_id"], :name => "index_meego_measurements_on_meego_test_case_id"
 
   create_table "meego_test_cases", :force => true do |t|
-    t.integer "meego_test_set_id",                                     :null => false
-    t.string  "name",                                                  :null => false
-    t.integer "result",                                                :null => false
-    t.string  "comment",               :limit => 1000, :default => "", :null => false
-    t.integer "meego_test_session_id",                 :default => 0,  :null => false
+    t.integer "meego_test_set_id",                                        :null => false
+    t.string  "name",                                                     :null => false
+    t.integer "result",                                                   :null => false
+    t.string  "comment",                  :limit => 1000, :default => "", :null => false
+    t.integer "meego_test_session_id",                    :default => 0,  :null => false
     t.string  "source_link"
     t.string  "binary_link"
-    t.integer "measurements_count",                    :default => 0
+    t.integer "meego_measurements_count",                 :default => 0
   end
 
   add_index "meego_test_cases", ["meego_test_session_id"], :name => "index_meego_test_cases_on_meego_test_session_id"
