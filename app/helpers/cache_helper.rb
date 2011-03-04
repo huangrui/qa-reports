@@ -4,9 +4,9 @@ module CacheHelper
     expire_page :controller => 'upload', :action => :upload_form
 
     
-    expire_paging_action :controller => "index", :action => "filtered_list", :release_version => VersionLabel.find(test_session.release_version).label, :target => test_session.target, :testtype => test_session.testtype, :hwproduct => test_session.hwproduct
-    expire_paging_action :controller => "index", :action => "filtered_list", :release_version => VersionLabel.find(test_session.release_version).label, :target => test_session.target, :testtype => test_session.testtype
-    expire_paging_action :controller => "index", :action => "filtered_list", :release_version => VersionLabel.find(test_session.release_version).label, :target => test_session.target
+    expire_paging_action :controller => "index", :action => "filtered_list", :release_version => VersionLabel.find(test_session.version_label_id).label, :target => test_session.target, :testtype => test_session.testtype, :hwproduct => test_session.hwproduct
+    expire_paging_action :controller => "index", :action => "filtered_list", :release_version => VersionLabel.find(test_session.version_label_id).label, :target => test_session.target, :testtype => test_session.testtype
+    expire_paging_action :controller => "index", :action => "filtered_list", :release_version => VersionLabel.find(test_session.version_label_id).label, :target => test_session.target
   end
 
   def expire_paging_action(args)
@@ -26,6 +26,8 @@ module CacheHelper
   end
 
   def expire_caches_for(test_session, results = false)
+    logger.info "******* Expiring caches for #{test_session.inspect}"
+
     expire_fragments_for test_session
 
     if results

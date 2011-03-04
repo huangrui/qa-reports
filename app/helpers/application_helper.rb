@@ -134,7 +134,7 @@ module ApplicationHelper
   end
 
   def report_url(s)
-      url_for :controller=>'reports',:action=>'view', :release_version=> VersionLabel.find(s.release_version).label, :target=>s.target, :testtype=>s.testtype, :hwproduct=>s.hwproduct, :id=>s.id
+      url_for :controller=>'reports',:action=>'view', :release_version=> VersionLabel.find(s.version_label_id).label, :target=>s.target, :testtype=>s.testtype, :hwproduct=>s.hwproduct, :id=>s.id
   end
 
   def format_date_to_human_readable(date)

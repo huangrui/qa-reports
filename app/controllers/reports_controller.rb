@@ -201,7 +201,7 @@ class ReportsController < ApplicationController
 
     expire_caches_for(test_session, true)
     expire_index_for(test_session)
-    ver_label = VersionLabel.find(test_session.release_version).label
+    ver_label = VersionLabel.find(test_session.version_label_id).label
 
     redirect_to :action          => 'view',
                 :id              => report_id,
@@ -223,7 +223,7 @@ class ReportsController < ApplicationController
       end
 
       @test_session = MeegoTestSession.find(@report_id)
-      return render_404 unless @test_session.release_version.to_i() == VersionLabel.where(:normalized => @selected_release_version.downcase).first().id
+      return render_404 unless @test_session.version_label_id == VersionLabel.where(:normalized => @selected_release_version.downcase).first().id
 
       @history = history(@test_session.prev_session)
 

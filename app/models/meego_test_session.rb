@@ -40,7 +40,7 @@ class MeegoTestSession < ActiveRecord::Base
 
   belongs_to :author, :class_name => "User"
   belongs_to :editor, :class_name => "User"
-  belongs_to :version_label, :class_name => "VersionLabel", :foreign_key => "release_version"
+  belongs_to :version_label, :class_name => "VersionLabel", :foreign_key => "version_label_id"
 
   validates_presence_of :title, :target, :testtype, :hwproduct
   validates_presence_of :uploaded_files, :on => :create
@@ -224,14 +224,14 @@ class MeegoTestSession < ActiveRecord::Base
   def prev_session
     time = tested_at || Time.now
     MeegoTestSession.find(:first, :conditions => [
-        "tested_at < ? AND target = ? AND testtype = ? AND hwproduct = ? AND published = ? AND release_version = ?", time, target.downcase, testtype.downcase, hwproduct.downcase, true, release_version
+        "tested_at < ? AND target = ? AND testtype = ? AND hwproduct = ? AND published = ? AND version_label_id = ?", time, target.downcase, testtype.downcase, hwproduct.downcase, true, version_label_id
     ],
                           :order              => "tested_at DESC")
   end
 
   def next_session
     MeegoTestSession.find(:first, :conditions => [
-        "tested_at > ? AND target = ? AND testtype = ? AND hwproduct = ? AND published = ? AND release_version = ?", tested_at, target.downcase, testtype.downcase, hwproduct.downcase, true, release_version
+        "tested_at > ? AND target = ? AND testtype = ? AND hwproduct = ? AND published = ? AND version_label_id = ?", tested_at, target.downcase, testtype.downcase, hwproduct.downcase, true, version_label_id
     ],
                           :order              => "tested_at ASC")
   end
@@ -365,7 +365,7 @@ class MeegoTestSession < ActiveRecord::Base
     self.save
   end
 
-  # Check that the target and release_version given as parameters
+  # Check that the target and version_label_id given as parameters
   # exist in label tables. Test session tables allow anything, but
   # if using other than what's in the label tables, the results
   # won't show up
@@ -380,16 +380,15 @@ class MeegoTestSession < ActiveRecord::Base
       end
     end
 
-    if release_version.blank?
-      errors.add :release_version, "can't be blank"
+    if version_label_id.blank?
+      errors.add :version_label_id, "can't be blank"
     else
-      label = VersionLabel.find(release_version)
+      label = VersionLabel.find(version_label_id)
       if not label
         valid_versions = VersionLabel.versions.join(",")
-        errors.add :release_version, "Incorrect release version '#{release_version}'. Valid ones are #{valid_versions}."
+        errors.add :version_label_id, "Incorrect release version '#{version_label_id}'. Valid ones are #{valid_versions}."
       end
     end
-
   end
 
   def generate_defaults!
@@ -743,7 +742,7 @@ class MeegoTestSession < ActiveRecord::Base
   def create_version_label
     verlabel = VersionLabel.find(:first, :conditions => {:normalized => release_version.downcase})
     if verlabel
-      self.release_version = verlabel.label
+      self.version_label_id = verlabel.label
       save
     else
       verlabel = VersionLabel.new(:label => release_version, :normalized => release_version.downcase)

@@ -44,12 +44,12 @@ class UploadController < ApplicationController
       "Core"
     end
 
-    @test_session.release_version = if @test_session.release_version.present?
-      @test_session.release_version
+    @test_session.version_label_id = if @test_session.version_label_id =! 0
+      @test_session.version_label_id
     elsif default_version.present?
-      default_version
+      VersionLabel.where(:normalized => default_version.downcase).first().id
     else
-      @selected_release_version
+      VersionLabel.where(:normalized => @selected_release_version.downcase).first().id
     end
     
     @test_session.testtype = if @test_session.testtype.present?
