@@ -1381,6 +1381,9 @@ td.dec em{
 .th_total,
 .th_passed,
 .th_failed,
+.th_feature_pass_rate,
+.th_grading,
+.th_notes,
 .th_not_testable{
     width:40px;
     text-align: center;}
@@ -1447,6 +1450,26 @@ tr.feature_name td{
     background: #e1e1e1 url(../images/heading_shade.png) repeat-x 0 bottom;
     padding-left: 14px;
     padding-bottom: 3px; }
+
+table.feature_detailed_results {
+    border: 1px solid #ccc;
+    margin-bottom: 40px;}
+
+.feature_detailed_results th {
+/*    text-align: left;*/
+    border-left: 1px solid #ddd;
+    padding-top: 0.8em;
+    padding-bottom: 0.8em; }
+
+.feature_detailed_results .sort {
+}
+
+.feature_detailed_results .sort.right {
+     position:absolute;
+     right:1em;}
+
+.feature_detailed_results th:first-child {
+    border-left-style: none; }
 
 table.detailed_results  {
     border: 1px solid #ccc;

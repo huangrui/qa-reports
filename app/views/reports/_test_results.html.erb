@@ -52,10 +52,20 @@
     </div>
 
     <h3 id="test_features">Test Results by Feature</h3>
-
-    <table id="test_results">
+    
+    <table id="test_results" class="feature_detailed_results">
       <thead class="even">
+      <%if @history %>
       <tr>
+        <th id="th_feature_history" colspan="9">
+          <span class="sort">
+            <a href="#" class="see_feature_comment_button sort_btn active">See comment and grading</a>
+            <a href="#" class="see_feature_history_button sort_btn">See pass_rate_history</a>
+          </span>
+        </th>
+      </tr>
+      <% end %>
+      <tr id="detailed_feature_head" class="detailed_feature_head">
         <th class="th_feature">Feature</th>
         <th class="th_total">Total</th>
         <th class="th_passed">Passed</th>
@@ -67,10 +77,37 @@
         <th class="th_grading">Grading</th>
       </tr>
       </thead>
-
-      <%= render :partial => 'feature_summary', :collection => @test_session.meego_test_sets %>
-
+      
+      <%= render :partial => 'feature_summary', :collection => @test_session.meego_test_sets %>      
     </table>
+    
+    <%if @history %>
+    <table id="test_feature_history_results"  class="feature_detailed_results_with_passrate_history" style="display:none;">
+     <thead class="even">
+      <tr>
+        <th id="th_feature_history" colspan="11">
+          <span class="sort">
+            <a href="#" class="see_feature_comment_button sort_btn active">See comment and grading</a>
+            <a href="#" class="see_feature_history_button sort_btn">See pass_rate history</a>
+          </span>
+        </th>
+      </tr>
+      </tr>
+      <tr id="detailed_feature_history_head" class="detailed_feature_head feature_history">
+        <th class="th_feature">Feature</th>
+        <th class="th_total">Total</th>
+        <th class="th_passed">Passed</th>
+        <th class="th_failed">Failed</th>
+        <th class="th_not_testable">N/A</th>
+        <%= history_headers(@history) %>
+        <th class="th_result">Current</th>
+      </tr>
+      </thead>
+
+      <%= render :partial => 'feature_pass_rate_history_summary', :collection => @test_session.meego_test_sets %>
+    </table>
+    <% end %>
+
   </div>
 </div>
 
