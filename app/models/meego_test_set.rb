@@ -35,7 +35,7 @@ class MeegoTestSet < ActiveRecord::Base
     if @has_nft.nil?
       @has_nft = false
       meego_test_cases.each do |tc|
-        if not tc.measurements.empty?
+        if tc.has_measurements?
           @has_nft = true
           break
         else
@@ -50,7 +50,7 @@ class MeegoTestSet < ActiveRecord::Base
     if @has_non_nft.nil?
       @has_non_nft = false
       meego_test_cases.each do |tc|
-        if tc.measurements.empty?
+        if not tc.has_measurements?
           @has_non_nft = true
           break
         else
@@ -62,17 +62,18 @@ class MeegoTestSet < ActiveRecord::Base
   end
 
   def nft_cases
-    meego_test_cases.select {|tc| not tc.measurements.empty?}
+    meego_test_cases.select {|tc| tc.has_measurements?}
   end
 
   def non_nft_cases
-    meego_test_cases.select {|tc| tc.measurements.empty?}
+    meego_test_cases.select {|tc| not tc.has_measurements?}
   end
 
   def prev_summary
+    return @prev_summary unless @prev_summary.nil?
     prevs = meego_test_session.prev_session
     if prevs
-      prevs.meego_test_sets.find(:first, :conditions => {:feature => feature})
+      @prev_summary = prevs.meego_test_sets.find(:first, :conditions => {:feature => feature})
     else
       nil
     end

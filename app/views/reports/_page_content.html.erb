@@ -48,11 +48,23 @@
    <% if @test_session.has_non_nft? %>
 
       <h2 id="detailed_results">Detailed Test Results<span class="heading_actions"><%=back_to_top%></span></h2>
+			
+			
+			<script type="text/javascript">
+			
+						
+			
+			
+			</script>
 
-      <table class="detailed_results">
+      <table class="detailed_results" id="detailed_functional_test_results">    			
+        <div class="loading" id="history_loader">
+ 					<strong>Loading history data, please wait…</strong>
+        </div>
         <thead>
         <tr>
 			  <th id="th_test_case">
+			  
 			  	<span class="sort">
             <a href="#" class="see_only_failed_button sort_btn active">See only failed</a> 
 			  		<a href="#" class="see_all_button sort_btn">See all</a>
@@ -67,6 +79,7 @@
 		<%= render :partial => "feature", :collection => @test_session.non_nft_sets %>
 
       </table>
+
       
 
       <% if @history %>

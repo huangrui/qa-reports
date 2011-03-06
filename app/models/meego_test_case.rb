@@ -40,6 +40,15 @@ class MeegoTestCase < ActiveRecord::Base
     nil
   end
 
+  def has_measurements?
+    return @has_measurements unless @has_measurements.nil?
+    if measurements.loaded?
+      @has_measurements = measurements.length > 0
+    else
+      @has_measurements = !measurements.empty?
+    end
+  end
+
   def find_change_class(prev_session)
     testcase = find_matching_case(prev_session)
     return '' unless testcase

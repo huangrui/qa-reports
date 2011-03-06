@@ -184,7 +184,7 @@ class ReportsController < ApplicationController
     @wizard     = true
 
     if @preview_id
-      @test_session   = MeegoTestSession.find(@preview_id)
+      @test_session   = MeegoTestSession.fetch_fully(@preview_id)
       @report         = @test_session
       @no_upload_link = true
 
@@ -196,7 +196,7 @@ class ReportsController < ApplicationController
 
   def publish
     report_id    = params[:report_id]
-    test_session = MeegoTestSession.find(report_id)
+    test_session = MeegoTestSession.fetch_fully(report_id)
     test_session.update_attribute(:published, true)
 
     expire_caches_for(test_session, true)
@@ -221,7 +221,7 @@ class ReportsController < ApplicationController
         @published = false
       end
 
-      @test_session = MeegoTestSession.find(@report_id)
+      @test_session = MeegoTestSession.fetch_fully(@report_id)
 
       return render_404 unless @selected_release_version == @test_session.release_version
 
@@ -244,7 +244,7 @@ class ReportsController < ApplicationController
 
   def print
     if @report_id = params[:id].try(:to_i)
-      @test_session = MeegoTestSession.find(@report_id)
+      @test_session = MeegoTestSession.fetch_fully(@report_id)
 
       @report       = @test_session
       @editing      = false
@@ -263,7 +263,7 @@ class ReportsController < ApplicationController
     @wizard  = false
 
     if id = params[:id].try(:to_i)
-      @test_session   = MeegoTestSession.find(id)
+      @test_session   = MeegoTestSession.fetch_fully(id)
       @report         = @test_session
       @targets = MeegoTestSession.list_targets @selected_release_version
       @types = MeegoTestSession.list_types @selected_release_version

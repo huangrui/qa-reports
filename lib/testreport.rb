@@ -100,19 +100,35 @@ end
 module ReportSummary
 
   def total_cases
-    meego_test_cases.count()
+    if meego_test_cases.loaded?
+      meego_test_cases.length
+    else
+      meego_test_cases.count
+    end
   end
   
   def total_passed
-    meego_test_cases.count(:conditions => {:result => 1})
+    if meego_test_cases.loaded?
+      meego_test_cases.to_a.count {|x| x.result == 1}
+    else
+      meego_test_cases.count(:conditions => {:result => 1})
+    end
   end
   
   def total_failed
-    meego_test_cases.count(:conditions => {:result => -1})
+    if meego_test_cases.loaded?
+      meego_test_cases.to_a.count {|x| x.result == -1}
+    else
+      meego_test_cases.count(:conditions => {:result => -1})
+    end
   end
   
   def total_na
-    meego_test_cases.count(:conditions => {:result => 0})
+    if meego_test_cases.loaded?
+      meego_test_cases.to_a.count {|x| x.result == 0}
+    else
+      meego_test_cases.count(:conditions => {:result => 0})
+    end
   end
   
   def total_executed
