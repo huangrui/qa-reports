@@ -40,10 +40,10 @@
         <% @history.reverse_each do |h| %>
            <% tset = feature_pass_rate_history_summary.find_matching_set(h) %>
            <% if tset%>
-             <td class="test_feature_path_rate history_result"><%=MeegoTestReport::calculate_feature_pass_rate(tset.total_cases, tset.total_passed)%></td>
+             <td class="test_feature_pass_rate feature_history_result"><%=MeegoTestReport::calculate_feature_pass_rate(tset.total_cases, tset.total_passed)%></td>
            <% else %>
-             <td class="test_feature_path_rate history_result">-</td>
+             <td class="test_feature_pass_rate feature_history_result">-</td>
            <% end %>
         <% end %>
-        <td class="rate"><%= MeegoTestReport::calculate_feature_pass_rate(feature_pass_rate_history_summary.total_cases, feature_pass_rate_history_summary.total_passed) %></td>
+        <td class="rate current_feature_history_result"><%= MeegoTestReport::calculate_feature_pass_rate(feature_pass_rate_history_summary.total_cases, feature_pass_rate_history_summary.total_passed) %></td>
 </tr>

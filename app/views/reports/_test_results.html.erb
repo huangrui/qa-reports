@@ -57,12 +57,12 @@
       <thead class="even">
       <%if @history %>
       <tr>
-        <th id="th_feature_history" colspan="9">
+        <td id="th_feature_history" colspan="9">
           <span class="sort">
             <a href="#" class="see_feature_comment_button sort_btn active">See comment and grading</a>
             <a href="#" class="see_feature_history_button sort_btn">See pass_rate_history</a>
           </span>
-        </th>
+        </td>
       </tr>
       <% end %>
       <tr id="detailed_feature_head" class="detailed_feature_head">
@@ -85,12 +85,12 @@
     <table id="test_feature_history_results"  class="feature_detailed_results_with_passrate_history" style="display:none;">
      <thead class="even">
       <tr>
-        <th id="th_feature_history" colspan="11">
+        <td id="th_feature_history" colspan="9">
           <span class="sort">
             <a href="#" class="see_feature_comment_button sort_btn active">See comment and grading</a>
             <a href="#" class="see_feature_history_button sort_btn">See pass_rate history</a>
           </span>
-        </th>
+        </td>
       </tr>
       </tr>
       <tr id="detailed_feature_history_head" class="detailed_feature_head feature_history">
@@ -100,7 +100,7 @@
         <th class="th_failed">Failed</th>
         <th class="th_not_testable">N/A</th>
         <%= history_headers(@history) %>
-        <th class="th_result">Current</th>
+        <th class="th_result current_feature_history_result">Current</th>
       </tr>
       </thead>
 
