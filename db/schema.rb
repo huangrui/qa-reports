@@ -10,15 +10,16 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110304131808) do
+ActiveRecord::Schema.define(:version => 20110308134843) do
 
   create_table "meego_measurements", :force => true do |t|
     t.integer "meego_test_case_id"
-    t.string  "name",                             :null => false
-    t.string  "unit",               :limit => 32, :null => false
-    t.float   "value",                            :null => false
+    t.string  "name",                                            :null => false
+    t.string  "unit",               :limit => 32,                :null => false
+    t.float   "value",                                           :null => false
     t.float   "target"
     t.float   "failure"
+    t.integer "sort_index",                       :default => 0, :null => false
   end
 
   add_index "meego_measurements", ["meego_test_case_id"], :name => "index_meego_measurements_on_meego_test_case_id"
