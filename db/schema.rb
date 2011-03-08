@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110303131710) do
+ActiveRecord::Schema.define(:version => 20110304131808) do
 
   create_table "meego_measurements", :force => true do |t|
     t.integer "meego_test_case_id"
@@ -75,6 +75,20 @@ ActiveRecord::Schema.define(:version => 20110303131710) do
 
   add_index "meego_test_sets", ["feature"], :name => "index_meego_test_sets_on_feature"
   add_index "meego_test_sets", ["meego_test_session_id"], :name => "index_meego_test_sets_on_meego_test_session_id"
+
+  create_table "serial_measurements", :force => true do |t|
+    t.integer "meego_test_case_id",                :null => false
+    t.integer "sort_index",                        :null => false
+    t.string  "short_json",         :limit => 256, :null => false
+    t.text    "long_json",                         :null => false
+    t.string  "unit",               :limit => 32,  :null => false
+    t.float   "min_value",                         :null => false
+    t.float   "max_value",                         :null => false
+    t.float   "avg_value",                         :null => false
+    t.float   "median_value",                      :null => false
+  end
+
+  add_index "serial_measurements", ["meego_test_case_id"], :name => "index_serial_measurements_on_meego_test_case_id"
 
   create_table "target_labels", :force => true do |t|
     t.string  "label",      :limit => 64, :null => false
