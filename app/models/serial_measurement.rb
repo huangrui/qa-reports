@@ -25,8 +25,26 @@
 class SerialMeasurement < ActiveRecord::Base
   belongs_to :meego_test_case
 
+  FORMAT = "%.2f"
+
   def is_serial?
     true
+  end
+
+  def min_html
+    sprintf(FORMAT, min_value)
+  end
+
+  def max_html
+    sprintf(FORMAT, max_value)
+  end
+
+  def avg_html
+    sprintf(FORMAT, avg_value)
+  end
+
+  def med_html
+    sprintf(FORMAT, median_value)
   end
 
 end

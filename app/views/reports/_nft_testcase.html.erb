@@ -36,7 +36,18 @@ all.each do |m| %>
   <% end %>
   <% if m.is_serial? %>
     <td class="testcase_measurement"><%= m.name %></td>
-    <td class="testcase_value" colspan="4">&nbsp;</td>
+    <td class="testcase_graph" colspan="4">
+      <div class="serial_canvas" style="display:none"><%=m.short_json%></div>
+          <table class="nft_graph_key_figures"> 
+            <tr>
+              <td class="unit"><%=m.unit%></td>
+              <td><span class="unit">min.</span> <%=m.min_html%></td>
+              <td><span class="unit">avg.</span> <%=m.avg_html%></td>
+              <td><span class="unit">max.</span> <%=m.max_html%></td>
+              <td><span class="unit">med.</span> <%=m.med_html%></td>
+            </tr>
+          </table>
+    </td>
   <%else%>
     <td class="testcase_measurement"><%= m.name %></td>
     <td class="testcase_value"><%= m.value_html %></td>
