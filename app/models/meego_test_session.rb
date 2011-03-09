@@ -29,11 +29,13 @@ require 'validation/date_time_validator'
 require 'will_paginate'
 
 require 'graph'
+require 'nft'
 
 #noinspection Rails3Deprecated
 class MeegoTestSession < ActiveRecord::Base
   include Trimmer
   include Graph
+  include MeasurementUtils
 
   has_many :meego_test_sets, :dependent => :destroy
   has_many :meego_test_cases
@@ -727,6 +729,7 @@ class MeegoTestSession < ActiveRecord::Base
               set_model.has_nft = true
               self.has_nft = true
               if m.is_series?
+                outline = calculate_outline(m.measurements)
                 tc.serial_measurements.build(
                   :name       => m.name,
                   :sort_index => nft_index,
@@ -734,10 +737,10 @@ class MeegoTestSession < ActiveRecord::Base
                   :long_josin => "", # TODO
                   :unit       => m.unit,
                   
-                  :min_value    => 0, # TODO
-                  :max_value    => 0, # TODO
-                  :avg_value    => 0, # TODO
-                  :median_value => 0, # TODO
+                  :min_value    => outline.minval,
+                  :max_value    => outline.maxval,
+                  :avg_value    => outline.avgval,
+                  :median_value => outline.median
                 )
               else
                 tc.measurements.build(
