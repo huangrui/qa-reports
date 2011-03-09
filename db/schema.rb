@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110308134843) do
+ActiveRecord::Schema.define(:version => 20110308144907) do
 
   create_table "meego_measurements", :force => true do |t|
     t.integer "meego_test_case_id"
@@ -28,11 +28,11 @@ ActiveRecord::Schema.define(:version => 20110308134843) do
     t.integer "meego_test_set_id",                                        :null => false
     t.string  "name",                                                     :null => false
     t.integer "result",                                                   :null => false
-    t.string  "comment",                  :limit => 1000, :default => "", :null => false
-    t.integer "meego_test_session_id",                    :default => 0,  :null => false
+    t.string  "comment",               :limit => 1000, :default => "",    :null => false
+    t.integer "meego_test_session_id",                 :default => 0,     :null => false
     t.string  "source_link"
     t.string  "binary_link"
-    t.integer "meego_measurements_count",                 :default => 0
+    t.boolean "has_nft",                               :default => false, :null => false
   end
 
   add_index "meego_test_cases", ["meego_test_session_id"], :name => "index_meego_test_cases_on_meego_test_session_id"
@@ -61,17 +61,21 @@ ActiveRecord::Schema.define(:version => 20110308134843) do
     t.integer  "total_fail",                        :default => 0,     :null => false
     t.integer  "total_na",                          :default => 0,     :null => false
     t.string   "release_version",                   :default => "",    :null => false
+    t.boolean  "has_nft",                           :default => false, :null => false
+    t.boolean  "has_ft",                            :default => true,  :null => false
   end
 
   create_table "meego_test_sets", :force => true do |t|
     t.string  "feature",               :default => ""
-    t.integer "total_cases",           :default => 0,  :null => false
-    t.integer "total_pass",            :default => 0,  :null => false
-    t.integer "total_fail",            :default => 0,  :null => false
-    t.integer "total_na",              :default => 0,  :null => false
-    t.integer "meego_test_session_id", :default => 0,  :null => false
+    t.integer "total_cases",           :default => 0,     :null => false
+    t.integer "total_pass",            :default => 0,     :null => false
+    t.integer "total_fail",            :default => 0,     :null => false
+    t.integer "total_na",              :default => 0,     :null => false
+    t.integer "meego_test_session_id", :default => 0,     :null => false
     t.string  "comments",              :default => ""
     t.integer "grading"
+    t.boolean "has_nft",               :default => false, :null => false
+    t.boolean "has_ft",                :default => true,  :null => false
   end
 
   add_index "meego_test_sets", ["feature"], :name => "index_meego_test_sets_on_feature"
