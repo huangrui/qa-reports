@@ -21,62 +21,8 @@
 # 02110-1301 USA
 #
 
-class TargetResultWrapper
-  attr_reader :result
 
-  def initialize(res)
-    @result = res
-  end
-end
-
-class MeegoMeasurement < ActiveRecord::Base
+class SerialMeasurement < ActiveRecord::Base
   belongs_to :meego_test_case
-
-  def result
-    return 0 if target.nil? or failure.nil?
-    return 1 if target < failure and value < failure
-    return 1 if target > failure and value > failure
-    return -1
-  end
-
-  def target_html
-    html(target)
-  end
-
-  def failure_html
-    html(failure)
-  end
-
-  def value_html
-    html(value)
-  end
-
-  def html(val, un=nil)
-    un = unit if un.nil?
-    "#{sprintf "%.2f", val}&nbsp;<span class=\"unit\">#{un}</span>".html_safe unless val.nil?
-  end
-
-  def relative_html
-    return "" if target.nil?
-    rel = if target < failure
-      return "" if value == 0
-      target/value
-    else
-      return "" if target == 0
-      value/target
-    end
-    return html(rel*100, "%")
-  end
-  
-  def target_result
-    res = if target.nil? or failure.nil?
-      0
-    elsif target < failure and value < target
-      1
-    else
-      -1
-    end
-    TargetResultWrapper.new(res)
-  end
 
 end
