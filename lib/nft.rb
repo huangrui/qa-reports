@@ -15,7 +15,12 @@ module MeasurementUtils
     end
     o.avgval = total.to_f / values.size
     values.sort!
-    o.median = values[values.size/2]
+    size = values.size
+    if size > 0 && (size % 2) == 0
+      o.median = (values[size/2] + values[size/2+1])/2.0
+    else
+      o.median = values[size/2]
+    end
     o
   end
 
