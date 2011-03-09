@@ -4,9 +4,9 @@ class RefactorMeasurementAggregation < ActiveRecord::Migration
       remove_column :meego_test_cases, :meego_measurements_count
     end
 
-    add_column :meego_test_cases, :has_nft, :integer, :default => 0, :null => false
-    add_column :meego_test_sets, :has_nft, :integer, :default => 0, :null => false
-    add_column :meego_test_sessions, :has_nft, :integer, :default => 0, :null => false
+    add_column :meego_test_cases, :has_nft, :boolean, :default => 0, :null => false
+    add_column :meego_test_sets, :has_nft, :boolean, :default => 0, :null => false
+    add_column :meego_test_sessions, :has_nft, :boolean, :default => 0, :null => false
   end
 
   def self.down
