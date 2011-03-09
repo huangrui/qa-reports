@@ -721,14 +721,35 @@ class MeegoTestSession < ActiveRecord::Base
             pass_count += 1 if result == 1
             total_count += 1
             file_total += 1
+            nft_index = 0
             testcase.measurements.each do |m|
-              tc.measurements.build(
-                :name    => m.name,
-                :value   => m.value,
-                :unit    => m.unit,
-                :target  => m.target,
-                :failure => m.failure
-              )
+              tc.has_nft = true
+              set_model.has_nft = true
+              self.has_nft = true
+              if m.is_series?
+                tc.serial_measurements.build(
+                  :name       => m.name,
+                  :sort_index => nft_index,
+                  :short_json => "", # TODO
+                  :long_josin => "", # TODO
+                  :unit       => m.unit,
+                  
+                  :min_value    => 0, # TODO
+                  :max_value    => 0, # TODO
+                  :avg_value    => 0, # TODO
+                  :median_value => 0, # TODO
+                )
+              else
+                tc.measurements.build(
+                  :name       => m.name,
+                  :sort_index => nft_index,
+                  :value      => m.value,
+                  :unit       => m.unit,
+                  :target     => m.target,
+                  :failure    => m.failure
+                )
+              end
+              nft_index += 1
             end
           end
           set_model.grading = calculate_grading(pass_count, total_count)

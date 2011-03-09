@@ -155,8 +155,13 @@ class TestCase
   end
   
   def measurements
-    @node.css('measurement').map do |m|
-      Measurement.new(m)
+    result = []
+    @node.element_children.each do |e|
+      if e.name == 'measurement'
+        result << Measurement.new(e)
+      elsif e.name == 'series'
+        result << MeasurementSeries.new(e)
+      end
     end
   end
 end
@@ -165,6 +170,10 @@ end
 class Measurement
   def initialize(node)
     @node = node
+  end
+
+  def is_series?
+    false
   end
 
   def name
@@ -191,6 +200,10 @@ end
 class MeasurementSeries
   def initialize(node)
     @node = node
+  end
+
+  def is_series?
+    true
   end
 
   def name
