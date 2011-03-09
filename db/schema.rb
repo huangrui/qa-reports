@@ -83,6 +83,7 @@ ActiveRecord::Schema.define(:version => 20110308144907) do
 
   create_table "serial_measurements", :force => true do |t|
     t.integer "meego_test_case_id",                :null => false
+    t.string  "name",                              :null => false
     t.integer "sort_index",                        :null => false
     t.string  "short_json",         :limit => 256, :null => false
     t.text    "long_json",                         :null => false

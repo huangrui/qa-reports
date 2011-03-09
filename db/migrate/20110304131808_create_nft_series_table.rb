@@ -22,7 +22,7 @@ class CreateNftSeriesTable < ActiveRecord::Migration
   end
 
   def self.down
-    drop_table :serial_measurements
     remove_index :serial_measurements, :meego_test_case_id
+    drop_table :serial_measurements
   end
 end
