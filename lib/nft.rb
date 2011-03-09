@@ -45,6 +45,7 @@ module MeasurementUtils
   def shorten_value(v)
     s = v.value.to_s
     s = s[0..-3] if s.end_with? ".0"
+    s
   end
 end
 
