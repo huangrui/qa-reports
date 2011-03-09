@@ -22,6 +22,7 @@
 
 require 'rubygems'
 require 'date'
+require 'time'
 require 'nokogiri'
 
 class TestResults
@@ -184,6 +185,53 @@ class Measurement
 
   def failure
     @node['failure'].try(:to_f)
+  end
+end
+
+class MeasurementSeries
+  def initialize(node)
+    @node = node
+  end
+
+  def name
+    @node['name']
+  end
+
+  def group
+    @node['group']
+  end
+
+  def unit
+    @node['unit']
+  end
+
+  def interval
+    @node['interval'].try :to_i
+  end
+
+  def interval_unit
+    @node['interval_unit']
+  end
+
+  def measurements
+    @node.css('measurement').map do |m|
+      MeasurementSeriesPoint.new(m)
+    end
+  end
+end
+
+class MeasurementSeriesPoint
+  def initialize(node)
+    @node = node
+  end
+
+  def value
+    @node['value'].to_f
+  end
+
+  def timestamp
+    t = @node['timestamp']
+    Time.parse(t) if t
   end
 end
 
