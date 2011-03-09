@@ -516,9 +516,10 @@ class MeegoTestSession < ActiveRecord::Base
           else
             total_cases += parse_xml_file(path_to_file)
           end
-        rescue
+        rescue => e
           logger.error "ERROR in file parsing"
-          logger.error $!, $!.backtrace
+          logger.error e
+          logger.error e.backtrace
           content = File.open(path_to_file).read
           errors.add :uploaded_files, "Incorrect file format for #{origfn}: #{content}"
           error_msgs << "Incorrect file format for #{origfn}: #{content}"
@@ -719,7 +720,7 @@ class MeegoTestSession < ActiveRecord::Base
               set_model.has_nft = true
               self.has_nft = true
               if m.is_series?
-                outline = calculate_outline(m.measurements)
+                outline = self.calculate_outline(m.measurements)
                 tc.serial_measurements.build(
                   :name       => m.name,
                   :sort_index => nft_index,

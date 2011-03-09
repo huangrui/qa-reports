@@ -2,14 +2,14 @@
 
 module MeasurementUtils
 
-  def self.calculate_outline(s)
+  def calculate_outline(s)
     o = MeasurementOutline.new
     total = 0
     values = []
     s.each do |v|
       val = v.value
-      o.minval = [o.minval, val].min
-      o.maxval = [o.maxval, val].max
+      o.minval = unless o.minval.nil? then [o.minval, val].min else val end 
+      o.maxval = unless o.maxval.nil? then [o.maxval, val].max else val end
       total += val
       values << val
     end
@@ -19,7 +19,7 @@ module MeasurementUtils
     o
   end
 
-  def self.shorten_series(s, maxsize)
+  def shorten_series(s, maxsize)
     if s.size <= maxsize
       values = s
     else
@@ -37,12 +37,12 @@ module MeasurementUtils
     end
   end
 
-  def self.series_json(s, maxsize=40)
+  def series_json(s, maxsize=40)
     s = shorten_series(s, maxsize)
-    "[" + s.map(&shorten_value).join(",") + "]"
+    "[" + s.map{|v| shorten_value(v)}.join(",") + "]"
   end
 
-  def self.shorten_value(v)
+  def shorten_value(v)
     s = v.value.to_s
     s = s[0..-3] if s.end_with? ".0"
   end

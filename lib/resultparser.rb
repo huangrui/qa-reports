@@ -163,6 +163,7 @@ class TestCase
         result << MeasurementSeries.new(e)
       end
     end
+    result
   end
 end
 
