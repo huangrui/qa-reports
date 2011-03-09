@@ -27,7 +27,7 @@ module MeasurementJSON
   end
 
   def self.shorten_value(v)
-    s = v.to_s
+    s = v.value.to_s
     s = s[0..-3] if s.end_with? ".0"
   end
 end
