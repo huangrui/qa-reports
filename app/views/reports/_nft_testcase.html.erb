@@ -24,28 +24,35 @@
 
 testcase = nft_testcase
 first = true
-testcase.measurements.each do |m| %>
+all = testcase.all_measurements
+all.each do |m| %>
 <tr class="testcase multiple_rows<%=" even" if (nft_testcase_counter%2) == 0 %>" <%if first%>id="testcase-<%= testcase.id %>"<%end%> >
+
   <% if first %>
-  <td class="testcase_name" rowspan="<%=testcase.measurements.size%>"><%= testcase.name %>
+  <td class="testcase_name" rowspan="<%=all.size%>"><%= testcase.name %>
     <% if not testcase.source_link.blank? %><a href="<%=testcase.source_link%>" class="dl_link">src</a><% end %>
     <% if not testcase.binary_link.blank? %><a href="<%=testcase.binary_link%>" class="dl_link">rpm</a><% end %>
   </td>
   <% end %>
+  <% if m.is_serial? %>
+    <td class="testcase_measurement"><%= m.name %></td>
+    <td class="testcase_value" colspan="4">&nbsp;</td>
+  <%else%>
     <td class="testcase_measurement"><%= m.name %></td>
     <td class="testcase_value"><%= m.value_html %></td>
     <td class="testcase_target"><%= m.target_html %></td>   
     <td class="testcase_limit"><%= m.failure_html %></td>    
     <td class="testcase_to_target <%=result_class(m.target_result)%>"><%= m.relative_html %></td>
-    <% if first
-      first = false %>
-      <td class="testcase_result multiple_results <%= result_class(testcase) %> <%= 'edit' if @editing %> <%= testcase.find_change_class(@test_session.prev_session) %> " rowspan="<%=testcase.measurements.size%>"><span class="content"><%= result_html(testcase) %></span> </td>       			
-      <td class="testcase_notes <%= 'edit' if @editing %>" rowspan="<%=testcase.measurements.size%>">
+  <% end %>
+    <% if first %>
+      <td class="testcase_result multiple_results <%= result_class(testcase) %> <%= 'edit' if @editing %> <%= testcase.find_change_class(@test_session.prev_session) %> " rowspan="<%=all.size%>"><span class="content"><%= result_html(testcase) %></span> </td>       			
+      <td class="testcase_notes <%= 'edit' if @editing %>" rowspan="<%=all.size%>">
         <div class="content"><%= comment_html(testcase) %></div>
         <% if @editing %>
             <div class="comment_markup" style="display:none;"><%= testcase.comment %></div>
         <% end %>
       </td>
     <% end %>
-  <% end %>
+  <% first = false %>
 </tr>
+<% end %>
