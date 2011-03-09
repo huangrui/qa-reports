@@ -41,12 +41,7 @@ class MeegoTestCase < ActiveRecord::Base
   end
 
   def has_measurements?
-    return @has_measurements unless @has_measurements.nil?
-    if measurements.loaded?
-      @has_measurements = measurements.length > 0
-    else
-      @has_measurements = !measurements.empty?
-    end
+    return has_nft
   end
 
   def find_change_class(prev_session)

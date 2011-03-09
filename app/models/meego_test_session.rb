@@ -107,23 +107,11 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def has_nft?
-    return @has_nft unless @has_nft.nil?
-    meego_test_cases.each do |tc|
-      if tc.has_measurements?
-        return @has_nft = true
-      end
-    end
-    @has_nft = false
+    return has_nft
   end
 
   def has_non_nft?
-    return @has_non_nft unless @has_non_nft.nil?
-    meego_test_cases.each do |tc|
-      unless tc.has_measurements?
-        return @has_non_nft = true
-      end
-    end
-    @has_non_nft = false 
+    return has_ft
   end
 
   def self.import(attributes, files, user)
@@ -698,6 +686,7 @@ class MeegoTestSession < ActiveRecord::Base
   def parse_xml_file(filename)
     sets = {}
     file_total = 0
+    self.has_ft = false
     TestResults.new(File.open(filename)).suites.each do |suite|
       suite.sets.each do |set|
         ReportParser::parse_features(set.feature).each do |feature|
@@ -710,6 +699,7 @@ class MeegoTestSession < ActiveRecord::Base
 
           pass_count = 0
           total_count = 0
+          set_model.has_ft = false
 
           set.cases.each do |testcase|
             result = MeegoTestSession.map_result(testcase.result)
@@ -733,8 +723,8 @@ class MeegoTestSession < ActiveRecord::Base
                 tc.serial_measurements.build(
                   :name       => m.name,
                   :sort_index => nft_index,
-                  :short_json => "", # TODO
-                  :long_josin => "", # TODO
+                  :short_json => series_json(m.measurements, maxsize=40),
+                  :long_josin => series_json(m.measurements, maxsize=160), 
                   :unit       => m.unit,
                   
                   :min_value    => outline.minval,
@@ -753,6 +743,10 @@ class MeegoTestSession < ActiveRecord::Base
                 )
               end
               nft_index += 1
+            end
+            if nft_index == 0
+              set_model.has_ft = true
+              self.has_ft = true
             end
           end
           set_model.grading = calculate_grading(pass_count, total_count)
