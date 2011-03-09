@@ -1,6 +1,6 @@
 class AddVersionLabelIdToMeegoTestSession < ActiveRecord::Migration
   def self.up
-    add_column :meego_test_sessions, :version_label_id, :interger, :null => false, :default => 0
+    add_column :meego_test_sessions, :version_label_id, :interger, :null => false, :default => 1
   end
 
   def self.down

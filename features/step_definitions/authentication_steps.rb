@@ -50,7 +50,7 @@ Then /^I should return to report "([^\"]*)" and see "([^\"]*)" and a "Sign out" 
   # TODO: DRY
   version, target, test_type, hardware = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {:target => target, :hwproduct => hardware, :testtype => test_type, :release_version => version}
+   {:target => target, :hwproduct => hardware, :testtype => test_type, :version_label_id => VersionLabel.where(:normalized => version.downcase).first().id}
   )
   report.should_not be_nil
 

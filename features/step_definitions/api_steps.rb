@@ -73,6 +73,7 @@ end
 When /^the client sends a request without parameter "target" via the REST API$/ do
   post "/api/import?auth_token=foobar", {
       "report"     => Rack::Test::UploadedFile.new("features/resources/sim.xml", "text/xml"),
+      "release_version" => "1.2",
       "testtype"     => "automated",
       "hwproduct"    => "N900"
   }

@@ -380,7 +380,7 @@ class MeegoTestSession < ActiveRecord::Base
       end
     end
 
-    if version_label_id.blank?
+    if not version_label_id
       errors.add :version_label_id, "can't be blank"
     else
       label = VersionLabel.find(version_label_id)
