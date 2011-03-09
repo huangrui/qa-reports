@@ -3,6 +3,8 @@ class CreateNftSeriesTable < ActiveRecord::Migration
     create_table :serial_measurements do |t|
       t.integer :meego_test_case_id, :null => false
       
+      t.string :name, :null => false
+
       t.integer :sort_index, :null => false
 
       t.string :short_json, :limit => 256, :null => false
