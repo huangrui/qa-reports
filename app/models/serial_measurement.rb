@@ -25,4 +25,8 @@
 class SerialMeasurement < ActiveRecord::Base
   belongs_to :meego_test_case
 
+  def is_serial?
+    true
+  end
+
 end

@@ -41,6 +41,11 @@ class MeegoTestCase < ActiveRecord::Base
     nil
   end
 
+  def all_measurements
+    a = (measurements + serial_measurements)
+    a.sort!{|x,y| x.sort_index <=> y.sort_index}
+  end
+
   def has_measurements?
     return has_nft
   end

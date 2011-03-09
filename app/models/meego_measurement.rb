@@ -39,6 +39,10 @@ class MeegoMeasurement < ActiveRecord::Base
     return -1
   end
 
+  def is_serial?
+    false
+  end
+
   def target_html
     html(target)
   end
