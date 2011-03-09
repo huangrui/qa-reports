@@ -79,7 +79,9 @@
 </script>
 <%= javascript_include_tag 'application' %>
 <%= yield :view_specific_js %>
-
+<script type="text/javascript">
+    renderSeriesGraphs(".serial_canvas");
+</script>
 <%= clicktale_bottom_tag %>
 </body>
 </html>

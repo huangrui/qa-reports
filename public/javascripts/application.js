@@ -55,6 +55,50 @@ function htmlEscape(s) {
     return s;
 }
 
+renderSeriesGraphs = function(selector) {
+    var $selector = $(selector);
+
+    var renderGraph = function(index, div) {
+        var $div = $(div);
+        var values = eval($div.text());
+        if (values.length > 0) {
+            if (values.length == 1) {
+                values[1] = values[0];
+            }
+            var id = $div.attr("id");
+            var $canvas = $('<canvas id="'+id+'" width="287" height="46"/>');
+
+            var bg = $div.parent().css("background-color");
+            $div.replaceWith($canvas);
+
+            g = new Bluff.Line(id, '287x46');
+            g.tooltips = false;
+            g.sort = false;
+            
+            g.hide_title  = true;
+            g.hide_dots   = true;
+            g.hide_legend = true;
+            g.hide_mini_legend = true;
+            g.hide_line_numbers = true;
+            g.hide_line_markers = true;
+
+            g.line_width = 1;
+
+            g.set_theme({
+                colors: ['#acacac'],
+                marker_color: '#dedede',
+                font_color: '#6f6f6f',
+                background_colors: [bg, bg]
+            });
+
+            g.data("values", values, "#8888dd");
+            g.draw();
+        }
+    }
+
+    $selector.each(renderGraph);
+}
+
 prepareCategoryUpdate = function(div) {
     var $div      = $(div);
     var $form     = $div.find("form");
