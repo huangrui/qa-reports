@@ -44,12 +44,12 @@ class UploadController < ApplicationController
       "Core"
     end
 
-    @test_session.release_version = if @test_session.release_version.present?
-      @test_session.release_version
+    @test_session.version_label_id = if @test_session.version_label_id =! 0
+      @test_session.version_label_id
     elsif default_version.present?
-      default_version
+      VersionLabel.where(:normalized => default_version.downcase).first().id
     else
-      @selected_release_version
+      VersionLabel.where(:normalized => @selected_release_version.downcase).first().id
     end
     
     @test_session.testtype = if @test_session.testtype.present?
@@ -105,14 +105,18 @@ class UploadController < ApplicationController
       params[:meego_test_session][:uploaded_files] = files
     end
 
+    ver_label = params[:meego_test_session][:release_version]
+    if params[:meego_test_session][:release_version]
+      params[:meego_test_session][:release_version] = VersionLabel.find(:first, :conditions => {:label => params[:meego_test_session][:release_version]}).id
+    end
+
     @test_session = MeegoTestSession.new(params[:meego_test_session])
     @test_session.import_report(current_user)
-    
     if @test_session.save
       session[:preview_id] = @test_session.id
-      expire_action :controller => "index", :action => "filtered_list", :release_version => params[:meego_test_session][:release_version], :target => params[:meego_test_session][:target], :testtype => params[:meego_test_session][:testtype], :hwproduct => params[:meego_test_session][:hwproduct]
-      expire_action :controller => "index", :action => "filtered_list", :release_version => params[:meego_test_session][:release_version], :target => params[:meego_test_session][:target], :testtype => params[:meego_test_session][:testtype]
-      expire_action :controller => "index", :action => "filtered_list", :release_version => params[:meego_test_session][:release_version], :target => params[:meego_test_session][:target]
+      expire_action :controller => "index", :action => "filtered_list", :release_version => ver_label, :target => params[:meego_test_session][:target], :testtype => params[:meego_test_session][:testtype], :hwproduct => params[:meego_test_session][:hwproduct]
+      expire_action :controller => "index", :action => "filtered_list", :release_version => ver_label, :target => params[:meego_test_session][:target], :testtype => params[:meego_test_session][:testtype]
+      expire_action :controller => "index", :action => "filtered_list", :release_version => ver_label, :target => params[:meego_test_session][:target]
       if ::Rails.env == "test"
         redirect_to :controller => 'reports', :action => 'preview', :id => @test_session.id
       else

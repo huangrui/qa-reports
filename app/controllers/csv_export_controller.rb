@@ -3,7 +3,7 @@ require 'csv_generator'
 class CsvExportController < ApplicationController
   def export
     csv = CsvGenerator::generate_csv(
-            @selected_release_version,
+            VersionLabel.where(:normalized => @selected_release_version.downcase).first().id,
             params[:target],
             params[:testtype],
             params[:hwproduct]

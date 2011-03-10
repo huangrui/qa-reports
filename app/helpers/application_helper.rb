@@ -85,7 +85,7 @@ module ApplicationHelper
     html = '<ul class="clearfix">'
     link_text = ''
     @meego_releases.each do |release|
-      if release =~ /\d+\.\d+/
+      if release =~ /^[0-9]/
         if release == current_version
             html += '<li class="current">'
             link_text = "MeeGo v#{release}"
@@ -93,8 +93,18 @@ module ApplicationHelper
             html += '<li>'
             link_text = "v#{release}"
         end
-      else
+      elsif release =~ /^[a-zA-Z]/
         if release == current_version
+          html += '<li class="current">'
+          link_text = "MeeGo #{release}"
+        else
+          html += '<li>'
+          link_text = "#{release}"
+        end
+      else
+        html += '<li>'
+        if release == current_version
+          html += '<li>'
           html += '<li class="current">'
         else
           html += '<li>'
@@ -124,7 +134,7 @@ module ApplicationHelper
   end
 
   def report_url(s)
-      url_for :controller=>'reports',:action=>'view', :release_version=>s.release_version, :target=>s.target, :testtype=>s.testtype, :hwproduct=>s.hwproduct, :id=>s.id
+      url_for :controller=>'reports',:action=>'view', :release_version=> VersionLabel.find(s.version_label_id).label, :target=>s.target, :testtype=>s.testtype, :hwproduct=>s.hwproduct, :id=>s.id
   end
 
   def format_date_to_human_readable(date)

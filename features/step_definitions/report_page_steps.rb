@@ -17,7 +17,7 @@ end
 When /I view the report "([^"]*)"$/ do |report_string|
   version, target, test_type, hardware = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {:release_version => version, :target => target, :hwproduct => hardware, :testtype => test_type}
+   {:version_label_id => VersionLabel.where(:normalized => version.downcase).first().id, :target => target, :hwproduct => hardware, :testtype => test_type}
   )
   raise "report not found with parameters #{version}/#{target}/#{hardware}/#{test_type}!" unless report
   visit("/#{version}/#{target}/#{test_type}/#{hardware}/#{report.id}")
@@ -59,7 +59,7 @@ Given /^there exists a report for "([^"]*)"$/ do |report_name|
 
   session = MeegoTestSession.new(:target => target, :hwproduct => hardware,
     :testtype => test_type, :uploaded_files => [fpath],
-    :tested_at => Time.now, :author => user, :editor => user, :release_version => version
+    :tested_at => Time.now, :author => user, :editor => user, :version_label_id => VersionLabel.where(:normalized => version.downcase).first().id
   )
   session.generate_defaults! # Is this necessary, or could we just say create! above?
   session.save!
