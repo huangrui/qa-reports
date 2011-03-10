@@ -66,7 +66,11 @@ renderSeriesGraphs = function(selector) {
                 values[1] = values[0];
             }
             var id = $div.attr("id");
-            var $canvas = $('<canvas id="'+id+'" width="287" height="46"/>');
+            //var $canvas = $('<canvas id="'+id+'" width="287" height="46"/>');
+            var canvas = createElement("canvas");
+            var $canvas = $(canvas);
+            $canvas.attr("width", "287");
+            $canvas.attr("height", "46");
 
             var bg = $div.parent().css("background-color");
             $div.replaceWith($canvas);
