@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110308144907) do
+ActiveRecord::Schema.define(:version => 20110310164427) do
 
   create_table "meego_measurements", :force => true do |t|
     t.integer "meego_test_case_id"
@@ -92,6 +92,7 @@ ActiveRecord::Schema.define(:version => 20110308144907) do
     t.float   "max_value",                         :null => false
     t.float   "avg_value",                         :null => false
     t.float   "median_value",                      :null => false
+    t.string  "interval_unit",      :limit => 32
   end
 
   add_index "serial_measurements", ["meego_test_case_id"], :name => "index_serial_measurements_on_meego_test_case_id"
