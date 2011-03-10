@@ -78,14 +78,17 @@ module MeasurementUtils
     "[" + s.map{|v| shorten_value(v)}.join(",") + "]"
   end
 
-  def xaxis_json(m, maxsize)
+  def series_json_withx(m, maxsize=200)
     s = m.measurements
     indices = shortened_indices(s.size, maxsize)
+    
     if m.interval
-      [] # TODO
+      xaxis = indices.map {|i| i*m.interval}
     else
-      [] # TODO
+      xaxis = indices.map {|i| s[i].timestamp}
     end
+
+    "[" + indices.map{|i| "[#{xaxis[i]},#{s[i].value}]"}.join(",") + "]"
   end
 
   def shorten_value(v)
