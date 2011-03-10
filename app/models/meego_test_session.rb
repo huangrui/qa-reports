@@ -727,7 +727,7 @@ class MeegoTestSession < ActiveRecord::Base
                   :short_json => series_json(m.measurements, maxsize=40),
                   :long_json  => series_json_withx(m, maxsize=200), 
                   :unit       => m.unit,
-                  :interval_unit => m.interval_unit,
+                  :interval_unit => m.interval_unit || "ms",
                   
                   :min_value    => outline.minval,
                   :max_value    => outline.maxval,

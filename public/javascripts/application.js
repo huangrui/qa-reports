@@ -128,12 +128,24 @@ renderSeriesGraphs = function(selector) {
 
         //var $graph = $modal.find(".nft_drilldown_graph");
         var graph = document.getElementById("nft_drilldown_graph");
+        var updateLabels = function() {
+            $(graph).find("div").each(function(idx,e) {
+                var $e = $(e);
+                if ($e.css("text-align") == "right") {
+                    $e.text($e.text() + yunit);
+                } else if ($e.css("text-align") == "center") {
+                    $e.text($e.text() + xunit);
+                }
+            });
+        };
         dyg = new Dygraph(graph, data, {
           labels:[xunit, yunit],
+          drawCallback: updateLabels,
           includeZero: true
           //xValueFormatter: function(x) {return x + xunit;}
-          //yValueFormatter: function(y) {return y + yunit;}
+          //yValueFormatter: function(y) {return y + yunit;}          
         }); 
+
     }
 
     $selector.each(renderGraph);
