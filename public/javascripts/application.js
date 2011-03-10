@@ -96,9 +96,7 @@ renderSeriesGraphs = function(selector) {
         }
     }
 
-    $(window).load(function() {
-        $selector.each(renderGraph);
-    });
+    $selector.each(renderGraph);
 }
 
 prepareCategoryUpdate = function(div) {
