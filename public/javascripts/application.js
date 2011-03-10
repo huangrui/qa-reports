@@ -106,6 +106,16 @@ renderSeriesGraphs = function(selector) {
         }
     }
 
+    var renderModalGraph = function(elem) {
+      var $elem = $(elem);
+      var title = $elem.find(".modal_graph_title").text();
+      var xunit = $elem.find(".modal_graph_x_unit").text();
+      var yunit = $elem.find(".modal_graph_y_unit").text();
+      var data  = eval($elem.find(".modal_graph_data").text());
+
+
+    }
+
     $selector.each(renderGraph);
 }
 

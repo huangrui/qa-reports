@@ -37,6 +37,12 @@ all.each do |m| %>
   <% if m.is_serial? %>
     <td class="testcase_measurement"><%= m.name %></td>
     <td class="testcase_graph" colspan="4">
+      <div class="modal_graph" style="display:none">
+        <span class="modal_graph_title"><%=testcase.name%></span>
+        <span class="modal_graph_data"><%=m.long_json%></span>
+        <span class="modal_graph_x_unit"><%=m.interval_unit || ""%></span>
+        <span class="modal_graph_y_unit"><%=m.unit%></span>
+      </div>
       <div id="graph-<%=m.id%>" class="serial_canvas" style="visibility:hidden;width:287px;height:46px"><%=m.short_json%></div>
           <table class="nft_graph_key_figures"> 
             <tr>
