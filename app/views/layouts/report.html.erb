@@ -38,6 +38,7 @@
   <%= javascript_include_tag 'bluff/js-class.js'%>
   <%= javascript_include_tag 'bluff/excanvas.js'%>
   <%= javascript_include_tag 'bluff/bluff-min.js'%>
+  <%= javascript_include_tag 'dygraph-combined.js'%>
   <%= yield :view_specific_js_head %>  
   <%= google_analytics_tag %>
   <%= clicktale_top_tag %>
@@ -74,12 +75,12 @@
 </div>
 
 
-<div class="nft_graph_drilldown" style="display:none;" class="jqmWindow nft_drilldown_modal_window">
+<div class="nft_drilldown_dialog" style="display:none;" class="jqmWindow nft_drilldown_modal_window">
 
   <h1>test case name</h1> 
   <a href="" class="nft_graph_close" class="ui_btn modal_close"><span>X</span></a>
   <div class="nft_drilldown_graph">
-    <img src="/images/dummy_graph_drilldown.png" alt="" />
+    <!--<img src="/images/dummy_graph_drilldown.png" alt="" />-->
 
   </div>
 

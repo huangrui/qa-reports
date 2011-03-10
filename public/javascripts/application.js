@@ -103,17 +103,30 @@ renderSeriesGraphs = function(selector) {
 
             g.data("values", values, "#8888dd");
             g.draw();
+
+            var $modal_info = $canvas.prev()
+            $canvas.click(function() {
+                renderModalGraph($modal_info);
+            });
         }
     }
 
     var renderModalGraph = function(elem) {
-      var $elem = $(elem);
-      var title = $elem.find(".modal_graph_title").text();
-      var xunit = $elem.find(".modal_graph_x_unit").text();
-      var yunit = $elem.find(".modal_graph_y_unit").text();
-      var data  = eval($elem.find(".modal_graph_data").text());
+        var $elem = $(elem);
+        var title = $elem.find(".modal_graph_title").text();
+        var xunit = $elem.find(".modal_graph_x_unit").text();
+        var yunit = $elem.find(".modal_graph_y_unit").text();
+        var data  = eval($elem.find(".modal_graph_data").text());
 
+        var $modal = $(".nft_drilldown_dialog").clone();
+        var $close = $modal.find(".modal_close");
 
+        $modal.find("h1").text(title);
+        $modal.jqm({modal:true}).jqmShow();
+        $modal.jqmAddClose($close);
+
+        $graph = $modal.find(".nft_drilldown_graph")
+        var dyg = new Dygraph($graph, data, {labels:[xunit, yunit]}); 
     }
 
     $selector.each(renderGraph);
