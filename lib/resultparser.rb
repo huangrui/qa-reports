@@ -220,7 +220,7 @@ class MeasurementSeries
   end
 
   def interval
-    @node['interval'].try :to_i
+    @node['interval'].try :to_f
   end
 
   def interval_unit
