@@ -80,7 +80,17 @@
 <%= javascript_include_tag 'application' %>
 <%= yield :view_specific_js %>
 <script type="text/javascript">
+  
+// IE hack
+if (typeof G_vmlCanvasManager != 'undefined') {
+$(window).load(function(){
     renderSeriesGraphs(".serial_canvas");
+    });
+} else {
+}
+$(document).ready(function(){
+    renderSeriesGraphs(".serial_canvas");
+    });
 </script>
 <%= clicktale_bottom_tag %>
 </body>

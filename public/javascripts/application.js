@@ -68,6 +68,11 @@ renderSeriesGraphs = function(selector) {
             var id = $div.attr("id");
             //var $canvas = $('<canvas id="'+id+'" width="287" height="46"/>');
             var canvas = document.createElement("canvas");
+            // if it is IE 
+            if (typeof G_vmlCanvasManager != 'undefined') {
+                canvas = G_vmlCanvasManager.initElement(canvas);
+            }            
+            
             var $canvas = $(canvas);
             $canvas.attr("id", id);
             $canvas.attr("width", "287");
