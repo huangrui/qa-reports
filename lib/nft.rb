@@ -85,7 +85,7 @@ module MeasurementUtils
     if m.interval
       xaxis = indices.map {|i| i*m.interval}
     else
-      xaxis = indices.map {|i| s[i].timestamp}
+      xaxis = indices.map {|i| ((s[i].timestamp-s[0].timestamp)*1000).to_i}
     end
 
     "[" + indices.map{|i| "[#{xaxis[i]},#{s[i].value}]"}.join(",") + "]"
