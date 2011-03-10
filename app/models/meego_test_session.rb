@@ -725,7 +725,7 @@ class MeegoTestSession < ActiveRecord::Base
                   :name       => m.name,
                   :sort_index => nft_index,
                   :short_json => series_json(m.measurements, maxsize=40),
-                  :long_json  => series_json_withx(m.measurements, maxsize=200), 
+                  :long_json  => series_json_withx(m, maxsize=200), 
                   :unit       => m.unit,
                   
                   :min_value    => outline.minval,
