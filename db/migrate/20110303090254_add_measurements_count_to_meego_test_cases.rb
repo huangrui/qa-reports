@@ -1,6 +1,5 @@
 class AddMeasurementsCountToMeegoTestCases < ActiveRecord::Migration
   def self.up
-    remove_column :meego_test_cases, :measurements_count
     add_column :meego_test_cases, :measurements_count, :integer, :default => 0
 
     MeegoTestCase.reset_column_information
