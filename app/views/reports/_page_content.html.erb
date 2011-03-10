@@ -1,16 +1,4 @@
 
-<% content_for :view_specific_js do %>
-  <%= javascript_include_tag 'jqModal.js'%>
-  <script language="javascript" type="text/javascript">
-    $(document).ready(function(){
-        $('#nft_graph_1_drilldown').jqm({
-modal:true
-}).jqmAddTrigger('#nft_graph_1').jqmAddClose($('#nft_graph_close_1'));
-
-        });
-</script>
-<% end %>
-
 <div class="page_content">
 
   <%= yield :notification_area %>	

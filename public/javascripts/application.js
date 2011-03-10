@@ -60,6 +60,7 @@ renderSeriesGraphs = function(selector) {
 
     var renderGraph = function(index, div) {
         var $div = $(div);
+        var $modal_info = $div.prev()
         var values = eval($div.text());
         if (values.length > 0) {
             if (values.length == 1) {
@@ -104,7 +105,6 @@ renderSeriesGraphs = function(selector) {
             g.data("values", values, "#8888dd");
             g.draw();
 
-            var $modal_info = $canvas.prev()
             $canvas.click(function() {
                 renderModalGraph($modal_info);
             });
@@ -118,15 +118,22 @@ renderSeriesGraphs = function(selector) {
         var yunit = $elem.find(".modal_graph_y_unit").text();
         var data  = eval($elem.find(".modal_graph_data").text());
 
-        var $modal = $(".nft_drilldown_dialog").clone();
+        var $modal = $(".nft_drilldown_dialog");
         var $close = $modal.find(".modal_close");
 
         $modal.find("h1").text(title);
-        $modal.jqm({modal:true}).jqmShow();
+        $modal.jqm({modal:true, toTop:true});
         $modal.jqmAddClose($close);
+        $modal.jqmShow();
 
-        $graph = $modal.find(".nft_drilldown_graph")
-        var dyg = new Dygraph($graph, data, {labels:[xunit, yunit]}); 
+        //var $graph = $modal.find(".nft_drilldown_graph");
+        var graph = document.getElementById("nft_drilldown_graph");
+        dyg = new Dygraph(graph, data, {
+          labels:[xunit, yunit],
+          includeZero: true
+          //xValueFormatter: function(x) {return x + xunit;}
+          //yValueFormatter: function(y) {return y + yunit;}
+        }); 
     }
 
     $selector.each(renderGraph);
