@@ -21,6 +21,8 @@
 # 02110-1301 USA
 #
 
+require "nft"
+
 class TargetResultWrapper
   attr_reader :result
 
@@ -31,6 +33,8 @@ end
 
 class MeegoMeasurement < ActiveRecord::Base
   belongs_to :meego_test_case
+
+  include MeasurementUtils
 
   def result
     return 0 if target.nil? or failure.nil?
@@ -57,7 +61,7 @@ class MeegoMeasurement < ActiveRecord::Base
 
   def html(val, un=nil)
     un = unit if un.nil?
-    "#{sprintf "%.2f", val}&nbsp;<span class=\"unit\">#{un}</span>".html_safe unless val.nil?
+    "#{format_value(val, 3)}&nbsp;<span class=\"unit\">#{un}</span>".html_safe unless val.nil?
   end
 
   def relative_html

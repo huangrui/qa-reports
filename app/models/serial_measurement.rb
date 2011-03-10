@@ -21,9 +21,12 @@
 # 02110-1301 USA
 #
 
+require "nft"
 
 class SerialMeasurement < ActiveRecord::Base
   belongs_to :meego_test_case
+
+  include MeasurementUtils 
 
   FORMAT = "%.2f"
 
@@ -32,19 +35,23 @@ class SerialMeasurement < ActiveRecord::Base
   end
 
   def min_html
-    sprintf(FORMAT, min_value)
+    #sprintf(FORMAT, min_value)
+    format_value(min_value, 3)
   end
 
   def max_html
-    sprintf(FORMAT, max_value)
+    #sprintf(FORMAT, max_value)
+    format_value(max_value, 3)
   end
 
   def avg_html
-    sprintf(FORMAT, avg_value)
+    #sprintf(FORMAT, avg_value)
+    format_value(avg_value, 3)
   end
 
   def med_html
-    sprintf(FORMAT, median_value)
+    #sprintf(FORMAT, median_value)
+    format_value(median_value, 3)
   end
 
 end

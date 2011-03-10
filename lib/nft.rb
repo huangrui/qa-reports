@@ -2,6 +2,17 @@
 
 module MeasurementUtils
 
+  def format_value(v, significant=3)
+    s = sprintf("%.#{significant}f",v.to_f)
+    (pre,post) = s.split('.')
+    after = significant - pre.size
+    if after > 0
+      "#{pre}.#{post[0,after]}"
+    else
+      pre
+    end
+  end
+
   def calculate_outline(s)
     o = MeasurementOutline.new
     total = 0
@@ -42,9 +53,39 @@ module MeasurementUtils
     end
   end
 
+  def shortened_indices(size, maxsize)
+    indices = (0..size-1)
+    if size <= maxsize
+      indices
+    else
+      ratio = maxsize.to_f / size
+      c = 1.0
+      indices.select do
+        filter = if c >= 1.0
+          c -= 1.0
+          true
+        else
+          false
+        end
+        c += ratio
+        filter
+      end
+    end
+  end
+
   def series_json(s, maxsize=40)
     s = shorten_series(s, maxsize)
     "[" + s.map{|v| shorten_value(v)}.join(",") + "]"
+  end
+
+  def xaxis_json(m, maxsize)
+    s = m.measurements
+    indices = shortened_indices(s.size, maxsize)
+    if m.interval
+      [] # TODO
+    else
+      [] # TODO
+    end
   end
 
   def shorten_value(v)
