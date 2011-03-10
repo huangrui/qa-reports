@@ -67,8 +67,9 @@ renderSeriesGraphs = function(selector) {
             }
             var id = $div.attr("id");
             //var $canvas = $('<canvas id="'+id+'" width="287" height="46"/>');
-            var canvas = createElement("canvas");
+            var canvas = document.createElement("canvas");
             var $canvas = $(canvas);
+            $canvas.attr("id", id);
             $canvas.attr("width", "287");
             $canvas.attr("height", "46");
 
