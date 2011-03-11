@@ -42,6 +42,7 @@ class MeegoTestSession < ActiveRecord::Base
 
   belongs_to :author, :class_name => "User"
   belongs_to :editor, :class_name => "User"
+  belongs_to :version_label, :class_name => "VersionLabel", :foreign_key => "release_version"
 
   validates_presence_of :title, :target, :testtype, :hwproduct
   validates_presence_of :uploaded_files, :on => :create
@@ -163,56 +164,57 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   class << self
-    def by_release_version_target_test_type_product(release_version, target, testtype, hwproduct, order_by = "tested_at DESC", limit = nil)
+    def by_release_version_target_test_type_product(release_version_label, target, testtype, hwproduct, order_by = "tested_at DESC", limit = nil)
       target    = target.downcase
       testtype  = testtype.downcase
       hwproduct = hwproduct.downcase
-      published.where(:release_version => release_version, :target => target, :testtype => testtype, :hwproduct => hwproduct).order(order_by).limit(limit)
+      published.where("version_labels.normalized" => release_version_label.downcase, :target => target, :testtype => testtype, :hwproduct => hwproduct).joins(:version_label).order(order_by).limit(limit)
     end
 
-    def published_by_release_version_target_test_type(release_version, target, testtype, order_by = "tested_at DESC", limit = nil)
+    def published_by_release_version_target_test_type(release_version_label, target, testtype, order_by = "tested_at DESC", limit = nil)
       target   = target.downcase
       testtype = testtype.downcase
-      published.where(:release_version => release_version, :target => target, :testtype => testtype).order(order_by).limit(limit)
+      published.where("version_labels.normalized" => release_version_label.downcase, :target => target, :testtype => testtype).joins(:version_label).order(order_by).limit(limit)
     end
 
-    def published_hwversion_by_release_version_target_test_type(release_version, target, testtype)
+    def published_hwversion_by_release_version_target_test_type(release_version_label, target, testtype)
       target   = target.downcase
       testtype = testtype.downcase
-      published.where(:release_version => release_version, :target => target, :testtype => testtype).select("DISTINCT hwproduct").order("hwproduct")
+      published.where("version_labels.normalized" => release_version_label.downcase, :target => target, :testtype => testtype).select("DISTINCT hwproduct").joins(:version_label).order("hwproduct")
     end
 
-    def published_by_release_version_target(release_version, target, order_by = "tested_at DESC", limit = nil)
+    def published_by_release_version_target(release_version_label, target, order_by = "tested_at DESC", limit = nil)
       target = target.downcase
-      published.where(:release_version => release_version, :target => target).order(order_by).limit(limit)
+      published.where("version_labels.normalized" => release_version_label.downcase, :target => target).joins(:version_label).order(order_by).limit(limit)
     end
 
-    def published_by_release_version(release_version, order_by = "tested_at DESC", limit = nil)
-      published.where(:release_version => release_version).order(order_by).limit(limit)
+    def published_by_release_version(release_version_label, order_by = "tested_at DESC", limit = nil)
+      published.where("version_labels.normalized" => release_version_label.downcase).joins(:version_label).order(order_by).limit(limit)
     end
   end
 
   ###############################################
   # List feature tags                           #
   ###############################################
-  def self.list_targets(release_version)
-    (published.all_lowercase(:select => 'DISTINCT target', :conditions=>{:release_version => release_version}).map { |s| s.target.gsub(/\b\w/) { $&.upcase } }).uniq
+  
+  def self.list_targets(release_version_label)
+    (published.all_lowercase(:select => 'DISTINCT target', :conditions=>{"version_labels.normalized" => release_version_label}, :include => :version_label).map { |s| s.target.gsub(/\b\w/) { $&.upcase } }).uniq
   end
 
-  def self.list_types(release_version)
-    (published.all_lowercase(:select => 'DISTINCT testtype', :conditions=>{:release_version => release_version}).map { |s| s.testtype.gsub(/\b\w/) { $&.upcase } }).uniq
+  def self.list_types(release_version_label)
+    (published.all_lowercase(:select => 'DISTINCT testtype', :conditions=>{"version_labels.normalized" => release_version_label}, :include => :version_label).map { |s| s.testtype.gsub(/\b\w/) { $&.upcase } }).uniq
   end
 
-  def self.list_types_for(release_version, target)
-    (published.all_lowercase(:select => 'DISTINCT testtype', :conditions => {:target => target, :release_version => release_version}).map { |s| s.testtype.gsub(/\b\w/) { $&.upcase } }).uniq
+  def self.list_types_for(release_version_label, target)
+    (published.all_lowercase(:select => 'DISTINCT testtype', :conditions => {:target => target, "version_labels.normalized" => release_version_label}, :include => :version_label).map { |s| s.testtype.gsub(/\b\w/) { $&.upcase } }).uniq
   end
 
-  def self.list_hardware(release_version)
-    (published.all_lowercase(:select => 'DISTINCT hwproduct', :conditions=>{:release_version => release_version}).map { |s| s.hwproduct.gsub(/\b\w/) { $&.upcase } }).uniq
+  def self.list_hardware(release_version_label)
+    (published.all_lowercase(:select => 'DISTINCT hwproduct', :conditions=>{"version_labels.normalized" => release_version_label}, :include => :version_label).map { |s| s.hwproduct.gsub(/\b\w/) { $&.upcase } }).uniq
   end
 
-  def self.list_hardware_for(release_version, target, testtype)
-    (published.all_lowercase(:select => 'DISTINCT hwproduct', :conditions => {:target => target, :testtype=> testtype, :release_version => release_version}).map { |s| s.hwproduct.gsub(/\b\w/) { $&.upcase } }).uniq
+  def self.list_hardware_for(release_version_label, target, testtype)
+    (published.all_lowercase(:select => 'DISTINCT hwproduct', :conditions => {:target => target, :testtype=> testtype, "version_labels.normalized" => release_version_label}, :include => :version_label).map { |s| s.hwproduct.gsub(/\b\w/) { $&.upcase } }).uniq
   end
 
 
@@ -386,10 +388,10 @@ class MeegoTestSession < ActiveRecord::Base
       end
     end
 
-    if release_version.blank?
-      errors.add :release_version, "can't be blank"
+    if not release_version or release_version == 0
+      errors.add :release_version, "should be provided"
     else
-      label = VersionLabel.find(:first, :conditions => {:normalized => release_version.downcase})
+      label = VersionLabel.find(release_version)
       if not label
         valid_versions = VersionLabel.versions.join(",")
         errors.add :release_version, "Incorrect release version '#{release_version}'. Valid ones are #{valid_versions}."
@@ -516,10 +518,9 @@ class MeegoTestSession < ActiveRecord::Base
           else
             total_cases += parse_xml_file(path_to_file)
           end
-        rescue => e
+        rescue 
           logger.error "ERROR in file parsing"
-          logger.error e
-          logger.error e.backtrace
+          logger.error $!, $!.backtrace
           content = File.open(path_to_file).read
           errors.add :uploaded_files, "Incorrect file format for #{origfn}: #{content}"
           error_msgs << "Incorrect file format for #{origfn}: #{content}"
@@ -776,31 +777,34 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 
-  def create_version_label
-    verlabel = VersionLabel.find(:first, :conditions => {:normalized => release_version.downcase})
-    if verlabel
-      self.release_version = verlabel.label
-      save
-    else
-      verlabel = VersionLabel.new(:label => release_version, :normalized => release_version.downcase)
-      verlabel.save
-    end
-  end
 
-  def create_target_label
-    tarlabel = TargetLabel.find(:first, :conditions => {:normalized => target.downcase})
-    if tarlabel
-      self.target = tarlabel.label
-      save
-    else
-      tarlabel = TargetLabel.new(:label => target, :normalized => target.downcase)
-      tarlabel.save
-    end
-  end
 
-  def create_labels
-    create_version_label && create_target_label
-  end
+#  def create_version_label
+#    verlabel = VersionLabel.find(:first, :conditions => {:normalized => release_version.downcase})
+#    if verlabel
+#      self.release_version = verlabel.label
+#      save
+#    else
+#      verlabel = VersionLabel.new(:label => release_version, :normalized => release_version.downcase)
+#      verlabel.save
+#    end
+#  end
+
+#  def create_target_label
+#    tarlabel = TargetLabel.find(:first, :conditions => {:normalized => target.downcase})
+#    if tarlabel
+#      self.target = tarlabel.label
+#      save
+#    else
+#      tarlabel = TargetLabel.new(:label => target, :normalized => target.downcase)
+#      tarlabel.save
+#    end
+#  end
+
+#  def create_labels
+#    create_version_label && create_target_label
+#  end
+
 end
 
 class Counter
