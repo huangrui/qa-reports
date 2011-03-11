@@ -188,6 +188,12 @@ class ReportsController < ApplicationController
       @report         = @test_session
       @no_upload_link = true
 
+      @report         = @test_session
+      @targets = MeegoTestSession.list_targets @selected_release_version
+      @types = MeegoTestSession.list_types @selected_release_version
+      @hardware = MeegoTestSession.list_hardware @selected_release_version
+      @release_versions = MeegoTestSession.release_versions
+
       render :layout => "report"
     else
       redirect_to :controller => 'upload', :action => :upload_form

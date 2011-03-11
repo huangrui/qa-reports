@@ -2,6 +2,8 @@ set :application, "meego.qa.leonidasoy.fi"
 set :user, "leonidas"
 set :rails_env, "staging"
 
+set :branch, "implement-nft-series"
+
 # Use absolute paths in order to avoid problems with scp
 set :deploy_to, "/home/#{user}/sites/#{application}"
 

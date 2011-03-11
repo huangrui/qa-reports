@@ -22,6 +22,7 @@
 
 require 'rubygems'
 require 'date'
+require 'time'
 require 'nokogiri'
 
 class TestResults
@@ -154,9 +155,15 @@ class TestCase
   end
   
   def measurements
-    @node.css('measurement').map do |m|
-      Measurement.new(m)
+    result = []
+    @node.element_children.each do |e|
+      if e.name == 'measurement'
+        result << Measurement.new(e)
+      elsif e.name == 'series'
+        result << MeasurementSeries.new(e)
+      end
     end
+    result
   end
 end
 
@@ -164,6 +171,10 @@ end
 class Measurement
   def initialize(node)
     @node = node
+  end
+
+  def is_series?
+    false
   end
 
   def name
@@ -184,6 +195,57 @@ class Measurement
 
   def failure
     @node['failure'].try(:to_f)
+  end
+end
+
+class MeasurementSeries
+  def initialize(node)
+    @node = node
+  end
+
+  def is_series?
+    true
+  end
+
+  def name
+    @node['name']
+  end
+
+  def group
+    @node['group']
+  end
+
+  def unit
+    @node['unit']
+  end
+
+  def interval
+    @node['interval'].try :to_f
+  end
+
+  def interval_unit
+    @node['interval_unit']
+  end
+
+  def measurements
+    @node.css('measurement').map do |m|
+      MeasurementSeriesPoint.new(m)
+    end
+  end
+end
+
+class MeasurementSeriesPoint
+  def initialize(node)
+    @node = node
+  end
+
+  def value
+    @node['value'].to_f
+  end
+
+  def timestamp
+    t = @node['timestamp']
+    Time.parse(t) if t
   end
 end
 
