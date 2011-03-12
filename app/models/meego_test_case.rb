@@ -27,6 +27,7 @@ class MeegoTestCase < ActiveRecord::Base
   belongs_to :meego_test_session
 
   has_many :measurements, :dependent => :destroy, :class_name => "::MeegoMeasurement"
+  has_many :serial_measurements, :dependent => :destroy
 
   def unique_id
     (meego_test_set.name + "_" + name).downcase
@@ -40,13 +41,13 @@ class MeegoTestCase < ActiveRecord::Base
     nil
   end
 
+  def all_measurements
+    a = (measurements + serial_measurements)
+    a.sort!{|x,y| x.sort_index <=> y.sort_index}
+  end
+
   def has_measurements?
-    return @has_measurements unless @has_measurements.nil?
-    if measurements.loaded?
-      @has_measurements = measurements.length > 0
-    else
-      @has_measurements = !measurements.empty?
-    end
+    return has_nft
   end
 
   def find_change_class(prev_session)
