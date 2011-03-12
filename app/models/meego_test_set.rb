@@ -32,41 +32,19 @@ class MeegoTestSet < ActiveRecord::Base
   include Graph
    
   def has_nft?
-    if @has_nft.nil?
-      @has_nft = false
-      meego_test_cases.each do |tc|
-        if tc.has_measurements?
-          @has_nft = true
-          break
-        else
-          @has_non_nft = true
-        end
-      end
-    end
-    @has_nft
+    has_nft
   end
 
   def has_non_nft?
-    if @has_non_nft.nil?
-      @has_non_nft = false
-      meego_test_cases.each do |tc|
-        if not tc.has_measurements?
-          @has_non_nft = true
-          break
-        else
-          @has_nft = true
-        end
-      end
-    end
-    @has_non_nft   
+    has_ft
   end
 
   def nft_cases
-    meego_test_cases.select {|tc| tc.has_measurements?}
+    meego_test_cases.select {|tc| tc.has_nft}
   end
 
   def non_nft_cases
-    meego_test_cases.select {|tc| not tc.has_measurements?}
+    meego_test_cases.select {|tc| !tc.has_nft}
   end
 
   def prev_summary

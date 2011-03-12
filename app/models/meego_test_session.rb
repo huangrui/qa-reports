@@ -29,11 +29,13 @@ require 'validation/date_time_validator'
 require 'will_paginate'
 
 require 'graph'
+require 'nft'
 
 #noinspection Rails3Deprecated
 class MeegoTestSession < ActiveRecord::Base
   include Trimmer
   include Graph
+  include MeasurementUtils
 
   has_many :meego_test_sets, :dependent => :destroy
   has_many :meego_test_cases
@@ -105,23 +107,11 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def has_nft?
-    return @has_nft unless @has_nft.nil?
-    meego_test_cases.each do |tc|
-      if tc.has_measurements?
-        return @has_nft = true
-      end
-    end
-    @has_nft = false
+    return has_nft
   end
 
   def has_non_nft?
-    return @has_non_nft unless @has_non_nft.nil?
-    meego_test_cases.each do |tc|
-      unless tc.has_measurements?
-        return @has_non_nft = true
-      end
-    end
-    @has_non_nft = false 
+    return has_ft
   end
 
   def self.import(attributes, files, user)
@@ -526,9 +516,10 @@ class MeegoTestSession < ActiveRecord::Base
           else
             total_cases += parse_xml_file(path_to_file)
           end
-        rescue
+        rescue => e
           logger.error "ERROR in file parsing"
-          logger.error $!, $!.backtrace
+          logger.error e
+          logger.error e.backtrace
           content = File.open(path_to_file).read
           errors.add :uploaded_files, "Incorrect file format for #{origfn}: #{content}"
           error_msgs << "Incorrect file format for #{origfn}: #{content}"
@@ -696,6 +687,7 @@ class MeegoTestSession < ActiveRecord::Base
   def parse_xml_file(filename)
     sets = {}
     file_total = 0
+    self.has_ft = false
     TestResults.new(File.open(filename)).suites.each do |suite|
       suite.sets.each do |set|
         ReportParser::parse_features(set.feature).each do |feature|
@@ -708,6 +700,7 @@ class MeegoTestSession < ActiveRecord::Base
 
           pass_count = 0
           total_count = 0
+          set_model.has_ft = false
 
           set.cases.each do |testcase|
             result = MeegoTestSession.map_result(testcase.result)
@@ -721,14 +714,41 @@ class MeegoTestSession < ActiveRecord::Base
             pass_count += 1 if result == 1
             total_count += 1
             file_total += 1
+            nft_index = 0
             testcase.measurements.each do |m|
-              tc.measurements.build(
-                :name    => m.name,
-                :value   => m.value,
-                :unit    => m.unit,
-                :target  => m.target,
-                :failure => m.failure
-              )
+              tc.has_nft = true
+              set_model.has_nft = true
+              self.has_nft = true
+              if m.is_series?
+                outline = self.calculate_outline(m.measurements)
+                tc.serial_measurements.build(
+                  :name       => m.name,
+                  :sort_index => nft_index,
+                  :short_json => series_json(m.measurements, maxsize=40),
+                  :long_json  => series_json_withx(m, maxsize=200), 
+                  :unit       => m.unit,
+                  :interval_unit => m.interval_unit || "ms",
+                  
+                  :min_value    => outline.minval,
+                  :max_value    => outline.maxval,
+                  :avg_value    => outline.avgval,
+                  :median_value => outline.median
+                )
+              else
+                tc.measurements.build(
+                  :name       => m.name,
+                  :sort_index => nft_index,
+                  :value      => m.value,
+                  :unit       => m.unit,
+                  :target     => m.target,
+                  :failure    => m.failure
+                )
+              end
+              nft_index += 1
+            end
+            if nft_index == 0
+              set_model.has_ft = true
+              self.has_ft = true
             end
           end
           set_model.grading = calculate_grading(pass_count, total_count)

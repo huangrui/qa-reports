@@ -1,342 +1,138 @@
 
-<% content_for :view_specific_js do %>
-    <%= javascript_include_tag 'jqModal.js'%>
-    <script language="javascript" type="text/javascript">
-     $(document).ready(function(){
-      $('#nft_graph_1_drilldown').jqm({
-        modal:true
-      }).jqmAddTrigger('#nft_graph_1').jqmAddClose($('#nft_graph_close_1'));
-      
-     });
-    </script>
-<% end %>
-
 <div class="page_content">
 
-	<%= yield :notification_area %>	
+  <%= yield :notification_area %>	
 
-    <% action = controller.action_name 
-     if action == 'compare' 
-        cache_key = @compare_cache_key
-     else
-        cache_key = "#{action}_page_#{@test_session.id}"
-     end %> 
-    <%= cache cache_key do %>
+  <% action = controller.action_name 
+  if action == 'compare' 
+    cache_key = @compare_cache_key
+  else
+    cache_key = "#{action}_page_#{@test_session.id}"
+  end %> 
+  <%= cache cache_key do %>
 
     <%= yield :button_area %>
-    
+
     <%= render :partial => 'editable_title' %>
 
     <%= yield :title || render(:partial => 'editable_title') %>
 
-	<div class="report_head">
-		<%= yield :table_of_contents %>
+    <div class="report_head">
+      <%= yield :table_of_contents %>
 
-		<dl class="meta_info">
-				<dt id="report_author">Author:</dt>
-				<dd><%= @report.author.name%><br/>
-                  <span class="un"><%= format_date_to_human_readable @report.created_at %></span>
-                </dd>
-				<dt>Last modified by:</dt>
-				<dd><%= @report.editor.name %><br/>
-                  <span class="un"><%= format_date_to_human_readable @report.updated_at %></span>
-                </dd>
-			     <%= render :partial => 'editable_date' %>
-			    
-			  		</dl>
-	</div>
-      <%= render :partial => 'editable_text', :locals => {:anchor => 'test_objective', :title => "Test Objective", :field => 'objective'} %>
-      <%= render :partial => 'editable_text', :locals => {:anchor => 'build', :title => "Build (image)", :field => 'build'} %>
-      <%= render :partial => 'editable_text', :locals => {:anchor => 'environment', :title => "Test Environment", :field => 'environment'} %>
-      <%= render :partial => 'editable_text', :locals => {:anchor => 'qa_summary', :title => "Quality Summary", :field => 'qa_summary'} %>
+      <dl class="meta_info">
+        <dt id="report_author">Author:</dt>
+        <dd><%= @report.author.name%><br/>
+        <span class="un"><%= format_date_to_human_readable @report.created_at %></span>
+        </dd>
+        <dt>Last modified by:</dt>
+        <dd><%= @report.editor.name %><br/>
+        <span class="un"><%= format_date_to_human_readable @report.updated_at %></span>
+        </dd>
+        <%= render :partial => 'editable_date' %>
 
-
-   <%= render :partial => 'reports/test_results' %>
+      </dl>
+    </div>
+    <%= render :partial => 'editable_text', :locals => {:anchor => 'test_objective', :title => "Test Objective", :field => 'objective'} %>
+    <%= render :partial => 'editable_text', :locals => {:anchor => 'build', :title => "Build (image)", :field => 'build'} %>
+    <%= render :partial => 'editable_text', :locals => {:anchor => 'environment', :title => "Test Environment", :field => 'environment'} %>
+    <%= render :partial => 'editable_text', :locals => {:anchor => 'qa_summary', :title => "Quality Summary", :field => 'qa_summary'} %>
 
 
-   <%= yield :result_edit_notification %>
+    <%= render :partial => 'reports/test_results' %>
 
-   <% if @test_session.has_non_nft? %>
+
+    <%= yield :result_edit_notification %>
+
+    <% if @test_session.has_non_nft? %>
 
       <h2 id="detailed_results">Detailed Test Results<span class="heading_actions"><%=back_to_top%></span></h2>
-			
-		
+
+
 
       <table class="detailed_results" id="detailed_functional_test_results">    			
         <div class="loading" id="history_loader">
- 					<strong>Loading history data, please wait…</strong>
+          <strong>Loading history data, please wait…</strong>
         </div>
         <thead>
-        <tr>
-			  <th id="th_test_case">
-			  
-			  	<span class="sort">
-            <a href="#" class="see_only_failed_button sort_btn active">See only failed</a> 
-			  		<a href="#" class="see_all_button sort_btn">See all</a>
-            <%if @history%><a href="#" class="see_history_button sort_btn">See history</a><%end%>
-			  	</span>
-			  </th>
-			  <th id="th_result">Result</th>
-			  <th id="th_notes">Notes</th>
-        	</tr>
-		</thead>
+          <tr>
+            <th id="th_test_case">
 
-		<%= render :partial => "feature", :collection => @test_session.non_nft_sets %>
+              <span class="sort">
+                <a href="#" class="see_only_failed_button sort_btn active">See only failed</a> 
+                <a href="#" class="see_all_button sort_btn">See all</a>
+              <%if @history%><a href="#" class="see_history_button sort_btn">See history</a><%end%>
+              </span>
+            </th>
+            <th id="th_result">Result</th>
+            <th id="th_notes">Notes</th>
+          </tr>
+        </thead>
 
-      
+        <%= render :partial => "feature", :collection => @test_session.non_nft_sets %>
 
-      <% if @history %>
-	    <table class="detailed_results history" style="display:none;">
-	      <thead>
-				<tr>
-				  <th id="th_history_test_case">
-				  	<span class="sort">
-            <a href="#" class="see_only_failed_button sort_btn">See only failed</a> 
-			  		<a href="#" class="see_all_button sort_btn">See all</a>
-            <a href="#" class="see_history_button sort_btn active">See history</a>
-				   	</span>
-				  </th>
-          <%= history_headers(@history) %>
-				  <th class="th_result">Current</th>
-				  <th> 				  				  				      
-
-				 <div style="position:relative;"></div>
-				  	</th>
-	      	</tr>
-			</thead>
-			
-		<%= render :partial => "feature_history", :collection => @test_session.non_nft_sets %>
-		</table>
-    <% end %>
-   
-   <% end %>
-
-   <% if @test_session.has_nft? %>
-   <h2 id="detailed_nft_results">Non-functional Test Results<span class="heading_actions"><%=back_to_top%></span></h2>
-   
-    <table id="non-functional_results" class="detailed_results">
-      <thead>
-      <tr>
-        <th id="th_nft_test_case">
-          <!--<span class="sort">
-            <a href="#" id="see_only_failed_button" class="sort_btn active">See only failed</a>
-            <a href="#" id="see_all_button" class="sort_btn">See all</a>
-          </span>-->
-        </th>
-        <th class="th_name">Measurement</th>
-        <th class="th_measured">Value</th>
-        <th class="th_target">Target</th>    
-        <th class="th_limit">Fail limit</th>	
-        <th class="th_to_target">% of target</th>  
-        <th class="th_result">Result</th>  			     			  
-        <th id="th_notes">Notes</th>
-        </tr>
-      </thead>
-    
-      <%= render :partial => "nft_feature", :collection => @test_session.nft_sets %>
-
-    </table>
-  
-  <!-- DUMMY FOR NFT DEV -->
-  
-  			<h2 id="detailed_results">Detailed Test Results (graph dummy, click first graph for drilldown)<span class="heading_actions"><%=back_to_top%></span></h2>
-  			
-				<table id="non-functional_results" class="detailed_results">
-				  <thead>
-				  <tr>
-				    <th id="th_nft_test_case">
-				      <!--<span class="sort">
-				        <a href="#" id="see_only_failed_button" class="sort_btn active">See only failed</a>
-				        <a href="#" id="see_all_button" class="sort_btn">See all</a>
-				      </span>-->
-				    </th>
-				    <th class="th_name">Measurement</th>
-				    <th class="th_measured">Value</th>
-				    <th class="th_target">Target</th>    
-				    <th class="th_limit">Fail limit</th>	
-				    <th class="th_to_target">% of target</th>  
-				    <th class="th_result">Result</th>  			     			  
-				    <th id="th_notes">Notes</th>
-				    </tr>
-				  </thead>
-  			      <tbody> 
-  			<tr class="feature_name" id="test-set-368"> 
-  				<td colspan="8"> 
-  			        Filesystem
-  					<a href="#" class="see_all_toggle">+ see passing tests</a> 
-  				</td> 
-  			</tr> 
-  			</tbody> 
-  			
-					<tr class="testcase multiple_rows even">
-						<td class="testcase_name" rowspan="1">SMOKE-FS-Read_Data_ROOT_with_limits_bigger_better
-						  
-						  
-						</td> 
-						  <td class="testcase_measurement">read throughput</td> 
-						  <td class="testcase_value">4.52&nbsp;<span class="unit">MB/s</span></td> 
-						  <td class="testcase_target">10.10&nbsp;<span class="unit">MB/s</span></td>   
-						  <td class="testcase_limit">5.00&nbsp;<span class="unit">MB/s</span></td>    
-						  <td class="testcase_to_target fail">44.75&nbsp;<span class="unit">%</span></td> 
-						    <td class="testcase_result multiple_results fail   " rowspan="1"><span class="content">Fail</span> </td>       			
-						    <td class="testcase_notes " rowspan="1"> 
-						      <div class="content"></div> 
-						    </td> 
-					</tr>  
-					<tr class="testcase multiple_rows even">
-						<td class="testcase_name" rowspan="1">						  
-						</td> 
-						  <td class="testcase_measurement">Power consumption</td> 
-						  <td class="testcase_graph" colspan="4">
-						  	<img src="/images/dummy_graph.png" alt="Processor load graph" id="nft_graph_1"  />
-						  	<table class="nft_graph_key_figures"> 
-						  		<tr>
-						  			<td class="unit">mA</td>
-						  			<td><span class="unit">min.</span> 10.5</td>
-						  			<td><span class="unit">avg.</span> 23.8</td>
-						  			<td><span class="unit">max.</span> 45.2</td>
-						  		</tr>
-						  	</table>
-						  </td> 
-					    <td class="testcase_result multiple_results fail" rowspan="1"><span class="content"></span> </td>       			
-					    <td class="testcase_notes " rowspan="1"> 
-					      <div class="content"></div> 
-					    </td> 
-					</tr> 
-
-					
-					<tr class="testcase multiple_rows even">
-						<td class="testcase_name" rowspan="1">						  
-						</td> 
-						  <td class="testcase_measurement">Processor load</td> 
-						  <td class="testcase_graph" colspan="4">
-						  	<img src="/images/dummy_graph2.png" alt="Processor load graph"/>
-						  	<table class="nft_graph_key_figures"> 
-						  		<tr>
-						  			<td class="unit">MB/s</td>
-						  			<td><span class="unit">min.</span> 4.52</td>
-						  			<td><span class="unit">avg.</span> 5.80</td>
-						  			<td><span class="unit">max.</span> 6.23</td>
-						  		</tr>
-						  	</table>
-						  </td> 
-					    <td class="testcase_result multiple_results fail" rowspan="1"><span class="content"></span> </td>       			
-					    <td class="testcase_notes " rowspan="1"> 
-					      <div class="content"></div> 
-					    </td> 
-					</tr> 
+      </table>
 
 
-					<tr class="testcase multiple_rows odd first">
-						<td class="testcase_name" rowspan="1">SMOKE-FS-Create_Directory_ROOT_with_limits_smaller_better
-						  
-						  
-						</td> 
-						  <td class="testcase_measurement">read throughput</td> 
-						  <td class="testcase_value">4.52&nbsp;<span class="unit">MB/s</span></td> 
-						  <td class="testcase_target">10.10&nbsp;<span class="unit">MB/s</span></td>   
-						  <td class="testcase_limit">5.00&nbsp;<span class="unit">MB/s</span></td>    
-						  <td class="testcase_to_target fail">44.75&nbsp;<span class="unit">%</span></td> 
-						    <td class="testcase_result multiple_results fail   " rowspan="1"><span class="content">Fail</span> </td>       			
-						    <td class="testcase_notes " rowspan="1"> 
-						      <div class="content"></div> 
-						    </td> 
-					</tr>  
-					<tr class="testcase multiple_rows">
-						<td class="testcase_name" rowspan="1">						  
-						</td> 
-						  <td class="testcase_measurement">Power consumption</td> 
-						  <td class="testcase_graph" colspan="4">
-						  	<img src="/images/dummy_graph.png" alt="Processor load graph" />
-						  	<table class="nft_graph_key_figures"> 
-						  		<tr>
-						  			<td class="unit">mA</td>
-						  			<td><span class="unit">min.</span> 10.5</td>
-						  			<td><span class="unit">avg.</span> 23.8</td>
-						  			<td><span class="unit">max.</span> 45.2</td>
-						  		</tr>
-						  	</table>
-						  </td> 
-					    <td class="testcase_result multiple_results fail" rowspan="1"><span class="content"></span> </td>       			
-					    <td class="testcase_notes " rowspan="1"> 
-					      <div class="content"></div> 
-					    </td> 
-					</tr> 
+        <% if @history %>
+          <table class="detailed_results history" style="display:none;">
+            <thead>
+              <tr>
+                <th id="th_history_test_case">
+                  <span class="sort">
+                    <a href="#" class="see_only_failed_button sort_btn">See only failed</a> 
+                    <a href="#" class="see_all_button sort_btn">See all</a>
+                    <a href="#" class="see_history_button sort_btn active">See history</a>
+                  </span>
+                </th>
+                <%= history_headers(@history) %>
+                <th class="th_result">Current</th>
+                <th> 				  				  				      
 
-					
-					<tr class="testcase multiple_rows">
-						<td class="testcase_name" rowspan="1">						  
-						</td> 
-						  <td class="testcase_measurement">Processor load</td> 
-						  <td class="testcase_graph" colspan="4">
-						  	<img src="/images/dummy_graph2.png" alt="Processor load graph" />
-						  	<table class="nft_graph_key_figures"> 
-						  		<tr>
-						  			<td class="unit">MB/s</td>
-						  			<td><span class="unit">min.</span> 4.52</td>
-						  			<td><span class="unit">avg.</span> 5.80</td>
-						  			<td><span class="unit">max.</span> 6.23</td>
-						  		</tr>
-						  	</table>
-						  </td> 
-					    <td class="testcase_result multiple_results fail" rowspan="1"><span class="content"></span> </td>       			
-					    <td class="testcase_notes " rowspan="1"> 
-					      <div class="content"></div> 
-					    </td> 
-					</tr> 
+                  <div style="position:relative;"></div>
+                </th>
+              </tr>
+            </thead>
 
-					 					
-  			
-	      </table>
-  <!-- DUMMY ENDS -->
-  
-  
-  <% end %>
-  
-  
-
-  <%= render :partial => 'editable_text', :locals => {:anchor => 'issue_summary', :title => "Issue Summary", :field => 'issue_summary'} %>
-
-  <%= render :partial => 'reports/file_attachments' %>
-
-	<%= yield :wizard_actions %>
+            <%= render :partial => "feature_history", :collection => @test_session.non_nft_sets %>
+          </table>
+        <% end %>
 
       <% end %>
-      
-  
-  <div id="nft_graph_1_drilldown" style="display:none;" class="jqmWindow nft_drilldown_modal_window">
- 
-  	    <h1>SMOKE-FS-Write_Data_ROOT_without_limits</h1> 
-  	    <a href="" id="nft_graph_close_1" class="ui_btn modal_close"><span>X</span></a>
-  	    <div class="nft_drilldown_graph">
-  	    	<img src="/images/dummy_graph_drilldown.png" alt="" />
-  	    
-  	    </div>
-  	    
-  	   <div class="nft_graph_options">
-  	   	<div>
-		  	 	<h3>Graphs</h3>
-		  	 	<input type="checkbox" id="processor_load" checked/>
-		  	 	<span style="color:#2a7438">Processor load</span> <span class="unit">%</span><br/>
-					<input type="checkbox" id="processor_load" checked/>
-					<span style="color:#233a84">Memory consumption</span> <span class="unit">MB</span><br/>
-					<input type="checkbox" id="processor_load" />
-					<span style="color:#6c3d0f">Power consumption</span> <span class="unit">mA</span>
-  	    </div>
-  	    	  
-  	    <div>
-  	    <h3>Options</h3>
-  	    <input type="checkbox" id="min_max_avg" name="" value="" />
-  	    Show min. / max. / avg.
-  	    </div>
-  	    
-  	    <div>
-	  	    <h3>Usage</h3>
-					<p>Click and drag to zoom<br/>
-					Shift-drag to pan.<br/>
-					Doubleclick to zoom out.	
-					</p>
-				</div>
-			</div> 
-  	
-  </div>
+
+      <% if @test_session.has_nft? %>
+        <h2 id="detailed_nft_results">Non-functional Test Results<span class="heading_actions"><%=back_to_top%></span></h2>
+
+        <table id="non-functional_results" class="detailed_results">
+          <thead>
+            <tr>
+              <th id="th_nft_test_case">
+                <!--<span class="sort">
+                  <a href="#" id="see_only_failed_button" class="sort_btn active">See only failed</a>
+                  <a href="#" id="see_all_button" class="sort_btn">See all</a>
+                </span>-->
+              </th>
+              <th class="th_name">Measurement</th>
+              <th class="th_measured">Value</th>
+              <th class="th_target">Target</th>    
+              <th class="th_limit">Fail limit</th>	
+              <th class="th_to_target">% of target</th>  
+              <th class="th_result">Result</th>  			     			  
+              <th id="th_notes">Notes</th>
+            </tr>
+          </thead>
+
+          <%= render :partial => "nft_feature", :collection => @test_session.nft_sets %>
+
+        </table>
+
+      <% end %>
+
+
+      <%= render :partial => 'editable_text', :locals => {:anchor => 'issue_summary', :title => "Issue Summary", :field => 'issue_summary'} %>
+
+      <%= render :partial => 'reports/file_attachments' %>
+
+      <%= yield :wizard_actions %>
+
+    <% end %>

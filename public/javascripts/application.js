@@ -55,6 +55,102 @@ function htmlEscape(s) {
     return s;
 }
 
+renderSeriesGraphs = function(selector) {
+    var $selector = $(selector);
+
+    var renderGraph = function(index, div) {
+        var $div = $(div);
+        var $modal_info = $div.prev()
+        var values = eval($div.text());
+        if (values.length > 0) {
+            if (values.length == 1) {
+                values[1] = values[0];
+            }
+            var id = $div.attr("id");
+            //var $canvas = $('<canvas id="'+id+'" width="287" height="46"/>');
+            var canvas = document.createElement("canvas");
+            // if it is IE 
+            if (typeof G_vmlCanvasManager != 'undefined') {
+                canvas = G_vmlCanvasManager.initElement(canvas);
+            }            
+            
+            var $canvas = $(canvas);
+            $canvas.attr("id", id);
+            $canvas.attr("width", "287");
+            $canvas.attr("height", "46");
+
+            var bg = $div.parent().css("background-color");
+            $div.replaceWith($canvas);
+
+            g = new Bluff.Line(id, '287x46');
+            g.tooltips = false;
+            g.sort = false;
+            
+            g.hide_title  = true;
+            g.hide_dots   = true;
+            g.hide_legend = true;
+            g.hide_mini_legend = true;
+            g.hide_line_numbers = true;
+            g.hide_line_markers = true;
+
+            g.line_width = 1;
+
+            g.set_theme({
+                colors: ['#acacac'],
+                marker_color: '#dedede',
+                font_color: '#6f6f6f',
+                background_colors: [bg, bg]
+            });
+
+            g.data("values", values, "#8888dd");
+            g.draw();
+
+            $canvas.click(function() {
+                renderModalGraph($modal_info);
+            });
+        }
+    }
+
+    var renderModalGraph = function(elem) {
+        var $elem = $(elem);
+        var title = $elem.find(".modal_graph_title").text();
+        var xunit = $elem.find(".modal_graph_x_unit").text();
+        var yunit = $elem.find(".modal_graph_y_unit").text();
+        var data  = eval($elem.find(".modal_graph_data").text());
+
+        var $modal = $(".nft_drilldown_dialog");
+        var $close = $modal.find(".modal_close");
+
+        $modal.find("h1").text(title);
+        $modal.jqm({modal:true, toTop:true});
+        $modal.jqmAddClose($close);
+        $modal.jqmShow();
+
+        //var $graph = $modal.find(".nft_drilldown_graph");
+        var graph = document.getElementById("nft_drilldown_graph");
+        var updateLabels = function() {
+            $(graph).find("div").each(function(idx,e) {
+                var $e = $(e);
+                if ($e.css("text-align") == "right") {
+                    $e.text($e.text() + yunit);
+                } else if ($e.css("text-align") == "center") {
+                    $e.text($e.text() + xunit);
+                }
+            });
+        };
+        dyg = new Dygraph(graph, data, {
+          labels:[xunit, yunit],
+          drawCallback: updateLabels,
+          includeZero: true
+          //xValueFormatter: function(x) {return x + xunit;}
+          //yValueFormatter: function(y) {return y + yunit;}          
+        }); 
+
+    }
+
+    $selector.each(renderGraph);
+}
+
 prepareCategoryUpdate = function(div) {
     var $div      = $(div);
     var $form     = $div.find("form");
