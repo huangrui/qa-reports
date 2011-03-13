@@ -45,20 +45,17 @@ class ApiController < ApplicationController
     end
 
     data[:tested_at] = data[:tested_at] || Time.now
-    data[:version_label_id] = VersionLabel.where(:normalized => data[:release_version].downcase).first().id
-    data.delete(:release_version)
-    if data[:version_label_id]
-      version_label = VersionLabel.find(data[:version_label_id])
-      if not version_label
-        labels = []
-        VersionLabel.find(:all).each{|ver|
-          labels << ver.label
-        }
-        render :json => {:ok => '0', :errors => "The release_version doesn't exist. possible release_version: "+ labels.join('; ') + errors.join('; ')}
-        return
-      else
-        data[:version_label_id] = version_label.id
-      end
+    version_label = VersionLabel.where(:normalized => data[:release_version].downcase).first()
+    if not version_label
+      labels = []
+      VersionLabel.find(:all).each{|ver|
+        labels << ver.label
+      }
+      render :json => {:ok => '0', :errors => "The release_version doesn't exist. possible release_version: "+ labels.join('; ') + errors.join('; ')}
+      return
+    else
+      data.delete(:release_version)
+      data[:release_version] = version_label.id
     end
 
     begin

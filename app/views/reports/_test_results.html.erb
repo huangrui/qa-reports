@@ -52,19 +52,17 @@
     </div>
 
     <h3 id="test_features">Test Results by Feature</h3>
-    
-    <table id="test_results" class="feature_detailed_results">
-      <thead class="even">
-      <%if @history %>
-      <tr>
-        <td id="th_feature_history" colspan="9">
+
+    	<div id="test_results_navi">
           <span class="sort">
             <a href="#" class="see_feature_comment_button sort_btn active">See comment and grading</a>
             <a href="#" class="see_feature_history_button sort_btn">See pass_rate_history</a>
           </span>
-        </td>
-      </tr>
-      <% end %>
+        </div>
+
+    
+    <table id="test_results" class="feature_detailed_results">
+      <thead class="even">
       <tr id="detailed_feature_head" class="detailed_feature_head">
         <th class="th_feature">Feature</th>
         <th class="th_total">Total</th>
@@ -84,14 +82,6 @@
     <%if @history %>
     <table id="test_feature_history_results"  class="feature_detailed_results_with_passrate_history" style="display:none;">
      <thead class="even">
-      <tr>
-        <td id="th_feature_history" colspan="9">
-          <span class="sort">
-            <a href="#" class="see_feature_comment_button sort_btn active">See comment and grading</a>
-            <a href="#" class="see_feature_history_button sort_btn">See pass_rate history</a>
-          </span>
-        </td>
-      </tr>
       </tr>
       <tr id="detailed_feature_history_head" class="detailed_feature_head feature_history">
         <th class="th_feature">Feature</th>

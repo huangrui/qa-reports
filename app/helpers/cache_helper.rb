@@ -3,7 +3,7 @@ module CacheHelper
     expire_page :controller => 'index', :action => :index
     expire_page :controller => 'upload', :action => :upload_form
 
-    ver_label = VersionLabel.find(test_session.version_label_id).label 
+    ver_label = VersionLabel.find(test_session.release_version).label 
     expire_paging_action :controller => "index", :action => "filtered_list", :release_version => ver_label, :target => test_session.target, :testtype => test_session.testtype, :hwproduct => test_session.hwproduct
     expire_paging_action :controller => "index", :action => "filtered_list", :release_version => ver_label, :target => test_session.target, :testtype => test_session.testtype
     expire_paging_action :controller => "index", :action => "filtered_list", :release_version => ver_label, :target => test_session.target

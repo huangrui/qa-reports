@@ -1015,8 +1015,8 @@ function filterResults(rowsToHide, typeText) {
     $(".see_feature_history_button").click(function(){
         $("table.feature_detailed_results").hide();
         $feature_history.show();
-        $feature_history.find(".see_feature_history_button").addClass("active");
-        $feature_history.find(".see_feature_comment_button").removeClass("active");
+        $(this).addClass("active");
+        $("a.see_feature_comment_button").removeClass("active");
         return false;
     }); 
 

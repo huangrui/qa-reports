@@ -44,8 +44,8 @@ class UploadController < ApplicationController
       "Core"
     end
 
-    @test_session.version_label_id = if @test_session.version_label_id =! 0
-      @test_session.version_label_id
+    @test_session.release_version = if @test_session.release_version =! 0
+      @test_session.release_version
     elsif default_version.present?
       VersionLabel.where(:normalized => default_version.downcase).first().id
     else
