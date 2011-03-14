@@ -5,7 +5,8 @@
 <div class="field">
   <label for="report_meego_version">MeeGo release:</label>
   <% @release_versions.each do |release_version| %>
-    <%= f.radio_button :release_version, VersionLabel.where(:normalized => release_version.downcase).first().id, :id => release_version, :class => "version" %>
+    <% version_id = VersionLabel.where(:normalized => release_version.downcase).first().id%>
+    <%= f.radio_button :release_version, version_id, :id => version_id, :class => "version" %>
     <%= f.label :release_version, release_version, :for => release_version, :class => "inline_label" %>
   <% end %>
 </div>

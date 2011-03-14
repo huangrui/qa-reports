@@ -33,6 +33,21 @@ Feature:
 
     Then I should not see "Your report has been successfully published"
 
+  Scenario Outline: Add new report with sim.xml
+    When I follow "Add report"
+
+    And I select target "Handset", test type "Smokey" and hardware "N990" with date "2010-11-22"
+    And I attach the report "sim.xml"
+
+    And submit the form at "upload_report_submit"
+
+    Then I should see "SMOKE-SIM-Get_IMSI"
+    And I should see "Fail"
+
+    And I should see "Publish"
+    And I should see "Handset Test Report: N990 Smokey 2010-11-22"
+
+
   Scenario Outline: Add new report with valid data
     When I follow "Add report"
 

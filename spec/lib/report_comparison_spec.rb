@@ -17,7 +17,7 @@ class ReportComparisonSpec < ActiveSupport::TestCase
           :target => "Core",
           :testtype => "Sanity",
           :hwproduct => "N900",
-          :version_label_id => 1
+          :release_version => 1
       }, [File.new("spec/fixtures/sim1.xml")], user)
 
       @session2 = MeegoTestSession.import({
@@ -26,7 +26,7 @@ class ReportComparisonSpec < ActiveSupport::TestCase
           :target => "Core",
           :testtype => "Sanity Testing",
           :hwproduct => "N900",
-          :version_label_id => 1
+          :release_version => 1
       }, [File.new("spec/fixtures/sim2.xml")], user)
     end
 

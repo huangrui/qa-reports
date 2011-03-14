@@ -17,7 +17,7 @@ end
 When /I view the report "([^"]*)"$/ do |report_string|
   version, target, test_type, hardware = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {:version_label_id => VersionLabel.where(:normalized => version.downcase).first().id, :target => target, :hwproduct => hardware, :testtype => test_type}
+   {:release_version => VersionLabel.where(:normalized => version.downcase).first().id, :target => target, :hwproduct => hardware, :testtype => test_type}
   )
   raise "report not found with parameters #{version}/#{target}/#{hardware}/#{test_type}!" unless report
   visit("/#{version}/#{target}/#{test_type}/#{hardware}/#{report.id}")
@@ -40,6 +40,7 @@ Given /^I have created the "([^"]*)" report(?: using "([^"]*)")?(?: at "([^"]*)"
   Given "I am on the front page"
   When %{I follow "Add report"}
   And %{I fill in "report_test_execution_date" with "#{report_at}"}
+#  And %{I fill in "report_test_execution_date" with "2010-02-02"}
   And %{I choose "#{version}"}
   And %{I select target "#{target}", test type "#{test_type}" and hardware "#{hardware}"}
   And %{I attach the report "#{report_template}"}
@@ -59,7 +60,7 @@ Given /^there exists a report for "([^"]*)"$/ do |report_name|
 
   session = MeegoTestSession.new(:target => target, :hwproduct => hardware,
     :testtype => test_type, :uploaded_files => [fpath],
-    :tested_at => Time.now, :author => user, :editor => user, :version_label_id => VersionLabel.where(:normalized => version.downcase).first().id
+    :tested_at => Time.now, :author => user, :editor => user, :release_version => VersionLabel.where(:normalized => version.downcase).first().id
   )
   session.generate_defaults! # Is this necessary, or could we just say create! above?
   session.save!

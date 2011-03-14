@@ -44,14 +44,25 @@ class UploadController < ApplicationController
       "Core"
     end
 
-    @test_session.release_version = if @test_session.release_version =! 0
-      @test_session.release_version
-    elsif default_version.present?
-      VersionLabel.where(:normalized => default_version.downcase).first().id
-    else
-      VersionLabel.where(:normalized => @selected_release_version.downcase).first().id
-    end
+#    @test_session.release_version = if @test_session.release_version =! 0
+#      @test_session.release_version
+#    elsif default_version.present?
+#      VersionLabel.where(:normalized => default_version.downcase).first().id
+#    else
+#      VersionLabel.where(:normalized => @selected_release_version.downcase).first().id
+#    end
     
+    logger.info "***********************@test_session.release_version: #{@test_session.release_version} *******************"
+    logger.info "***********************default_version: #{default_version} "
+    @test_session.release_version = if default_version.present?
+      VersionLabel.where(:normalized => default_version.downcase).first().id
+    elsif @test_session.release_version != 0
+      @test_session.release_version
+    else
+      @selected_release_version
+    end
+    logger.info "***********************@test_session.release_version: #{@test_session.release_version} *******************"    
+
     @test_session.testtype = if @test_session.testtype.present?
       @test_session.testtype
     elsif default_type.present?
@@ -105,14 +116,17 @@ class UploadController < ApplicationController
       params[:meego_test_session][:uploaded_files] = files
     end
 
-    ver_label = params[:meego_test_session][:release_version]
-    if params[:meego_test_session][:release_version]
-      params[:meego_test_session][:release_version] = VersionLabel.find(:first, :conditions => {:label => params[:meego_test_session][:release_version]}).id
-    end
+    #ver_label = params[:meego_test_session][:release_version]
+    #if params[:meego_test_session][:release_version]
+    #  params[:meego_test_session][:release_version] = VersionLabel.find(:first, :conditions => {:label => params[:meego_test_session][:release_version]}).id
+    #end
+    logger.info "*********************** params[:meego_test_session][:release_version]: #{params[:meego_test_session][:release_version]} *******************"
 
     @test_session = MeegoTestSession.new(params[:meego_test_session])
     @test_session.import_report(current_user)
     if @test_session.save
+      ver_label = VersionLabel.find_by_id(params[:meego_test_session][:release_version]).label
+      logger.info "*********************** ver_label: #{ver_label} *******************"
       session[:preview_id] = @test_session.id
       expire_action :controller => "index", :action => "filtered_list", :release_version => ver_label, :target => params[:meego_test_session][:target], :testtype => params[:meego_test_session][:testtype], :hwproduct => params[:meego_test_session][:hwproduct]
       expire_action :controller => "index", :action => "filtered_list", :release_version => ver_label, :target => params[:meego_test_session][:target], :testtype => params[:meego_test_session][:testtype]

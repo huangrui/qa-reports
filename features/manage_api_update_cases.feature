@@ -20,14 +20,14 @@ Feature: Manage api_update_cases
     Then the REST result "ok" is "0"
     When I view the report "1.2/Netbook/Automated/N900"
     Then I should not see "updated_case"
-    And I should see "SMOKE-SIM-Query_SIM_card_status"
+    And I should see "SIM"
 
   Scenario: Updating test report with HTTP POST with an invalid ext file
     When the client sends a updated file "invalid_ext.txt" with the id 1 via the REST API
     Then the REST result "ok" is "0"
     When I view the report "1.2/Netbook/Automated/N900"
     Then I should not see "updated_case"
-    And I should see "SMOKE-SIM-Query_SIM_card_status"
+    And I should see "SIM"
 
   Scenario: Updating test report with HTTP POST with multiple valid result file
     When the client sends several updated files with the id 1 via the REST API
@@ -44,4 +44,4 @@ Feature: Manage api_update_cases
 
     When I view the report "1.2/Netbook/Automated/N900"
     Then I should not see "updated_case"
-    And I should see "SMOKE-SIM-Query_SIM_card_status"
+    And I should see "SIM"

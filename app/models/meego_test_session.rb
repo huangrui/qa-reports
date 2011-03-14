@@ -391,10 +391,10 @@ class MeegoTestSession < ActiveRecord::Base
     if not release_version or release_version == 0
       errors.add :release_version, "should be provided"
     else
-      label = VersionLabel.find(release_version)
+      label = VersionLabel.find_by_id(release_version)
       if not label
         valid_versions = VersionLabel.versions.join(",")
-        errors.add :release_version, "Incorrect release version '#{release_version}'. Valid ones are #{valid_versions}."
+        errors.add :release_version, "Incorrect release version id'#{release_version}'. Valid ones are #{valid_versions}."
       end
     end
 
