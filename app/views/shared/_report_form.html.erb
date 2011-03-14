@@ -7,7 +7,7 @@
   <% @release_versions.each do |release_version| %>
     <% version_id = VersionLabel.where(:normalized => release_version.downcase).first().id%>
     <%= f.radio_button :release_version, version_id, :id => version_id, :class => "version" %>
-    <%= f.label :release_version, release_version, :for => release_version, :class => "inline_label" %>
+    <%= f.label :release_version, release_version, :for => version_id, :class => "inline_label" %>
   <% end %>
 </div>
 <div class="field">
