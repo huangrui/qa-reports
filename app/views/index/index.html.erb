@@ -41,6 +41,14 @@
     <tr>
       <% MeegoTestSession::targets.each { |target| %>
           <td>
+            <% if target.eql? "Tablet"%>
+                <% first_item =  @types[target].index("Consolidated Test Report") %>
+                <% if first_item and first_item != 0 %>
+                     <% temp_item = @types[target][0]%>
+                     <% @types[target][0] = @types[target][first_item]%>
+                     <% @types[target][first_item] = temp_item%>
+                <% end %>
+            <% end %>
             <%= render :partial=>'testtype', :collection=>@types[target], :locals => {:target=>target} %>
           </td>
       <% } %>
