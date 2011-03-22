@@ -65,6 +65,8 @@ ActiveRecord::Schema.define(:version => 20110310164427) do
     t.boolean  "has_ft",                            :default => true,  :null => false
   end
 
+  add_index "meego_test_sessions", ["release_version", "target", "testtype", "hwproduct"], :name => "index_meego_test_sessions_key"
+
   create_table "meego_test_sets", :force => true do |t|
     t.string  "feature",               :default => ""
     t.integer "total_cases",           :default => 0,     :null => false
