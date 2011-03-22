@@ -49,6 +49,10 @@
       <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
       <input class="id_field" type="hidden" name="id" value="" />
       <textarea class="comment_field" name="comment"></textarea>
+      <div class="field inplace">
+      	<label for="attachment">Attachment:</label>
+	      <input type="file" id="attachment"/>
+      </div>
       <input type="submit" class="small_btn save" value="Save"/>
       <input type="button" class="small_btn cancel last" value="Cancel"/>
     </form>

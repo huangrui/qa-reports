@@ -449,6 +449,14 @@ form h1,
     margin-left: 10px;
     width: auto; }
 
+.field.inplace{
+	border-bottom: none;
+	padding:5px 0 15px;}
+
+.field.inplace label {
+	font-size: 11px;
+	width: auto;}
+
 label { margin-right:10px; display:block;
     float: left;
     width: 200px;
@@ -1601,12 +1609,14 @@ td.testcase_notes {
     margin-bottom: 0;}
 
 td.testcase_notes .content {
-	position: relative;
-}
+	position: relative;}
 
 td.testcase_notes.edit:hover {
     background: #fff8de url(../images/edit_icon.png) no-repeat 97% 5px;
     cursor: pointer;}
+    
+td.testcase_notes.edit:hover .note_attachment {
+	display: none;}
 
 td.testcase_notes p {
     margin-bottom: 0; }
