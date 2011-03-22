@@ -52,6 +52,7 @@ class MeegoTestSession < ActiveRecord::Base
   validate :save_uploaded_files, :on => :create
 
   validate :validate_labels
+  validate :validate_type_hw
 
   #after_create :save_uploaded_files
   after_destroy :remove_uploaded_files
@@ -396,6 +397,24 @@ class MeegoTestSession < ActiveRecord::Base
       end
     end
 
+  end
+  
+  # Validate user entered test type and hw product. If all characters are
+  # allowed users may enter characters that break the functionality. Thus,
+  # restrict the allowed subset to certainly safe
+  def validate_type_hw
+    # \A and \z instead of ^ and $ cause multiline strings to fail validation.
+    # And for the record: at least these characters break the navigation:
+    # . % \ / (yes, dot is there as well for some oddball reason)
+    allowed = /\A[\w\ \-:;,\(\)]+\z/
+
+    if not testtype.match(allowed)
+      errors.add :testtype, "Incorrect test type. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( )"
+    end
+
+    if not hwproduct.match(allowed)
+      errors.add :hwproduct, "Incorrect hardware. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( )"
+    end
   end
 
   def generate_defaults!
