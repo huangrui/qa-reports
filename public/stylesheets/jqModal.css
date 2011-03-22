@@ -10,11 +10,11 @@
     display: none;
     
     position: fixed;
-    top: 17%;
+    top: 5%;
     left: 50%;
     
     margin-left: -300px;
-    width: 600px;
+    min-width: 600px;
     
     background-color: #EEE;
     color: #333;

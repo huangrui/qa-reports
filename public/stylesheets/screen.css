@@ -672,7 +672,7 @@ input#report_test_data.file {
     -webkit-box-shadow: #aaa 0px 0px 2px;
     -moz-box-shadow: #aaa 0px 0px 2px;
     box-shadow: #aaa 0px 0px 2px;
-    filter: progid:DXImageTransform.Microsoft.Shadow(color='#969696', Direction=135, Strength=3);}
+    /*filter: progid:DXImageTransform.Microsoft.Shadow(color='#969696', Direction=135, Strength=3);*/}
 
 .ui_btn:active {
     background-image: url(../images/ui_btn_bg_active.png);
@@ -1600,6 +1600,10 @@ td.testcase_notes {
     padding-right: 33px;
     margin-bottom: 0;}
 
+td.testcase_notes .content {
+	position: relative;
+}
+
 td.testcase_notes.edit:hover {
     background: #fff8de url(../images/edit_icon.png) no-repeat 97% 5px;
     cursor: pointer;}
@@ -1724,6 +1728,29 @@ width: 35px;
 .nft_graph_options div {
 	width: 33%;
 	float: left;
+}
+
+.note_attachment {
+	position: absolute;
+	right: -24px;
+	top: 0;
+	width: 14px;
+	padding: 0 5px;
+	margin-left: 5px;
+	z-index: 100;
+	text-indent: -9999px;
+	background: transparent no-repeat 5px 0 url(../images/attachment_icon.png);
+}
+
+.note_attachment:hover {
+	background-image: url(../images/attachment_icon_hover.png);
+	cursor: pointer; }
+
+.attachment_to_notes_dialog img {
+	max-width: 600px;}
+
+.attachment_image_container {
+	width: 600px ;
 }
 
 /* @end */

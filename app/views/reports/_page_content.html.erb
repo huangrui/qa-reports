@@ -68,6 +68,34 @@
             <th id="th_notes">Notes</th>
           </tr>
         </thead>
+				
+				
+				<!-- ***** DUMMY HTML FOR NOTE ATTACHEMNTS STARTS ******** -->
+				<tr style="" id="" class="testcase result_fail">
+				  <td class="testcase_name">Dummy html only, remove ********************
+				  </td>
+				  <td class="testcase_result fail"><span class="content">Fail</span> </td>
+				  <td class="testcase_notes ">
+				    <div class="content">
+				    	<a href="http://bugs.meego.com/show_bug.cgi?id=5706" class="bugzilla bugzilla_status bugzilla_append resolved" title="VKB launched incorrectly with apps which need input text field. (FIXED)">5706</a> Dummy notes, remove **********<br>
+				    	<a id="open_note_attachment_dialog" class="note_attachment">Open attachment</a>    
+				    </div>
+				  </td>
+				</tr>
+				
+				<tr style="" id="" class="testcase result_fail">
+				  <td class="testcase_name">Dummy html only, remove ********************
+				  </td>
+				  <td class="testcase_result fail"><span class="content">Fail</span> </td>
+				  <td class="testcase_notes ">
+				    <div class="content">
+				    	<a href="http://bugs.meego.com/show_bug.cgi?id=5706" class="bugzilla bugzilla_status bugzilla_append resolved" title="VKB launched incorrectly with apps which need input text field. (FIXED)">5706</a> Dummy notes, remove **********<br>
+				    	<a id="open_note_attachment_dialog_big" class="note_attachment">Open attachment</a>    
+				    </div>
+				  </td>
+				</tr>
+				
+  			<!-- ************* DUMMY HTML ENDS ******************* -->
 
         <%= render :partial => "feature", :collection => @test_session.non_nft_sets %>
 
@@ -121,6 +149,39 @@
               <th id="th_notes">Notes</th>
             </tr>
           </thead>
+          
+				<!-- ***** DUMMY HTML FOR NOTE ATTACHEMNTS STARTS ******** -->          
+					<tbody>
+						<tr class="feature_name" id="test-set-370">
+							<td colspan="8">
+						        N/A
+								<a href="#" class="see_all_toggle" style="display: none; ">- hide passing tests</a>
+							</td>
+						</tr>
+					</tbody>
+					<tbody>
+					<tr class="testcase multiple_rows odd" id="testcase-823">
+					
+					  <td class="testcase_name" rowspan="60">DUMMY HTML ONLY, remove ****************
+					    
+					    
+					  </td>
+					    <td class="testcase_measurement">GPS fixes</td>
+					    <td class="testcase_value"></td>
+					    <td class="testcase_target">80 <span class="unit">%</span></td>   
+					    <td class="testcase_limit">75 <span class="unit">%</span></td>    
+					    <td class="testcase_to_target na">90 <span class="unit">%</span></td>
+					      <td class="testcase_result multiple_results pass   " rowspan="60"><span class="content">Pass</span> </td>       			
+					      <td class="testcase_notes " rowspan="60">
+					        <div class="content">
+					        	<a id="open_note_attachment_dialog" class="note_attachment">Open attachment</a>    
+					        	
+					        </div>
+					      </td>
+							</tr>
+					</tbody>
+  	<!-- ************* DUMMY HTML ENDS ******************* -->
+
 
           <%= render :partial => "nft_feature", :collection => @test_session.nft_sets %>
 

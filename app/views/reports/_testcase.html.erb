@@ -22,6 +22,8 @@
 # 02110-1301 USA
 #
 %>
+
+
 <tr class="testcase <%= result_class(testcase, "result_") %>" id="testcase-<%= testcase.id %>" style="<%= hide_passing(testcase) %>">
   <td class="testcase_name"><%= testcase.name %>
     <% if not testcase.source_link.blank? %><a href="<%=testcase.source_link%>" class="dl_link">src</a><% end %>
@@ -29,7 +31,9 @@
   </td>
   <td class="testcase_result <%= result_class(testcase) %> <%= 'edit' if @editing %> <%= testcase.find_change_class(@test_session.prev_session) %> "><span class="content"><%= result_html(testcase) %></span> </td>
   <td class="testcase_notes <%= 'edit' if @editing %>">
-    <div class="content"><%= comment_html(testcase) %></div>
+    <div class="content">
+    	<%= comment_html(testcase) %>  
+    </div>
     <% if @editing %>
         <div class="comment_markup" style="display:none;"><%= testcase.comment %></div>
     <% end %>

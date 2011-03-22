@@ -112,6 +112,25 @@
 
 </div>
 
+<!-- DUMMY MODAL DIALOGS HTML FOR NOTE ATTACHMENTS --> 
+<div style="display:none;" id="attachment_to_notes_dialog" class="jqmWindow attachment_to_notes_dialog">
+	<h1>graph_plot_gpsdummy0912121.png</h1>
+  <a class="ui_btn modal_close"><span>X</span></a>
+  <div class="attachment_image_container">
+		<img src="/images/note_attachment_dummy.png" alt="attachment_image" />
+	</div>
+</div>
+
+<div style="display:none;" id="attachment_to_notes_dialog_big" class="jqmWindow attachment_to_notes_dialog">
+	<h1>dummy_of_very_big_attachment.png</h1>
+  <a class="ui_btn modal_close"><span>X</span></a>
+  <!-- container is needed for ie bug -->
+  <div class="attachment_image_container">
+		<img src="/images/note_attachment_dummy_big.png" alt="attachment_image" />
+	</div>
+</div>
+<!-- DUMMY HTML ENDS  --> 
+
 <%= javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js" %>
 <script type="text/javascript">
   var BUGZILLA_URI = "<%=BUGZILLA_CONFIG['link_uri']%>";
@@ -129,6 +148,17 @@ $(window).load(function(){
 }
 $(document).ready(function(){
     renderSeriesGraphs(".serial_canvas");
+    
+    $('#attachment_to_notes_dialog').jqm({
+    	modal:true
+    }).jqmAddTrigger('#open_note_attachment_dialog')
+    .jqmAddClose('.modal_close');
+    
+    $('#attachment_to_notes_dialog_big').jqm({
+    	modal:true
+    }).jqmAddTrigger('#open_note_attachment_dialog_big')
+    .jqmAddClose('.modal_close');
+    
     });
 </script>
 <%= clicktale_bottom_tag %>
