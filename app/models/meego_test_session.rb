@@ -544,7 +544,7 @@ class MeegoTestSession < ActiveRecord::Base
           error_msgs << "Incorrect file format for #{origfn}: #{content}"
         end
       end
-      @xmlpath = filenames.join(',')
+      self.xmlpath = filenames.join(',')
       if @files.size > 0 and total_cases == 0
         if @files.size == 1
           errors.add :uploaded_files, "The uploaded file didn't contain any valid test cases"
