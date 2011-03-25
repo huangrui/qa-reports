@@ -41,7 +41,7 @@ class UploadController < ApplicationController
     elsif current_user.default_target.present?
       current_user.default_target
     else
-      "Core"
+      TargetLabel.first_label
     end
 
     @test_session.release_version = if @test_session.release_version.present?
