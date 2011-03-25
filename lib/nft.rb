@@ -81,11 +81,11 @@ module MeasurementUtils
   def series_json_withx(m, maxsize=200)
     s = m.measurements
     indices = shortened_indices(s.size, maxsize)
-    
+
     if m.interval
-      xaxis = indices.map {|i| i*m.interval}
+      xaxis = (0..s.size-1).map {|i| i*m.interval}
     else
-      xaxis = indices.map {|i| ((s[i].timestamp-s[0].timestamp)*1000).to_i}
+      xaxis = (0..s.size-1).map {|i| ((s[i].timestamp-s[0].timestamp)*1000).to_i}
     end
 
     "[" + indices.map{|i| "[#{xaxis[i]},#{s[i].value}]"}.join(",") + "]"
