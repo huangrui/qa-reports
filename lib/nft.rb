@@ -75,7 +75,13 @@ module MeasurementUtils
 
   def series_json(s, maxsize=40)
     s = shorten_series(s, maxsize)
-    "[" + s.map{|v| shorten_value(v)}.join(",") + "]"
+    json = "[" + s.map{|v| shorten_value(v)}.join(",") + "]"
+    if json.length >= 255
+      new_max = maxsize*255/json.length
+      series_json(s, new_max-1)
+    else
+      json
+    end
   end
 
   def series_json_withx(m, maxsize=200)
@@ -94,7 +100,12 @@ module MeasurementUtils
   def shorten_value(v)
     s = v.value.to_s
     s = s[0..-3] if s.end_with? ".0"
-    s
+    s2 = sprintf("%.1e", v.value)
+    if s2.length < s.length
+      s2
+    else
+      s
+    end
   end
 end
 
