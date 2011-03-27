@@ -9,7 +9,7 @@
 <% end %>
 </dd>
 
-<dd class="category"><%=@test_session.release_version %> &rsaquo; <%=@test_session.target%> &rsaquo; <%=@test_session.testtype%> &rsaquo; <%=@test_session.hwproduct%></dd>
+<dd class="category"><%=VersionLabel.find(@test_session.release_version).label%> &rsaquo; <%=@test_session.target%> &rsaquo; <%=@test_session.testtype%> &rsaquo; <%=@test_session.hwproduct%></dd>
 
 <% if @editing %>
 </div>

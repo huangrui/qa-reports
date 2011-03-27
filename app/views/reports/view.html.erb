@@ -46,7 +46,8 @@
       <% if user_signed_in? %>
 		<a href="#" id="delete-button" class="small_btn cancel">Delete</a>
 		<a href="<%=url_for :controller=>'reports', :action=>'edit', :id=>@test_session.id%>" id="edit-button" class="small_btn">Edit</a>
-      <% end %>
+              <% end %>
+                <a href="<%=url_for :controller=>'csv_export', :action=>'export_report', :id=>@test_session.id%>" id="edit-button" class="small_btn">Download as CSV</a>
 		<a href="<%=url_for :controller=>'reports', :action=>'print', :id=>@test_session.id%>" id="print-button" class="small_btn">Print</a>
 	</form>
 <% end %>

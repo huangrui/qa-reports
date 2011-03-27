@@ -64,4 +64,40 @@ module CsvGenerator
       end
     end
   end
+
+  def self.generate_csv_report(release_version, target, testtype, hwproduct, id)
+    sql = <<-END
+      select mtset.feature, mtc.name, mtc.comment, if(mtc.result = 1,1,null) as passes, if(mtc.result = -1,1,null) as fails,
+        if(mtc.result = 0,1,null) as nas
+      from meego_test_sets as mtset
+        join meego_test_cases as mtc on (mtc.meego_test_set_id = mtset.id)
+        join meego_test_sessions as mts on (mtc.meego_test_session_id = mts.id)
+    END
+
+    conditions = []
+    conditions << "mts.published = true"
+    conditions << "mts.hwproduct = '#{hwproduct}'"
+    conditions << "mts.target = '#{target}'"
+    conditions << "mts.testtype = '#{testtype}'"
+    conditions << "mts.release_version = '#{release_version}'"
+    conditions << "mts.id = '#{id}'"
+
+    sql += " where " + conditions.join(" and ") + "order by mtset.id" + ";"
+
+    result = ActiveRecord::Base.connection.execute(sql)
+
+    FasterCSV.generate(:col_sep => ',') do |csv|  # Use , to separate the record
+      csv << ["Feature",
+        "Check points",
+        "Notes (bugs)",
+        "Pass",
+        "Fail",
+        "N/A"
+      ]
+
+      result.each do |row|
+        csv << row
+      end
+    end
+  end
 end
