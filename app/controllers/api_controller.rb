@@ -88,6 +88,7 @@ class ApiController < ApplicationController
         files.add_file(@test_session, @test_session.optional_params_file, filename)
         dir = files.get_params_file_path(@test_session)
         OptionalParamsParser::parseOptionalParamsXml(@test_session, dir, filename, data[:title], errors)
+        files.remove_file(@test_session, filename)
       end
  
       report_url = url_for :controller => 'reports', :action => 'view', :release_version => data[:release_version], :target => data[:target], :testtype => data[:testtype], :hwproduct => data[:hwproduct], :id => @test_session.id
