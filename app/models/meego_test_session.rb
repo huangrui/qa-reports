@@ -432,6 +432,17 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
 
+  ##############################################
+  # Optional Param handlers                    #
+  ##############################################
+  def optional_params_file=(param_file)
+    @optional_params_file = param_file
+  end
+
+  def optional_params_file
+    @optional_params_file
+  end
+
   ###############################################
   # File upload handlers                        #
   ###############################################

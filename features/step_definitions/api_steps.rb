@@ -35,6 +35,23 @@ When /^the client sends reports "([^"]*)" via the REST API to test type "([^"]*)
 end
 
 
+When /^the client sends file with the optional parameter file "([^"]*)"(?: and additional parameter "([^"]*)")? via the REST API$/ do |options, extra|
+  if !extra
+    extra = ""
+  end
+  post "/api/import?auth_token=foobar&" + extra, {
+      "report.1"        => Rack::Test::UploadedFile.new("features/resources/sim.xml", "text/xml"),
+      "report.2"        => Rack::Test::UploadedFile.new("features/resources/bluetooth.xml", "text/xml"),
+      "optional_params_file"         => Rack::Test::UploadedFile.new("features/resources/" << options, "text/xml"),
+      "release_version" => "1.2",
+      "target"          => "Core",
+      "testtype"        => "automated",
+      "hwproduct"       => "N900"
+  }
+
+end
+
+
 When /^the client sends file with attachments via the REST API$/ do
   post "/api/import?auth_token=foobar", {
       "report.1"        => Rack::Test::UploadedFile.new("features/resources/sim.xml", "text/xml"),

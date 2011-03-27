@@ -20,6 +20,8 @@
 
 require 'file_storage'
 require 'cache_helper'
+require 'optional_params_parser'
+
 class ApiController < ApplicationController
   include CacheHelper
 
@@ -61,7 +63,10 @@ class ApiController < ApplicationController
     begin
       @test_session = MeegoTestSession.new(data)
       @test_session.import_report(current_user, true)
-
+      
+      if data[:title]
+        @test_session.title = data[:title]
+      end
     rescue ActiveRecord::UnknownAttributeError => error
       render :json => {:ok => '0', :errors => error.message}
       return
@@ -77,6 +82,14 @@ class ApiController < ApplicationController
       attachments.each { |file|
         files.add_file(@test_session, file, MeegoTestSession::get_filename(file))
       }
+
+      if @test_session.optional_params_file
+        filename = MeegoTestSession::get_filename(@test_session.optional_params_file)
+        files.add_file(@test_session, @test_session.optional_params_file, filename)
+        dir = files.get_params_file_path(@test_session)
+        OptionalParamsParser::parseOptionalParamsXml(@test_session, dir, filename, data[:title], errors)
+      end
+ 
       report_url = url_for :controller => 'reports', :action => 'view', :release_version => data[:release_version], :target => data[:target], :testtype => data[:testtype], :hwproduct => data[:hwproduct], :id => @test_session.id
       render :json => {:ok => '1', :url => report_url}
     rescue ActiveRecord::RecordInvalid => invalid
