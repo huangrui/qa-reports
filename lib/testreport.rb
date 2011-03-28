@@ -33,7 +33,7 @@ module MeegoTestReport
         if total_int <= 0
            "n/a"
         else
-           rate = pass_int*100.0/total_int
+           rate = pass_int*100.0/total_int + 0.5
            "%i%%" % rate
         end
     end
@@ -157,7 +157,7 @@ module ReportSummary
   
   def run_rate_value
     if total_cases > 0
-      (total_executed*100.0/total_cases)
+      (total_executed*100.0/total_cases + 0.5)
     else
       0
     end
@@ -165,7 +165,7 @@ module ReportSummary
   
   def total_pass_rate_value
     if total_cases > 0
-      (total_passed*100.0/total_cases)
+      (total_passed*100.0/total_cases + 0.5)
     else
       0
     end
@@ -173,7 +173,7 @@ module ReportSummary
   
   def executed_pass_rate_value
     if total_executed > 0
-      (total_passed*100.0/total_executed)
+      (total_passed*100.0/total_executed + 0.5)
     else
       0
     end
