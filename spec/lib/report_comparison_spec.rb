@@ -2,6 +2,16 @@ require 'spec_helper'
 require 'report_comparison'
 require 'rspec/rails/mocks.rb'
 
+def MeegoTestSession.unsafe_import(attributes, files, user)
+  attr             = attributes.merge!({:uploaded_files => files})
+  result           = MeegoTestSession.new(attr)
+  result.tested_at = result.tested_at || Time.now
+  result.import_report(user, true)
+  result.save_uploaded_files
+  result.save(:validate => false)
+  result
+end
+
 class ReportComparisonSpec < ActiveSupport::TestCase
   
   describe ReportComparison do
@@ -11,7 +21,7 @@ class ReportComparisonSpec < ActiveSupport::TestCase
           :password => "foobar",
           :name => "TestUser"
       })
-      @session1 = MeegoTestSession.import({
+      @session1 = MeegoTestSession.unsafe_import({
           :author => user,
           :title => "Test1",
           :target => "Core",
@@ -19,7 +29,7 @@ class ReportComparisonSpec < ActiveSupport::TestCase
           :hwproduct => "N900"
       }, [File.new("spec/fixtures/sim1.xml")], user)
 
-      @session2 = MeegoTestSession.import({
+      @session2 = MeegoTestSession.unsafe_import({
           :author => user,
           :title => "Test1",
           :target => "Core",
