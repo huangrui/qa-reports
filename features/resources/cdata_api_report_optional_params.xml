@@ -1,0 +1,21 @@
+<report>
+  <title>XML Test Report Title</title>
+  <objective_txt><![CDATA[
+It is a weekly testing cycle for preview images 
+released by distribution team to ensure MeeGo Tablet UX delivers 
+correct software feature integrations and stable existed functions. 
+be basic feature testing, bug verification and regression test according to package changes.
+   ]]>
+  </objective_txt>
+  <build_txt><![CDATA[meego-tablet-ia32-product-Pinetrail-1.1.90.7.20110315.10.iso via XML]]></build_txt>
+  <qa_summary_txt>
+    <![CDATA[
+    Improvement: Notification UX can be shown now (top bug 5518 is fixed), 
+but new IM message failed to show in notification UI;
+Be able to transfer files using Chat;
+   ]]>
+  </qa_summary_txt>
+  <issue_summary_txt>
+  <![CDATA[issue_summary_txt via XML]]>
+  </issue_summary_txt>
+</report>

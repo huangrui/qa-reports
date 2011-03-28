@@ -148,3 +148,19 @@ Feature: REST API
     And I should see "Improvement:- Notification UX can be shown now (top bug 5518 is fixed), but new IM message failed to show in notification UI;- Be able to transfer files using Chat;"
     And I should see "New Issue(5):6306 System time setting is wrong for Los Angeles; 6235 VKB in browser does not launch in some text fields; 6043 Mismatched sync service icon and text in Sync Details page; 6055 Sync shared credentials not reflected in Sync Settings main page; 6056 Sync UI intermittent crash after log in"
 
+
+  Scenario: Sending REST import with optional CDATA_XML parameters and additional parameter 'title'
+    When the client sends file with the optional parameter file "cdata_api_report_optional_params.xml" and additional parameter "title=Core+Test+Report%3A+N900+UX+Key+Feature+%2D+20110320+%28for+0315+release%29withParam" via the REST API
+
+    Then the REST result "ok" is "1"
+    And I should be able to view the created report
+    And I should see "Core Test Report: N900 UX Key Feature - 20110320 (for 0315 release)withParam" within "h1"
+    And I should see "meego-tablet-ia32-product-Pinetrail-1.1.90.7.20110315.10.iso via XML"
+    And I should see "issue_summary_txt via XML"
+
+  Scenario: Sending REST import with optional empty CDATA_XML parameters and additional parameter 'title'
+    When the client sends file with the optional parameter file "empty_api_report_optional_params.xml" and additional parameter "title=Core+Test+Report%3A+N900+UX+Key+Feature+%2D+20110320+%28for+0315+release%29withParam" via the REST API
+    
+    Then the REST result "ok" is "1"
+    And I should be able to view the created report
+    And I should see "Core Test Report: N900 UX Key Feature - 20110320 (for 0315 release)withParam" within "h1"
