@@ -107,28 +107,25 @@ class ApiController < ApplicationController
         return
       end
 
-      begin
+      if parse_err.present?
+        render :json => {:ok => '0', :errors => "Request contained invalid files: " + parse_err}
+        return
+      end
+
+      if @test_session.valid?
         @test_session.save!
 
         expire_caches_for(@test_session, true)
         expire_index_for(@test_session)
 
-      rescue ActiveRecord::RecordInvalid => invalid
-        render :json => {:ok => '0', :errors => invalid.record.errors}
-      end
-      
-      if nil == parse_err
-        delete_dirty_data(original_sets)
-        delete_dirty_data(original_cases)
-        render :json => {:ok => '1'}
       else
-        dirty_sets = @test_session.meego_test_sets   - original_sets
-        delete_dirty_data(dirty_sets)
-        dirty_cases = @test_session.meego_test_cases - original_cases
-        delete_dirty_data(dirty_cases)
-        render :json => {:ok => '0', :errors => "Request contained invalid files: " + parse_err}
+        render :json => {:ok => '0', :errors => invalid.record.errors}
         return
       end
+      
+      delete_dirty_data(original_sets)
+      delete_dirty_data(original_cases)
+      render :json => {:ok => '1'}
     end
   end
 
