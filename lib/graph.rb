@@ -61,14 +61,9 @@ module Graph
     end
 
     first    = sessions[0].tested_at
-    prev_day = nil
 
     sessions.each do |s|
       day = ((first - s.tested_at)*2).to_i/86400
-      if day == prev_day
-        next
-      end
-      prev_day = day
       chosen << s
       days << day
       if chosen.size >= num
