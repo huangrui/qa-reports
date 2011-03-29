@@ -483,6 +483,9 @@ class MeegoTestSession < ActiveRecord::Base
     return unless @files
     total_cases = 0
     
+    self.has_ft = false
+    self.has_nft = false
+
     error_msgs = []
 
     MeegoTestSession.transaction do
@@ -646,6 +649,7 @@ class MeegoTestSession < ActiveRecord::Base
     rows         = CSV.read(filename);
     rows.shift # skip header row
     rows.each do |row|
+      self.has_ft = true
       feature = row[0].toutf8.strip
       summary = row[1].toutf8.strip
       comments = row[2].toutf8.strip if row[2]
@@ -706,7 +710,6 @@ class MeegoTestSession < ActiveRecord::Base
   def parse_xml_file(filename)
     sets = {}
     file_total = 0
-    self.has_ft = false
     TestResults.new(File.open(filename)).suites.each do |suite|
       suite.sets.each do |set|
         ReportParser::parse_features(set.feature).each do |feature|
