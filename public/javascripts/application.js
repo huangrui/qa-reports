@@ -1020,7 +1020,7 @@ function filterResults(rowsToHide, typeText) {
     	//setTableLoaderSize('#detailed_functional_test_results', '#history_loader');
     	//$('#history_loader').show();  
     	//history loader should be visible during AJAX loading
-    	$("table.detailed_results").hide(); 	     
+      $("#detailed_functional_test_results").hide();     
       $history.show();
       $history.find(".see_history_button").addClass("active");      
       return false;
