@@ -239,6 +239,7 @@ class ReportsController < ApplicationController
 
       @report    = @test_session
       @files = FileStorage.new().list_files(@test_session) or []
+      @raw_result_files = FileStorage.new(dir="public/reports", baseurl="/reports/").list_report_files(@test_session) or []
       @editing = false
       @wizard  = false
 

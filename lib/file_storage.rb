@@ -48,6 +48,18 @@ class FileStorage
     }
   end
 
+  def list_report_files(model)
+    model.raw_result_files.map{|xmlpath|
+      path = xmlpath.slice(@dir.length+1, xmlpath.length)
+      {
+        :name => File.basename(xmlpath).gsub(/^[0-9]{1,}\-/, ''),
+        :path => path,
+        :url => @baseurl + path,
+        :exists => File.exists?(xmlpath)
+      }
+    }
+  end
+
   private
   def get_file_path(dir, name)
     dir.path + "/" + name.gsub(/[^0-9A-Za-z.\-_]/, '')

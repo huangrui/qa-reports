@@ -115,6 +115,14 @@ class MeegoTestSession < ActiveRecord::Base
     return has_ft
   end
 
+  def raw_result_files
+    if not xmlpath.nil?
+      return xmlpath.split(',')
+    else
+      return []
+    end
+  end
+
   def self.import(attributes, files, user)
     attr             = attributes.merge!({:uploaded_files => files})
     result           = MeegoTestSession.new(attr)
