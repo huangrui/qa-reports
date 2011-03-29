@@ -132,6 +132,8 @@ renderSeriesGraphs = function(selector) {
             $(graph).find("div").each(function(idx,e) {
                 var $e = $(e);
                 if ($e.css("text-align") == "right") {
+                    $e.css("width", 60);
+                    $e.css("left", -10);
                     $e.text($e.text() + yunit);
                 } else if ($e.css("text-align") == "center") {
                     $e.text($e.text() + xunit);
