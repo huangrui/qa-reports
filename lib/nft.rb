@@ -2,6 +2,13 @@
 
 module MeasurementUtils
 
+  XAXIS_FACTORS = {
+    "ms" => 1000,
+    "s" => 1,
+    "m" => 1.0/60.0,
+    "h" => 1.0/60.0/60.0
+  }.freeze
+
   def format_value(v, significant=3)
     s = sprintf("%.#{significant}f",v.to_f)
     (pre,post) = s.split('.')
@@ -13,7 +20,7 @@ module MeasurementUtils
     end
   end
 
-  def calculate_outline(s)
+  def calculate_outline(s, interval_unit)
     o = MeasurementOutline.new
     total = 0
     values = []
@@ -31,6 +38,24 @@ module MeasurementUtils
       o.median = (values[size/2] + values[size/2+1])/2.0
     else
       o.median = values[size/2]
+    end
+    if interval_unit
+      o.interval_unit = interval_unit
+    else
+      # Time span of measurement series in seconds
+      timespan = (s[s.length-1].timestamp - s[0].timestamp)
+      if timespan < 10
+        # 0 - 9999 ms
+        o.interval_unit = "ms"
+      elsif timespan < 10000
+        # 0 - 9999 s
+        o.interval_unit = "s"
+      elsif timespan < 600000
+        # 0 - 9999 min
+        o.interval_unit = "m"
+      else
+      	o.interval_unit = "h"
+      end
     end
     o
   end
@@ -84,14 +109,15 @@ module MeasurementUtils
     end
   end
 
-  def series_json_withx(m, maxsize=200)
+  def series_json_withx(m, interval_unit, maxsize=200)
     s = m.measurements
     indices = shortened_indices(s.size, maxsize)
 
     if m.interval
       xaxis = (0..s.size-1).map {|i| i*m.interval}
     else
-      xaxis = (0..s.size-1).map {|i| ((s[i].timestamp-s[0].timestamp)*1000).to_i}
+      factor = XAXIS_FACTORS[interval_unit]
+      xaxis = (0..s.size-1).map {|i| ((s[i].timestamp-s[0].timestamp)*factor).to_i}
     end
 
     "[" + indices.map{|i| "[#{xaxis[i]},#{s[i].value}]"}.join(",") + "]"
@@ -110,5 +136,5 @@ module MeasurementUtils
 end
 
 class MeasurementOutline
-  attr_accessor :minval, :maxval, :avgval, :median
+  attr_accessor :minval, :maxval, :avgval, :median, :interval_unit
 end

@@ -739,14 +739,14 @@ class MeegoTestSession < ActiveRecord::Base
               set_model.has_nft = true
               self.has_nft = true
               if m.is_series?
-                outline = self.calculate_outline(m.measurements)
+                outline = self.calculate_outline(m.measurements,m.interval_unit)
                 tc.serial_measurements.build(
                   :name       => m.name,
                   :sort_index => nft_index,
                   :short_json => series_json(m.measurements, maxsize=40),
-                  :long_json  => series_json_withx(m, maxsize=200), 
+                  :long_json  => series_json_withx(m, outline.interval_unit, maxsize=200), 
                   :unit       => m.unit,
-                  :interval_unit => m.interval_unit || "ms",
+                  :interval_unit => outline.interval_unit,
                   
                   :min_value    => outline.minval,
                   :max_value    => outline.maxval,
