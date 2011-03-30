@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testresults environment="hardware" hwproduct="unknown" hwbuild="unknown" version="0.1">
+ <suite name="simple-suite" timeout="90" manual="false" insignificant="false">
+
+ </suite>
+</testresults>
