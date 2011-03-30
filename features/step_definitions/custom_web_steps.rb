@@ -32,3 +32,23 @@ When /^fill in "([^"]*)" within "([^"]*)" with:$/ do |field, selector, data|
   end
 end
 
+
+Then /^(?:|I )should find element "([^"]*)"(?: within "([^"]*)")?$/ do |text, selector|
+  with_scope(selector) do
+    if page.respond_to? :should
+      page.should have_selector(text)
+    else
+      assert page.has_selector?(text)
+    end
+  end
+end
+
+Then /^(?:|I )should not find element "([^"]*)"(?: within "([^"]*)")?$/ do |text, selector|
+  with_scope(selector) do
+    if page.respond_to? :should
+      page.should have_no_selector(text)
+    else
+      assert page.has_no_selector?(text)
+    end
+  end
+end
