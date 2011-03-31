@@ -20,7 +20,7 @@ module MeasurementUtils
     end
   end
 
-  def calculate_outline(s, interval_unit)
+  def calculate_outline(s, interval)
     o = MeasurementOutline.new
     total = 0
     values = []
@@ -35,27 +35,30 @@ module MeasurementUtils
     values.sort!
     size = values.size
     if size > 0 && (size % 2) == 0
-      o.median = (values[size/2] + values[size/2+1])/2.0
+      o.median = (values[size/2] + values[size/2-1])/2.0
     else
       o.median = values[size/2]
     end
-    if interval_unit
-      o.interval_unit = interval_unit
+    
+    if interval
+      # Time span from intervals (only ms used, thus dividing to get seconds)
+      timespan = (s.length-1) * interval / 1000
     else
       # Time span of measurement series in seconds
       timespan = (s[s.length-1].timestamp - s[0].timestamp)
-      if timespan < 10
-        # 0 - 9999 ms
-        o.interval_unit = "ms"
-      elsif timespan < 10000
-        # 0 - 9999 s
-        o.interval_unit = "s"
-      elsif timespan < 600000
-        # 0 - 9999 min
-        o.interval_unit = "m"
-      else
-      	o.interval_unit = "h"
-      end
+    end
+
+    if timespan < 10
+      # 0 - 9999 ms
+      o.interval_unit = "ms"
+    elsif timespan < 10000
+      # 0 - 9999 s
+      o.interval_unit = "s"
+    elsif timespan < 600000
+      # 0 - 9999 min
+      o.interval_unit = "m"
+    else
+      o.interval_unit = "h"
     end
     o
   end
@@ -113,10 +116,12 @@ module MeasurementUtils
     s = m.measurements
     indices = shortened_indices(s.size, maxsize)
 
+    factor = XAXIS_FACTORS[interval_unit]
     if m.interval
-      xaxis = (0..s.size-1).map {|i| i*m.interval}
+      # Dividing since interval is currently always in milliseconds and
+      # the factors are for seconds
+      xaxis = (0..s.size-1).map {|i| i*m.interval*factor/1000}
     else
-      factor = XAXIS_FACTORS[interval_unit]
       xaxis = (0..s.size-1).map {|i| ((s[i].timestamp-s[0].timestamp)*factor).to_i}
     end
 
