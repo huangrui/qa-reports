@@ -32,3 +32,21 @@ Feature: RSS Feed
     Then I should see 6 instances of "item"
     And I should see "Core"
     And I should see "Handset"
+
+  Scenario: Verify that offered RSS feeds change according to the page 
+    When I view the page for the release version "1.1"
+    Then I should see the page header offer RSS feed for "1.1"
+    
+    When I view the page for the "Handset" profile of release version "1.1"
+    Then I should see the page header offer RSS feed for "1.1/Handset"
+
+    When I view the page for "Weekly" testing of profile "Core" in version "1.1"
+    Then I should see the page header offer RSS feed for "1.1/Core/Weekly"
+
+    When I view the page for "Sanity" testing of "N900" hardware with profile "Handset" in version "1.1"
+    Then I should see the page header offer RSS feed for "1.1/Handset/Sanity/N900"
+      
+
+
+
+
