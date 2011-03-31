@@ -9,7 +9,7 @@
             <% @raw_result_files.each do |file| %>
             <li>
 	      <% if file[:exists] %>
-              <a target="_blank" href="<%= file[:url] %>"><%= file[:name] %></a></li>
+              <a target="_blank" href="<%= file[:url] %>"><%= file[:name] %></a>
 	      <% else %>
 	      <%= file[:name] %> (deleted)
 	      <% end %>
