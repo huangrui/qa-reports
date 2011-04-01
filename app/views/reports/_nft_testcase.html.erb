@@ -26,10 +26,15 @@ testcase = nft_testcase
 first = true
 all = testcase.all_measurements
 all.each do |m| %>
-<tr class="testcase multiple_rows<%=" even" if (nft_testcase_counter%2) == 0 %>" <%if first%>id="testcase-<%= testcase.id %>"<%end%> >
+<tr class="testcase multiple_rows<%=" even" if (nft_testcase_counter%2) == 0 %> testcase-nft-<%= testcase.id %>" <%if first%>id="testcase-<%= testcase.id %>"<%end%> >
 
   <% if first %>
-  <td class="testcase_name" rowspan="<%=all.size%>"><%= testcase.name %>
+  <td class="testcase_name" rowspan="<%=all.size%>">
+    <% if @editing %>
+    <a href="#" 
+       onclick="if(confirm('Do you really want to remove \'<%= testcase.escaped_name %>\'?'))removeTestCase(<%= testcase.id %>, function(){ $('.testcase-nft-<%= testcase.id %>').hide();}); return false;" class="remove_list_item">Remove</a>
+    <% end %>
+    <%= testcase.name %>
     <% if not testcase.source_link.blank? %><a href="<%=testcase.source_link%>" class="dl_link">src</a><% end %>
     <% if not testcase.binary_link.blank? %><a href="<%=testcase.binary_link%>" class="dl_link">rpm</a><% end %>
   </td>

@@ -714,7 +714,17 @@ function removeAttachment(report, fileName, callback) {
             callback.call(this);
         }
     });
-};    
+};
+
+function removeTestCase(id, callback) {
+    $.post("/ajax_remove_testcase", {
+        id: id
+    }, function(data, status) {
+        if (data.ok == 1 && callback != null) {
+    	     callback.call(this);
+    	}
+    });
+}
 
 (function($) {
 

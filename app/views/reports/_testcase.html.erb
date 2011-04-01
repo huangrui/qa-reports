@@ -23,7 +23,12 @@
 #
 %>
 <tr class="testcase <%= result_class(testcase, "result_") %>" id="testcase-<%= testcase.id %>" style="<%= hide_passing(testcase) %>">
-  <td class="testcase_name"><%= testcase.name %>
+  <td class="testcase_name">
+    <% if @editing %>
+    <a href="#" 
+       onclick="if(confirm('Do you really want to remove \'<%= testcase.escaped_name %>\'?'))removeTestCase(<%= testcase.id %>, function(){ $('#testcase-<%= testcase.id %>').hide();}); return false;" class="remove_list_item">Remove</a>
+    <% end %>
+    <%= testcase.name %>
     <% if not testcase.source_link.blank? %><a href="<%=testcase.source_link%>" class="dl_link">src</a><% end %>
     <% if not testcase.binary_link.blank? %><a href="<%=testcase.binary_link%>" class="dl_link">rpm</a><% end %>
   </td>

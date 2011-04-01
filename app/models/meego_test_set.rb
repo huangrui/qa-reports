@@ -47,6 +47,14 @@ class MeegoTestSet < ActiveRecord::Base
     meego_test_cases.select {|tc| !tc.has_nft}
   end
 
+  def update_has_nft
+    update_attribute(:has_nft, total_nft > 0)
+  end
+
+  def update_has_non_nft
+    update_attribute(:has_ft, total_non_nft > 0)
+  end
+
   def prev_summary
     return @prev_summary unless @prev_summary.nil?
     prevs = meego_test_session.prev_session

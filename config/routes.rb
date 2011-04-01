@@ -24,6 +24,7 @@ Meegoqa::Application.routes.draw do
   match '/ajax_update_result' => 'reports#update_case_result', :via => "post"
   match '/ajax_remove_attachment' => 'reports#remove_attachment', :via => "post"
   match '/ajax_update_category' => 'reports#update_category', :via => "post"
+  match '/ajax_remove_testcase' => 'reports#remove_testcase', :via => "post"
   
   match '/fetch_bugzilla_data' => 'reports#fetch_bugzilla_data', :via => "get"
 

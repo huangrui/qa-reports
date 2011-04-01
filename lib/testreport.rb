@@ -288,5 +288,21 @@ module ReportSummary
       "%+i%%" % (run_rate_value - prev_summary.run_rate_value)
     end
   end
+  
+  def total_nft
+    if meego_test_cases.loaded?
+      meego_test_cases.to_a.count {|x| x.has_nft}
+    else
+      meego_test_cases.count(:conditions => {:has_nft => true})
+    end
+  end
+
+  def total_non_nft
+    if meego_test_cases.loaded?
+      meego_test_cases.to_a.count {|x| !x.has_nft}
+    else
+      meego_test_cases.count(:conditions => {:has_nft => false})
+    end
+  end
 
 end
