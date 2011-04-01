@@ -5,7 +5,7 @@ module MeasurementUtils
   XAXIS_FACTORS = {
     "ms" => 1000,
     "s" => 1,
-    "m" => 1.0/60.0,
+    "min" => 1.0/60.0,
     "h" => 1.0/60.0/60.0
   }.freeze
 
@@ -56,7 +56,7 @@ module MeasurementUtils
       o.interval_unit = "s"
     elsif timespan < 600000
       # 0 - 9999 min
-      o.interval_unit = "m"
+      o.interval_unit = "min"
     else
       o.interval_unit = "h"
     end
