@@ -1,16 +1,14 @@
-set :application, "meego.qa.leonidasoy.fi"
-set :user, "leonidas"
+set :application, "qa-reports.qa.leonidasoy.fi"
+set :user, "www-data"
 set :rails_env, "staging"
 
-set :branch, "implement-nft-series"
-
 # Use absolute paths in order to avoid problems with scp
-set :deploy_to, "/home/#{user}/sites/#{application}"
+set :deploy_to, "/home/#{user}/#{application}"
 
 ssh_options[:port] = 31915
-ssh_options[:user] = "leonidas"
+ssh_options[:user] = "www-data"
 
-server "staging.leonidasoy.fi", :app, :web, :db, :primary => true
+server "qa-reports.qa.leonidasoy.fi", :app, :web, :db, :primary => true
 
 namespace :db do
   desc "Import production database to staging"
