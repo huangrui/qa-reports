@@ -131,7 +131,7 @@ renderSeriesGraphs = function(selector) {
         var updateLabels = function() {
             $(graph).find("div").each(function(idx,e) {
                 var $e = $(e);
-                if ($e.css("text-align") == "right") {
+                if ($e.css.has("top")) { 
                     $e.css("width", parseInt($e.css("width"))+10);
                     $e.css("left", -10);
                     $e.text($e.text() + yunit);
