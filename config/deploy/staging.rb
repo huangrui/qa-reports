@@ -1,12 +1,8 @@
 set :application, "qa-reports.qa.leonidasoy.fi"
-set :user, "www-data"
+set :deploy_to, "/home/#{user}/#{application}"
 set :rails_env, "staging"
 
-# Use absolute paths in order to avoid problems with scp
-set :deploy_to, "/home/#{user}/#{application}"
-
 ssh_options[:port] = 31915
-ssh_options[:user] = "www-data"
 
 server "qa-reports.qa.leonidasoy.fi", :app, :web, :db, :primary => true
 
