@@ -466,13 +466,11 @@ class MeegoTestSession < ActiveRecord::Base
       filename = filename.downcase.strip
       if filename == ""
         errors.add :uploaded_files, "can't be blank"
-        "File name can't be blank"
-        return
+        return "File name can't be blank"
       end
       unless filename =~ /\.csv$/ or filename =~ /\.xml$/
         errors.add :uploaded_files, "You can only upload files with the extension .xml or .csv"
-        filename
-        return
+        return filename
       end
     end if @files
     nil
