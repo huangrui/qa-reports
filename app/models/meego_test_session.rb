@@ -116,6 +116,7 @@ class MeegoTestSession < ActiveRecord::Base
     return has_ft
   end
 
+  # TODO: remove unused method?
   def self.import(attributes, files, user)
     attr             = attributes.merge!({:uploaded_files => files})
     result           = MeegoTestSession.new(attr)
@@ -527,9 +528,9 @@ class MeegoTestSession < ActiveRecord::Base
           logger.error "ERROR in file parsing"
           logger.error e
           logger.error e.backtrace
-          content = File.open(f.path).read
-          errors.add :uploaded_files, "Incorrect file format for #{origfn}: #{content}"
-          error_msgs << "Incorrect file format for #{origfn}: #{content}"
+          error_msg = "Incorrect file format for #{origfn}" + (": #{e}" if filename =~ /.xml$/).to_s
+          errors.add :uploaded_files, error_msg
+          error_msgs << error_msg
         end
 
         # construct destination filename and path
