@@ -543,12 +543,8 @@ class MeegoTestSession < ActiveRecord::Base
         filenames << path_to_file
 
         # save the file
-        if f.respond_to? :read
-          File.open(path_to_file, "wb") { |outf| outf.write(f.read) }
-        else #TODO: remove else and if check
-          FileUtils.copy(f.local_path, path_to_file)
-        end
-
+        File.open(path_to_file, "wb") { |outf| outf.write(f.read) }
+        
         # XXX: ugly hack to circumvent capybara/envjs bug in file uploading
         # TODO: check if this is needed?
         if ::Rails.env == 'test'
