@@ -116,16 +116,6 @@ class MeegoTestSession < ActiveRecord::Base
     return has_ft
   end
 
-  # TODO: remove unused method?
-  def self.import(attributes, files, user)
-    attr             = attributes.merge!({:uploaded_files => files})
-    result           = MeegoTestSession.new(attr)
-    result.tested_at = result.tested_at || Time.now
-    result.import_report(user, true)
-    result.save!
-    result
-  end
-
   def self.targets
     TargetLabel.find(:all, :order => "sort_order ASC").map &:label
   end  
