@@ -536,13 +536,11 @@ class MeegoTestSession < ActiveRecord::Base
         datepart = Time.now.strftime("%Y%m%d")
         dir      = File.join(RESULTS_DATA_DIR, datepart)
         dir      = File.join(INVALID_RESULTS_DIR, datepart) if !errors.empty? #store invalid results data for debugging purposes
-
+        FileUtils.mkdir_p(dir) unless File.directory?(dir)
+        
         filename     = ("%06i-" % Time.now.usec) + filename
         path_to_file = File.join(dir, filename)
         filenames << path_to_file
-        if !File.exists?(dir) #TODO: check if mkdir_p returns false if dir exists
-          FileUtils.mkdir_p(dir)
-        end
 
         # save the file
         if f.respond_to? :read
