@@ -55,14 +55,14 @@ class MeegoTestSession < ActiveRecord::Base
   validate :validate_labels
   validate :validate_type_hw
 
-  #after_create :save_uploaded_files
   after_destroy :remove_uploaded_files
 
   attr_reader :parsing_failed, :parse_errors
 
   scope :published, :conditions => {:published => true}
 
-  XML_DIR = "public/reports"
+  RESULTS_DATA_DIR = "public/reports"
+  INVALID_RESULTS_DIR = "public/reports/invalid_files"
 
   include ReportSummary
 
@@ -477,9 +477,15 @@ class MeegoTestSession < ActiveRecord::Base
     nil
   end
 
+  #TODO: 
+  #def valid_filename_extensions?
+
   def save_uploaded_files
-    @parsing_failed = false
+
     return unless @files
+    #return unless valid_filename_extensions?
+    allowed_filename_extensions
+
     total_cases = 0
     
     self.has_ft = false
@@ -490,39 +496,63 @@ class MeegoTestSession < ActiveRecord::Base
     MeegoTestSession.transaction do
       filenames     = []
       @parse_errors = []
-      @files.each do |f|
-        datepart = Time.now.strftime("%Y%m%d")
-        dir      = File.join(XML_DIR, datepart)
 
-        begin
+      @files.each do |f|
+
+        # check fileobject and get filename 
+        begin # TODO: remove respond_to checks
           f = if f.respond_to?(:original_filename)
-                f
-              elsif f.respond_to?(:path)
-                f
-              else
-                File.new(f.gsub(/\#.*/, ''))
-              end
+            f
+          elsif f.respond_to?(:path)
+            f
+          else
+            File.new(f.gsub(/\#.*/, ''))
+          end
         rescue
-          errors.add :uploaded_files, "can't be blank"
+          errors.add :uploaded_files, "can't be blank"          
           return
-        end
+        end        
 
         filename     = sanitize_filename(f)
-
         origfn       = File.basename(filename)
+        
+        # parse result file
+        begin #TODO: common parse file method
+          if filename =~ /.csv$/
+            total_cases += parse_csv_file(f.path)
+          else
+            total_cases += parse_xml_file(f.path)
+          end
+        rescue => e
+          logger.error "ERROR in file parsing"
+          logger.error e
+          logger.error e.backtrace
+          content = File.open(f.path).read
+          errors.add :uploaded_files, "Incorrect file format for #{origfn}: #{content}"
+          error_msgs << "Incorrect file format for #{origfn}: #{content}"
+        end
+
+        # construct destination filename and path
+        datepart = Time.now.strftime("%Y%m%d")
+        dir      = File.join(RESULTS_DATA_DIR, datepart)
+        dir      = File.join(INVALID_RESULTS_DIR, datepart) if !errors.empty? #store invalid results data for debugging purposes
+
         filename     = ("%06i-" % Time.now.usec) + filename
         path_to_file = File.join(dir, filename)
         filenames << path_to_file
-        if !File.exists?(dir)
-          Dir.mkdir(dir)
+        if !File.exists?(dir) #TODO: check if mkdir_p returns false if dir exists
+          FileUtils.mkdir_p(dir)
         end
+
+        # save the file
         if f.respond_to? :read
           File.open(path_to_file, "wb") { |outf| outf.write(f.read) }
-        else
+        else #TODO: remove else and if check
           FileUtils.copy(f.local_path, path_to_file)
         end
 
         # XXX: ugly hack to circumvent capybara/envjs bug in file uploading
+        # TODO: check if this is needed?
         if ::Rails.env == 'test'
           data = File.read(path_to_file)
           if data =~ /^Content-Type:/
@@ -531,20 +561,6 @@ class MeegoTestSession < ActiveRecord::Base
           end
         end
 
-        begin
-          if filename =~ /.csv$/
-            total_cases += parse_csv_file(path_to_file)
-          else
-            total_cases += parse_xml_file(path_to_file)
-          end
-        rescue => e
-          logger.error "ERROR in file parsing"
-          logger.error e
-          logger.error e.backtrace
-          content = File.open(path_to_file).read
-          errors.add :uploaded_files, "Incorrect file format for #{origfn}: #{content}"
-          error_msgs << "Incorrect file format for #{origfn}: #{content}"
-        end
       end
       
       # Remove possibly already existing test result files
