@@ -55,7 +55,7 @@ module MeegoTestReport
       line.gsub! /'''(.+?)'''/, "<b>\\1</b>"
       line.gsub! /''(.+?)''/, "<i>\\1</i>"
       line.gsub! /#{BUGZILLA_CONFIG['link_uri']}(\d+)/, "<a class=\"bugzilla fetch bugzilla_status bugzilla_append\" href=\""+BUGZILLA_CONFIG['link_uri']+"\\1\">\\1</a>"
-      line.gsub! /\[\[(http:\/\/.+?) (.+?)\]\]/, "<a href=\"\\1\">\\2</a>"
+      line.gsub! /\[\[(http[s]:\/\/.+?) (.+?)\]\]/, "<a href=\"\\1\">\\2</a>"
       line.gsub! /\[\[(\d+)\]\]/, "<a class=\"bugzilla fetch bugzilla_status bugzilla_append\" href=\""+BUGZILLA_CONFIG['link_uri']+"\\1\">\\1</a>"
 
       if line =~ /^====\s*(.+)\s*====$/
