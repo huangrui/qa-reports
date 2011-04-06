@@ -16,6 +16,12 @@ class ReportComparisonSpec < ActiveSupport::TestCase
   
   describe ReportComparison do
     before(:each) do
+
+      @file1 = File.new("spec/fixtures/sim1.xml")
+      @file2 = File.new("spec/fixtures/sim2.xml")
+      @file1.stub!(:original_filename).and_return("sim1.xml")
+      @file2.stub!(:original_filename).and_return("sim2.xml")
+
       user = User.new({
           :email => "test@test.com",
           :password => "foobar",
@@ -27,7 +33,7 @@ class ReportComparisonSpec < ActiveSupport::TestCase
           :target => "Core",
           :testtype => "Sanity",
           :hwproduct => "N900"
-      }, [File.new("spec/fixtures/sim1.xml")], user)
+      }, [@file1], user)
 
       @session2 = MeegoTestSession.unsafe_import({
           :author => user,
@@ -35,7 +41,7 @@ class ReportComparisonSpec < ActiveSupport::TestCase
           :target => "Core",
           :testtype => "Sanity Testing",
           :hwproduct => "N900"
-      }, [File.new("spec/fixtures/sim2.xml")], user)
+      }, [@file2], user)
     end
 
     it "should compare two reports and list changed tests" do

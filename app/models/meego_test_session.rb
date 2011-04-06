@@ -427,14 +427,8 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 
-  def sanitize_filename(f)
-    filename      = if f.respond_to?(:original_filename)
-                      f.original_filename
-                    else
-                      f.path
-                    end
-    just_filename = File.basename(filename)
-    just_filename.gsub(/[^\w\.\_\-]/, '_')
+  def sanitize_filename(filename)
+    filename.gsub(/[^\w\.\_\-]/, '_')
   end
 
   def valid_filename_extension?(filename)
@@ -484,22 +478,14 @@ class MeegoTestSession < ActiveRecord::Base
     filenames     = []
 
     @files.each do |f|
-      # check fileobject and get filename
-      begin # TODO: remove respond_to checks
-        f = if f.respond_to?(:original_filename)
-          f
-        elsif f.respond_to?(:path)
-          f
-        else
-          File.new(f.gsub(/\#.*/, ''))
-        end
-      rescue
-        errors.add :uploaded_files, "can't be blank"
-        return
-      end
 
-      filename     = sanitize_filename(f)
-      origfn       = File.basename(filename)
+      # get original filename
+      unless f.respond_to?(:original_filename) #cucumber tests give file sometimes as string
+        f = File.new(f.gsub(/\#.*/, ''))
+        origfn = File.basename(f.path)
+      else
+        origfn = f.original_filename
+      end
 
       return unless valid_filename_extension?(origfn)
 
