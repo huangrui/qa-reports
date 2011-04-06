@@ -509,16 +509,6 @@ class MeegoTestSession < ActiveRecord::Base
         # save the file
         File.open(path_to_file, "wb") { |outf| outf.write(f.read) }
         
-        # XXX: ugly hack to circumvent capybara/envjs bug in file uploading
-        # TODO: check if this is needed?
-        if ::Rails.env == 'test'
-          data = File.read(path_to_file)
-          if data =~ /^Content-Type:/
-            data = data.sub /Content-Type: .*?\r\nContent-Length: .*?\r\n\r\n/, ""
-            count = File.open(path_to_file, 'w') {|f| f.write(data)}
-          end
-        end
-
       end
       
       # Remove possibly already existing test result files
