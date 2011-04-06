@@ -494,19 +494,7 @@ class MeegoTestSession < ActiveRecord::Base
         return unless valid_filename_extension?(filename)
 
         # parse result file
-
-        begin #TODO: common parse file method
-          if filename =~ /.csv$/
-            total_cases += parse_csv_file(f.path)
-          else
-            total_cases += parse_xml_file(f.path)
-          end
-        rescue => e
-          logger.error "ERROR in file parsing"
-          logger.error e
-          logger.error e.backtrace
-          errors.add :uploaded_files, "Incorrect file format for #{origfn}" + (": #{e}" if filename =~ /.xml$/).to_s
-        end
+        total_cases += parse_result_file(f.path, filename)
 
         # construct destination filename and path
         datepart = Time.now.strftime("%Y%m%d")
@@ -622,6 +610,26 @@ class MeegoTestSession < ActiveRecord::Base
   ###############################################
   # Uploaded data parsing                       #
   ###############################################
+
+  def parse_result_file(fpath,origfn)
+    cases = 0
+    begin
+      if origfn =~ /.csv$/
+        cases = parse_csv_file(fpath)
+      else
+        cases = parse_xml_file(fpath)
+      end
+    rescue => e
+    logger.error "ERROR in file parsing"
+    logger.error origfn
+    logger.error e
+    logger.error e.backtrace
+    errors.add :uploaded_files, "Incorrect file format for #{origfn}" + (": #{e}" if origfn =~ /.xml$/).to_s
+    end
+    cases
+  end
+
+
   def parse_csv_file(filename)
     prev_feature = nil
     test_set     = nil
