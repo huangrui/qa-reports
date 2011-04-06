@@ -79,15 +79,18 @@ after "deploy:symlink" do
 end
 
 namespace :deploy do
-  desc "Restart Application"
+  desc "Restart the app server"
   task :restart, :roles => :app do
     run "touch #{current_path}/tmp/restart.txt"
   end
 
   desc "Start the app server"
   task :start, :roles => :app do
-    run "touch #{current_path}/tmp/restart.txt"
+    run "cd #{current_path} && passenger start --daemonize --environment #{rails_env} --port 3000" 
   end
 
+  desc "Stop the app server"
+  task :stop, :roles => :app do
+    run "cd #{current_path} && passenger stop"
+  end
 end
-
