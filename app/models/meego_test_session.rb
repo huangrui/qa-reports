@@ -485,8 +485,6 @@ class MeegoTestSession < ActiveRecord::Base
     self.has_ft = false
     self.has_nft = false
 
-    error_msgs = []
-
     MeegoTestSession.transaction do
       filenames     = []
       @parse_errors = []
@@ -524,9 +522,7 @@ class MeegoTestSession < ActiveRecord::Base
           logger.error "ERROR in file parsing"
           logger.error e
           logger.error e.backtrace
-          error_msg = "Incorrect file format for #{origfn}" + (": #{e}" if filename =~ /.xml$/).to_s
-          errors.add :uploaded_files, error_msg
-          error_msgs << error_msg
+          errors.add :uploaded_files, "Incorrect file format for #{origfn}" + (": #{e}" if filename =~ /.xml$/).to_s
         end
 
         # construct destination filename and path
@@ -569,12 +565,6 @@ class MeegoTestSession < ActiveRecord::Base
         else
           errors.add :uploaded_files, "None of the uploaded files contained any valid test cases"
         end
-      end
-      # TODO: replace error_msg fetching with a read to errors array
-      if !error_msgs.empty?
-          error_msgs.join(',')
-      else
-          nil
       end
     end
   end
@@ -620,23 +610,17 @@ class MeegoTestSession < ActiveRecord::Base
 
   def update_report_result(user, resultfiles, published = true)
     @files = resultfiles
-    parsing_errors = []
-    temp_err = allowed_filename_extensions
-    if (nil != temp_err)
-       parsing_errors << temp_err
-    end
-    temp_err = save_uploaded_files
-    if (nil != temp_err)
-       parsing_errors << temp_err
-    end
+    save_uploaded_files
+    parsing_errors = errors[:uploaded_files]
+
     user.update_attribute(:default_target, self.target) if self.target.present?
     self.editor    = user
     self.published = published
-    
+
     if !parsing_errors.empty?
-       parsing_errors.join(',')
+      return parsing_errors.join(',')
     else
-       nil
+      return nil
     end
   end
 

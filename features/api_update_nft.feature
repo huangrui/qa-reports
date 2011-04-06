@@ -10,7 +10,7 @@ Feature: REST API update report with nft
     And I have sent the file "serial_result.xml" via the REST API
 
   Scenario: Updating test report with HTTP POST with nft cases removed from the report
-    When the client sends a updated file "serial_result_nft_removed.xml" with the id 1 via the REST API
+    When the client sends a updated file "sim.xml" with the id 1 via the REST API
 
     Then the REST result "ok" is "1"
     
