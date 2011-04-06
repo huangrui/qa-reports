@@ -9,13 +9,13 @@ class MoveXmlpathToSeparateTable < ActiveRecord::Migration
     end
     
     # Move XML paths from column to new table
-    MeegoTestSession.find(:all).each{|session|
-      if not session.xmlpath.nil?
-        session.xmlpath.split(',').each{|file|
+    MeegoTestSession.find(:all).each do |session|
+      if session.xmlpath
+        session.xmlpath.split(',').each do |file|
           TestResultFile.create :path => file, :meego_test_session_id => session.id
-        }
+        end
       end
-    }
+    end
 
     remove_column :meego_test_sessions, :xmlpath
 
@@ -26,10 +26,10 @@ class MoveXmlpathToSeparateTable < ActiveRecord::Migration
     add_column :meego_test_sessions, :xmlpath, :string, :default => ""
 
     # Move paths from separate table to new column
-    MeegoTestSession.find(:all).each{|session|
+    MeegoTestSession.find(:all).each do |session|
       session.update_attribute(:xmlpath, 
                                session.test_result_files.map(&:path).join(','))
-    }
+    end
     
     # Drop unneeded stuff
     remove_index :test_result_files, :meego_test_session_id
