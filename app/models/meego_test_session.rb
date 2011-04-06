@@ -49,7 +49,6 @@ class MeegoTestSession < ActiveRecord::Base
 
   validates :tested_at, :date_time => true
 
-  validate :allowed_filename_extensions, :on => :create
   validate :save_uploaded_files, :on => :create
 
   validate :validate_labels
@@ -440,6 +439,14 @@ class MeegoTestSession < ActiveRecord::Base
     just_filename.gsub(/[^\w\.\_\-]/, '_')
   end
 
+  def valid_filename_extension?(filename)
+    if filename =~ /\.csv$/i or filename =~ /\.xml$/i
+      return true
+    else
+      errors.add :uploaded_files, "You can only upload files with the extension .xml or .csv"
+      return false
+    end
+  end
 
   ###############################################
   # File upload handlers                        #
@@ -452,6 +459,7 @@ class MeegoTestSession < ActiveRecord::Base
     @files
   end
 
+  # TODO: to be removed after update_report_result is rewritten
   def allowed_filename_extensions
     @files.each do |f|
       filename = MeegoTestSession::get_filename(f)
@@ -468,14 +476,9 @@ class MeegoTestSession < ActiveRecord::Base
     nil
   end
 
-  #TODO: 
-  #def valid_filename_extensions?
-
   def save_uploaded_files
 
     return unless @files
-    #return unless valid_filename_extensions?
-    allowed_filename_extensions
 
     total_cases = 0
     
@@ -506,8 +509,11 @@ class MeegoTestSession < ActiveRecord::Base
 
         filename     = sanitize_filename(f)
         origfn       = File.basename(filename)
-        
+
+        return unless valid_filename_extension?(filename)
+
         # parse result file
+
         begin #TODO: common parse file method
           if filename =~ /.csv$/
             total_cases += parse_csv_file(f.path)
@@ -564,6 +570,7 @@ class MeegoTestSession < ActiveRecord::Base
           errors.add :uploaded_files, "None of the uploaded files contained any valid test cases"
         end
       end
+      # TODO: replace error_msg fetching with a read to errors array
       if !error_msgs.empty?
           error_msgs.join(',')
       else
