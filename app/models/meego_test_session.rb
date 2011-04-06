@@ -446,6 +446,21 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 
+  def generate_destination_filename_and_path(origfn)
+    datepart = Time.now.strftime("%Y%m%d")
+    dir      = File.join(RESULTS_DATA_DIR, datepart)
+    dir      = File.join(INVALID_RESULTS_DIR, datepart) if !errors.empty? #store invalid results data for debugging purposes
+
+    FileUtils.mkdir_p(dir) unless File.directory?(dir)
+
+    filename     = ("%06i-" % Time.now.usec) + origfn
+    path_to_file = File.join(dir, filename)
+
+    [filename,path_to_file]
+  end
+
+
+
   ###############################################
   # File upload handlers                        #
   ###############################################
@@ -469,7 +484,6 @@ class MeegoTestSession < ActiveRecord::Base
     MeegoTestSession.transaction do
 
       filenames     = []
-
       @files.each do |f|
 
         # check fileobject and get filename 
@@ -489,19 +503,14 @@ class MeegoTestSession < ActiveRecord::Base
         filename     = sanitize_filename(f)
         origfn       = File.basename(filename)
 
-        return unless valid_filename_extension?(filename)
+        return unless valid_filename_extension?(origfn)
 
         # parse result file
-        total_cases += parse_result_file(f.path, filename)
+        total_cases += parse_result_file(f.path, origfn)
 
         # construct destination filename and path
-        datepart = Time.now.strftime("%Y%m%d")
-        dir      = File.join(RESULTS_DATA_DIR, datepart)
-        dir      = File.join(INVALID_RESULTS_DIR, datepart) if !errors.empty? #store invalid results data for debugging purposes
-        FileUtils.mkdir_p(dir) unless File.directory?(dir)
-        
-        filename     = ("%06i-" % Time.now.usec) + filename
-        path_to_file = File.join(dir, filename)
+        filename, path_to_file = generate_destination_filename_and_path(origfn)
+
         filenames << path_to_file
 
         # save the file
