@@ -116,14 +116,6 @@ class MeegoTestSession < ActiveRecord::Base
     return has_ft
   end
 
-  def raw_result_files
-    if not xmlpath.nil?
-      return xmlpath.split(',')
-    else
-      return []
-    end
-  end
-
   def self.import(attributes, files, user)
     attr             = attributes.merge!({:uploaded_files => files})
     result           = MeegoTestSession.new(attr)
@@ -554,7 +546,17 @@ class MeegoTestSession < ActiveRecord::Base
           error_msgs << "Incorrect file format for #{origfn}: #{content}"
         end
       end
-      self.xmlpath = filenames.join(',')
+      
+      # Remove possibly already existing test result files
+      self.test_result_files.each{|file|
+        file.delete
+      }
+      # Add the new ones
+      filenames.each{|file|
+        self.test_result_files.build(:path => file,
+                                     :meego_test_session => self)
+      }
+
       if @files.size > 0 and total_cases == 0
         if @files.size == 1
           errors.add :uploaded_files, "The uploaded file didn't contain any valid test cases"

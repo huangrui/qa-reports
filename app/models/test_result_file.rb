@@ -22,5 +22,5 @@
 #
 
 class TestResultFile < ActiveRecord::Base
-  belongs_to :meego_test_sessions
+  belongs_to :meego_test_session
 end

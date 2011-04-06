@@ -49,9 +49,10 @@ class FileStorage
   end
 
   def list_report_files(model)
-    return [] if @baseurl.nil? or model.raw_result_files.nil?
+    return [] if @baseurl.nil? or model.test_result_files.nil?
     result = []
-    model.raw_result_files.each do |xmlpath|
+    model.test_result_files.each do |file|
+      xmlpath = file.path
       path = xmlpath.slice(@dir.length+1, xmlpath.length)
       if path.present?
         result << {
