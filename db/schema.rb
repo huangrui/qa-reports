@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110310164427) do
+ActiveRecord::Schema.define(:version => 20110406092742) do
 
   create_table "meego_measurements", :force => true do |t|
     t.integer "meego_test_case_id"
@@ -62,7 +62,6 @@ ActiveRecord::Schema.define(:version => 20110310164427) do
     t.string   "release_version",                   :default => "",    :null => false
     t.boolean  "has_nft",                           :default => false, :null => false
     t.boolean  "has_ft",                            :default => true,  :null => false
-    t.string   "xmlpath",                           :default => ""
   end
 
   add_index "meego_test_sessions", ["release_version", "target", "testtype", "hwproduct"], :name => "index_meego_test_sessions_key"
@@ -104,6 +103,13 @@ ActiveRecord::Schema.define(:version => 20110310164427) do
     t.string  "normalized", :limit => 64, :null => false
     t.integer "sort_order",               :null => false
   end
+
+  create_table "test_result_files", :force => true do |t|
+    t.integer "meego_test_session_id", :null => false
+    t.string  "path"
+  end
+
+  add_index "test_result_files", ["meego_test_session_id"], :name => "index_test_result_files_on_meego_test_session_id"
 
   create_table "users", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
