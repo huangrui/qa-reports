@@ -39,6 +39,7 @@ class MeegoTestSession < ActiveRecord::Base
 
   has_many :meego_test_sets, :dependent => :destroy
   has_many :meego_test_cases
+  has_many :test_result_files, :dependent => :destroy
 
   belongs_to :author, :class_name => "User"
   belongs_to :editor, :class_name => "User"

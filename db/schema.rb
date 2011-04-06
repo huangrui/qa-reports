@@ -41,7 +41,6 @@ ActiveRecord::Schema.define(:version => 20110310164427) do
   create_table "meego_test_sessions", :force => true do |t|
     t.string   "environment",                       :default => ""
     t.string   "hwproduct",                         :default => ""
-    t.string   "xmlpath",                           :default => ""
     t.string   "title",                                                :null => false
     t.string   "target",                            :default => ""
     t.string   "testtype",                          :default => ""
@@ -63,6 +62,7 @@ ActiveRecord::Schema.define(:version => 20110310164427) do
     t.string   "release_version",                   :default => "",    :null => false
     t.boolean  "has_nft",                           :default => false, :null => false
     t.boolean  "has_ft",                            :default => true,  :null => false
+    t.string   "xmlpath",                           :default => ""
   end
 
   add_index "meego_test_sessions", ["release_version", "target", "testtype", "hwproduct"], :name => "index_meego_test_sessions_key"
