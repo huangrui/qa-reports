@@ -56,8 +56,6 @@ class MeegoTestSession < ActiveRecord::Base
 
   after_destroy :remove_uploaded_files
 
-  attr_reader :parsing_failed, :parse_errors
-
   scope :published, :conditions => {:published => true}
 
   RESULTS_DATA_DIR = "public/reports"
@@ -469,8 +467,8 @@ class MeegoTestSession < ActiveRecord::Base
     self.has_nft = false
 
     MeegoTestSession.transaction do
+
       filenames     = []
-      @parse_errors = []
 
       @files.each do |f|
 
@@ -529,6 +527,7 @@ class MeegoTestSession < ActiveRecord::Base
       end
     end
   end
+
 
   def remove_uploaded_files
     # TODO
