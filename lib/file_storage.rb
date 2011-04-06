@@ -49,15 +49,20 @@ class FileStorage
   end
 
   def list_report_files(model)
-    model.raw_result_files.map{|xmlpath|
+    return [] if @baseurl.nil? or model.raw_result_files.nil?
+    result = []
+    model.raw_result_files.each do |xmlpath|
       path = xmlpath.slice(@dir.length+1, xmlpath.length)
-      {
+      if path.present?
+        result << {
         :name => File.basename(xmlpath).gsub(/^[0-9]{1,}\-/, ''),
         :path => path,
         :url => @baseurl + path,
         :exists => File.exists?(xmlpath)
-      }
-    }
+        }
+      end
+    end
+    result
   end
 
   private
