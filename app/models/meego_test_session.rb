@@ -459,23 +459,6 @@ class MeegoTestSession < ActiveRecord::Base
     @files
   end
 
-  # TODO: to be removed after update_report_result is rewritten
-  def allowed_filename_extensions
-    @files.each do |f|
-      filename = MeegoTestSession::get_filename(f)
-      filename = filename.downcase.strip
-      if filename == ""
-        errors.add :uploaded_files, "can't be blank"
-        return "File name can't be blank"
-      end
-      unless filename =~ /\.csv$/ or filename =~ /\.xml$/
-        errors.add :uploaded_files, "You can only upload files with the extension .xml or .csv"
-        return filename
-      end
-    end if @files
-    nil
-  end
-
   def save_uploaded_files
 
     return unless @files
