@@ -553,8 +553,7 @@ class MeegoTestSession < ActiveRecord::Base
       }
       # Add the new ones
       filenames.each{|file|
-        self.test_result_files.build(:path => file,
-                                     :meego_test_session => self)
+        self.test_result_files.build(:path => file)
       }
 
       if @files.size > 0 and total_cases == 0
