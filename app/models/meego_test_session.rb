@@ -481,58 +481,55 @@ class MeegoTestSession < ActiveRecord::Base
     self.has_ft = false
     self.has_nft = false
 
-    MeegoTestSession.transaction do
+    filenames     = []
 
-      filenames     = []
-      @files.each do |f|
-
-        # check fileobject and get filename 
-        begin # TODO: remove respond_to checks
-          f = if f.respond_to?(:original_filename)
-            f
-          elsif f.respond_to?(:path)
-            f
-          else
-            File.new(f.gsub(/\#.*/, ''))
-          end
-        rescue
-          errors.add :uploaded_files, "can't be blank"          
-          return
-        end        
-
-        filename     = sanitize_filename(f)
-        origfn       = File.basename(filename)
-
-        return unless valid_filename_extension?(origfn)
-
-        # parse result file
-        total_cases += parse_result_file(f.path, origfn)
-
-        # construct destination filename and path
-        filename, path_to_file = generate_destination_filename_and_path(origfn)
-
-        filenames << path_to_file
-
-        # save the file
-        File.open(path_to_file, "wb") { |outf| outf.write(f.read) }
-        
-      end
-      
-      # Remove possibly already existing test result files
-      self.test_result_files.each{|file|
-        file.delete
-      }
-      # Add the new ones
-      filenames.each{|file|
-        self.test_result_files.build(:path => file)
-      }
-
-      if @files.size > 0 and total_cases == 0
-        if @files.size == 1
-          errors.add :uploaded_files, "The uploaded file didn't contain any valid test cases"
+    @files.each do |f|
+      # check fileobject and get filename
+      begin # TODO: remove respond_to checks
+        f = if f.respond_to?(:original_filename)
+          f
+        elsif f.respond_to?(:path)
+          f
         else
-          errors.add :uploaded_files, "None of the uploaded files contained any valid test cases"
+          File.new(f.gsub(/\#.*/, ''))
         end
+      rescue
+        errors.add :uploaded_files, "can't be blank"
+        return
+      end
+
+      filename     = sanitize_filename(f)
+      origfn       = File.basename(filename)
+
+      return unless valid_filename_extension?(origfn)
+
+      # parse result file
+      total_cases += parse_result_file(f.path, origfn)
+
+      # construct destination filename and path
+      filename, path_to_file = generate_destination_filename_and_path(origfn)
+
+      # save the file
+      File.open(path_to_file, "wb") { |outf| outf.write(f.read) }
+
+      filenames << path_to_file
+    end
+    
+    ## Remove possibly already existing test result files
+    #self.test_result_files.each{|file|
+    #  file.delete
+    #
+    #}
+    # Add the new ones
+    filenames.each{|file|
+      self.test_result_files.build(:path => file)
+    }
+
+    if @files.size > 0 and total_cases == 0
+      if @files.size == 1
+        errors.add :uploaded_files, "The uploaded file didn't contain any valid test cases"
+      else
+        errors.add :uploaded_files, "None of the uploaded files contained any valid test cases"
       end
     end
   end
