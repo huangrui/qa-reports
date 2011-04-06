@@ -15,7 +15,7 @@ end
 namespace :db do
   desc "Dump and fetch production database"
   task :dump, :roles => :db, :only => {:primary => true} do
-    run "cd #{current_path} && RAILS_ENV='production' rake db:dump"
+    run "cd #{current_path} && RAILS_ENV='#{rails_env}' rake db:dump"
     get "#{current_path}/qa_reports_production.sql.bz2", "./qa_reports_production.sql.bz2"
     run "rm #{current_path}/qa_reports_production.sql.bz2"
   end
