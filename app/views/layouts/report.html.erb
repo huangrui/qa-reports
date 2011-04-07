@@ -113,13 +113,26 @@
 </div>
 
 <!-- MODAL WINDOW FOR NFT HISTORY GRAPH START (trend for single measured values) -->
-<div style="display:none;" class="nft_drilldown_dialog jqmWindow nft_drilldown_modal_window" id="nft_history_graph">
+<div style="display:none;" class="jqmWindow nft_drilldown_modal_window" id="nft_history_graph">
 
   <h1>NFT test case name</h1> 
   <a href="" class="ui_btn modal_close"><span>X</span></a>
   <div id="nft_drilldown_graph">
     <img src="/images/dummy_graph_drilldown.png" alt="" />
   </div>
+  
+  <div class="nft_graph_options">
+
+    <div>
+      <h3>Usage</h3>
+      <p>Click and drag to zoom<br/>
+      Shift-drag to pan.<br/>
+      Doubleclick to zoom out.	
+      </p>
+    </div>
+  </div> 
+
+
 
 </div>
 <!-- MODAL GRAPH END -->
@@ -130,9 +143,32 @@
   <h1>NFT series test case name</h1> 
   <a href="" class="ui_btn modal_close"><span>X</span></a>
   <div id="nft_drilldown_graph">
-    <img src="/images/dummy_graph_drilldown.png" alt="" />
+    <img src="/images/dummy_nft_series_graph_drilldown.png" alt="" />
   </div>
+  
+  <div class="nft_graph_options">
+    <div>
+      <h3>Legend</h3>
+      <input type="checkbox" checked/>
+      <span class="max">Max</span><br/>
+      <input type="checkbox" checked/>
+      <span class="avg">Avg</span><br/>
+      <input type="checkbox" checked />
+      <span class="med">Med</span><br/>
+      <input type="checkbox" checked />
+      <span class="min">Min</span>
+      
+    </div>
 
+    <div>
+      <h3>Usage</h3>
+      <p>Click and drag to zoom<br/>
+      Shift-drag to pan.<br/>
+      Doubleclick to zoom out.	
+      </p>
+    </div>
+  </div> 
+  
 </div>
 <!-- MODAL GRAPH END -->
 
@@ -158,10 +194,10 @@ $(document).ready(function(){
     
     $('#nft_history_graph').jqm({
     	modal:true
-    }).jqmAddTrigger('.nft_history_modal_graph_toggle').jqmAddClose('.modal_close');
+  	 }).jqmAddTrigger('.nft_history_modal_graph_toggle').jqmAddClose('.modal_close');
     
     $('#nft_series_history_graph').jqm({
-    	modal:true
+   			modal:true
     }).jqmAddTrigger('.nft_series_history_modal_toggle').jqmAddClose('.modal_close');
     
     });

@@ -1628,6 +1628,18 @@ td.fail {
 .fail {
     color: #ec4343; }
 
+.med {
+	color: #233a84;}
+
+.avg {
+	color: #6c3d0f;}
+
+.min {
+	color: #bb2825;}		
+
+.max {
+	color: #2a7438;}
+
 .history_result {
 	background: transparent no-repeat right 0.8em url(../images/history_arrow.png);}
 
