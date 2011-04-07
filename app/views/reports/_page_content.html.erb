@@ -103,14 +103,10 @@
       <% if @test_session.has_nft? %>
         <h2 id="detailed_nft_results">Non-functional Test Results<span class="heading_actions"><%=back_to_top%></span></h2>
 
-        <table id="non-functional_results" class="detailed_results">
+        <table class="non-functional_results detailed_results">
           <thead>
             <tr>
               <th id="th_nft_test_case">
-                <!--<span class="sort">
-                  <a href="#" id="see_only_failed_button" class="sort_btn active">See only failed</a>
-                  <a href="#" id="see_all_button" class="sort_btn">See all</a>
-                </span>-->
               </th>
               <th class="th_name">Measurement</th>
               <th class="th_measured">Value</th>
@@ -125,6 +121,152 @@
           <%= render :partial => "nft_feature", :collection => @test_session.nft_sets %>
 
         </table>
+        
+        
+        <!-- *************** DUMMY HTML STARTS *******************-->
+           <h2 id="detailed_nft_results">Non-functional Test Results (dummy)<span class="heading_actions"><a href="#top">Back to top</a></span></h2> 
+         
+                <table class="non-functional_results detailed_results history"> 
+                  <thead> 
+                    <tr> 
+                      <th id="th_nft_test_case"> 
+                    	  <span class="sort"> 
+                            <a href="#" class="see_all_button sort_btn">See latest</a> 
+                            <a href="#" class="see_history_button sort_btn active">See history</a> 
+                        </span> 
+                      </th> 
+                      <th class="th_name">Measurement</th> 
+                      <th class="th_measured" colspan="6">18/12 – 01/01/2011</th> 
+<!--                      <th class="th_target">Target</th>    
+                      <th class="th_limit">Fail limit</th>	
+                      <th class="th_to_target">% of target</th>  
+                      <th class="th_result">Result</th>  	-->		     			  
+                     <!-- <th id="th_notes">Notes</th> -->
+                    </tr> 
+                  </thead> 
+         
+                  <tbody> 
+        <tr class="feature_name" id="test-set-372"> 
+        	<td colspan="8"> 
+                N/A
+        		<a href="#" class="see_all_toggle">+ see passing tests</a> 
+        	</td> 
+        </tr> 
+        </tbody> 
+        <tbody> 
+        <tr class="testcase multiple_rows even" id="testcase-833" > 
+         
+          <td class="testcase_name" rowspan="1">simple-case1
+            
+            
+          </td> 
+            <td class="testcase_measurement">Current samples<br/><small class="un2">(Based on medians)</small></td> 
+            <td class="testcase_graph" colspan="5"> 
+            	<img src="/images/dummy_graph.png" alt="dummy graph" />
+              <table class="nft_graph_key_figures"> 
+                <tr> 
+                  <td class="unit">mA</td> 
+                  <td><span class="unit">min.</span> 478</td> 
+                  <td><span class="unit">avg.</span> 486</td> 
+                  <td><span class="unit">max.</span> 500</td> 
+                  <td><span class="unit">med.</span> 486</td> 
+                </tr> 
+              </table> 
+            </td> 
+                			
+<!--              <td class="testcase_notes " rowspan="1"> 
+                <div class="content"></div> 
+              </td> -->
+        </tr> 
+        <tr class="testcase multiple_rows" id="testcase-834" > 
+         
+          <td class="testcase_name" rowspan="5">simple-case2
+            
+            
+          </td> 
+          	
+            <td class="testcase_measurement">temperature</td> 
+            <td class="testcase_graph" colspan="5">
+            	<img src="/images/dummy_graph3.png" alt="dummy graph" />
+            	<table class="nft_graph_key_figures"> 
+            	  <tr> 
+            	    <td class="unit">mA</td> 
+            	    <td><span class="unit">min.</span> 478</td> 
+            	    <td><span class="unit">avg.</span> 486</td> 
+            	    <td><span class="unit">max.</span> 500</td> 
+            	    <td><span class="unit">med.</span> 486</td> 
+            	  </tr> 
+            	</table> 
+            </td>
+                  			
+      <!--      <td class="testcase_notes " rowspan="1"> 
+              <div class="content"></div> 
+            </td> -->
+        </tr> 
+        
+        <tr class="testcase multiple_rows"  > 
+          <td class="testcase_measurement">bandwidth</td> 
+          <td class="testcase_graph" colspan="5">
+          	<img src="/images/dummy_graph.png" alt="dummy graph" />
+          	<table class="nft_graph_key_figures"> 
+          	  <tr> 
+          	    <td class="unit">Mb/s</td> 
+          	    <td><span class="unit">min.</span> 78</td> 
+          	    <td><span class="unit">avg.</span> 96</td> 
+          	    <td><span class="unit">max.</span> 108</td> 
+          	    <td><span class="unit">med.</span> 86</td> 
+          	  </tr> 
+          	</table> 
+          </td>
+<!--					<td class="testcase_notes " rowspan="1"> 
+						<div class="content"></div> 
+					</td>  -->         
+        </tr> 
+        
+     	 <tr class="testcase multiple_rows"  >          
+          <td class="testcase_measurement">length</td> 
+          <td class="testcase_graph" colspan="5">
+          	<img src="/images/dummy_graph3.png" alt="dummy graph" />
+          	<table class="nft_graph_key_figures"> 
+          	  <tr> 
+          	    <td class="unit">m</td> 
+          	    <td><span class="unit">min.</span> 23</td> 
+          	    <td><span class="unit">avg.</span> 45</td> 
+          	    <td><span class="unit">max.</span> 56</td> 
+          	    <td><span class="unit">med.</span> 47</td> 
+          	  </tr> 
+          	</table> 
+          </td>
+<!--					<td class="testcase_notes " rowspan="1"> 
+					  <div class="content"></div> 
+					</td> -->                  
+        </tr> 
+            
+        <tr class="testcase multiple_rows"  > 
+            <td class="testcase_measurement">weight</td> 
+            <td class="testcase_graph" colspan="5">
+            	<img src="/images/dummy_graph.png" alt="dummy graph" />
+            	<table class="nft_graph_key_figures"> 
+            	  <tr> 
+            	    <td class="unit">kg</td> 
+            	    <td><span class="unit">min.</span> 90</td> 
+            	    <td><span class="unit">avg.</span> 120</td> 
+            	    <td><span class="unit">max.</span> 134</td> 
+            	    <td><span class="unit">med.</span> 123</td> 
+            	  </tr> 
+            	</table> 
+            </td>
+<!--            <td class="testcase_notes " rowspan="1"> 
+              <div class="content"></div> 
+            </td> -->
+         </tr> 
+                      
+        </tbody> 
+         
+         
+       </table> 
+        <!-- *************** DUMMY HTML ENDS *******************-->
+        
 
       <% end %>
 

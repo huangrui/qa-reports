@@ -328,6 +328,9 @@ em {
 .un {font-weight: normal;
     font-size: smaller;}
 
+/* second undermine for giving text less contrast */
+.un2 {color: #aaa;}
+
 dfn {
     font-weight:bold; }
 
@@ -1415,8 +1418,16 @@ td.dec em{
 .th_target {
 	width: 7%;}
 
+/*.th_name {
+	width: 10%;
+}*/
+
 .th_measured {
 	width:7%;}
+
+.history .th_measured {
+	width: 45%;
+	text-align:left;}
 
 .th_limit {
 	width:7%;}
