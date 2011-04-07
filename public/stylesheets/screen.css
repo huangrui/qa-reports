@@ -155,6 +155,14 @@ h2 {
     border-top: 1px solid #ccc;
     padding-top: 10px;}
 
+h2 small {
+	font-size: .55em;
+	font-weight:normal;
+	margin-left:1em;
+	display:inline-block;
+	vertical-align:middle;		
+}
+
 h3 {
     font-size: 1.3333em;
     line-height: 1.125;
@@ -1319,6 +1327,10 @@ margin-top: 0;
 	padding: 0 !important;
 	font-style: italic;
 }
+
+h2 .compare {
+	font-size: 0.6em;
+	font-weight:normal;}
 /* @end */
 
 
