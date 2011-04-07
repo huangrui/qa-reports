@@ -60,3 +60,39 @@ Feature: REST API
 
     Then the REST result "ok" is "0"
     Then the REST result "errors" is "unknown attribute: foobar"
+
+  Scenario: Sending REST import with user defined report title
+    When the client sends a request with optional parameter "title" with value "My Test Report" via the REST API
+
+    Then the REST result "ok" is "1"
+    And I should be able to view the created report
+
+    Then I should see "My Test Report"
+
+  Scenario: Sending REST import with user defined test objective
+    When the client sends a request with optional parameter "objective_txt" with value "To test that [[1234]] works now" via the REST API
+
+    Then the REST result "ok" is "1"
+    And I should be able to view the created report
+
+    Then I should see "To test that 1234 works now"
+
+  Scenario: Sending REST import first with user defined test objective and then without
+    Given I have sent a request with optional parameter "objective_txt" with value "To notice regression" via the REST API
+
+    When the client sends file "sim.xml" via the REST API
+
+    Then the REST result "ok" is "1"
+    And I should be able to view the latest created report
+
+    Then I should see "To notice regression"
+
+  Scenario: Sending REST import first with user defined test environment and then without
+    Given I have sent a request with optional parameter "environment_txt" with value "Emulator" via the REST API
+
+    When the client sends file "sim.xml" via the REST API
+
+    Then the REST result "ok" is "1"
+    And I should be able to view the latest created report
+
+    Then I should see "Hardware: N900"

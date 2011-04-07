@@ -2,6 +2,10 @@ Given /^I am an user with a REST authentication token$/ do
   Given %{I have one user "John Restless" with email "resting@man.net" and password "secretpass" and token "foobar"}
 end
 
+Given /^I have sent a request with optional parameter "([^"]*)" with value "([^"]*)" via the REST API$/ do |opt, val|
+  Given %{the client sends a request with optional parameter "#{opt}" with value "#{val}" via the REST API}
+end
+
 When /^the client sends file "([^"]*)" via the REST API$/ do |file|
   post "/api/import?auth_token=foobar", {
       "report"          => Rack::Test::UploadedFile.new("features/resources/#{file}", "text/xml"),
@@ -85,6 +89,28 @@ When /^the client sends a request with extra parameter "([^"]*)" via the REST AP
   }
   response.should be_success
 
+end
+
+When /^the client sends a request with optional parameter "([^"]*)" with value "([^"]*)" via the REST API$/ do |opt, val|
+  post "/api/import?auth_token=foobar&release_version=1.2&target=Core&testtype=automated&hwproduct=N900", {
+    "report.1"        => Rack::Test::UploadedFile.new("features/resources/sim.xml", "text/xml"),
+    opt               => val
+  }
+  response.should be_success
+
+end
+
+When /I view the latest report "([^"]*)"$/ do |report_string|
+  version, target, test_type, hardware = report_string.downcase.split('/')
+  report = MeegoTestSession.first(:order => "id DESC", :conditions =>
+   {:release_version => version, :target => target, :hwproduct => hardware, :testtype => test_type}
+  )
+  raise "report not found with parameters #{version}/#{target}/#{hardware}/#{test_type}!" unless report
+  visit("/#{version}/#{target}/#{test_type}/#{hardware}/#{report.id}")
+end
+
+Then /^I should be able to view the latest created report$/ do
+  Then %{I view the latest report "1.2/Core/Automated/N900"}
 end
 
 Then /^I should be able to view the created report$/ do
