@@ -63,7 +63,7 @@ class ApiController < ApplicationController
 
       files = FileStorage.new()
       attachments.each { |file|
-        files.add_file(@test_session, file, MeegoTestSession::get_filename(file))
+        files.add_file(@test_session, file, file.original_filename)
       }
       report_url = url_for :controller => 'reports', :action => 'view', :release_version => data[:release_version], :target => data[:target], :testtype => data[:testtype], :hwproduct => data[:hwproduct], :id => @test_session.id
       render :json => {:ok => '1', :url => report_url}

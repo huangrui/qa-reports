@@ -37,6 +37,8 @@ class MeegoTestSession < ActiveRecord::Base
   include Graph
   include MeasurementUtils
 
+  attr_accessor :uploaded_files
+
   has_many :meego_test_sets, :dependent => :destroy
   has_many :meego_test_cases
   has_many :test_result_files, :dependent => :destroy
@@ -440,14 +442,14 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 
-  def generate_file_destination_path(origfn)
+  def generate_file_destination_path(original_filename)
     datepart = Time.now.strftime("%Y%m%d")
     dir      = File.join(RESULT_FILES_DIR, datepart)
     dir      = File.join(INVALID_RESULTS_DIR, datepart) if !errors.empty? #store invalid results data for debugging purposes
 
-    FileUtils.mkdir_p(dir) unless File.directory?(dir)
+    FileUtils.mkdir_p(dir)
 
-    filename     = ("%06i-" % Time.now.usec) + sanitize_filename(origfn)
+    filename     = ("%06i-" % Time.now.usec) + sanitize_filename(original_filename)
     path_to_file = File.join(dir, filename)
   end
 
@@ -455,43 +457,28 @@ class MeegoTestSession < ActiveRecord::Base
   ###############################################
   # File upload handlers                        #
   ###############################################
-  def uploaded_files=(files)
-    @files = files
-  end
-
-  def uploaded_files
-    @files
-  end
 
   def save_uploaded_files
 
-    return unless @files
+    return unless @uploaded_files
 
     total_cases  = 0
     self.has_ft  = false
     self.has_nft = false
-    filenames    = []
 
-    @files.each do |f|
+    @uploaded_files.each do |f|
 
-      origfn = f.original_filename
+      return if not valid_filename_extension?(f.original_filename)
+      total_cases += parse_result_file(f.path, f.original_filename)
 
-      return if not valid_filename_extension?(origfn)
-      total_cases += parse_result_file(f.path, origfn)
-
-      path_to_file = generate_file_destination_path(origfn)
+      path_to_file = generate_file_destination_path(f.original_filename)
       File.open(path_to_file, "wb") { |outf| outf.write(f.read) } #saves the uploaded file in server
 
-      filenames << path_to_file
+      self.test_result_files.build(:path => path_to_file) #add the new test result file
     end
     
-    # Add the new test result files
-    filenames.each{|file|
-      self.test_result_files.build(:path => file)
-    }
-
-    if @files.size > 0 and total_cases == 0
-      if @files.size == 1
+    if @uploaded_files.size > 0 and total_cases == 0
+      if @uploaded_files.size == 1
         errors.add :uploaded_files, "The uploaded file didn't contain any valid test cases"
       else
         errors.add :uploaded_files, "None of the uploaded files contained any valid test cases"
@@ -540,7 +527,7 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def update_report_result(user, resultfiles, published = true)
-    @files = resultfiles
+    @uploaded_files = resultfiles
     save_uploaded_files
     parsing_errors = errors[:uploaded_files]
 
@@ -552,16 +539,6 @@ class MeegoTestSession < ActiveRecord::Base
       return parsing_errors.join(',')
     else
       return nil
-    end
-  end
-
-  def self.get_filename(file)
-    if file.respond_to?(:original_filename)
-      file.original_filename
-    elsif file.respond_to?(:path)
-      file.path
-    else
-      file.gsub(/\#.*/, '')
     end
   end
 
@@ -580,11 +557,11 @@ class MeegoTestSession < ActiveRecord::Base
         cases = parse_xml_file(fpath)
       end
     rescue => e
-    logger.error "ERROR in file parsing"
-    logger.error origfn
-    logger.error e
-    logger.error e.backtrace
-    errors.add :uploaded_files, "Incorrect file format for #{origfn}" + (": #{e}" if origfn =~ /.xml$/i).to_s
+      logger.error "ERROR in file parsing"
+      logger.error origfn
+      logger.error e
+      logger.error e.backtrace
+      errors.add :uploaded_files, "Incorrect file format for #{origfn}" + (": #{e}" if origfn =~ /.xml$/i).to_s
     end
     cases
   end
