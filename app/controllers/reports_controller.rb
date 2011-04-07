@@ -229,7 +229,7 @@ class ReportsController < ApplicationController
 
       @test_session = MeegoTestSession.fetch_fully(@report_id)
 
-      return render_404 unless @selected_release_version == @test_session.release_version
+      return render_404 unless @selected_release_version.downcase.eql? @test_session.release_version.downcase
 
       @history = history(@test_session.prev_session)
 

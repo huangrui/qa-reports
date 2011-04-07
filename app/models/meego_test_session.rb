@@ -47,6 +47,8 @@ class MeegoTestSession < ActiveRecord::Base
   belongs_to :author, :class_name => "User"
   belongs_to :editor, :class_name => "User"
 
+  belongs_to :version_label, :class_name => "VersionLabel", :foreign_key => "version_label_id"
+
   validates_presence_of :title, :target, :testtype, :hwproduct
   validates_presence_of :uploaded_files, :on => :create
 
@@ -160,28 +162,28 @@ class MeegoTestSession < ActiveRecord::Base
       target    = target.downcase
       testtype  = testtype.downcase
       hwproduct = hwproduct.downcase
-      published.where(:release_version => release_version, :target => target, :testtype => testtype, :hwproduct => hwproduct).order(order_by).limit(limit)
+      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testtype => testtype, :hwproduct => hwproduct).joins(:version_label).order(order_by).limit(limit)
     end
 
     def published_by_release_version_target_test_type(release_version, target, testtype, order_by = "tested_at DESC, id DESC", limit = nil)
       target   = target.downcase
       testtype = testtype.downcase
-      published.where(:release_version => release_version, :target => target, :testtype => testtype).order(order_by).limit(limit)
+      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testtype => testtype).joins(:version_label).order(order_by).limit(limit)
     end
 
     def published_hwversion_by_release_version_target_test_type(release_version, target, testtype)
       target   = target.downcase
       testtype = testtype.downcase
-      published.where(:release_version => release_version, :target => target, :testtype => testtype).select("DISTINCT hwproduct").order("hwproduct")
+      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testtype => testtype).select("DISTINCT hwproduct").joins(:version_label).order("hwproduct")
     end
 
     def published_by_release_version_target(release_version, target, order_by = "tested_at DESC, id DESC", limit = nil)
       target = target.downcase
-      published.where(:release_version => release_version, :target => target).order(order_by).limit(limit)
+      published.where("version_labels.normalized" => release_version.downcase, :target => target).joins(:version_label).order(order_by).limit(limit)
     end
 
     def published_by_release_version(release_version, order_by = "tested_at DESC", limit = nil)
-      published.where(:release_version => release_version).order(order_by).limit(limit)
+      published.where("version_labels.normalized" => release_version.downcase).joins(:version_label).order(order_by).limit(limit)
     end
   end
 
@@ -189,23 +191,23 @@ class MeegoTestSession < ActiveRecord::Base
   # List feature tags                           #
   ###############################################
   def self.list_targets(release_version)
-    (published.all_lowercase(:select => 'DISTINCT target', :conditions=>{:release_version => release_version}).map { |s| s.target.gsub(/\b\w/) { $&.upcase } }).uniq
+    (published.all_lowercase(:select => 'DISTINCT target', :conditions=>{"version_labels.normalized" => release_version}, :include => :version_label).map { |s| s.target.gsub(/\b\w/) { $&.upcase } }).uniq
   end
 
   def self.list_types(release_version)
-    (published.all_lowercase(:select => 'DISTINCT testtype', :conditions=>{:release_version => release_version}).map { |s| s.testtype.gsub(/\b\w/) { $&.upcase } }).uniq
+    (published.all_lowercase(:select => 'DISTINCT testtype', :conditions=>{"version_labels.normalized" => release_version}, :include => :version_label).map { |s| s.testtype.gsub(/\b\w/) { $&.upcase } }).uniq
   end
 
   def self.list_types_for(release_version, target)
-    (published.all_lowercase(:select => 'DISTINCT testtype', :conditions => {:target => target, :release_version => release_version}).map { |s| s.testtype.gsub(/\b\w/) { $&.upcase } }).uniq
+    (published.all_lowercase(:select => 'DISTINCT testtype', :conditions=>{:target => target, "version_labels.normalized" => release_version}, :include => :version_label).map { |s| s.testtype.gsub(/\b\w/) { $&.upcase } }).uniq
   end
 
   def self.list_hardware(release_version)
-    (published.all_lowercase(:select => 'DISTINCT hwproduct', :conditions=>{:release_version => release_version}).map { |s| s.hwproduct.gsub(/\b\w/) { $&.upcase } }).uniq
+    (published.all_lowercase(:select => 'DISTINCT hwproduct', :conditions=>{"version_labels.normalized" => release_version}, :include => :version_label).map { |s| s.hwproduct.gsub(/\b\w/) { $&.upcase } }).uniq
   end
 
   def self.list_hardware_for(release_version, target, testtype)
-    (published.all_lowercase(:select => 'DISTINCT hwproduct', :conditions => {:target => target, :testtype=> testtype, :release_version => release_version}).map { |s| s.hwproduct.gsub(/\b\w/) { $&.upcase } }).uniq
+    (published.all_lowercase(:select => 'DISTINCT hwproduct',  :conditions=>{:target => target, :testtype=> testtype,"version_labels.normalized" => release_version}, :include => :version_label).map { |s| s.hwproduct.gsub(/\b\w/) { $&.upcase } }).uniq
   end
 
 
@@ -218,9 +220,9 @@ class MeegoTestSession < ActiveRecord::Base
 
     # TODO: Works only if there's >= 1s difference between the timestamps
     @prev_session = MeegoTestSession.find(:first, :conditions => [
-        "tested_at < ? AND target = ? AND testtype = ? AND hwproduct = ? AND published = ? AND release_version = ?", time, target.downcase, testtype.downcase, hwproduct.downcase, true, release_version
+        "tested_at < ? AND target = ? AND testtype = ? AND hwproduct = ? AND published = ? AND version_label_id = ?", time, target.downcase, testtype.downcase, hwproduct.downcase, true, version_label_id
     ],
-                          :order              => "tested_at DESC", :include => [
+                          :order => "tested_at DESC", :include => [
          {:meego_test_sets => :meego_test_cases}, :meego_test_sets, :meego_test_cases])
 
     @has_prev = !@prev_session.nil?
@@ -230,9 +232,9 @@ class MeegoTestSession < ActiveRecord::Base
   def next_session
     return @next_session unless @next_session.nil? and @has_next.nil?
     @next_session = MeegoTestSession.find(:first, :conditions => [
-        "tested_at > ? AND target = ? AND testtype = ? AND hwproduct = ? AND published = ? AND release_version = ?", tested_at, target.downcase, testtype.downcase, hwproduct.downcase, true, release_version
+        "tested_at > ? AND target = ? AND testtype = ? AND hwproduct = ? AND published = ? AND version_label_id = ?", tested_at, target.downcase, testtype.downcase, hwproduct.downcase, true, version_label_id
     ],
-                          :order              => "tested_at ASC")
+                          :order => "tested_at ASC")
     @has_next = !@next_session.nil?
     @next_session
   end
@@ -436,6 +438,7 @@ class MeegoTestSession < ActiveRecord::Base
     filename.gsub(/[^\w\.\_\-]/, '_')
   end
 
+<<<<<<< HEAD
   def valid_filename_extension?(filename)
     if filename =~ /\.csv$/i or filename =~ /\.xml$/i
       return true
@@ -443,6 +446,33 @@ class MeegoTestSession < ActiveRecord::Base
       errors.add :uploaded_files, "You can only upload files with the extension .xml or .csv"
       return false
     end
+  end
+
+  ###############################################
+  # For encapsulating the release_version          #
+  ###############################################
+  def release_version=(release_version)
+    @release_version = release_version
+    if release_version
+      version_label = VersionLabel.find(:first, :conditions => {:normalized => release_version.downcase})
+      if version_label
+        self.version_label_id = version_label.id
+      end
+    end
+    if !self.version_label_id
+      @release_version = self.latest_release_version
+      self.version_label_id = VersionLabel.find(:first, :conditions => {:normalized => self.latest_release_version.downcase})
+    end
+  end
+  
+  def release_version
+    if !@release_version 
+      version_label = version_label = VersionLabel.find_by_id(self.version_label_id)
+      if version_label
+        @release_version = version_label.label
+      end
+    end
+    @release_version
   end
 
   def generate_file_destination_path(original_filename)

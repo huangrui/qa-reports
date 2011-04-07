@@ -36,7 +36,7 @@ end
 When /I view the report "([^"]*)"$/ do |report_string|
   version, target, test_type, hardware = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {:release_version => version, :target => target, :hwproduct => hardware, :testtype => test_type}
+   {"version_labels.normalized" => version, :target => target, :hwproduct => hardware, :testtype => test_type}, :include => :version_label 
   )
   raise "report not found with parameters #{version}/#{target}/#{hardware}/#{test_type}!" unless report
   visit("/#{version}/#{target}/#{test_type}/#{hardware}/#{report.id}")
