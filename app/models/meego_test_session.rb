@@ -410,8 +410,8 @@ class MeegoTestSession < ActiveRecord::Base
 
   def generate_defaults!
     time                 = tested_at || Time.now
-    self.title           = "%s Test Report: %s %s %s" % [target, hwproduct, testtype, time.strftime('%Y-%m-%d')]
-    self.environment_txt = "* Hardware: " + hwproduct
+    self.title           ||= "%s Test Report: %s %s %s" % [target, hwproduct, testtype, time.strftime('%Y-%m-%d')]
+    self.environment_txt = "* Hardware: " + hwproduct if self.environment_txt.empty?
   end
 
   def format_date
@@ -515,10 +515,10 @@ class MeegoTestSession < ActiveRecord::Base
     # See if there is a previous report with the same test target and type
     prev = self.prev_session
     if prev
-      self.objective_txt     = prev.objective_txt
-      self.build_txt         = prev.build_txt
-      self.qa_summary_txt    = prev.qa_summary_txt
-      self.issue_summary_txt = prev.issue_summary_txt
+      self.objective_txt     = prev.objective_txt if self.objective_txt.empty?
+      self.build_txt         = prev.build_txt if self.build_txt.empty?
+      self.qa_summary_txt    = prev.qa_summary_txt if self.qa_summary_txt.empty?
+      self.issue_summary_txt = prev.issue_summary_txt if self.issue_summary_txt.empty?
     end
 
     self.author    = user
