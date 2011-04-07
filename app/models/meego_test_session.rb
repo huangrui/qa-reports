@@ -485,12 +485,7 @@ class MeegoTestSession < ActiveRecord::Base
       filenames << path_to_file
     end
     
-    ## Remove possibly already existing test result files
-    #self.test_result_files.each{|file|
-    #  file.delete
-    #
-    #}
-    # Add the new ones
+    # Add the new test result files
     filenames.each{|file|
       self.test_result_files.build(:path => file)
     }
@@ -506,7 +501,7 @@ class MeegoTestSession < ActiveRecord::Base
 
 
   def remove_uploaded_files
-    # TODO
+    # TODO: when report is deleted files should be deleted as well
   end
 
   def to_csv
