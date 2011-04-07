@@ -112,6 +112,31 @@
 
 </div>
 
+<!-- MODAL WINDOW FOR NFT HISTORY GRAPH START (trend for single measured values) -->
+<div style="display:none;" class="nft_drilldown_dialog jqmWindow nft_drilldown_modal_window" id="nft_history_graph">
+
+  <h1>NFT test case name</h1> 
+  <a href="" class="ui_btn modal_close"><span>X</span></a>
+  <div id="nft_drilldown_graph">
+    <img src="/images/dummy_graph_drilldown.png" alt="" />
+  </div>
+
+</div>
+<!-- MODAL WINDOW FOR NFT HISTORY GRAPH END -->
+
+<!-- MODAL WINDOW FOR NFT MEASUREMENT SERIES HISTORY GRAPH START (trend for medians of measurement series) -->
+<div style="display:none;" class="nft_drilldown_dialog jqmWindow nft_drilldown_modal_window" id="nft_series_history_graph">
+
+  <h1>NFT series test case name</h1> 
+  <a href="" class="ui_btn modal_close"><span>X</span></a>
+  <div id="nft_drilldown_graph">
+    <img src="/images/dummy_graph_drilldown.png" alt="" />
+  </div>
+
+</div>
+<!-- MODAL WINDOW FOR NFT HISTORY GRAPH END -->
+
+
 <%= javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js" %>
 <script type="text/javascript">
   var BUGZILLA_URI = "<%=BUGZILLA_CONFIG['link_uri']%>";
@@ -129,6 +154,15 @@ $(window).load(function(){
 }
 $(document).ready(function(){
     renderSeriesGraphs(".serial_canvas");
+    
+    $('#nft_history_graph').jqm({
+    	modal:true
+    }).jqmAddTrigger('.nft_history_modal_graph_toggle').jqmAddClose('.modal_close');
+    
+    $('#nft_series_history_graph').jqm({
+    	modal:true
+    }).jqmAddTrigger('.nft_series_history_modal_toggle').jqmAddClose('.modal_close');
+    
     });
 </script>
 <%= clicktale_bottom_tag %>
