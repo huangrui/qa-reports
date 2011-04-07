@@ -112,6 +112,23 @@
 
 </div>
 
+
+<!-- ***** NFT trend graph modal dialog -->
+ <div style="display:none;" class="jqmWindow nft_drilldown_modal_window" id="nft_trend_dummy_dialog">
+
+  <h1>Test name: measurement name</h1> 
+  <a class="ui_btn modal_close"><span>X</span></a>
+  <div id="nft_drilldown_graph">
+    <img src="/images/dummy_graph_drilldown.png" alt="" />
+
+  </div>
+</div> 
+<!-- ************************** -->
+
+
+
+
+
 <%= javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js" %>
 <script type="text/javascript">
   var BUGZILLA_URI = "<%=BUGZILLA_CONFIG['link_uri']%>";
@@ -129,6 +146,11 @@ $(window).load(function(){
 }
 $(document).ready(function(){
     renderSeriesGraphs(".serial_canvas");
+    
+    $('#nft_trend_dummy_dialog').jqm({
+    	modal:true
+    }).jqmAddTrigger('.nft_trend_button').jqmAddClose($('a.modal_close'));
+    
     });
 </script>
 <%= clicktale_bottom_tag %>

@@ -56,7 +56,7 @@ all.each do |m| %>
     </td>
   <%else%>
     <td class="testcase_measurement"><%= m.name %></td>
-    <td class="testcase_value"><%= m.value_html %></td>
+    <td class="testcase_value"><a class="nft_trend_button" title="See history"><%= m.value_html %></a></td>
     <td class="testcase_target"><%= m.target_html %></td>   
     <td class="testcase_limit"><%= m.failure_html %></td>    
     <td class="testcase_to_target <%=result_class(m.target_result)%>"><%= m.relative_html %></td>
