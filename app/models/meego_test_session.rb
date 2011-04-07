@@ -58,7 +58,7 @@ class MeegoTestSession < ActiveRecord::Base
 
   scope :published, :conditions => {:published => true}
 
-  RESULTS_DATA_DIR = "public/reports"
+  RESULT_FILES_DIR = "public/reports"
   INVALID_RESULTS_DIR = "public/reports/invalid_files"
 
   include ReportSummary
@@ -440,19 +440,16 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 
-  def generate_destination_filename_and_path(origfn)
+  def generate_file_destination_path(origfn)
     datepart = Time.now.strftime("%Y%m%d")
-    dir      = File.join(RESULTS_DATA_DIR, datepart)
+    dir      = File.join(RESULT_FILES_DIR, datepart)
     dir      = File.join(INVALID_RESULTS_DIR, datepart) if !errors.empty? #store invalid results data for debugging purposes
 
     FileUtils.mkdir_p(dir) unless File.directory?(dir)
 
-    filename     = ("%06i-" % Time.now.usec) + origfn
+    filename     = ("%06i-" % Time.now.usec) + sanitize_filename(origfn)
     path_to_file = File.join(dir, filename)
-
-    [filename,path_to_file]
   end
-
 
 
   ###############################################
@@ -470,33 +467,20 @@ class MeegoTestSession < ActiveRecord::Base
 
     return unless @files
 
-    total_cases = 0
-    
-    self.has_ft = false
+    total_cases  = 0
+    self.has_ft  = false
     self.has_nft = false
-
-    filenames     = []
+    filenames    = []
 
     @files.each do |f|
 
-      # get original filename
-      unless f.respond_to?(:original_filename) #cucumber tests give file sometimes as string
-        f = File.new(f.gsub(/\#.*/, ''))
-        origfn = File.basename(f.path)
-      else
-        origfn = f.original_filename
-      end
+      origfn = f.original_filename
 
-      return unless valid_filename_extension?(origfn)
-
-      # parse result file
+      return if not valid_filename_extension?(origfn)
       total_cases += parse_result_file(f.path, origfn)
 
-      # construct destination filename and path
-      filename, path_to_file = generate_destination_filename_and_path(origfn)
-
-      # save the file
-      File.open(path_to_file, "wb") { |outf| outf.write(f.read) }
+      path_to_file = generate_file_destination_path(origfn)
+      File.open(path_to_file, "wb") { |outf| outf.write(f.read) } #saves the uploaded file in server
 
       filenames << path_to_file
     end
@@ -595,7 +579,7 @@ class MeegoTestSession < ActiveRecord::Base
   def parse_result_file(fpath,origfn)
     cases = 0
     begin
-      if origfn =~ /.csv$/
+      if origfn =~ /.csv$/i
         cases = parse_csv_file(fpath)
       else
         cases = parse_xml_file(fpath)
@@ -605,7 +589,7 @@ class MeegoTestSession < ActiveRecord::Base
     logger.error origfn
     logger.error e
     logger.error e.backtrace
-    errors.add :uploaded_files, "Incorrect file format for #{origfn}" + (": #{e}" if origfn =~ /.xml$/).to_s
+    errors.add :uploaded_files, "Incorrect file format for #{origfn}" + (": #{e}" if origfn =~ /.xml$/i).to_s
     end
     cases
   end

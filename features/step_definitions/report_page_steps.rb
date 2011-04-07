@@ -45,7 +45,8 @@ end
 Given /^there exists a report for "([^"]*)"$/ do |report_name|
   version, target, test_type, hardware = report_name.split('/')
 
-  fpath = File.join(Rails.root, "features", "resources", "sample.csv")
+  fpath    = File.join(Rails.root, "features", "resources", "sample.csv")
+  testfile = DragnDropUploadedFile.new(fpath)
 
   user = User.create!(:name => "John Longbottom",
     :email => "email@email.com",
@@ -53,7 +54,7 @@ Given /^there exists a report for "([^"]*)"$/ do |report_name|
     :password_confirmation => "password")
 
   session = MeegoTestSession.new(:target => target, :hwproduct => hardware,
-    :testtype => test_type, :uploaded_files => [fpath],
+    :testtype => test_type, :uploaded_files => [testfile],
     :tested_at => Time.now, :author => user, :editor => user, :release_version => version
   )
   session.generate_defaults! # Is this necessary, or could we just say create! above?
