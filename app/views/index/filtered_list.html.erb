@@ -53,6 +53,39 @@
       	  </div>
       <% end %>
       
+      
+      <div class="index_section">
+      	<h2>Changes from previous results <small><a href="" class="compare">compare details</a></small></h2>
+      	
+      	<div class="clearfix">
+      		<div class="result_caption big_number">
+      			<strong id="changed_to_pass" class="pass">+3</strong>
+      			Test result<br/> changed to <em>pass</em>
+      		</div>
+      		
+      		<div class="result_caption big_number">
+      			<strong id="changed_to_fail" class="fail">-10</strong>
+      			Test result<br/> changed to <em>fail</em>
+      		</div>
+      		
+      		<div class="result_caption big_number">
+      			<strong id="changed_to_na" class="">1</strong>
+      			Test result<br/> changed to <em>N/A</em>
+      		</div>
+      					
+      		<div class="new_tests result_caption">
+      			<div class="result_caption_header"><strong>New tests:</strong></div>
+      			<div class="result_caption medium_number"><strong class="pass">4</strong> Passing
+      			</div>
+      			<div class="result_caption medium_number"><strong class="fail">1</strong> Failing
+      			</div>
+      			<div class="result_caption medium_number"><strong>13</strong> N/A</div>
+      		</div>
+      	</div>
+      </div>
+      
+      
+      
       	<%= render :partial=>'month', :collection => @headers %>
       
       <%= will_paginate @paginated_sessions %>
