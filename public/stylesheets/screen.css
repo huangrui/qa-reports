@@ -1695,17 +1695,18 @@ width: 35px;
 	cursor: pointer;
 }
 
+
 .nft_drilldown_modal_window {
 	width: 800px;
-	padding: 40px;
+	padding: 14px 40px 40px;
 	margin-left: -440px;
 }
 
 #nft_drilldown_graph {
-        width: 823px;
-        height: 314px;
-        padding: 10px;
-        border: 1px solid #b2b2b2;
+  width: 778px;
+  height: 314px;
+  padding: 10px;
+  border: 1px solid #b2b2b2;
 }
 
 .modal_close {
