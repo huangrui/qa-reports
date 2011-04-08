@@ -59,6 +59,7 @@ module AjaxMixin
     # removed - on purpose.
     test_session.update_nft_non_nft
 
+    expire_caches_for(test_session)
     render :json => {:ok => '1'}
   end
 
