@@ -81,7 +81,8 @@ end
 namespace :deploy do
   desc "Restart the app server"
   task :restart, :roles => :app do
-    run "touch #{current_path}/tmp/restart.txt"
+    stop
+    start
   end
 
   desc "Start the app server"
