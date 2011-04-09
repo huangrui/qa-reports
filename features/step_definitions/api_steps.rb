@@ -6,84 +6,67 @@ Given /^I have sent a request with optional parameter "([^"]*)" with value "([^"
   Given %{the client sends a request with optional parameter "#{opt}" with value "#{val}" via the REST API}
 end
 
+def do_post( params )
+  post "api/import", params
+end
+
 When /^the client sends file "([^"]*)" via the REST API$/ do |file|
-  post "/api/import?auth_token=foobar", {
-      "report"          => Rack::Test::UploadedFile.new("features/resources/#{file}", "text/xml"),
-      "release_version" => "1.2",
-      "target"          => "Core",
-      "testtype"        => "automated",
-      "hwproduct"       => "N900"
-  }
+  # @default_api_opts defined in features/support/hooks.rb
+  do_post @default_api_opts.merge({ "report" => Rack::Test::UploadedFile.new("features/resources/#{file}", "text/xml") })
   response.should be_success
 end
 
 When /^the client sends file "([^"]*)" via the REST API with RESTful parameters$/ do |file|
-  post "/api/import?auth_token=foobar&release_version=1.2&target=Core&testtype=automated&hwproduct=N900", {
-      "report"          => Rack::Test::UploadedFile.new("features/resources/#{file}", "text/xml")
-  }
+  do_post @default_api_opts.merge("report" => Rack::Test::UploadedFile.new("features/resources/#{file}", "text/xml"))
   response.should be_success
 end
 
 When /^the client sends reports "([^"]*)" via the REST API to test type "([^"]*)" and hardware "([^"]*)"$/ do |files, testtype, hardware|
-  data = {
-      "release_version" => "1.2",
-      "target"          => "Core",
-      "testtype"        => testtype,
-      "hwproduct"       => hardware
-  }
-  files.split(',').each_with_index{|file, index|
+  data = @default_api_opts.merge({
+    "testtype"        => testtype,
+    "hwproduct"       => hardware
+  })
+  
+  # remove default file
+  data.delete("report")
+
+  files.split(',').each_with_index do |file, index|
     data["report."+(index+1).to_s] = Rack::Test::UploadedFile.new(file, "text/xml")
-  }
-  post "/api/import?auth_token=foobar", data
+  end
+
+  do_post data
   response.should be_success  
 end
 
 
 When /^the client sends file with attachments via the REST API$/ do
-  post "/api/import?auth_token=foobar", {
+  do_post @default_api_opts.merge({
       "report.1"        => Rack::Test::UploadedFile.new("features/resources/sim.xml", "text/xml"),
       "report.2"        => Rack::Test::UploadedFile.new("features/resources/bluetooth.xml", "text/xml"),
       "attachment.1"    => Rack::Test::UploadedFile.new("public/images/ajax-loader.gif", "image/gif"),
       "attachment.2"    => Rack::Test::UploadedFile.new("public/images/icon_alert.gif", "image/gif"),
-      "release_version" => "1.2",
-      "target"          => "Core",
-      "testtype"        => "automated",
-      "hwproduct"       => "N900"
-  }
+  })
   response.should be_success
 end
 
 When /^the client sends a request with string value instead of a files via the REST API$/ do
-    post "/api/import?auth_token=foobar", {
-      "report.1"        => "Foo!",
-      "release_version" => "1.2",
-      "target"          => "Core",
-      "testtype"        => "automated",
-      "hwproduct"       => "N900"
-  }
+    do_post @default_api_opts.merge("report.1" => "Foo!")
 end
 
 When /^the client sends a request without file via the REST API$/ do
-  post "/api/import?auth_token=foobar", {
-      "release_version" => "1.2",
-      "target"          => "Core",
-      "tested_at"       => "20101130",
-      "testtype"        => "automated",
-      "hwproduct"       => "N900"
-  }
+  @default_api_opts.delete("report")
+  do_post @default_api_opts
   response.should be_success
 end
 
 When /^the client sends a request without parameter "target" via the REST API$/ do
-  post "/api/import?auth_token=foobar", {
-      "report"     => Rack::Test::UploadedFile.new("features/resources/sim.xml", "text/xml"),
-      "testtype"     => "automated",
-      "hwproduct"    => "N900"
-  }
+  @default_api_opts.delete("target")
+  do_post  @default_api_opts
   response.should be_success
 end
 
 When /^the client sends a request with extra parameter "([^"]*)" via the REST API$/ do |extra|
+  # TODO: this step should be replaced with the step defined below
   post "/api/import?auth_token=foobar&release_version=1.2&target=Core&testtype=automated&hwproduct=N900&" + extra, {
       "report.1"        => Rack::Test::UploadedFile.new("features/resources/sim.xml", "text/xml")
   }
@@ -92,12 +75,13 @@ When /^the client sends a request with extra parameter "([^"]*)" via the REST AP
 end
 
 When /^the client sends a request with optional parameter "([^"]*)" with value "([^"]*)" via the REST API$/ do |opt, val|
-  post "/api/import?auth_token=foobar&release_version=1.2&target=Core&testtype=automated&hwproduct=N900", {
+  @default_api_opts.delete("report")
+  do_post @default_api_opts.merge({
     "report.1"        => Rack::Test::UploadedFile.new("features/resources/sim.xml", "text/xml"),
     opt               => val
-  }
-  response.should be_success
+  })
 
+  response.should be_success
 end
 
 When /I view the latest report "([^"]*)"$/ do |report_string|
