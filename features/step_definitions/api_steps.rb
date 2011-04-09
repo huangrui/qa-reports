@@ -12,12 +12,12 @@ end
 
 When /^the client sends file "([^"]*)" via the REST API$/ do |file|
   # @default_api_opts defined in features/support/hooks.rb
-  do_post @default_api_opts.merge({ "report" => Rack::Test::UploadedFile.new("features/resources/#{file}", "text/xml") })
+  do_post @default_api_opts.merge({ "report.1" => Rack::Test::UploadedFile.new("features/resources/#{file}", "text/xml") })
   response.should be_success
 end
 
 When /^the client sends file "([^"]*)" via the REST API with RESTful parameters$/ do |file|
-  do_post @default_api_opts.merge("report" => Rack::Test::UploadedFile.new("features/resources/#{file}", "text/xml"))
+  do_post @default_api_opts.merge("report.1" => Rack::Test::UploadedFile.new("features/resources/#{file}", "text/xml"))
   response.should be_success
 end
 
@@ -27,9 +27,6 @@ When /^the client sends reports "([^"]*)" via the REST API to test type "([^"]*)
     "hwproduct"       => hardware
   })
   
-  # remove default file
-  data.delete("report")
-
   files.split(',').each_with_index do |file, index|
     data["report."+(index+1).to_s] = Rack::Test::UploadedFile.new(file, "text/xml")
   end
@@ -54,14 +51,14 @@ When /^the client sends a request with string value instead of a files via the R
 end
 
 When /^the client sends a request without file via the REST API$/ do
-  @default_api_opts.delete("report")
+  @default_api_opts.delete("report.1")
   do_post @default_api_opts
   response.should be_success
 end
 
 When /^the client sends a request without parameter "target" via the REST API$/ do
   @default_api_opts.delete("target")
-  do_post  @default_api_opts
+  do_post @default_api_opts
   response.should be_success
 end
 
@@ -75,7 +72,6 @@ When /^the client sends a request with extra parameter "([^"]*)" via the REST AP
 end
 
 When /^the client sends a request with optional parameter "([^"]*)" with value "([^"]*)" via the REST API$/ do |opt, val|
-  @default_api_opts.delete("report")
   do_post @default_api_opts.merge({
     "report.1"        => Rack::Test::UploadedFile.new("features/resources/sim.xml", "text/xml"),
     opt               => val
