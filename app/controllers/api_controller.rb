@@ -29,12 +29,7 @@ class ApiController < ApplicationController
     data = request.query_parameters.merge(request.request_parameters)
     data.delete(:auth_token)
 
-    errors                = []
-
-    if !errors.empty?
-      render :json => {:ok => '0', :errors => errors.join('; ')}
-      return
-    end
+    errors = []
 
     data[:uploaded_files] = collect_files(data, "report", errors)
     attachments           = collect_files(data, "attachment", errors)
@@ -44,7 +39,7 @@ class ApiController < ApplicationController
       return
     end
 
-    data[:tested_at] = data[:tested_at] || Time.now
+    data[:tested_at] ||= Time.now
 
     begin
       @test_session = MeegoTestSession.new(data)
@@ -72,6 +67,7 @@ class ApiController < ApplicationController
       invalid.record.errors.each {|key, value| error_messages[key] = value}
       render :json => {:ok => '0', :errors => error_messages}
     end
+
   end
 
   def update_result
