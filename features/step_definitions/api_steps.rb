@@ -4,6 +4,8 @@ end
 
 Given /^I have sent a request with optional parameter "([^"]*)" with value "([^"]*)" via the REST API$/ do |opt, val|
   Given %{the client sends a request with optional parameter "#{opt}" with value "#{val}" via the REST API}
+  # Needed in order to get different time stamps for current - previous matching
+  sleep 1
 end
 
 def do_post( params )
