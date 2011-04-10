@@ -1,6 +1,6 @@
-!!!
-%html{:xmlns => "http://www.w3.org/1999/xhtml"}
-  /
+doctype html
+html 
+  /!
     \/*
     * This file is part of meego-test-reports
     *
@@ -24,13 +24,13 @@
     * 02110-1301 USA
     *
     */
-  %head
-    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
-    %meta{:content => "IE=8", "http-equiv" => "X-UA-Compatible"}/
-    %title MeeGo QA Reports
+  head
+    meta content="text/html; charset=UTF-8" http-equiv="Content-Type"
+    meta content="IE=8" http-equiv="X-UA-Compatible"
+    title MeeGo QA Reports
     = stylesheet_link_tag :all
     - if use_nokia_layout?
-      %link{:href => "/stylesheets/themes/nokia.css", :media => "all", :rel => "stylesheet", :type => "text/css"}/
+      link href="/stylesheets/themes/nokia.css" media="all" rel="stylesheet" type="text/css"
     = csrf_meta_tag
     = javascript_include_tag "jquery.min.js"
     = javascript_include_tag 'bluff/js-class.js'
@@ -40,8 +40,8 @@
     = yield :view_specific_js_head
     = google_analytics_tag
     = clicktale_top_tag
-  %body
-    %a{:name => "top"}
+  body
+    a name="top"
     = yield :page_header
     = yield :version_navi
     #page
@@ -52,43 +52,43 @@
       = yield :delete_dialog
       = yield :category_dialog
     #footer
-    .nft_drilldown_dialog.jqmWindow.nft_drilldown_modal_window{:style => "display:none;"}
-      %h1 test case name
-      %a.ui_btn.modal_close{:href => ""}
-        %span X
-      #nft_drilldown_graph{:style => "width:790px; height:290px;"}
-        / <img src="/images/dummy_graph_drilldown.png" alt="" />
+    .nft_drilldown_dialog.jqmWindow.nft_drilldown_modal_window style="display:none;"
+      h1 test case name
+      a.ui_btn.modal_close href=""
+        span X
+      #nft_drilldown_graph style="width:790px; height:290px;"
+        /! <img src="/images/dummy_graph_drilldown.png" alt="" />
       .nft_graph_options
-        /
-          <div>
-          <h3>Graphs</h3>
-          <input type="checkbox" id="processor_load" checked/>
-          <span style="color:#2a7438">Processor load</span> <span class="unit">%</span><br/>
-          <input type="checkbox" id="processor_load" checked/>
-          <span style="color:#233a84">Memory consumption</span> <span class="unit">MB</span><br/>
-          <input type="checkbox" id="processor_load" />
-          <span style="color:#6c3d0f">Power consumption</span> <span class="unit">mA</span>
-          </div>
+        /!
+          | <div>
+          | <h3>Graphs</h3>
+          | <input type="checkbox" id="processor_load" checked/>
+          | <span style="color:#2a7438">Processor load</span> <span class="unit">%</span><br/>
+          | <input type="checkbox" id="processor_load" checked/>
+          | <span style="color:#233a84">Memory consumption</span> <span class="unit">MB</span><br/>
+          | <input type="checkbox" id="processor_load" />
+          | <span style="color:#6c3d0f">Power consumption</span> <span class="unit">mA</span>
+          | </div>
           
-          <div>
-          <h3>Options</h3>
-          <input type="checkbox" id="min_max_avg" name="" value="" />
-          Show min. / max. / avg.
-          </div>
-        %div
-          %h3 Usage
-          %p
-            Click and drag to zoom
-            %br/
-            Shift-drag to pan.
-            %br/
-            Doubleclick to zoom out.
+          | <div>
+          | <h3>Options</h3>
+          | <input type="checkbox" id="min_max_avg" name="" value="" />
+          | Show min. / max. / avg.
+          | </div>
+        div
+          h3 Usage
+          p
+            | Click and drag to zoom
+            br/
+            | Shift-drag to pan.
+            br/
+            | Doubleclick to zoom out.
     = javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js"
-    :javascript
+    javascript:
       var BUGZILLA_URI = "#{BUGZILLA_CONFIG['link_uri']}";
     = javascript_include_tag 'application'
     = yield :view_specific_js
-    :javascript
+    javascript:
       // IE hack
       if (typeof G_vmlCanvasManager != 'undefined') {
       $(window).load(function(){
