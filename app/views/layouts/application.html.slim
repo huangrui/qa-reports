@@ -1,0 +1,52 @@
+doctype html
+html
+  /!
+    | \/*
+    | * This file is part of meego-test-reports
+    | *
+    | * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+    | *
+    | * Authors: Jussi Jokinen <jussijokinen@iki.fi>
+    | *			Sami Hangaslammi <sami.hangaslammi@leonidasoy.fi>
+    | *
+    | * This program is free software; you can redistribute it and/or
+    | * modify it under the terms of the GNU Lesser General Public License
+    | * version 2.1 as published by the Free Software Foundation.
+    | *
+    | * This program is distributed in the hope that it will be useful, but
+    | * WITHOUT ANY WARRANTY; without even the implied warranty of
+    | * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+    | * Lesser General Public License for more details.
+    | *
+    | * You should have received a copy of the GNU Lesser General Public
+    | * License along with this program; if not, write to the Free Software
+    | * Foundation, Inc., 51 Franklin St, Fifth bFloor, Boston, MA
+    | * 02110-1301 USA
+    | *
+    | */
+  head
+    meta content="text/html; charset=UTF-8" http-equiv="Content-Type"
+    meta content="IE=8" http-equiv="X-UA-Compatible"
+    title MeeGo QA Reports
+    = stylesheet_link_tag :all
+    - if use_nokia_layout?
+      link href="/stylesheets/themes/nokia.css" media="all" rel="stylesheet" type="text/css"
+    = javascript_include_tag "jquery.min.js"
+    = javascript_include_tag "jquery-ui.min.js"
+    = javascript_include_tag 'bluff/js-class.js'
+    = javascript_include_tag 'bluff/excanvas.js'
+    = javascript_include_tag 'bluff/bluff-min.js'
+    = javascript_include_tag 'application'
+    = csrf_meta_tag
+    - if @show_rss
+      link href=rss_url rel="alternate" title="RSS" type="application/rss+xml"
+    = google_analytics_tag
+    = clicktale_top_tag
+  body
+    a name="top"
+    = render :partial => "reports/page_header"
+    = yield :version_navi
+    #page
+      = yield
+    #footer
+    = clicktale_bottom_tag
