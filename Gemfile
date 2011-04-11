@@ -4,7 +4,7 @@ source 'http://rubygems.org'
 gem 'rails', '3.0.4'
 gem 'mysql2'
 gem 'nokogiri'
-gem 'devise', '1.1.3'
+gem 'devise', '1.1.9'
 gem 'fastercsv'
 gem 'rack', :git => "https://github.com/rack/rack.git" # Use next release when available
 gem "will_paginate", "3.0.pre2"
