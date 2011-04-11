@@ -438,7 +438,6 @@ class MeegoTestSession < ActiveRecord::Base
     filename.gsub(/[^\w\.\_\-]/, '_')
   end
 
-<<<<<<< HEAD
   def valid_filename_extension?(filename)
     if filename =~ /\.csv$/i or filename =~ /\.xml$/i
       return true
@@ -452,27 +451,16 @@ class MeegoTestSession < ActiveRecord::Base
   # For encapsulating the release_version          #
   ###############################################
   def release_version=(release_version)
-    @release_version = release_version
-    if release_version
-      version_label = VersionLabel.find(:first, :conditions => {:normalized => release_version.downcase})
-      if version_label
-        self.version_label_id = version_label.id
-      end
-    end
-    if !self.version_label_id
-      @release_version = self.latest_release_version
-      self.version_label_id = VersionLabel.find(:first, :conditions => {:normalized => self.latest_release_version.downcase})
-    end
+    version_label = VersionLabel.where( "normalized = ?", release_version.downcase)  
+    self.version_label = version_label.first  
   end
-  
-  def release_version
-    if !@release_version 
-      version_label = version_label = VersionLabel.find_by_id(self.version_label_id)
-      if version_label
-        @release_version = version_label.label
-      end
-    end
-    @release_version
+
+  def release_version 
+    if self.version_label
+      return self.version_label.label
+    else
+      return nil
+    end 
   end
 
   def generate_file_destination_path(original_filename)

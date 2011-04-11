@@ -1,6 +1,9 @@
 class MigrateReleaseVersionToVersionLabelIdInMeegoTestSession < ActiveRecord::Migration
+  class MeegoTestSession < ActiveRecord::Base  
+  end
+
   def self.up
-    #add_column :meego_test_sessions, :version_label_id, :integer, :null => false, :default => 1
+    add_column :meego_test_sessions, :version_label_id, :integer, :null => false, :default => 1
     
     sessions = MeegoTestSession.find(:all)
     targets = VersionLabel.find(:all)
@@ -18,5 +21,6 @@ class MigrateReleaseVersionToVersionLabelIdInMeegoTestSession < ActiveRecord::Mi
 
   def self.down
     remove_column :meego_test_sessions, :version_label_id
+    add_column :meego_test_sessions, :release_version, :string, :default => "", :null => false
   end
 end
