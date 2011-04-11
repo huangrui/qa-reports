@@ -214,6 +214,8 @@ class MeegoTestSession < ActiveRecord::Base
   def prev_session
     return @prev_session unless @prev_session.nil? and @has_prev.nil?
     time = tested_at || Time.now
+
+    # TODO: Works only if there's >= 1s difference between the timestamps
     @prev_session = MeegoTestSession.find(:first, :conditions => [
         "tested_at < ? AND target = ? AND testtype = ? AND hwproduct = ? AND published = ? AND release_version = ?", time, target.downcase, testtype.downcase, hwproduct.downcase, true, release_version
     ],
