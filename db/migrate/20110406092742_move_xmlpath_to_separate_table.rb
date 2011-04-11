@@ -1,4 +1,7 @@
 class MoveXmlpathToSeparateTable < ActiveRecord::Migration
+  class MeegoTestSession < ActiveRecord::Base
+  end
+
   def self.up
     # Due to maximum row length restriction in DB we need to move the paths
     # to a separate table.
