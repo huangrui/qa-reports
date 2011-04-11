@@ -8,18 +8,18 @@ Given /^I have sent a request with optional parameter "([^"]*)" with value "([^"
   sleep 1
 end
 
-def do_post( params )
+def api_import( params )
   post "api/import", params
 end
 
 When /^the client sends file "([^"]*)" via the REST API$/ do |file|
   # @default_api_opts defined in features/support/hooks.rb
-  do_post @default_api_opts.merge({ "report.1" => Rack::Test::UploadedFile.new("features/resources/#{file}", "text/xml") })
+  api_import @default_api_opts.merge( "report.1" => Rack::Test::UploadedFile.new("features/resources/#{file}", "text/xml") )
   response.should be_success
 end
 
 When /^the client sends file "([^"]*)" via the REST API with RESTful parameters$/ do |file|
-  do_post @default_api_opts.merge("report.1" => Rack::Test::UploadedFile.new("features/resources/#{file}", "text/xml"))
+  api_import @default_api_opts.merge("report.1" => Rack::Test::UploadedFile.new("features/resources/#{file}", "text/xml"))
   response.should be_success
 end
 
@@ -33,13 +33,13 @@ When /^the client sends reports "([^"]*)" via the REST API to test type "([^"]*)
     data["report."+(index+1).to_s] = Rack::Test::UploadedFile.new(file, "text/xml")
   end
 
-  do_post data
+  api_import data
   response.should be_success  
 end
 
 
 When /^the client sends file with attachments via the REST API$/ do
-  do_post @default_api_opts.merge({
+  api_import @default_api_opts.merge({
       "report.1"        => Rack::Test::UploadedFile.new("features/resources/sim.xml", "text/xml"),
       "report.2"        => Rack::Test::UploadedFile.new("features/resources/bluetooth.xml", "text/xml"),
       "attachment.1"    => Rack::Test::UploadedFile.new("public/images/ajax-loader.gif", "image/gif"),
@@ -49,18 +49,18 @@ When /^the client sends file with attachments via the REST API$/ do
 end
 
 When /^the client sends a request with string value instead of a files via the REST API$/ do
-    do_post @default_api_opts.merge("report.1" => "Foo!")
+    api_import @default_api_opts.merge("report.1" => "Foo!")
 end
 
 When /^the client sends a request without file via the REST API$/ do
   @default_api_opts.delete("report.1")
-  do_post @default_api_opts
+  api_import @default_api_opts
   response.should be_success
 end
 
 When /^the client sends a request without parameter "target" via the REST API$/ do
   @default_api_opts.delete("target")
-  do_post @default_api_opts
+  api_import @default_api_opts
   response.should be_success
 end
 
@@ -74,7 +74,7 @@ When /^the client sends a request with extra parameter "([^"]*)" via the REST AP
 end
 
 When /^the client sends a request with optional parameter "([^"]*)" with value "([^"]*)" via the REST API$/ do |opt, val|
-  do_post @default_api_opts.merge({
+  api_import @default_api_opts.merge({
     "report.1"        => Rack::Test::UploadedFile.new("features/resources/sim.xml", "text/xml"),
     opt               => val
   })
