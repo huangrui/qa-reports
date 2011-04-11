@@ -97,22 +97,21 @@ class UploadController < ApplicationController
   end
   
   def upload
-    files = params[:meego_test_session][:uploaded_files] || []
-
-    dnd = params[:drag_n_drop_attachments]
-    if dnd
-      dnd.each do |name|
-        files.push( DragnDropUploadedFile.new("public" + name, "rb") )
-      end
-  
-      params[:meego_test_session][:uploaded_files] = files
-    end
+    params[:meego_test_session][:uploaded_files] ||= []
+    params[:drag_n_drop_attachments] ||= []
+    
+    # Harmonize file handling between drag'n drop and form upload
+    params[:drag_n_drop_attachments].each do |name|
+      params[:meego_test_session][:uploaded_files].push( DragnDropUploadedFile.new("public" + name, "rb") )
+    end 
 
     @test_session = MeegoTestSession.new(params[:meego_test_session])
     @test_session.import_report(current_user)
     
     if @test_session.save
       session[:preview_id] = @test_session.id
+
+      # TODO: Write a cache sweeper
       expire_action :controller => "index", :action => "filtered_list", :release_version => params[:meego_test_session][:release_version], :target => params[:meego_test_session][:target], :testtype => params[:meego_test_session][:testtype], :hwproduct => params[:meego_test_session][:hwproduct]
       expire_action :controller => "index", :action => "filtered_list", :release_version => params[:meego_test_session][:release_version], :target => params[:meego_test_session][:target], :testtype => params[:meego_test_session][:testtype]
       expire_action :controller => "index", :action => "filtered_list", :release_version => params[:meego_test_session][:release_version], :target => params[:meego_test_session][:target]
