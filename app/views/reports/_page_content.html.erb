@@ -47,7 +47,7 @@
 
     <% if @test_session.has_non_nft? %>
 
-      <h2 id="detailed_results">Detailed Test Results <small><a href="">Download as CSV</a></small><span class="heading_actions"><%=back_to_top%></span></h2>
+      <h2 id="detailed_results">Detailed Test Results <small><a href="<%= url_for :controller => 'csv_export', :action => 'export_report', :release_version => @test_session.release_version, :target => @test_session.target, :testtype => @test_session.testtype, :hwproduct => @test_session.hwproduct, :id => @test_session.id %>">Download as CSV</a></small><span class="heading_actions"><%=back_to_top%></span></h2>
 
 
 
