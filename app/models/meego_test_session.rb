@@ -36,6 +36,7 @@ class MeegoTestSession < ActiveRecord::Base
   include Trimmer
   include Graph
   include MeasurementUtils
+  include CacheHelper
 
   attr_accessor :uploaded_files
 
@@ -488,7 +489,6 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 
-
   def remove_uploaded_files
     # TODO: when report is deleted files should be deleted as well
   end
@@ -577,6 +577,7 @@ class MeegoTestSession < ActiveRecord::Base
     total = 0
 
     rows         = CSV.read(filename);
+
     rows.shift # skip header row
     rows.each do |row|
       self.has_ft = true
@@ -601,10 +602,10 @@ class MeegoTestSession < ActiveRecord::Base
         set_counts[feature] = Counter.new()
       end
 
-      if passed
+      if passed == "1"
         result = 1
         set_counter.add_pass_count()
-      elsif failed
+      elsif failed == "1"
         result = -1
       else
         result = 0
@@ -620,6 +621,7 @@ class MeegoTestSession < ActiveRecord::Base
           :comment            => comments || "",
           :meego_test_session => self
       )
+
       total += 1
     end
     

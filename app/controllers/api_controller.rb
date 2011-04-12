@@ -23,6 +23,7 @@ require 'cache_helper'
 class ApiController < ApplicationController
   include CacheHelper
 
+  cache_sweeper :meego_test_session_sweeper, :only => [:import_data]
   before_filter :authenticate_user!
 
   def import_data
@@ -52,9 +53,6 @@ class ApiController < ApplicationController
 
     begin
       @test_session.save!
-
-      expire_caches_for(@test_session, true)
-      expire_index_for(@test_session)
 
       files = FileStorage.new()
       attachments.each { |file|
