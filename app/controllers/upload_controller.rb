@@ -27,6 +27,7 @@ require 'cache_helper'
 class UploadController < ApplicationController
   include CacheHelper
   
+  cache_sweeper :meego_test_session_sweeper, :only => [:upload]
   before_filter :authenticate_user!
   
   def upload_form
@@ -111,15 +112,7 @@ class UploadController < ApplicationController
     if @test_session.save
       session[:preview_id] = @test_session.id
 
-      # TODO: Write a cache sweeper
-      expire_action :controller => "index", :action => "filtered_list", :release_version => params[:meego_test_session][:release_version], :target => params[:meego_test_session][:target], :testtype => params[:meego_test_session][:testtype], :hwproduct => params[:meego_test_session][:hwproduct]
-      expire_action :controller => "index", :action => "filtered_list", :release_version => params[:meego_test_session][:release_version], :target => params[:meego_test_session][:target], :testtype => params[:meego_test_session][:testtype]
-      expire_action :controller => "index", :action => "filtered_list", :release_version => params[:meego_test_session][:release_version], :target => params[:meego_test_session][:target]
-      if ::Rails.env == "test"
-        redirect_to :controller => 'reports', :action => 'preview', :id => @test_session.id
-      else
-        redirect_to :controller => 'reports', :action => 'preview'
-      end
+      redirect_to :controller => 'reports', :action => 'preview'
     else
       init_form_values
       render :upload_form

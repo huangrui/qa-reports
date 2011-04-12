@@ -36,6 +36,7 @@ class MeegoTestSession < ActiveRecord::Base
   include Trimmer
   include Graph
   include MeasurementUtils
+  include CacheHelper
 
   attr_accessor :uploaded_files
 
@@ -487,7 +488,6 @@ class MeegoTestSession < ActiveRecord::Base
       end
     end
   end
-
 
   def remove_uploaded_files
     # TODO: when report is deleted files should be deleted as well
