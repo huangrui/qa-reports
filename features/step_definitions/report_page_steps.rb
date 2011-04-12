@@ -21,18 +21,16 @@ When /I view the group report "([^"]*)"$/ do |report_string|
   visit("/#{version}/#{target}/#{test_type}/#{hardware}")
 end
 
-Then /I should see in CSV the feature "([^"]*)" with case "([^"]*)", note "([^"]*)" and result "([^"]*)"$/ do |report_feature, report_case, report_note, report_result|
-  case_exists = false
-  FasterCSV.parse(page.body, {:col_sep => ';'}).each do |row|
-    if row[6] == report_feature then
-      row[7].should == report_case
-      row[11].should == report_note
-      combined_result = row[8] + ";" + row[9] + ";" + row[10]
-      combined_result.should == report_result
-      case_exists = true
-    end
-  end
-  case_exists.should be_true
+Then /I should see the imported data from "([^"]*)" and "([^"]*)" in the exported CSV.$/ do |file1, file2|
+  input = FasterCSV.read('features/resources/' + file1).drop(1) +
+          FasterCSV.read('features/resources/' + file2).drop(1)
+  result = FasterCSV.parse(page.body, {:col_sep => ';'}).drop(1)
+  result.count.should == input.count
+
+  mapped_result = result.map{ |item| [item[6], item[7], item[11], item[8], item[9], item[10]] }
+  (input - mapped_result).should be_empty
+
+
 end
 
 When /I view the report "([^"]*)"$/ do |report_string|
