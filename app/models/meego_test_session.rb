@@ -751,7 +751,7 @@ class MeegoTestSession < ActiveRecord::Base
   def create_version_label
     verlabel = VersionLabel.find(:first, :conditions => {:normalized => release_version.downcase})
     if verlabel
-      self.release_version = verlabel.label
+      self.version_label = verlabel
       save
     else
       verlabel = VersionLabel.new(:label => release_version, :normalized => release_version.downcase)
