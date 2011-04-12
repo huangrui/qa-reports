@@ -1,3 +1,5 @@
+require 'faster_csv'
+
 Then /^I should see the following table:$/ do |expected_report_front_pages_table|
   expected_report_front_pages_table.diff!(tableish('table tr', 'td,th'))
 end
@@ -12,6 +14,25 @@ end
 When /^I should see the sign in link without ability to add report$/ do
   And %{I should see "Sign In"}
   And %{I should not see "Add report"}
+end
+
+When /I view the group report "([^"]*)"$/ do |report_string|
+  version, target, test_type, hardware = report_string.downcase.split('/')
+  visit("/#{version}/#{target}/#{test_type}/#{hardware}")
+end
+
+Then /I should see in CSV the feature "([^"]*)" with case "([^"]*)", note "([^"]*)" and result "([^"]*)"$/ do |report_feature, report_case, report_note, report_result|
+  case_exists = false
+  FasterCSV.parse(page.body, {:col_sep => ';'}).each do |row|
+    if row[6] == report_feature then
+      row[7].should == report_case
+      row[11].should == report_note
+      combined_result = row[8] + ";" + row[9] + ";" + row[10]
+      combined_result.should == report_result
+      case_exists = true
+    end
+  end
+  case_exists.should be_true
 end
 
 When /I view the report "([^"]*)"$/ do |report_string|
