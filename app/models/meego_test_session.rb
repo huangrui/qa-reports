@@ -27,6 +27,7 @@ require 'trimmer'
 require 'report_parser'
 require 'validation/date_time_validator'
 require 'will_paginate'
+require 'file_storage'
 
 require 'graph'
 require 'nft'
@@ -113,6 +114,10 @@ class MeegoTestSession < ActiveRecord::Base
 
   def has_non_nft?
     return has_ft
+  end
+
+  def raw_result_files
+    FileStorage.new(dir="public/reports", baseurl="/reports/").list_report_files(self) or []
   end
 
   def self.targets
