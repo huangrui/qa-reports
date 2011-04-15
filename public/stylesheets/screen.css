@@ -1250,7 +1250,8 @@ th.filtered:last-child {
 #report_navigation th {
     padding-left: 15px;
     padding-top: 60px;
-    padding-bottom: 41px;}
+    padding-bottom: 41px;
+    width:16.6666%;}
 
 #report_navigation td {
     border-right: 1px solid #cacaca;
