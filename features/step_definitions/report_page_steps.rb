@@ -1,3 +1,5 @@
+require 'faster_csv'
+
 Then /^I should see the following table:$/ do |expected_report_front_pages_table|
   expected_report_front_pages_table.diff!(tableish('table tr', 'td,th'))
 end
@@ -12,6 +14,23 @@ end
 When /^I should see the sign in link without ability to add report$/ do
   And %{I should see "Sign In"}
   And %{I should not see "Add report"}
+end
+
+When /I view the group report "([^"]*)"$/ do |report_string|
+  version, target, test_type, hardware = report_string.downcase.split('/')
+  visit("/#{version}/#{target}/#{test_type}/#{hardware}")
+end
+
+Then /I should see the imported data from "([^"]*)" and "([^"]*)" in the exported CSV.$/ do |file1, file2|
+  input = FasterCSV.read('features/resources/' + file1).drop(1) +
+          FasterCSV.read('features/resources/' + file2).drop(1)
+  result = FasterCSV.parse(page.body, {:col_sep => ';'}).drop(1)
+  result.count.should == input.count
+
+  mapped_result = result.map{ |item| [item[6], item[7], item[11], item[8], item[9], item[10]] }
+  (input - mapped_result).should be_empty
+
+
 end
 
 When /I view the report "([^"]*)"$/ do |report_string|
@@ -45,7 +64,8 @@ end
 Given /^there exists a report for "([^"]*)"$/ do |report_name|
   version, target, test_type, hardware = report_name.split('/')
 
-  fpath = File.join(Rails.root, "features", "resources", "sample.csv")
+  fpath    = File.join(Rails.root, "features", "resources", "sample.csv")
+  testfile = DragnDropUploadedFile.new(fpath)
 
   user = User.create!(:name => "John Longbottom",
     :email => "email@email.com",
@@ -53,7 +73,7 @@ Given /^there exists a report for "([^"]*)"$/ do |report_name|
     :password_confirmation => "password")
 
   session = MeegoTestSession.new(:target => target, :hwproduct => hardware,
-    :testtype => test_type, :uploaded_files => [fpath],
+    :testtype => test_type, :uploaded_files => [testfile],
     :tested_at => Time.now, :author => user, :editor => user, :release_version => version
   )
   session.generate_defaults! # Is this necessary, or could we just say create! above?

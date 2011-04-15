@@ -37,6 +37,7 @@
 	<td class="pass"><%= feature_summary.total_passed %></td>
 	<td class="fail"><%= feature_summary.total_failed %></td>
 	<td class="na"><%= feature_summary.total_na %></td>
+        <td class="rate"><%= feature_summary.total_pass_rate %></td>
 	<td><%= feature_summary.graph_img_tag %></td>
 	<td class="feature_record_notes <%= 'edit' if @editing %>">
           <div class="content"><%= MeegoTestReport::format_txt(feature_summary.comments).html_safe %></div>

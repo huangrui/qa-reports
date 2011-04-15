@@ -131,9 +131,12 @@ renderSeriesGraphs = function(selector) {
         var updateLabels = function() {
             $(graph).find("div").each(function(idx,e) {
                 var $e = $(e);
-                if ($e.css("text-align") == "right") {
+                if ($e.css.has("top")) { 
+                    $e.css("width", parseInt($e.css("width"))+10);
+                    $e.css("left", -10);
                     $e.text($e.text() + yunit);
                 } else if ($e.css("text-align") == "center") {
+                    $e.css("width", parseInt($e.css("width"))+15);
                     $e.text($e.text() + xunit);
                 }
             });
@@ -897,7 +900,7 @@ function formatMarkup(s) {
         line = line.replace(/'''(.+?)'''/g, "<b>$1</b>");
         line = line.replace(/''(.+?)''/g, "<i>$1</i>");
         line = line.replace(/http\:\/\/([^\/]+)\/show_bug\.cgi\?id=(\d+)/g, "<a class=\"bugzilla fetch bugzilla_append\" href=\"http://$1/show_bug.cgi?id=$2\">$2</a>");
-        line = line.replace(/\[\[(http:\/\/.+?) (.+?)\]\]/g, "<a href=\"$1\">$2</a>");
+        line = line.replace(/\[\[(http[s]?:\/\/.+?) (.+?)\]\]/g, "<a href=\"$1\">$2</a>");
         line = line.replace(/\[\[(\d+)\]\]/g, "<a class=\"bugzilla fetch bugzilla_append\" href=\"" + BUGZILLA_URI + "$1\">$1</a>");
 
         var match;
@@ -1018,7 +1021,7 @@ function filterResults(rowsToHide, typeText) {
     	//setTableLoaderSize('#detailed_functional_test_results', '#history_loader');
     	//$('#history_loader').show();  
     	//history loader should be visible during AJAX loading
-    	$("table.detailed_results").hide(); 	     
+      $("#detailed_functional_test_results").hide();     
       $history.show();
       $history.find(".see_history_button").addClass("active");      
       return false;

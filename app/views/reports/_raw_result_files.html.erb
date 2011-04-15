@@ -1,0 +1,22 @@
+<% if (@raw_result_files != nil && @raw_result_files.length > 0) %>
+    <div class="emphasized_section">
+      <h2 id="raw_result_files">Original Result Files</h2>
+
+      <div class="container">
+        <ul class="item_list attachment" id="raw_result_file_list">
+          <span id="raw_file_attachment_list_ready">
+            
+            <% @raw_result_files.each do |file| %>
+            <li>
+	      <% if file[:exists] %>
+              <a target="_blank" href="<%= file[:url] %>"><%= file[:name] %></a>
+	      <% else %>
+	      <%= file[:name] %> (deleted)
+	      <% end %>
+            </li>
+            <% end %>
+          </span>
+        </ul>
+      </div>
+   </div>
+<% end %>

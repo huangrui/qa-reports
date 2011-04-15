@@ -1,0 +1,88 @@
+doctype html
+html 
+  /!
+    \/*
+    * This file is part of meego-test-reports
+    *
+    * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+    *
+    * Authors: Jussi Jokinen <jussijokinen@iki.fi>
+    *	       Sami Hangaslammi <sami.hangaslammi@leonidasoy.fi>
+    *
+    * This program is free software; you can redistribute it and/or
+    * modify it under the terms of the GNU Lesser General Public License
+    * version 2.1 as published by the Free Software Foundation.
+    *
+    * This program is distributed in the hope that it will be useful, but
+    * WITHOUT ANY WARRANTY; without even the implied warranty of
+    * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+    * Lesser General Public License for more details.
+    *
+    * You should have received a copy of the GNU Lesser General Public
+    * License along with this program; if not, write to the Free Software
+    * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+    * 02110-1301 USA
+    *
+    */
+  head
+    meta content="text/html; charset=UTF-8" http-equiv="Content-Type"
+    meta content="IE=8" http-equiv="X-UA-Compatible"
+
+    title MeeGo QA Reports
+    = stylesheet_link_tag :all
+    - if use_nokia_layout?
+      link href="/stylesheets/themes/nokia.css" media="all" rel="stylesheet" type="text/css"
+    = csrf_meta_tag
+    = javascript_include_tag "jquery.min.js"
+    = javascript_include_tag 'bluff/js-class.js'
+    = javascript_include_tag 'bluff/excanvas.js'
+    = javascript_include_tag 'bluff/bluff-min.js'
+    = javascript_include_tag 'dygraph-combined.js'
+    = yield :view_specific_js_head
+    = google_analytics_tag
+    = clicktale_top_tag
+
+  body
+    a name="top"
+    = yield :page_header
+    = yield :version_navi
+    #page
+      = yield :breadcrumbs
+      = yield :wizard_progress
+      = (out=yield :page_content)!='' ? out : render(:partial => 'page_content')
+      = yield :inplace_edit_templates
+      = yield :delete_dialog
+      = yield :category_dialog
+    #footer
+    .nft_drilldown_dialog.jqmWindow.nft_drilldown_modal_window style="display:none;"
+      h1 test case name
+      a.ui_btn.modal_close href=""
+        span X
+      #nft_drilldown_graph style="width:790px; height:290px;"
+      .nft_graph_options
+        div
+          h3 Usage
+          p
+            | Click and drag to zoom
+            br/
+            | Shift-drag to pan.
+            br/
+            | Doubleclick to zoom out.
+    = javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js"
+    javascript:
+      var BUGZILLA_URI = "#{BUGZILLA_CONFIG['link_uri']}";
+    = javascript_include_tag 'application'
+    = yield :view_specific_js
+    javascript:
+      // IE hack
+      if (typeof G_vmlCanvasManager != 'undefined') {
+        $(window).load(function(){
+          renderSeriesGraphs(".serial_canvas");
+        });
+      } else {
+        $(document).ready(function(){
+          renderSeriesGraphs(".serial_canvas");
+        });
+      }
+
+    = clicktale_bottom_tag

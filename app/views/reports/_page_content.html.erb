@@ -1,17 +1,18 @@
 
 <div class="page_content">
 
-  <%= yield :notification_area %>	
+    <%= yield :notification_area %>	
 
-  <% action = controller.action_name 
-  if action == 'compare' 
-    cache_key = @compare_cache_key
-  else
-    cache_key = "#{action}_page_#{@test_session.id}"
-  end %> 
-  <%= cache cache_key do %>
+    <% action = controller.action_name 
+    if action == 'compare' 
+      cache_key = @compare_cache_key
+    else
+      cache_key = "#{action}_page_#{@test_session.id}"
+    end %> 
 
     <%= yield :button_area %>
+
+    <%= cache cache_key do %>
 
     <%= render :partial => 'editable_title' %>
 
@@ -132,6 +133,8 @@
       <%= render :partial => 'editable_text', :locals => {:anchor => 'issue_summary', :title => "Issue Summary", :field => 'issue_summary'} %>
 
       <%= render :partial => 'reports/file_attachments' %>
+
+      <%= render :partial => 'reports/raw_result_files' %>
 
       <%= yield :wizard_actions %>
 

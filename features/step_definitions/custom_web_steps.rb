@@ -32,3 +32,38 @@ When /^fill in "([^"]*)" within "([^"]*)" with:$/ do |field, selector, data|
   end
 end
 
+When /^I view the page for the release version "([^"]*)"$/ do |version|
+  visit("/#{version}")
+end
+
+When /^I view the page for the "([^"]*)" (?:target|profile) of release version "([^"]*)"$/ do |target, version|
+  visit("/#{version}/#{target}")
+end
+
+When /^I view the page for "([^"]*)" (?:|testing) of (?:target|profile) "([^"]*)" in version "([^"]*)"$/ do |test_type, target, version|
+  visit("/#{version}/#{target}/#{test_type}")
+end
+
+When /^I view the page for "([^"]*)" (?:|testing )of "([^"]*)" hardware with (?:target|profile) "([^"]*)" in version "([^"]*)"$/ do |test_type, hardware, target, version|
+  visit("/#{version}/#{target}/#{test_type}/#{hardware}")
+end
+
+Then /^(?:|I )should find element "([^"]*)"(?: within "([^"]*)")?$/ do |text, selector|
+  with_scope(selector) do
+    if page.respond_to? :should
+      page.should have_selector(text)
+    else
+      assert page.has_selector?(text)
+    end
+  end
+end
+
+Then /^(?:|I )should not find element "([^"]*)"(?: within "([^"]*)")?$/ do |text, selector|
+  with_scope(selector) do
+    if page.respond_to? :should
+      page.should have_no_selector(text)
+    else
+      assert page.has_no_selector?(text)
+    end
+  end
+end

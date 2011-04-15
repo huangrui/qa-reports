@@ -23,18 +23,14 @@ require 'cache_helper'
 class ApiController < ApplicationController
   include CacheHelper
 
+  cache_sweeper :meego_test_session_sweeper, :only => [:import_data]
   before_filter :authenticate_user!
 
   def import_data
     data = request.query_parameters.merge(request.request_parameters)
     data.delete(:auth_token)
 
-    errors                = []
-
-    if !errors.empty?
-      render :json => {:ok => '0', :errors => errors.join('; ')}
-      return
-    end
+    errors = []
 
     data[:uploaded_files] = collect_files(data, "report", errors)
     attachments           = collect_files(data, "attachment", errors)
@@ -44,7 +40,7 @@ class ApiController < ApplicationController
       return
     end
 
-    data[:tested_at] = data[:tested_at] || Time.now
+    data[:tested_at] ||= Time.now
 
     begin
       @test_session = MeegoTestSession.new(data)
@@ -58,12 +54,9 @@ class ApiController < ApplicationController
     begin
       @test_session.save!
 
-      expire_caches_for(@test_session, true)
-      expire_index_for(@test_session)
-
       files = FileStorage.new()
       attachments.each { |file|
-        files.add_file(@test_session, file, MeegoTestSession::get_filename(file))
+        files.add_file(@test_session, file, file.original_filename)
       }
       report_url = url_for :controller => 'reports', :action => 'view', :release_version => data[:release_version], :target => data[:target], :testtype => data[:testtype], :hwproduct => data[:hwproduct], :id => @test_session.id
       render :json => {:ok => '1', :url => report_url}
@@ -72,6 +65,7 @@ class ApiController < ApplicationController
       invalid.record.errors.each {|key, value| error_messages[key] = value}
       render :json => {:ok => '0', :errors => error_messages}
     end
+
   end
 
   def update_result
@@ -107,28 +101,25 @@ class ApiController < ApplicationController
         return
       end
 
-      begin
+      if parse_err.present?
+        render :json => {:ok => '0', :errors => "Request contained invalid files: " + parse_err}
+        return
+      end
+
+      if @test_session.valid?
         @test_session.save!
 
         expire_caches_for(@test_session, true)
         expire_index_for(@test_session)
 
-      rescue ActiveRecord::RecordInvalid => invalid
-        render :json => {:ok => '0', :errors => invalid.record.errors}
-      end
-      
-      if nil == parse_err
-        delete_dirty_data(original_sets)
-        delete_dirty_data(original_cases)
-        render :json => {:ok => '1'}
       else
-        dirty_sets = @test_session.meego_test_sets   - original_sets
-        delete_dirty_data(dirty_sets)
-        dirty_cases = @test_session.meego_test_cases - original_cases
-        delete_dirty_data(dirty_cases)
-        render :json => {:ok => '0', :errors => "Request contained invalid files: " + parse_err}
+        render :json => {:ok => '0', :errors => invalid.record.errors}
         return
       end
+      
+      delete_dirty_data(original_sets)
+      delete_dirty_data(original_cases)
+      render :json => {:ok => '1'}
     end
   end
 

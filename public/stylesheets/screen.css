@@ -1386,11 +1386,18 @@ td.dec em{
     width:40px;
     text-align: center;}
 
-#test_results .total,
-#test_results .pass,
-#test_results .fail,
-#test_results .na {
+.th_pass_rate{
+  text-align: right;}
+
+#test_results_by_feature .total,
+#test_results_by_feature .pass,
+#test_results_by_feature .fail,
+#test_results_by_feature .na {
     text-align: center; }
+
+#test_results_by_feature .rate {
+  text-align: right;
+}
 
 .th_graph {
     width:25%;}
@@ -1694,7 +1701,7 @@ width: 35px;
 #nft_drilldown_graph {
         width: 823px;
         height: 314px;
-        padding: 10px;
+        padding: 20px;
         border: 1px solid #b2b2b2;
 }
 
