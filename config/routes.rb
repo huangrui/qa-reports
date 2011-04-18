@@ -13,6 +13,7 @@ Meegoqa::Application.routes.draw do
   match '/api/update/:id' => 'api#update_result', :via => "post"
 
   match '/finalize' => 'reports#preview', :via => "get"
+  match '/finalize/download' => 'csv_export#export_report', :via => "get"
   match '/publish' => 'reports#publish', :via => "post"
   
   match '/upload' => 'upload#upload_form', :via => "get"
@@ -59,6 +60,7 @@ Meegoqa::Application.routes.draw do
 
     match '/:release_version/:target/:testtype/:hwproduct/:id' => 'reports#view', :via => "get"
     match '/:release_version/:target/:testtype/:hwproduct/:id/edit' => 'reports#edit', :via => "get"
+    match '/:release_version/:target/:testtype/:hwproduct/:id/download' => 'csv_export#export_report', :via => "get"
     match '/:release_version/:target/:testtype/:hwproduct/:id/delete' => 'reports#delete', :via => "post"
     match '/:release_version/:target/:testtype/:hwproduct/:id/print' => 'reports#print', :via => "get"
 
