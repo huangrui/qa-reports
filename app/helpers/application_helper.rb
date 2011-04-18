@@ -93,6 +93,14 @@ module ApplicationHelper
             html += '<li>'
             link_text = "v#{release}"
         end
+      elsif release =~ /^[A-Za-z][0-9]$/
+        if release.downcase.eql? current_version.downcase
+          html += '<li class="current">'
+          link_text = "MeeGo #{release}"
+        else
+          html += '<li>'
+          link_text = "#{release}"
+        end
       else
         if release == current_version
           html += '<li class="current">'

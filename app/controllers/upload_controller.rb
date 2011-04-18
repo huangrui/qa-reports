@@ -46,7 +46,7 @@ class UploadController < ApplicationController
     else
       TargetLabel.first_label
     end
-
+    
     @test_session.release_version = if @test_session.release_version.present?
       @test_session.release_version
     elsif default_version.present?

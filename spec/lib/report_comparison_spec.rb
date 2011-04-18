@@ -32,7 +32,8 @@ class ReportComparisonSpec < ActiveSupport::TestCase
           :title => "Test1",
           :target => "Core",
           :testtype => "Sanity",
-          :hwproduct => "N900"
+          :hwproduct => "N900",
+          :release_version => "1.2"
       }, [@file1], user)
 
       @session2 = MeegoTestSession.unsafe_import({
@@ -40,7 +41,8 @@ class ReportComparisonSpec < ActiveSupport::TestCase
           :title => "Test1",
           :target => "Core",
           :testtype => "Sanity Testing",
-          :hwproduct => "N900"
+          :hwproduct => "N900",
+          :release_version => "1.2"
       }, [@file2], user)
     end
 

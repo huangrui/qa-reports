@@ -45,7 +45,8 @@ if Rails.env == "staging" and MeegoTestSession.count < 10000 # ensure there's al
       "environment_txt" => "",
       "issue_summary_txt" => "",
       "target" => "Core",
-      "objective_txt" => ""
+      "objective_txt" => "",
+      "release_version" => "1.2"
     )
     session.generate_defaults!
     session.tested_at = Time.now
