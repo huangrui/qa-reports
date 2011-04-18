@@ -118,7 +118,7 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def raw_result_files
-    FileStorage.new(dir="public/reports", baseurl="/reports/").list_report_files(self) or []
+    FileStorage.new(dir="public/reports", baseurl="/reports/").list_report_files(self)
   end
 
   def self.targets
