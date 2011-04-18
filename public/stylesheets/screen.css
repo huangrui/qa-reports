@@ -155,6 +155,12 @@ h2 {
     border-top: 1px solid #ccc;
     padding-top: 10px;}
 
+h2 small {
+	font-size: .55em;
+	font-weight:normal;
+	margin-left:1em;}
+	
+
 h3 {
     font-size: 1.3333em;
     line-height: 1.125;
