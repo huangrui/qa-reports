@@ -59,12 +59,12 @@ ActiveRecord::Schema.define(:version => 20110406131351) do
     t.integer  "total_pass",                        :default => 0,     :null => false
     t.integer  "total_fail",                        :default => 0,     :null => false
     t.integer  "total_na",                          :default => 0,     :null => false
-    t.string   "release_version",                   :default => "",    :null => false
     t.boolean  "has_nft",                           :default => false, :null => false
     t.boolean  "has_ft",                            :default => true,  :null => false
+    t.integer  "version_label_id",                  :default => 1,     :null => false
   end
 
-  add_index "meego_test_sessions", ["release_version", "target", "testtype", "hwproduct"], :name => "index_meego_test_sessions_key"
+  add_index "meego_test_sessions", ["version_label_id", "target", "testtype", "hwproduct"], :name => "index_meego_test_sessions_key"
 
   create_table "meego_test_sets", :force => true do |t|
     t.string  "feature",               :default => ""
