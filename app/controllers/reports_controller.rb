@@ -194,6 +194,8 @@ class ReportsController < ApplicationController
       @hardware = MeegoTestSession.list_hardware @selected_release_version
       @release_versions = MeegoTestSession.release_versions
 
+      @raw_result_files = @test_session.raw_result_files
+
       render :layout => "report"
     else
       redirect_to :controller => 'upload', :action => :upload_form
@@ -239,7 +241,7 @@ class ReportsController < ApplicationController
 
       @report    = @test_session
       @files = FileStorage.new().list_files(@test_session) or []
-      @raw_result_files = FileStorage.new(dir="public/reports", baseurl="/reports/").list_report_files(@test_session) or []
+      @raw_result_files = @test_session.raw_result_files
       @editing = false
       @wizard  = false
 
@@ -278,6 +280,7 @@ class ReportsController < ApplicationController
       @release_versions = MeegoTestSession.release_versions
       @no_upload_link = true
       @files = FileStorage.new().list_files(@test_session) or []
+      @raw_result_files = @test_session.raw_result_files
 
       render :layout => "report"
     else
