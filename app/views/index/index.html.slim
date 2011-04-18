@@ -1,0 +1,16 @@
+- content_for :version_navi do
+  #version_navi
+    = release_version_navigation(@selected_release_version)
+#index_page
+  table#report_navigation
+    thead
+      tr
+        - MeegoTestSession::targets.each { |target|
+        th scope="col"
+          a href=filtered_index_url(target) =target
+        - }
+    tr
+      - MeegoTestSession::targets.each { |target|
+      td
+        = render :partial=>'testtype', :collection=>@types[target], :locals => {:target=>target}
+      - }
