@@ -1,0 +1,62 @@
+- content_for :page_header do
+  = render :partial => "page_header"
+
+- content_for :notification_area do
+  .notification Edit the report information.
+
+- content_for :table_of_contents do
+  = render :partial => "toc"
+
+- content_for :result_edit_notification do
+  = render :partial => "result_edit_notification"
+
+- content_for :wizard_actions do
+  #wizard_actions
+    #wizard_buttons
+      a.big_btn.submit href=url_for(:controller=>'reports', :action=>'view', :id=>@test_session.id) Done
+
+- content_for :inplace_edit_templates do
+  = render :partial => "inplace_edit_templates"
+
+- content_for :view_specific_js_head do
+  = javascript_include_tag "uploadify/swfobject.js"
+  = javascript_include_tag "uploadify/jquery.uploadify.v2.1.4.min.js"
+
+- content_for :view_specific_js do
+  = javascript_include_tag 'datetime'
+  = javascript_include_tag 'jqModal.js'
+  javascript:
+    var SESSION_ID = "<haml:loud>@test_session.id</haml:loud>";
+    $(document).ready(function(){
+    $('#category-dialog').jqm({
+    modal:true
+    }).jqmAddTrigger('#test_category');
+    
+    $("#report_test_execution_date").datepicker({
+    showOn: "both",
+    buttonImage: "/images/calendar_icon.png",
+    buttonImageOnly: true,
+    firstDay: 1,
+    selectOtherMonths: true,
+    dateFormat: "yy-mm-dd"
+    });
+    
+    $('#report_test_execution_date').val("<haml:loud>@test_session.formatted_date</haml:loud>");
+    
+    activateSuggestionLinks("div.field");
+    
+    filterResults("tr.result_pass", "passing tests");
+    linkEditButtons();
+    fetchBugzillaInfo();
+    prepareCategoryUpdate("#category-dialog");
+    });
+
+- content_for :category_dialog do
+  #category-dialog.jqmWindow style="display:none;"
+    = form_for @test_session, :url=>{:action => "update_category"}, :html => {:id => 'upload_report', :method=>'post'} do |f|
+      h1 Change test category
+      = render :partial => 'shared/report_form', :object => f
+    form
+      #wizard_actions
+        input.dialog-cancel.jqmClose type="button" value="Cancel"
+        input.dialog-delete type="submit" value="Save"
