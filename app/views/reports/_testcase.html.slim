@@ -1,5 +1,5 @@
 tr class="testcase #{result_class(testcase, 'result_')}" id="testcase-#{testcase.id}" style=hide_passing(testcase)
-  td.testcase_name 
+  td.testcase_name
     = testcase.name
     - if not testcase.source_link.blank?
       a.dl_link href=(testcase.source_link)

@@ -1,0 +1,78 @@
+- content_for :page_header do
+  = render :partial => "page_header"
+
+- content_for :breadcrumbs do
+  = breadcrumbs
+
+- content_for :page_content do
+  h1
+    em
+      = @testtype
+      |  vs. 
+      = @comparison_testtype
+      | : 
+    = @target
+
+  h2 Summary
+  .clearfix
+    .result_caption.big_number
+      strong#changed_to_pass.pass= @comparison.changed_to_pass
+      | Test result
+      br/
+      | changed to 
+      em pass
+    .result_caption.big_number
+      strong#changed_to_fail.fail= @comparison.changed_to_fail
+      | Test result
+      br/
+      | changed to 
+      em fail
+    .result_caption.big_number
+      strong#changed_to_na= @comparison.changed_to_na
+      | Test result
+      br/
+      | changed to 
+      em N/A
+    .new_tests.result_caption
+      .result_caption_header
+        strong New tests:
+      .result_caption.medium_number
+        strong.pass= @comparison.new_passing
+        | Passing
+      .result_caption.medium_number
+        strong.fail= @comparison.new_failing
+        | Failing
+      .result_caption.medium_number
+        strong= @comparison.new_na
+        | N/A
+
+  h2 Detailed results
+  table#compare_details.detailed_results
+    thead
+      tr
+        th#th_test_case
+          span.sort
+            /! <a href="#" id="see_only_regression_button" class="sort_btn active">Regression</a>
+            a.see_only_failed_button.sort_btn.active href="#" Changed
+            a.see_all_button.sort_btn href="#" See all
+        th.column_head_1 colspan=@comparison.columns.length #{@testtype}
+        th.column_head_separate
+        th.column_head_1 colspan=@comparison.columns.length #{@comparison_testtype}
+      tr.compare_testtype
+        th.first_col
+        - @comparison.columns.each_with_index do |name, index|
+          th class="column_#{index} column_head_2" #{name}
+
+        th.column_head_separate_2
+        - @comparison.columns.each_with_index do |name, index|
+          th class="column_#{index + @comparison.columns.length} column_head_2" #{name}
+
+    tbody
+      = render :partial => "compare_group", :collection => @groups, :as => :group
+
+- content_for :view_specific_js do
+  javascript:
+    $(document).ready(function(){
+    filterResults("tr.testcase:not(.has_changes)", "unchanged tests");
+    fetchBugzillaInfo();
+    });
