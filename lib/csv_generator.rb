@@ -67,7 +67,9 @@ module CsvGenerator
 
   def self.generate_csv_report(release_version, target, testtype, hwproduct, id)
     sql = <<-END
-      select mtset.feature, mtc.name, mtc.comment, if(mtc.result = 1,1,null) as passes, if(mtc.result = -1,1,null) as fails,
+      select mtset.feature, mtc.name, mtc.comment, 
+        if(mtc.result = 1,1,null) as passes, 
+        if(mtc.result = -1,1,null) as fails,
         if(mtc.result = 0,1,null) as nas
       from meego_test_sets as mtset
         join meego_test_cases as mtc on (mtc.meego_test_set_id = mtset.id)
@@ -75,11 +77,8 @@ module CsvGenerator
     END
 
     conditions = []
-    conditions << "mts.hwproduct = '#{hwproduct}'"
-    conditions << "mts.target = '#{target}'"
-    conditions << "mts.testtype = '#{testtype}'"
-    conditions << "mts.release_version = '#{release_version}'"
     conditions << "mts.id = '#{id}'"
+
 
     sql += " where " + conditions.join(" and ") + "order by mtset.id, mtc.id" + ";"
 

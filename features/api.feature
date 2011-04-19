@@ -89,13 +89,14 @@ Feature: REST API
 
   Scenario: Sending REST import first with user defined test environment and then without
     Given I have sent a request with optional parameter "environment_txt" with value "Emulator" via the REST API
+    Then the REST result "ok" is "1"
 
     When the client sends file "sim.xml" via the REST API
 
     Then the REST result "ok" is "1"
     And I should be able to view the latest created report
 
-    Then I should see "Hardware: N900"
+    Then I should see "Emulator"
 
 
   # For the optional parameters, title, build_txt/Build (image), objective_txt (Test Objective), qa_summary_txt/(Quality Summary), issue_summary_txt

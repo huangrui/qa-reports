@@ -82,11 +82,9 @@ When /^the client sends a request with optional parameter "([^"]*)" with value "
   response.should be_success
 end
 
-When /I view the latest report "([^"]*)"$/ do |report_string|
+When /^I view the latest report "([^"]*)"/ do |report_string|
   version, target, test_type, hardware = report_string.downcase.split('/')
-  report = MeegoTestSession.first(:order => "id DESC", :conditions =>
-   {:release_version => version, :target => target, :hwproduct => hardware, :testtype => test_type}
-  )
+  report = MeegoTestSession.joins(:version_label).where(:version_labels => {:label => version}, :target => target, :hwproduct => hardware, :testtype => test_type).first
   raise "report not found with parameters #{version}/#{target}/#{hardware}/#{test_type}!" unless report
   visit("/#{version}/#{target}/#{test_type}/#{hardware}/#{report.id}")
 end
