@@ -20,6 +20,43 @@
             a#abs_button.ui_btn.inactive Absolute values
             a#rel_button.ui_btn Relative %
             a#csv_report_link href=url_for(:controller=>'csv_export', :action=>'export', :release_version=>@selected_release_version, :target=>@target, :testtype=>@testtype, :hwproduct=>@hwproduct) Download as CSV
+
+        .index_section
+          h2 
+            | Changes from previous results
+            a.compare href=""
+          .clearfix
+            .result_caption.big_number
+              strong#changed_to_pass.pass +3
+              | Test result
+              br/
+              | changed to
+              em pass
+            .result_caption.big_number
+              strong#changed_to_fail.fail -10
+              | Test result
+              br/
+              | changed to
+              em fail
+            .result_caption.big_number
+              strong#changed_to_na 1
+              | Test result
+              br/
+              | changed to
+              em N/A
+            .new_tests.result_caption
+              .result_caption_header
+                strong New tests:
+              .result_caption.medium_number
+                strong.pass 4
+                | Passing
+              .result_caption.medium_number
+                strong.fail 1
+                | Failing
+              .result_caption.medium_number
+                strong 13
+                | N/A
+
         = render :partial=>'month', :collection => @headers
         = will_paginate @paginated_sessions
 
