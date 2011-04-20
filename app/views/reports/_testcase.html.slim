@@ -1,0 +1,14 @@
+tr class="testcase #{result_class(testcase, 'result_')}" id="testcase-#{testcase.id}" style=hide_passing(testcase)
+  td.testcase_name
+    = testcase.name
+    - if not testcase.source_link.blank?
+      a.dl_link href=(testcase.source_link)
+    - if not testcase.binary_link.blank?
+      a.dl_link href=(testcase.binary_link)
+  td class="testcase_result #{result_class(testcase)} #{'edit' if @editing} #{testcase.find_change_class(@test_session.prev_session)} "
+    span.content #{result_html(testcase)}
+  td class="testcase_notes #{'edit' if @editing}"
+    .content #{comment_html(testcase)}
+    - if @editing
+      .comment_markup style="display:none;"
+      

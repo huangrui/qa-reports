@@ -1,0 +1,11 @@
+- if @editing
+  | <div class="editable_text editable_title">
+
+h1.clearfix
+  span.content= @report.title
+  span.heading_actions
+
+= yield :view_in_browser_link
+
+- if @editing
+  | </div>

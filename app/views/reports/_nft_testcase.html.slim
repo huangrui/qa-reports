@@ -1,0 +1,60 @@
+- testcase = nft_testcase
+- first = true
+- all = testcase.all_measurements
+
+- all.each do |m|
+  tr class="testcase multiple_rows #{'even' if (nft_testcase_counter%2) == 0}" id="#{'testcase-' + testcase.id.to_s if first}"
+    - if first
+      td.testcase_name rowspan=all.size
+        = testcase.name
+        - if not testcase.source_link.blank?
+          a.dl_link href=testcase.source_link src
+        - if not testcase.binary_link.blank?
+          a.dl_link href=testcase.binary_link rpm
+
+    - if m.is_serial?
+      td.testcase_measurement= m.name
+      td.testcase_graph colspan="4"
+        .modal_graph style="display:none"
+          span.modal_graph_title= testcase.name
+          span.modal_graph_data= m.long_json
+          span.modal_graph_x_unit= m.interval_unit or ""
+          span.modal_graph_y_unit= m.unit
+
+        .serial_canvas id="graph-#{m.id}" style="visibility:hidden;width:287px;height:46px"
+          = m.short_json
+
+        table.nft_graph_key_figures
+          tr
+            td.unit= m.unit
+            td
+              span.unit min.
+              '  
+              = m.min_html
+            td
+              span.unit avg.
+              '  
+              = m.avg_html
+            td
+              span.unit max.
+              '  
+              = m.max_html
+            td
+              span.unit med.
+              '  
+              = m.med_html
+    - else
+      td.testcase_measurement= m.name
+      td.testcase_value= m.value_html
+      td.testcase_target= m.target_html
+      td.testcase_limit= m.failure_html
+      td class="testcase_to_target #{result_class(m.target_result)}" =m.relative_html
+
+    - if first
+      td class="testcase_result multiple_results #{result_class(testcase)} #{'edit' if @editing} #{testcase.find_change_class(@test_session.prev_session)} " rowspan=all.size
+        span.content= result_html(testcase)
+      td class="testcase_notes #{'edit' if @editing}" rowspan=all.size
+        .content= comment_html(testcase)
+        - if @editing
+          .comment_markup style="display:none;" #{testcase.comment}
+    - first = false

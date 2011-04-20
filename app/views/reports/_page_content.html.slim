@@ -1,0 +1,102 @@
+.page_content
+  = yield :notification_area
+
+  - action = controller.action_name
+  - if action == 'compare'
+    - cache_key = @compare_cache_key
+  - else
+    - cache_key = "#{action}_page_#{@test_session.id}"
+
+  = yield :button_area
+
+  = cache cache_key do
+    = render :partial => 'editable_title'
+    = yield :title || render(:partial => 'editable_title')
+    .report_head
+      = yield :table_of_contents
+      dl.meta_info
+        dt#report_author Author:
+        dd
+          = @report.author.name
+          br/
+          span.un= format_date_to_human_readable @report.created_at
+        dt Last modified by:
+        dd
+          = @report.editor.name
+          br/
+          span.un= format_date_to_human_readable @report.updated_at
+        = render :partial => 'editable_date'
+
+    = render :partial => 'editable_text', :locals => {:anchor => 'test_objective', :title => "Test Objective", :field => 'objective'}
+    = render :partial => 'editable_text', :locals => {:anchor => 'build', :title => "Build (image)", :field => 'build'}
+    = render :partial => 'editable_text', :locals => {:anchor => 'environment', :title => "Test Environment", :field => 'environment'}
+    = render :partial => 'editable_text', :locals => {:anchor => 'qa_summary', :title => "Quality Summary", :field => 'qa_summary'}
+    = render :partial => 'reports/test_results'
+    
+    = yield :result_edit_notification
+    
+    - if @test_session.has_non_nft?
+      h2#detailed_results
+        | Detailed Test Results 
+        small
+          a href=url_for(:controller=>'csv_export', :action=>'export_report', :release_version=>@test_session.release_version, :target=>@test_session.target, :testtype=>@test_session.testtype, :hwproduct=>@test_session.hwproduct, :id=>@test_session.id) Download as CSV
+        span.heading_actions= back_to_top
+
+      table#detailed_functional_test_results.detailed_results
+        #history_loader.loading
+          strong Loading history data, please wait…
+        thead
+          tr
+            th#th_test_case
+              span.sort
+                a.see_only_failed_button.sort_btn.active href="#" See only failed
+                a.see_all_button.sort_btn href="#" See all
+                - if @history
+                  a.see_history_button.sort_btn href="#" See history
+            th#th_result Result
+            th#th_notes Notes
+        = render :partial => "feature", :collection => @test_session.non_nft_sets
+
+      - if @history
+        table.detailed_results.history style="display:none;"
+          thead
+            tr
+              th#th_history_test_case
+                span.sort
+                  a.see_only_failed_button.sort_btn href="#" See only failed
+                  a.see_all_button.sort_btn href="#" See all
+                  a.see_history_button.sort_btn.active href="#" See history
+              = history_headers(@history)
+              th.th_result Current
+              th
+                div style="position:relative;"
+          = render :partial => "feature_history", :collection => @test_session.non_nft_sets
+
+    - if @test_session.has_nft?
+      h2#detailed_nft_results
+        | Non-functional Test Results
+        span.heading_actions= back_to_top
+      table#non-functional_results.detailed_results
+        thead
+          tr
+            th#th_nft_test_case
+                /| <span class="sort">
+                /| <a href="#" id="see_only_failed_button" class="sort_btn active">See only failed</a>
+                /| <a href="#" id="see_all_button" class="sort_btn">See all</a>
+                /| </span>
+            th.th_name Measurement
+            th.th_measured Value
+            th.th_target Target
+            th.th_limit Fail limit
+            th.th_to_target % of target
+            th.th_result Result
+            th#th_notes Notes
+        = render :partial => "nft_feature", :collection => @test_session.nft_sets
+
+    = render :partial => 'editable_text', :locals => {:anchor => 'issue_summary', :title => "Issue Summary", :field => 'issue_summary'}
+
+    = render :partial => 'reports/file_attachments'
+
+    = render :partial => 'reports/raw_result_files'
+
+    = yield :wizard_actions

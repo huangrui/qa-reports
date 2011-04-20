@@ -1,0 +1,24 @@
+tr.feature_name
+  td colspan=(2 + 2*@comparison.columns.length)
+    = print_title_link(group.name)
+    a.see_all_toggle href="#" + see all
+
+| </tbody>
+
+tbody
+  - reset_cycle()
+  - group.rows.each_with_index do |row, index|
+    tr id="row_#{index}" class="testcase#{' has_changes' if row.changed} #{cycle('odd','even')}" style="#{'display:none;' if !row.changed}"
+
+      td.testcase_name= row.name
+
+      - @comparison.columns.each_with_index do |column, column_index|
+        - testcase = row.value(column).left     
+        td class="testcase_result #{result_class(testcase)} column_#{column_index}" =result_html(testcase)
+
+      td class="change_indicator #{' changed_result' if row.changed}"
+      
+      - @comparison.columns.each_with_index do |column, column_index|
+        - testcase = row.value(column).right
+        td class="testcase_result #{result_class(testcase)} column_#{column_index + @comparison.columns.length}" =result_html(testcase)
+

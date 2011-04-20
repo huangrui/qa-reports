@@ -1,0 +1,31 @@
+h2#contents_title Contents
+ol.toc
+  li 
+    a href="#test_objective" Test objective
+  li 
+    a href="#build" Build (image)
+  li 
+    a href="#environment" Test Environment
+  li
+    a href="#qa_summary" Quality Summary
+  li
+    a href="#test_results" Test Results
+  ol
+    li
+      a href="#test_results" Result Summary
+    li
+      a href="#test_features" Test Results by Feature
+    - if @test_session.has_non_nft?
+      li
+        a href="#detailed_results" Detailed Test Results
+    - if @test_session.has_nft?
+      li
+        a href="#detailed_nft_results" Non-Functional Test Results
+  li
+    a href="#issue_summary" Issue Summary
+  - if (@files != nil && @files.length > 0) || @editing
+    li
+      a href="#attachments" Attachments
+  - if (@raw_result_files != nil && @raw_result_files.length > 0) || @editing
+    li
+      a href="#raw_result_files" Original Result Files
