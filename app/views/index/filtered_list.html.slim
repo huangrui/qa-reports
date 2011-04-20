@@ -24,37 +24,38 @@
         .index_section
           h2 
             | Changes from previous results
-            a.compare href=""
+            / TODO: comparison view
+            / a.compare href=""
           .clearfix
             .result_caption.big_number
-              strong#changed_to_pass.pass +3
+              strong#changed_to_pass.pass =@changed_to_pass
               | Test result
               br/
-              | changed to
+              | changed to 
               em pass
             .result_caption.big_number
-              strong#changed_to_fail.fail -10
+              strong#changed_to_fail.fail =@changed_to_fail
               | Test result
               br/
-              | changed to
+              | changed to 
               em fail
             .result_caption.big_number
-              strong#changed_to_na 1
+              strong#changed_to_na =@changed_to_na
               | Test result
               br/
-              | changed to
+              | changed to 
               em N/A
             .new_tests.result_caption
               .result_caption_header
                 strong New tests:
               .result_caption.medium_number
-                strong.pass 4
+                strong#total_passed.pass =@total_passed
                 | Passing
               .result_caption.medium_number
-                strong.fail 1
+                strong#total_failed.fail =@total_failed
                 | Failing
               .result_caption.medium_number
-                strong 13
+                strong#total_na =@total_na
                 | N/A
 
         = render :partial=>'month', :collection => @headers
