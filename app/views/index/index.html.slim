@@ -6,12 +6,11 @@
   table#report_navigation
     thead
       tr
-        - MeegoTestSession::targets.each { |target|
-        th scope="col"
-          a href=filtered_index_url(target) =target
-        - }
+        - MeegoTestSession::targets.each do |target|
+          th scope="col"
+            a href=filtered_index_url(target) =target
+
     tr
-      - MeegoTestSession::targets.each { |target|
-      td
-        = render :partial=>'testtype', :collection=>@types[target], :locals => {:target=>target}
-      - }
+      - MeegoTestSession::targets.each do |target|
+        td
+          = render :partial=>'testtype', :collection=>@types[target], :locals => {:target=>target}
