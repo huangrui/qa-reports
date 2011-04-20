@@ -54,7 +54,7 @@
   = javascript_include_tag 'datetime'
   = javascript_include_tag 'jqModal.js'
   javascript:
-    var SESSION_ID = "<haml:loud>@test_session.id</haml:loud>";
+    var SESSION_ID = "#{@test_session.id}";
     $(document).ready(function(){
     $('#category-dialog').jqm({
     modal:true
@@ -69,7 +69,7 @@
     dateFormat: "yy-mm-dd"
     });
     
-    $('#report_test_execution_date').val("<haml:loud>@test_session.formatted_date</haml:loud>");
+    $('#report_test_execution_date').val("#{@test_session.formatted_date}");
     
     activateSuggestionLinks("div.field");
     
