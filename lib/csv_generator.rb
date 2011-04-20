@@ -74,13 +74,9 @@ module CsvGenerator
       from meego_test_sets as mtset
         join meego_test_cases as mtc on (mtc.meego_test_set_id = mtset.id)
         join meego_test_sessions as mts on (mtc.meego_test_session_id = mts.id)
+      where mts.id = '#{id}'
+      order by mtset.id, mtc.id;
     END
-
-    conditions = []
-    conditions << "mts.id = '#{id}'"
-
-
-    sql += " where " + conditions.join(" and ") + "order by mtset.id, mtc.id" + ";"
 
     result = ActiveRecord::Base.connection.execute(sql)
 
