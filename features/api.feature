@@ -96,7 +96,6 @@ Feature: REST API
     Then the REST result "ok" is "1"
     And I should be able to view the latest created report
 
-    Then show me the page
     Then I should see "Hardware: N900"
 
 
