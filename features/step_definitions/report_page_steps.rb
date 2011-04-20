@@ -52,12 +52,6 @@ end
 
 Given /^I have created the "([^"]*)" report(?: using "([^"]*)")?$/ do |report_name, report_template|
 
-  version, target, test_type, hardware = report_name.split('/')
-
-#  if not report_template
-#    report_template = "sample.csv"
-#  end
-
   Given %{I have created the "#{report_name}" report with date "2010-02-02" using "#{report_template}"}
 end
 
