@@ -1,10 +1,12 @@
+/ TODO: comparetype and compare to be given by controller
 - hardware = hardware_for(target, testtype)
 - comparetype = testtype+":Testing"
 - compare = MeegoTestSession::published_hwversion_by_release_version_target_test_type(@selected_release_version, target, comparetype).first()
-- unless hardware.empty?
+
+- if hardware.present?
   strong
     a href=filtered_index_url(target, testtype) =testtype
-  - if compare!=nil then
+  - if compare then
     a.compare href=url_for(:controller => 'reports', :action => 'compare', :release_version=>@selected_release_version, :target=>target, :testtype=>testtype, :comparetype=>comparetype) compare
   ul
     - hardware.each do |hw|

@@ -1,0 +1,21 @@
+#upper_header_wrap
+  #upper_header
+    ul.h-navi
+      li
+        a.mailto href="mailto:meego-qa@lists.meego.com" Give Feedback
+      li
+        a.external href="http://wiki.meego.com/Quality/QA-tools/QAReports" target="_blank" Documentation
+      li
+        a.external href="http://bugs.meego.com/enter_bug.cgi?product=MeeGo%20Quality%20Assurance&component=meego-qa-reports" target="_blank" Submit an Idea
+      li
+        = render :partial => "shared/session_management"
+
+/ Dirty hack to allow a div to be left open 
+/ TODO: make it cleaner (refactor page hierarchy?)
+| <div id="wrapper">
+#header
+  #logo
+    h3
+      a href=url_for(:controller=>'/index', :action=>'index', :release_version=>@selected_release_version) MeeGo | QA Reports
+      a.hover href=url_for(:controller=>'/index', :action=>'index', :release_version=>@selected_release_version)
+  = render :partial => "reports/upload_link"
