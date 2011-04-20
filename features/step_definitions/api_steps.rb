@@ -34,7 +34,7 @@ When /^the client sends reports "([^"]*)" via the REST API to test type "([^"]*)
   end
 
   api_import data
-  response.should be_success  
+  response.should be_success
 end
 
 
@@ -84,7 +84,7 @@ end
 
 When /^I view the latest report "([^"]*)"/ do |report_string|
   version, target, test_type, hardware = report_string.downcase.split('/')
-  report = MeegoTestSession.joins(:version_label).where(:version_labels => {:label => version}, :target => target, :hwproduct => hardware, :testtype => test_type).first
+  report = MeegoTestSession.joins(:version_label).where(:version_labels => {:label => version}, :target => target, :hwproduct => hardware, :testtype => test_type).order("created_at DESC").first
   raise "report not found with parameters #{version}/#{target}/#{hardware}/#{test_type}!" unless report
   visit("/#{version}/#{target}/#{test_type}/#{hardware}/#{report.id}")
 end

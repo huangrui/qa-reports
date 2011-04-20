@@ -96,7 +96,8 @@ Feature: REST API
     Then the REST result "ok" is "1"
     And I should be able to view the latest created report
 
-    Then I should see "Emulator"
+    Then show me the page
+    Then I should see "Hardware: N900"
 
 
   # For the optional parameters, title, build_txt/Build (image), objective_txt (Test Objective), qa_summary_txt/(Quality Summary), issue_summary_txt
