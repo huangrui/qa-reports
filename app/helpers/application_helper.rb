@@ -52,31 +52,38 @@ module ApplicationHelper
   end
 
  def breadcrumbs
-   html = '<div id="breadcrumb"><a href="' + url_for(:controller=>'index', :action=>'index') + '">Home</a>'
-   if @target
-     unless @testtype
-       html += ' &rsaquo; <strong>' + @target + '</strong>'
-     else
-       html += ' &rsaquo; <a href="' +url_for(:controller=>'index', :action=>'filtered_list', :target=>@target, :testtype=>nil) + '">' + @target + '</a>'       
-     end
-   end
-   if @testtype
-     unless @hwproduct
-       html += ' &rsaquo; <strong>' + @testtype + '</strong>'
-     else
-       html += ' &rsaquo; <a href="' +url_for(:controller=>'index', :action=>'filtered_list', :target=>@target, :testtype=>@testtype, :hwproduct=>nil) + '">' + @testtype + '</a>'       
-     end
-   end
-   if @hwproduct
-     unless @test_session
-       html += ' &rsaquo; <strong>' + @hwproduct + '</strong>'
-     else
-       html += ' &rsaquo; <a href="' +url_for(:controller=>'index', :action=>'filtered_list', :target=>@target, :testtype=>@testtype, :hwproduct=>@hwproduct) + '">' + @hwproduct + '</a>'
-     end
-   end
-   if @test_session
-     html += ' &rsaquo; <strong>' + @test_session.title + '</strong>'
-   end
+  html = '<div id="breadcrumb"><a href="' + url_for(:controller=>'index', :action=>'index') + '">Home</a>'
+
+  html += link_to_unless_current @target, profile_report_path(@selected_release_version, @target) if @target
+  html += link_to_unless_current @target, test_type_report_path(@selected_release_version, @target, @testtype) if @testtype
+  html += link_to_unless_current @target, hardware_report_path(@selected_release_version, @target, @testtype, @hwproduct) if @hwproduct
+  html += ' &rsaquo; <strong>' + @test_session.title + '</strong>' if @test_session
+
+#  if 
+#   if @target
+#     unless @testtype
+#       html += ' &rsaquo; <strong>' + @target + '</strong>'
+#     else
+#       html += ' &rsaquo; <a href="' +url_for(:controller=>'index', :action=>'filtered_list', :target=>@target, :testtype=>nil) + '">' + @target + '</a>'
+#     end
+#   end
+#   if @testtype
+#     unless @hwproduct
+#       html += ' &rsaquo; <strong>' + @testtype + '</strong>'
+#     else
+#       html += ' &rsaquo; <a href="' +url_for(:controller=>'index', :action=>'filtered_list', :target=>@target, :testtype=>@testtype, :hwproduct=>nil) + '">' + @testtype + '</a>'
+#     end
+#   end
+#   if @hwproduct
+#     unless @test_session
+#       html += ' &rsaquo; <strong>' + @hwproduct + '</strong>'
+#     else
+#       html += ' &rsaquo; <a href="' +url_for(:controller=>'index', :action=>'filtered_list', :target=>@target, :testtype=>@testtype, :hwproduct=>@hwproduct) + '">' + @hwproduct + '</a>'
+#     end
+#   end
+#   if @test_session
+#     html += ' &rsaquo; <strong>' + @test_session.title + '</strong>'
+#   end
    html += '</div>'
    html.html_safe
  end
