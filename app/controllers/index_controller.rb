@@ -89,6 +89,12 @@ class IndexController < ApplicationController
 
     end
 
+    @changed_to_pass = "%+d" % (sessions[0].total_passed - sessions[1].total_passed)
+    @changed_to_fail = "%+d" % (sessions[0].total_failed - sessions[1].total_failed)
+    @changed_to_na = "%+d" % (sessions[0].total_na - sessions[1].total_na)
+    @total_passed = sessions.first.total_passed
+    @total_failed = sessions.first.total_failed
+    @total_na = sessions.first.total_na
 
     @max_cases = 0
 

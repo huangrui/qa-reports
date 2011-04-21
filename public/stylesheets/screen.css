@@ -158,8 +158,10 @@ h2 {
 h2 small {
 	font-size: .55em;
 	font-weight:normal;
-	margin-left:1em;}
-	
+	margin-left:1em;
+	display:inline-block;
+	vertical-align:middle;		
+}
 
 h3 {
     font-size: 1.3333em;
@@ -1019,7 +1021,7 @@ div.formError, #error, form .error {
 
 .new_tests {
     margin-top: 3.7em;
-    margin-left:3em;}
+    margin-left:2em;}
 
 .compare {
     padding-right: 13px;
@@ -1306,6 +1308,30 @@ td.date {
 .chart_actions.stack_chart {
 /*margin-left: 25px;*/
     margin-bottom: 36px;}
+    
+.index_section {
+	margin-left: -40px;
+	margin-right: -10px;
+	margin-bottom: 40px;
+	padding-left: 40px;
+	padding-right: 10px;
+	padding-bottom: 40px;
+	padding-top: 5px;
+	border-top:1px solid #cacaca;
+	border-bottom:1px solid #cacaca;}
+
+.index_section h2 {
+margin-top: 0;
+	border-top: none;}
+	
+.index_section em {
+	padding: 0 !important;
+	font-style: italic;
+}
+
+h2 .compare {
+	font-size: 0.6em;
+	font-weight:normal;}
 /* @end */
 
 
