@@ -55,7 +55,14 @@
             em= @report.executed_pass_rate_change
 
     h3#test_features Test Results by Feature
-    table#test_results_by_feature
+
+    - if contain_history(@history)
+        div#test_results_navi
+            span.grading_history_buttons.sort
+                a.see_feature_comment_button.sort_btn.active href="#" See comment and grading
+                a.see_feature_history_button.sort_btn href="#" See pass% history
+
+    table.feature_detailed_results#test_results_by_feature
       thead.even
         tr
           th.th_feature Feature
@@ -69,6 +76,19 @@
           th.th_grading Grading
 
       = render :partial => 'feature_summary', :collection => @test_session.meego_test_sets
+
+    - if contain_history(@history)
+        table.feature_detailed_results_with_passrate_history#test_feature_history_results style="display:none"
+          thead.even
+            tr
+              th.th_feature Feature
+              th.th_total Total
+              th.th_passed Passed
+              th.th_failed Failed
+              th.th_not_testable N/A
+              = history_headers(@history)
+              th.th_result.current_feature_history_result Current
+          = render :partial => 'feature_pass_rate_history_summary', :collection => @test_session.meego_test_sets
 
 - data = @report.summary_data
 

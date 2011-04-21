@@ -24,6 +24,17 @@ require 'report_parser'
 
 module ReportsHelper
 
+  def contain_history(hist)
+    if hist
+      hist.each do |h|
+        if h
+          return true 
+        end
+      end
+    end
+    return false
+  end
+
   def edit_button
     if @editing
       '<a href="" class="edit">Edit</a>'.html_safe

@@ -1015,7 +1015,21 @@ function filterResults(rowsToHide, typeText) {
         });
     }
    
-    
+    $(".see_feature_history_button").click(function(){
+        $("table.feature_detailed_results").hide();
+        $feature_history.show();
+        $(this).addClass("active");
+        $("a.see_feature_comment_button").removeClass("active");
+        return false;
+    });
+
+    $(".see_feature_comment_button").click(function(){
+        $("a.see_feature_history_button").removeClass("active");
+        $(this).addClass("active");
+        $feature_history.hide();
+        $feature_details.show();
+        return false;
+    }); 
 
     $(".see_history_button").click(function(){
     	//setTableLoaderSize('#detailed_functional_test_results', '#history_loader');
@@ -1056,6 +1070,10 @@ function filterResults(rowsToHide, typeText) {
 
     var $detail  = $("table.detailed_results").first(); 
     var $history = $("table.detailed_results.history");
+
+    var $feature_details = $("table.feature_detailed_results");
+    var $feature_history = $("table.feature_detailed_results_with_passrate_history");
+
     $history.find(".see_all_button").click(function(){
         $history.hide();
         $detail.show();
@@ -1065,6 +1083,12 @@ function filterResults(rowsToHide, typeText) {
         $history.hide();
         $detail.show();
         $detail.find(".see_only_failed_button").click();
+    });
+
+    $feature_history.find(".see_feature_comment_button").click(function(){
+        $feature_history.hide();
+        $feature_details.show();
+        $feature_details.find(".see_feature_comment_button").click();
     });
 }
 
