@@ -920,12 +920,12 @@ div.formError, #error, form .error {
     margin-top: 1em;
     margin-bottom: 1em; }
 
-#breadcrumb {
+#breadcrumb li {
     display: inline;
     font-weight: bold;
 }
 
-#breadcrumb a {
+#breadcrumb li a {
     display: inline;
     font-weight: normal;
 }
