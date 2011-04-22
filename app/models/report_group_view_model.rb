@@ -1,6 +1,8 @@
 require 'report_comparison'
+require 'graph'
 
 class ReportGroupViewModel
+  include Graph
 
   def initialize(release, target, testtype, hwproduct)
     @params = { 
@@ -31,6 +33,14 @@ class ReportGroupViewModel
     @max_cases ||= find_max_cases
   end
 
+  def trend_graph_data_abs
+    @trend_graph_data_abs ||= calculate_trend_graph_data
+  end
+
+  def trend_graph_data_rel
+    @trend_graph_data_rel ||= calculate_trend_graph_data
+  end
+
   private
 
   def latest
@@ -39,6 +49,15 @@ class ReportGroupViewModel
 
   def previous
     reports[1] if reports.count > 1
+  end
+
+  def calculate_trend_graph_data
+    chosen, days = find_trend_sessions(reports, 20)
+
+    if chosen.length > 0
+      @trend_graph_data_abs = generate_trend_graph_data(chosen, days, false, 20)
+      @trend_graph_data_rel = generate_trend_graph_data(chosen, days, true, 20)
+    end
   end
 
   def find_reports

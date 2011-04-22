@@ -13,7 +13,7 @@
          a.rss href=rss_url title="RSS feed"
     tr
       td.filtered
-        - if @trend_graph_data_abs
+        - if @group_report.trend_graph_data_abs
           .chart_actions.stack_chart
             #canvas_wrapper style="width:700px; height:260px"
               canvas#trend_graph_abs height="250" width="700"
@@ -45,7 +45,7 @@
                 | Test result
                 br/
                 | changed to 
-                em N
+                em N/A
               .new_tests.result_caption
                 .result_caption_header
                   strong New tests:
@@ -57,20 +57,20 @@
                   | Failing
                 .result_caption.medium_number
                   strong#total_na = @group_report.comparison.new_na
-                  | N
+                  | N/A
 
         = render :partial=>'month', :collection => @group_report.reports_by_month.keys
 
-- if @trend_graph_data_abs
+- if @group_report.trend_graph_data_abs
   javascript:
     $(window).load(function(){
-    var trend_abs_passed = #{ints2js @trend_graph_data_abs.passed};
-    var trend_abs_failed = #{ints2js @trend_graph_data_abs.failed};
-    var trend_abs_na     = #{ints2js @trend_graph_data_abs.na};
-    var trend_labels     = #{strs2js @trend_graph_data_abs.labels};
-    var trend_rel_passed = #{ints2js @trend_graph_data_rel.passed};
-    var trend_rel_failed = #{ints2js @trend_graph_data_rel.failed};
-    var trend_rel_na     = #{ints2js @trend_graph_data_rel.na};
+    var trend_abs_passed = #{ints2js @group_report.trend_graph_data_abs.passed};
+    var trend_abs_failed = #{ints2js @group_report.trend_graph_data_abs.failed};
+    var trend_abs_na     = #{ints2js @group_report.trend_graph_data_abs.na};
+    var trend_labels     = #{strs2js @group_report.trend_graph_data_abs.labels};
+    var trend_rel_passed = #{ints2js @group_report.trend_graph_data_rel.passed};
+    var trend_rel_failed = #{ints2js @group_report.trend_graph_data_rel.failed};
+    var trend_rel_na     = #{ints2js @group_report.trend_graph_data_rel.na};
 
     var g;
     function init_graph() {
