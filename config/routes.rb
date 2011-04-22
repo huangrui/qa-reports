@@ -62,13 +62,9 @@ Meegoqa::Application.routes.draw do
 
     match '/:release_version' => 'index#index', :via => "get"
 
-    match '/:release_version/:target' => 'ReportGroups#show', :via => "get", :as => :profile_report
-    match '/:release_version/:target/:testtype' => 'ReportGroups#show', :via => "get", :as => :test_type_report
-    match '/:release_version/:target/:testtype/:hwproduct' => 'ReportGroups#show', :via => "get", :as => :hardware_report
-
-    #match '/:release_version/:target/:testtype/:hwproduct/paging/:page' => 'ReportGroupsController#show', :via => "get"
-    #match '/:release_version/:target/:testtype/paging/:page' => 'ReportGroupsController#show', :via => "get"
-    #match '/:release_version/:target/paging/:page' => 'ReportGroupsController#show', :via => "get"
+    match '/:release_version/:target' => 'report_groups#show', :via => "get", :as => :profile_report
+    match '/:release_version/:target/:testtype' => 'report_groups#show', :via => "get", :as => :test_type_report
+    match '/:release_version/:target/:testtype/:hwproduct' => 'report_groups#show', :via => "get", :as => :hardware_report
   end
 
 

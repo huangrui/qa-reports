@@ -13,9 +13,9 @@ class MeegoTestSessionSweeper < ActionController::Caching::Sweeper
     expire_page :controller => 'index', :action => :index
     expire_page :controller => 'upload', :action => :upload_form
 
-    expire_paging_action :controller => "index", :action => "filtered_list", :release_version => test_session.release_version, :target => test_session.target, :testtype => test_session.testtype, :hwproduct => test_session.hwproduct
-    expire_paging_action :controller => "index", :action => "filtered_list", :release_version => test_session.release_version, :target => test_session.target, :testtype => test_session.testtype
-    expire_paging_action :controller => "index", :action => "filtered_list", :release_version => test_session.release_version, :target => test_session.target
+    expire_paging_action :controller => "report_groups", :action => "show", :release_version => test_session.release_version, :target => test_session.target, :testtype => test_session.testtype, :hwproduct => test_session.hwproduct
+    expire_paging_action :controller => "report_groups", :action => "show", :release_version => test_session.release_version, :target => test_session.target, :testtype => test_session.testtype
+    expire_paging_action :controller => "report_groups", :action => "show", :release_version => test_session.release_version, :target => test_session.target
   end
 
   def expire_fragments_for(test_session)
