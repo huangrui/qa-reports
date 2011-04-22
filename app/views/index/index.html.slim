@@ -8,7 +8,7 @@
       tr
         - MeegoTestSession::targets.each do |target|
           th scope="col"
-            a href=filtered_index_url(target) =target
+            = link_to target, profile_report_path(@selected_release_version, target)
 
     tr
       - MeegoTestSession::targets.each do |target|

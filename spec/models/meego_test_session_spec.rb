@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe MeegoTestSession do
+
   it "should accept valid tested_at date" do
     ['2010-07-15', '2010-11-4', '2011-12-30 23:45:59'].each do |date|
       mts = MeegoTestSession.new(:tested_at => date)
@@ -69,7 +70,5 @@ describe MeegoTestSession do
       MeegoTestSession.stub!(:find_by_testtype).and_return(nil)
       MeegoTestSession.filters_exist?(@target, @testtype, @hwproduct).should be_false
     end
-
-
   end
 end

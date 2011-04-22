@@ -5,10 +5,10 @@
 
 - if hardware.present?
   strong
-    a href=filtered_index_url(target, testtype) =testtype
+    =link_to testtype, test_type_report_path(@selected_release_version, target, testtype)
   - if compare then
     a.compare href=url_for(:controller => 'reports', :action => 'compare', :release_version=>@selected_release_version, :target=>target, :testtype=>testtype, :comparetype=>comparetype) compare
   ul
     - hardware.each do |hw|
       li
-        a href=url_for(:controller=>'index', :action=>'filtered_list', :release_version=>@selected_release_version, :target=>target, :testtype=>testtype, :hwproduct=>hw) =hw
+        =link_to hw, hardware_report_path(@selected_release_version, target, testtype, hw)

@@ -1,0 +1,6 @@
+tr class=cycle("odd", "even")
+  td.date=report.format_date
+  td.report_name
+    a href=report_url(report) =report.title
+  td.graph= report.small_graph_img_tag(@group_report.max_cases)
+end

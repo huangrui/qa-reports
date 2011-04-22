@@ -44,6 +44,9 @@ class MeegoTestSession < ActiveRecord::Base
   has_many :meego_test_sets, :dependent => :destroy
   has_many :meego_test_cases
   has_many :test_result_files, :dependent => :destroy
+  has_many :passed, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::PASS}"
+  has_many :failed, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::FAIL}"
+  has_many :na, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::NA}"
 
   belongs_to :author, :class_name => "User"
   belongs_to :editor, :class_name => "User"
@@ -62,12 +65,16 @@ class MeegoTestSession < ActiveRecord::Base
 
   after_destroy :remove_uploaded_files
 
-  scope :published, :conditions => {:published => true}
+  scope :published, where(:published => true)
 
   RESULT_FILES_DIR = "public/reports"
   INVALID_RESULTS_DIR = "public/reports/invalid_files"
 
   include ReportSummary
+
+  def month
+    @month ||= tested_at.strftime("%B %Y")
+  end
 
 
   def self.fetch_fully(id)
