@@ -52,12 +52,12 @@ module ApplicationHelper
   end
 
  def breadcrumbs
-  html = '<div id="breadcrumb"><a href="' + url_for(:controller=>'index', :action=>'index') + '">Home</a>'
+  html = '<div id="breadcrumb"><li><a href="' + url_for(:controller=>'index', :action=>'index') + '">Home</a></li>'
 
-  html += ' &rsaquo; ' + link_to_unless_current(@target, profile_report_path(@selected_release_version, @target)) if @target
-  html += ' &rsaquo; ' + link_to_unless_current(@testtype, test_type_report_path(@selected_release_version, @target, @testtype)) if @testtype
-  html += ' &rsaquo; ' + link_to_unless_current(@hwproduct, hardware_report_path(@selected_release_version, @target, @testtype, @hwproduct)) if @hwproduct
-  html += ' &rsaquo; ' + @test_session.title if @test_session
+  html += ('<li> &rsaquo; ' + link_to_unless_current(@target, profile_report_path(@selected_release_version, @target)) + '</li>') if @target
+  html += ('<li> &rsaquo; ' + link_to_unless_current(@testtype, test_type_report_path(@selected_release_version, @target, @testtype)) + '</li>') if @testtype
+  html += ('<li> &rsaquo; ' + link_to_unless_current(@hwproduct, hardware_report_path(@selected_release_version, @target, @testtype, @hwproduct)) + '</li>') if @hwproduct
+  html += ('<li> &rsaquo; ' + @test_session.title + '</li>') if @test_session
   html += '</div>'
   html.html_safe
  end
