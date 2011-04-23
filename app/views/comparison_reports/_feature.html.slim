@@ -1,0 +1,24 @@
+tr.feature_name
+  td colspan=(2 + 2 * @comparison_report.hardwares.length)
+    = print_title_link(feature)
+    a.see_all_toggle href="#" + see all
+
+| </tbody>
+
+tbody
+  - reset_cycle()
+  - @comparison_report.test_cases[feature].each do |test_case, test_cases|
+    tr id="test_case_#{test_cases}" class="testcase#{' has_changes' if test_case.changed} #{cycle('odd','even')}" style="#{'display:none;' if !test_case.changed}"
+
+      td.testcase_name= test_case.name
+
+      - @comparison_report.hardwares.each_with_index do |hardware, hardware_index|
+        - testcase = test_case.result(hardware).left
+        td class="testcase_result #{result_class(testcase)} hardware_#{hardware_index}" =result_html(testcase)
+
+      td class="change_indicator #{' changed_result' if test_case.changed}"
+      
+      - @comparison_report.hardwares.each_with_index do |hardware, hardware_index|
+        - testcase = test_case.result(hardware).right
+        td class="testcase_result #{result_class(testcase)} hardware_#{hardware_index + @comparison_report.hardwares.length}" =result_html(testcase)
+

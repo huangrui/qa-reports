@@ -1,5 +1,5 @@
 - content_for :page_header do
-  = render :partial => "page_header"
+  = render :partial => "reports/page_header"
 
 - content_for :breadcrumbs do
   = breadcrumbs
@@ -16,19 +16,19 @@
   h2 Summary
   .clearfix
     .result_caption.big_number
-      strong#changed_to_pass.pass= @comparison.changed_to_pass
+      strong#changed_to_pass.pass = @comparison_report.changed_to_pass
       | Test result
       br/
       | changed to 
       em pass
     .result_caption.big_number
-      strong#changed_to_fail.fail= @comparison.changed_to_fail
+      strong#changed_to_fail.fail = @comparison_report.changed_to_fail
       | Test result
       br/
       | changed to 
       em fail
     .result_caption.big_number
-      strong#changed_to_na= @comparison.changed_to_na
+      strong#changed_to_na = @comparison_report.changed_to_na
       | Test result
       br/
       | changed to 
@@ -37,13 +37,13 @@
       .result_caption_header
         strong New tests:
       .result_caption.medium_number
-        strong.pass= @comparison.new_passing
+        strong#new_passing.pass = @comparison_report.new_passing
         | Passing
       .result_caption.medium_number
-        strong.fail= @comparison.new_failing
+        strong#new_failing.fail = @comparison_report.new_failing
         | Failing
       .result_caption.medium_number
-        strong= @comparison.new_na
+        strong#new_na = @comparison_report.new_na
         | N/A
 
   h2 Detailed results
@@ -55,20 +55,21 @@
             /! <a href="#" id="see_only_regression_button" class="sort_btn active">Regression</a>
             a.see_only_failed_button.sort_btn.active href="#" Changed
             a.see_all_button.sort_btn href="#" See all
-        th.column_head_1 colspan=@comparison.columns.length #{@testtype}
+        th.column_head_1 colspan=@comparison_report.hardwares.length #{@testtype}
         th.column_head_separate
-        th.column_head_1 colspan=@comparison.columns.length #{@comparison_testtype}
+        th.column_head_1 colspan=@comparison_report.hardwares.length #{@comparison_testtype}
       tr.compare_testtype
         th.first_col
-        - @comparison.columns.each_with_index do |name, index|
+        - @comparison_report.hardwares.each_with_index do |name, index|
           th class="column_#{index} column_head_2" #{name}
 
         th.column_head_separate_2
-        - @comparison.columns.each_with_index do |name, index|
-          th class="column_#{index + @comparison.columns.length} column_head_2" #{name}
+        - @comparison_report.hardwares.each_with_index do |name, index|
+          th class="column_#{index + @comparison_report.hardwares.length} column_head_2" #{name}
 
     tbody
-      = render :partial => "compare_group", :collection => @groups, :as => :group
+      = @comparison_report.features.count
+      = render :partial => "feature", :collection => @comparison_report.features
 
 - content_for :view_specific_js do
   javascript:

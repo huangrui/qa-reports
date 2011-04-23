@@ -12,8 +12,9 @@ Feature: Consolidated reports
     When I am on the front page
     And I follow "compare"
 
-    Then I should see "-2" within "#changed_to_fail"
+    Then I should see "+2" within "#changed_to_fail"
     And I should see "+1" within "#changed_to_pass"
+    And I should see "1" within "#new_failing"
 
     And I should see values "N900,N910,N900,N910" in columns of "tr.compare_testtype th"
 
