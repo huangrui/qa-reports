@@ -66,11 +66,19 @@ class MeegoTestSession < ActiveRecord::Base
   after_destroy :remove_uploaded_files
 
   scope :published, where(:published => true)
+  scope :release, lambda { |release| published.joins(:version_label).where(:version_labels => {:normalized => release.downcase}) }
+  scope :profile, lambda { |profile| published.where(:target => profile.downcase) }
+  scope :test_type, lambda { |test_type| published.where(:testtype => test_type.downcase) }
+  scope :hardware, lambda { |hardware| published.where(:hwproduct => hardware.downcase) }
 
   RESULT_FILES_DIR = "public/reports"
   INVALID_RESULTS_DIR = "public/reports/invalid_files"
 
   include ReportSummary
+
+  def self.latest
+    published.order(:tested_at).last
+  end
 
   def month
     @month ||= tested_at.strftime("%B %Y")
