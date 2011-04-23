@@ -2,8 +2,6 @@ class ReportComparison
 
   def initialize(latest, previous)
     @latest, @previous = latest, previous
-
-    @new_test_cases = find_new_test_cases
   end
 
   def changed_to_pass
