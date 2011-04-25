@@ -8,12 +8,12 @@ tr.feature_name
 tbody
   - reset_cycle()
   - @comparison_report.test_cases[feature].each do |test_case, test_cases|
-    tr id="test_case_#{test_cases}" class="testcase#{' has_changes' if test_case.changed} #{cycle('odd','even')}" style="#{'display:none;' if !test_case.changed}"
+    tr id="test_case_#{test_cases}" class="testcase #{'has_changes' if @comparison_report.result_changed(feature, test_case)} #{cycle('odd','even')}" style="#{'display:none;' if !@comparison_report.result_changed(feature, test_case)}"
 
-      td.testcase_name= test_case.name
+      td.testcase_name= test_case
 
       - @comparison_report.hardwares.each_with_index do |hardware, hardware_index|
-        - testcase = test_case.result(hardware).left
+        - testcase = test_cases[hardware]
         td class="testcase_result #{result_class(testcase)} hardware_#{hardware_index}" =result_html(testcase)
 
       td class="change_indicator #{' changed_result' if test_case.changed}"
