@@ -21,18 +21,15 @@
 # 02110-1301 USA
 #
 require 'graph'
+
 class IndexController < ApplicationController
   include Graph
-  
-  #caches_page :index, :filtered_list
   caches_action :filtered_list, :layout => false, :expires_in => 1.hour
 
   def index
-    @types = {}
-    MeegoTestSession::targets.each{|target|
-      @types[target] = MeegoTestSession.list_types_for @selected_release_version, target
-    }
-    @hardware = MeegoTestSession.list_hardware @selected_release_version
+    @hardwares = Hardware.by_profile_by_test_type(@selected_release_version)
+
+    @profiles = TargetLabel.targets
     @target = params[:target]
     @testtype = params[:testtype]
     @hwproduct = params[:hwproduct]

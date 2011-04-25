@@ -32,7 +32,7 @@ class ApplicationController < ActionController::Base
   end
 
   def get_selected_release_version
-    @selected_release_version = params[:release_version] || MeegoTestSession.latest_release_version
+    @selected_release_version = params[:release_version] || VersionLabel.latest.label
   end
 
   def render_404
