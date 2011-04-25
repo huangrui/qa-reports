@@ -7,28 +7,36 @@ class ComparisonReport
     @test_cases.keys
   end
 
+  def result_changed(feature, test_case)
+    results = @test_cases[feature][test_case].values.map {|tc| tc.result}
+    
+    (results & [results.count, MeegoTestCase::PASS]).count == results.count ||
+    (results & [results.count, MeegoTestCase::FAIL]).count == results.count ||
+    (results & [results.count, MeegoTestCase::NA]).count   == results.count
+  end
+
   def changed_to_pass
-    @comparisons.map{|comparison| comparison.changed_to_pass}.reduce(:+)
+    @comparisons.map(&:changed_to_pass).reduce(:+)
   end
 
   def changed_to_fail
-    @comparisons.map{|comparison| comparison.changed_to_fail}.reduce(:+)
+    @comparisons.map(&:changed_to_fail).reduce(:+)
   end
 
   def changed_to_na
-    @comparisons.map{|comparison| comparison.changed_to_na}.reduce(:+)
+    @comparisons.map(&:changed_to_na).reduce(:+)
   end
 
   def new_passing
-    @comparisons.map{|comparison| comparison.new_passed}.reduce(:+)
+    @comparisons.map(&:new_passed).reduce(:+)
   end
 
   def new_failing
-    @comparisons.map{|comparison| comparison.new_failed}.reduce(:+)
+    @comparisons.map(&:new_failed).reduce(:+)
   end
 
   def new_na
-    @comparisons.map{|comparison| comparison.new_na}.reduce(:+)
+    @comparisons.map(&:new_na).reduce(:+)
   end
 
   def initialize(release, profile, test_type, comparison_test_type)
