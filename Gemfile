@@ -23,8 +23,8 @@ end
 
 group :development, :test do 
   gem 'launchy'
-  gem 'rspec', '2.0.1'
-  gem 'rspec-rails', '2.0.1'
+  gem 'rspec'
+  gem 'rspec-rails'
   #gem 'capybara', '0.3.9'
   gem 'capybara', :git => "https://github.com/jnicklas/capybara.git"
   gem 'cucumber'
