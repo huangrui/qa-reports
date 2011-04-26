@@ -38,6 +38,7 @@ GEM
   remote: http://rubygems.org/
   specs:
     Saikuro (1.1.0)
+    ZenTest (4.5.0)
     abstract (1.0.0)
     actionmailer (3.0.7)
       actionpack (= 3.0.7)
@@ -67,6 +68,8 @@ GEM
     activesupport (3.0.7)
     arel (2.0.9)
     arrayfields (4.7.4)
+    autotest (4.4.6)
+      ZenTest (>= 4.4.1)
     bcrypt-ruby (2.1.4)
     builder (2.1.2)
     capistrano (2.5.19)
@@ -229,6 +232,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  autotest
   capistrano
   capistrano-ext
   capybara!

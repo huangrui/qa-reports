@@ -18,6 +18,7 @@ group :development do
   gem 'sqlite3-ruby', :require => 'sqlite3'
   gem 'capistrano'
   gem 'capistrano-ext'
+  gem 'autotest'
 end
 
 group :development, :test do 
