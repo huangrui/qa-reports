@@ -7,7 +7,7 @@ gem 'nokogiri'
 gem 'devise', '1.1.9'
 gem 'fastercsv'
 gem 'rack', :git => "https://github.com/rack/rack.git" # Use next release when available
-gem "will_paginate", "3.0.pre2"
+gem "will_paginate"
 gem 'slim'
 
 group :production do
