@@ -48,6 +48,59 @@ class ReportComparison
     row ? row.count : 0
   end
 
+  def find_regression_test_cases
+    find_regression_test_cases_query = <<-END
+      SELECT tc.result as verdict, COUNT(tc.result) as count
+      FROM meego_test_cases as tc
+      JOIN meego_test_sets as ts ON ( tc.meego_test_set_id = ts.id )
+
+      -- Test case is in both reports and it passed in the previous one
+      WHERE tc.meego_test_session_id = #{@latest.id} AND (LOWER(feature), LOWER(name)) IN (
+        SELECT LOWER(ts.feature) as feature, LOWER(tc.name) as name
+        FROM meego_test_cases as tc
+        JOIN meego_test_sets as ts ON ( tc.meego_test_set_id = ts.id )
+        WHERE tc.meego_test_session_id = #{@previous.id} AND tc.result = 1)
+
+      -- The latest result is different than in the previous report
+      AND (LOWER(feature), LOWER(name), tc.result) NOT IN (
+        SELECT LOWER(ts.feature) as feature, LOWER(tc.name) as name, tc.result as verdict
+        FROM meego_test_cases as tc
+        JOIN meego_test_sets as ts ON ( tc.meego_test_set_id = ts.id )
+        WHERE tc.meego_test_session_id = #{@previous.id})
+      GROUP BY result
+      ORDER BY verdict DESC;
+    END
+
+    MeegoTestCase.find_by_sql(find_regression_test_cases_query)
+  end
+
+  def find_fixed_test_cases
+    find_fixed_test_cases_query = <<-END
+      SELECT tc.result as verdict, COUNT(tc.result) as count
+      FROM meego_test_cases as tc
+      JOIN meego_test_sets as ts ON ( tc.meego_test_set_id = ts.id )
+
+      -- Test case passes in the latest report is in both reports
+      WHERE tc.meego_test_session_id = #{@latest.id} AND tc.result = 1 AND
+          (LOWER(feature), LOWER(name)) IN (
+        SELECT LOWER(ts.feature) as feature, LOWER(tc.name) as name
+        FROM meego_test_cases as tc
+        JOIN meego_test_sets as ts ON ( tc.meego_test_set_id = ts.id )
+        WHERE tc.meego_test_session_id = #{@previous.id})
+
+      -- The latest result is different than in the previous report
+      AND (LOWER(feature), LOWER(name), tc.result) NOT IN (
+        SELECT LOWER(ts.feature) as feature, LOWER(tc.name) as name, tc.result as verdict
+        FROM meego_test_cases as tc
+        JOIN meego_test_sets as ts ON ( tc.meego_test_set_id = ts.id )
+        WHERE tc.meego_test_session_id = #{@previous.id})
+      GROUP BY result
+      ORDER BY verdict DESC;
+    END
+
+    MeegoTestCase.find_by_sql(find_fixed_test_cases_query)
+  end
+
   def find_changed_test_cases
     find_changed_test_cases_query = <<-END
       SELECT tc.result as verdict, COUNT(tc.result) as count
