@@ -8,7 +8,6 @@ gem 'devise', '1.1.9'
 gem 'fastercsv'
 gem 'rack', :git => "https://github.com/rack/rack.git" # Use next release when available
 gem "will_paginate", "3.0.pre2"
-gem 'haml'
 gem 'slim'
 
 group :production do
@@ -25,7 +24,6 @@ group :development, :test do
   gem 'launchy'
   gem 'rspec'
   gem 'rspec-rails'
-  #gem 'capybara', '0.3.9'
   gem 'capybara', :git => "https://github.com/jnicklas/capybara.git"
   gem 'cucumber'
   gem 'rcov', :require => false
