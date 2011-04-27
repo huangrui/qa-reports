@@ -1,11 +1,11 @@
 module ResultFileParser
 
-  def self.parse_csv(csv_io)
+  def self.parse_csv(io)
     # Skip the title row
-    csv_io.gets
+    io.gets
 
     test_cases = {}
-    FasterCSV.parse(csv_io) do |row|
+    FasterCSV.parse(io, {:col_sep => ','}) do |row|
       feature = row[0].toutf8.strip
       name    = row[1].toutf8.strip
       comment = row[2].toutf8.strip
