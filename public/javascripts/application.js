@@ -538,6 +538,7 @@ function handleCommentFormSubmit() {
     var markup = $form.find('.comment_field').val();
 
     var data = $form.serialize();
+    console.log(data);
     var url = $form.attr('action');
     $testcase.find('.comment_markup').text(markup);
     var html = formatMarkup(markup);
@@ -545,8 +546,23 @@ function handleCommentFormSubmit() {
     $form.detach();
     $div.show();
     $testcase.find('.testcase_notes').click(handleCommentEdit).addClass('edit');
-    $.post(url, data);
+    // TODO
+    //$.post(url, data);
     fetchBugzillaInfo();
+
+    var filename = $form.find("#attachment").val();
+    $.ajax({ 
+        type: "POST",
+        url: url,
+        enctype: 'multipart/form-data',
+        data: {file: filename, comment: "foobar", 
+            authenticity_token: "zL36derLRTxE2xqyw29jOXchQO6sKLsEfMZfHTfZLf8=",
+            id: "113291"},
+        success: function(){
+           alert( "Data Uploaded: ");
+        }
+    });
+
     return false;
 }
 
