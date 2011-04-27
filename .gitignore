@@ -18,3 +18,5 @@ capybara-*.html
 coverage
 cucumber
 rerun.txt
+.DS_Store
+*~

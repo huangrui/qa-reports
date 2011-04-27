@@ -81,6 +81,7 @@ module ApplicationHelper
    html.html_safe
  end
 
+  # FIXME: Cleanup with link_to_unless_current
   def release_version_navigation(current_version, target='', testtype='', hwproduct='')
     html = '<ul class="clearfix">'
     link_text = ''
@@ -92,6 +93,14 @@ module ApplicationHelper
         else
             html += '<li>'
             link_text = "v#{release}"
+        end
+      elsif release =~ /^[A-Za-z][0-9]$/
+        if release.downcase.eql? current_version.downcase
+          html += '<li class="current">'
+          link_text = "MeeGo #{release}"
+        else
+          html += '<li>'
+          link_text = "#{release}"
         end
       else
         if release == current_version

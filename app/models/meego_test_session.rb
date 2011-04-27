@@ -27,6 +27,7 @@ require 'trimmer'
 require 'report_parser'
 require 'validation/date_time_validator'
 require 'will_paginate'
+require 'file_storage'
 
 require 'graph'
 require 'nft'
@@ -36,31 +37,35 @@ class MeegoTestSession < ActiveRecord::Base
   include Trimmer
   include Graph
   include MeasurementUtils
+  include CacheHelper
+
+  attr_accessor :uploaded_files
 
   has_many :meego_test_sets, :dependent => :destroy
   has_many :meego_test_cases
+  has_many :test_result_files, :dependent => :destroy
 
   belongs_to :author, :class_name => "User"
   belongs_to :editor, :class_name => "User"
+
+  belongs_to :version_label, :class_name => "VersionLabel", :foreign_key => "version_label_id"
 
   validates_presence_of :title, :target, :testtype, :hwproduct
   validates_presence_of :uploaded_files, :on => :create
 
   validates :tested_at, :date_time => true
 
-  validate :allowed_filename_extensions, :on => :create
   validate :save_uploaded_files, :on => :create
 
   validate :validate_labels
+  validate :validate_type_hw
 
-  #after_create :save_uploaded_files
   after_destroy :remove_uploaded_files
-
-  attr_reader :parsing_failed, :parse_errors
 
   scope :published, :conditions => {:published => true}
 
-  XML_DIR = "public/reports"
+  RESULT_FILES_DIR = "public/reports"
+  INVALID_RESULTS_DIR = "public/reports/invalid_files"
 
   include ReportSummary
 
@@ -114,13 +119,8 @@ class MeegoTestSession < ActiveRecord::Base
     return has_ft
   end
 
-  def self.import(attributes, files, user)
-    attr             = attributes.merge!({:uploaded_files => files})
-    result           = MeegoTestSession.new(attr)
-    result.tested_at = result.tested_at || Time.now
-    result.import_report(user, true)
-    result.save!
-    result
+  def raw_result_files
+    FileStorage.new(dir="public/reports", baseurl="/reports/").list_report_files(self)
   end
 
   def self.targets
@@ -163,32 +163,32 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   class << self
-    def by_release_version_target_test_type_product(release_version, target, testtype, hwproduct, order_by = "tested_at DESC", limit = nil)
+    def by_release_version_target_test_type_product(release_version, target, testtype, hwproduct, order_by = "tested_at DESC, id DESC", limit = nil)
       target    = target.downcase
       testtype  = testtype.downcase
       hwproduct = hwproduct.downcase
-      published.where(:release_version => release_version, :target => target, :testtype => testtype, :hwproduct => hwproduct).order(order_by).limit(limit)
+      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testtype => testtype, :hwproduct => hwproduct).joins(:version_label).order(order_by).limit(limit)
     end
 
-    def published_by_release_version_target_test_type(release_version, target, testtype, order_by = "tested_at DESC", limit = nil)
+    def published_by_release_version_target_test_type(release_version, target, testtype, order_by = "tested_at DESC, id DESC", limit = nil)
       target   = target.downcase
       testtype = testtype.downcase
-      published.where(:release_version => release_version, :target => target, :testtype => testtype).order(order_by).limit(limit)
+      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testtype => testtype).joins(:version_label).order(order_by).limit(limit)
     end
 
     def published_hwversion_by_release_version_target_test_type(release_version, target, testtype)
       target   = target.downcase
       testtype = testtype.downcase
-      published.where(:release_version => release_version, :target => target, :testtype => testtype).select("DISTINCT hwproduct").order("hwproduct")
+      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testtype => testtype).select("DISTINCT hwproduct").joins(:version_label).order("hwproduct")
     end
 
-    def published_by_release_version_target(release_version, target, order_by = "tested_at DESC", limit = nil)
+    def published_by_release_version_target(release_version, target, order_by = "tested_at DESC, id DESC", limit = nil)
       target = target.downcase
-      published.where(:release_version => release_version, :target => target).order(order_by).limit(limit)
+      published.where("version_labels.normalized" => release_version.downcase, :target => target).joins(:version_label).order(order_by).limit(limit)
     end
 
     def published_by_release_version(release_version, order_by = "tested_at DESC", limit = nil)
-      published.where(:release_version => release_version).order(order_by).limit(limit)
+      published.where("version_labels.normalized" => release_version.downcase).joins(:version_label).order(order_by).limit(limit)
     end
   end
 
@@ -196,23 +196,23 @@ class MeegoTestSession < ActiveRecord::Base
   # List feature tags                           #
   ###############################################
   def self.list_targets(release_version)
-    (published.all_lowercase(:select => 'DISTINCT target', :conditions=>{:release_version => release_version}).map { |s| s.target.gsub(/\b\w/) { $&.upcase } }).uniq
+    (published.all_lowercase(:select => 'DISTINCT target', :conditions=>{"version_labels.normalized" => release_version}, :include => :version_label).map { |s| s.target.gsub(/\b\w/) { $&.upcase } }).uniq
   end
 
   def self.list_types(release_version)
-    (published.all_lowercase(:select => 'DISTINCT testtype', :conditions=>{:release_version => release_version}).map { |s| s.testtype.gsub(/\b\w/) { $&.upcase } }).uniq
+    (published.all_lowercase(:select => 'DISTINCT testtype', :conditions=>{"version_labels.normalized" => release_version}, :include => :version_label).map { |s| s.testtype.gsub(/\b\w/) { $&.upcase } }).uniq
   end
 
   def self.list_types_for(release_version, target)
-    (published.all_lowercase(:select => 'DISTINCT testtype', :conditions => {:target => target, :release_version => release_version}).map { |s| s.testtype.gsub(/\b\w/) { $&.upcase } }).uniq
+    (published.all_lowercase(:select => 'DISTINCT testtype', :conditions=>{:target => target, "version_labels.normalized" => release_version}, :include => :version_label).map { |s| s.testtype.gsub(/\b\w/) { $&.upcase } }).uniq
   end
 
   def self.list_hardware(release_version)
-    (published.all_lowercase(:select => 'DISTINCT hwproduct', :conditions=>{:release_version => release_version}).map { |s| s.hwproduct.gsub(/\b\w/) { $&.upcase } }).uniq
+    (published.all_lowercase(:select => 'DISTINCT hwproduct', :conditions=>{"version_labels.normalized" => release_version}, :include => :version_label).map { |s| s.hwproduct.gsub(/\b\w/) { $&.upcase } }).uniq
   end
 
   def self.list_hardware_for(release_version, target, testtype)
-    (published.all_lowercase(:select => 'DISTINCT hwproduct', :conditions => {:target => target, :testtype=> testtype, :release_version => release_version}).map { |s| s.hwproduct.gsub(/\b\w/) { $&.upcase } }).uniq
+    (published.all_lowercase(:select => 'DISTINCT hwproduct',  :conditions=>{:target => target, :testtype=> testtype,"version_labels.normalized" => release_version}, :include => :version_label).map { |s| s.hwproduct.gsub(/\b\w/) { $&.upcase } }).uniq
   end
 
 
@@ -222,10 +222,12 @@ class MeegoTestSession < ActiveRecord::Base
   def prev_session
     return @prev_session unless @prev_session.nil? and @has_prev.nil?
     time = tested_at || Time.now
+
+    # TODO: Works only if there's >= 1s difference between the timestamps
     @prev_session = MeegoTestSession.find(:first, :conditions => [
-        "tested_at < ? AND target = ? AND testtype = ? AND hwproduct = ? AND published = ? AND release_version = ?", time, target.downcase, testtype.downcase, hwproduct.downcase, true, release_version
+        "tested_at < ? AND target = ? AND testtype = ? AND hwproduct = ? AND published = ? AND version_label_id = ?", time, target.downcase, testtype.downcase, hwproduct.downcase, true, version_label_id
     ],
-                          :order              => "tested_at DESC", :include => [
+                          :order => "tested_at DESC", :include => [
          {:meego_test_sets => :meego_test_cases}, :meego_test_sets, :meego_test_cases])
 
     @has_prev = !@prev_session.nil?
@@ -235,9 +237,9 @@ class MeegoTestSession < ActiveRecord::Base
   def next_session
     return @next_session unless @next_session.nil? and @has_next.nil?
     @next_session = MeegoTestSession.find(:first, :conditions => [
-        "tested_at > ? AND target = ? AND testtype = ? AND hwproduct = ? AND published = ? AND release_version = ?", tested_at, target.downcase, testtype.downcase, hwproduct.downcase, true, release_version
+        "tested_at > ? AND target = ? AND testtype = ? AND hwproduct = ? AND published = ? AND version_label_id = ?", tested_at, target.downcase, testtype.downcase, hwproduct.downcase, true, version_label_id
     ],
-                          :order              => "tested_at ASC")
+                          :order => "tested_at ASC")
     @has_next = !@next_session.nil?
     @next_session
   end
@@ -397,11 +399,29 @@ class MeegoTestSession < ActiveRecord::Base
     end
 
   end
+  
+  # Validate user entered test type and hw product. If all characters are
+  # allowed users may enter characters that break the functionality. Thus,
+  # restrict the allowed subset to certainly safe
+  def validate_type_hw
+    # \A and \z instead of ^ and $ cause multiline strings to fail validation.
+    # And for the record: at least these characters break the navigation:
+    # . % \ / (yes, dot is there as well for some oddball reason)
+    allowed = /\A[\w\ \-:;,\(\)]+\z/
+
+    if not testtype.match(allowed)
+      errors.add :testtype, "Incorrect test type. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( )"
+    end
+
+    if not hwproduct.match(allowed)
+      errors.add :hwproduct, "Incorrect hardware. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( )"
+    end
+  end
 
   def generate_defaults!
     time                 = tested_at || Time.now
-    self.title           = "%s Test Report: %s %s %s" % [target, hwproduct, testtype, time.strftime('%Y-%m-%d')]
-    self.environment_txt = "* Hardware: " + hwproduct
+    self.title           ||= "%s Test Report: %s %s %s" % [target, hwproduct, testtype, time.strftime('%Y-%m-%d')]
+    self.environment_txt = "* Hardware: " + hwproduct if self.environment_txt.empty?
   end
 
   def format_date
@@ -419,130 +439,81 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 
-  def sanitize_filename(f)
-    filename      = if f.respond_to?(:original_filename)
-                      f.original_filename
-                    else
-                      f.path
-                    end
-    just_filename = File.basename(filename)
-    just_filename.gsub(/[^\w\.\_\-]/, '_')
+  def sanitize_filename(filename)
+    filename.gsub(/[^\w\.\_\-]/, '_')
+  end
+
+  def valid_filename_extension?(filename)
+    if filename =~ /\.csv$/i or filename =~ /\.xml$/i
+      return true
+    else
+      errors.add :uploaded_files, "You can only upload files with the extension .xml or .csv"
+      return false
+    end
+  end
+
+  ###############################################
+  # For encapsulating the release_version          #
+  ###############################################
+  def release_version=(release_version)
+    version_label = VersionLabel.where( "normalized = ?", release_version.downcase)  
+    self.version_label = version_label.first  
+  end
+
+  def release_version 
+    if self.version_label
+      return self.version_label.label
+    else
+      return nil
+    end 
+  end
+
+  def generate_file_destination_path(original_filename)
+    datepart = Time.now.strftime("%Y%m%d")
+    dir      = File.join(RESULT_FILES_DIR, datepart)
+    dir      = File.join(INVALID_RESULTS_DIR, datepart) if !errors.empty? #store invalid results data for debugging purposes
+
+    FileUtils.mkdir_p(dir)
+
+    filename     = ("%06i-" % Time.now.usec) + sanitize_filename(original_filename)
+    path_to_file = File.join(dir, filename)
   end
 
 
   ###############################################
   # File upload handlers                        #
   ###############################################
-  def uploaded_files=(files)
-    @files = files
-  end
-
-  def uploaded_files
-    @files
-  end
-
-  def allowed_filename_extensions
-    @files.each do |f|
-      filename = MeegoTestSession::get_filename(f)
-      filename = filename.downcase.strip
-      if filename == ""
-        errors.add :uploaded_files, "can't be blank"
-        "File name can't be blank"
-        return
-      end
-      unless filename =~ /\.csv$/ or filename =~ /\.xml$/
-        errors.add :uploaded_files, "You can only upload files with the extension .xml or .csv"
-        filename
-        return
-      end
-    end if @files
-    nil
-  end
 
   def save_uploaded_files
-    @parsing_failed = false
-    return unless @files
-    total_cases = 0
+
+    return unless @uploaded_files
+
+    total_cases  = 0
+    self.has_ft  = false
+    self.has_nft = false
+
+    @uploaded_files.each do |f|
+
+      return if not valid_filename_extension?(f.original_filename)
+      total_cases += parse_result_file(f.path, f.original_filename)
+
+      path_to_file = generate_file_destination_path(f.original_filename)
+      File.open(path_to_file, "wb") { |outf| outf.write(f.read) } #saves the uploaded file in server
+
+      self.test_result_files.build(:path => path_to_file) #add the new test result file
+    end
     
-    error_msgs = []
-
-    MeegoTestSession.transaction do
-      filenames     = []
-      @parse_errors = []
-      @files.each do |f|
-        datepart = Time.now.strftime("%Y%m%d")
-        dir      = File.join(XML_DIR, datepart)
-
-        begin
-          f = if f.respond_to?(:original_filename)
-                f
-              elsif f.respond_to?(:path)
-                f
-              else
-                File.new(f.gsub(/\#.*/, ''))
-              end
-        rescue
-          errors.add :uploaded_files, "can't be blank"
-          return
-        end
-
-        filename     = sanitize_filename(f)
-
-        origfn       = File.basename(filename)
-        filename     = ("%06i-" % Time.now.usec) + filename
-        path_to_file = File.join(dir, filename)
-        filenames << path_to_file
-        if !File.exists?(dir)
-          Dir.mkdir(dir)
-        end
-        if f.respond_to? :read
-          File.open(path_to_file, "wb") { |outf| outf.write(f.read) }
-        else
-          FileUtils.copy(f.local_path, path_to_file)
-        end
-
-        # XXX: ugly hack to circumvent capybara/envjs bug in file uploading
-        if ::Rails.env == 'test'
-          data = File.read(path_to_file)
-          if data =~ /^Content-Type:/
-            data = data.sub /Content-Type: .*?\r\nContent-Length: .*?\r\n\r\n/, ""
-            count = File.open(path_to_file, 'w') {|f| f.write(data)}
-          end
-        end
-
-        begin
-          if filename =~ /.csv$/
-            total_cases += parse_csv_file(path_to_file)
-          else
-            total_cases += parse_xml_file(path_to_file)
-          end
-        rescue => e
-          logger.error "ERROR in file parsing"
-          logger.error e
-          logger.error e.backtrace
-          content = File.open(path_to_file).read
-          errors.add :uploaded_files, "Incorrect file format for #{origfn}: #{content}"
-          error_msgs << "Incorrect file format for #{origfn}: #{content}"
-        end
-      end
-      @xmlpath = filenames.join(',')
-      if @files.size > 0 and total_cases == 0
-        if @files.size == 1
-          errors.add :uploaded_files, "The uploaded file didn't contain any valid test cases"
-        else
-          errors.add :uploaded_files, "None of the uploaded files contained any valid test cases"
-        end
-      end
-      if !error_msgs.empty?
-          error_msgs.join(',')
+    if @uploaded_files.size > 0 and total_cases == 0
+      if @uploaded_files.size == 1
+        errors.add :uploaded_files, "The uploaded file didn't contain any valid test cases"
       else
-          nil
+        errors.add :uploaded_files, "None of the uploaded files contained any valid test cases"
       end
     end
   end
 
   def remove_uploaded_files
-    # TODO
+    # TODO: when report is deleted files should be deleted as well
   end
 
   def to_csv
@@ -569,10 +540,10 @@ class MeegoTestSession < ActiveRecord::Base
     # See if there is a previous report with the same test target and type
     prev = self.prev_session
     if prev
-      self.objective_txt     = prev.objective_txt
-      self.build_txt         = prev.build_txt
-      self.qa_summary_txt    = prev.qa_summary_txt
-      self.issue_summary_txt = prev.issue_summary_txt
+      self.objective_txt     = prev.objective_txt if self.objective_txt.empty?
+      self.build_txt         = prev.build_txt if self.build_txt.empty?
+      self.qa_summary_txt    = prev.qa_summary_txt if self.qa_summary_txt.empty?
+      self.issue_summary_txt = prev.issue_summary_txt if self.issue_summary_txt.empty?
     end
 
     self.author    = user
@@ -581,34 +552,18 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def update_report_result(user, resultfiles, published = true)
-    @files = resultfiles
-    parsing_errors = []
-    temp_err = allowed_filename_extensions
-    if (nil != temp_err)
-       parsing_errors << temp_err
-    end
-    temp_err = save_uploaded_files
-    if (nil != temp_err)
-       parsing_errors << temp_err
-    end
+    @uploaded_files = resultfiles
+    save_uploaded_files
+    parsing_errors = errors[:uploaded_files]
+
     user.update_attribute(:default_target, self.target) if self.target.present?
     self.editor    = user
     self.published = published
-    
-    if !parsing_errors.empty?
-       parsing_errors.join(',')
-    else
-       nil
-    end
-  end
 
-  def self.get_filename(file)
-    if file.respond_to?(:original_filename)
-      file.original_filename
-    elsif file.respond_to?(:path)
-      file.path
+    if !parsing_errors.empty?
+      return parsing_errors.join(',')
     else
-      file.gsub(/\#.*/, '')
+      return nil
     end
   end
 
@@ -617,6 +572,26 @@ class MeegoTestSession < ActiveRecord::Base
   ###############################################
   # Uploaded data parsing                       #
   ###############################################
+
+  def parse_result_file(fpath,origfn)
+    cases = 0
+    begin
+      if origfn =~ /.csv$/i
+        cases = parse_csv_file(fpath)
+      else
+        cases = parse_xml_file(fpath)
+      end
+    rescue => e
+      logger.error "ERROR in file parsing"
+      logger.error origfn
+      logger.error e
+      logger.error e.backtrace
+      errors.add :uploaded_files, "Incorrect file format for #{origfn}" + (": #{e}" if origfn =~ /.xml$/i).to_s
+    end
+    cases
+  end
+
+
   def parse_csv_file(filename)
     prev_feature = nil
     test_set     = nil
@@ -625,8 +600,10 @@ class MeegoTestSession < ActiveRecord::Base
     total = 0
 
     rows         = CSV.read(filename);
+
     rows.shift # skip header row
     rows.each do |row|
+      self.has_ft = true
       feature = row[0].toutf8.strip
       summary = row[1].toutf8.strip
       comments = row[2].toutf8.strip if row[2]
@@ -648,10 +625,10 @@ class MeegoTestSession < ActiveRecord::Base
         set_counts[feature] = Counter.new()
       end
 
-      if passed
+      if passed == "1"
         result = 1
         set_counter.add_pass_count()
-      elsif failed
+      elsif failed == "1"
         result = -1
       else
         result = 0
@@ -667,6 +644,7 @@ class MeegoTestSession < ActiveRecord::Base
           :comment            => comments || "",
           :meego_test_session => self
       )
+
       total += 1
     end
     
@@ -687,7 +665,6 @@ class MeegoTestSession < ActiveRecord::Base
   def parse_xml_file(filename)
     sets = {}
     file_total = 0
-    self.has_ft = false
     TestResults.new(File.open(filename)).suites.each do |suite|
       suite.sets.each do |set|
         ReportParser::parse_features(set.feature).each do |feature|
@@ -720,14 +697,14 @@ class MeegoTestSession < ActiveRecord::Base
               set_model.has_nft = true
               self.has_nft = true
               if m.is_series?
-                outline = self.calculate_outline(m.measurements)
+                outline = self.calculate_outline(m.measurements,m.interval)
                 tc.serial_measurements.build(
                   :name       => m.name,
                   :sort_index => nft_index,
                   :short_json => series_json(m.measurements, maxsize=40),
-                  :long_json  => series_json_withx(m, maxsize=200), 
+                  :long_json  => series_json_withx(m, outline.interval_unit, maxsize=200), 
                   :unit       => m.unit,
-                  :interval_unit => m.interval_unit || "ms",
+                  :interval_unit => outline.interval_unit,
                   
                   :min_value    => outline.minval,
                   :max_value    => outline.maxval,
@@ -779,7 +756,7 @@ class MeegoTestSession < ActiveRecord::Base
   def create_version_label
     verlabel = VersionLabel.find(:first, :conditions => {:normalized => release_version.downcase})
     if verlabel
-      self.release_version = verlabel.label
+      self.version_label = verlabel
       save
     else
       verlabel = VersionLabel.new(:label => release_version, :normalized => release_version.downcase)

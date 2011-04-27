@@ -48,6 +48,24 @@ class FileStorage
     }
   end
 
+  def list_report_files(model)
+    return [] if @baseurl.nil? or model.test_result_files.nil?
+    result = []
+    model.test_result_files.each do |file|
+      xmlpath = file.path
+      path = xmlpath.slice(@dir.length+1, xmlpath.length)
+      if path.present?
+        result << {
+        :name => File.basename(xmlpath).gsub(/^[0-9]{1,}\-/, ''),
+        :path => path,
+        :url => @baseurl + path,
+        :exists => File.exists?(xmlpath)
+        }
+      end
+    end
+    result
+  end
+
   private
   def get_file_path(dir, name)
     dir.path + "/" + name.gsub(/[^0-9A-Za-z.\-_]/, '')

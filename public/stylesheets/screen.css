@@ -155,6 +155,12 @@ h2 {
     border-top: 1px solid #ccc;
     padding-top: 10px;}
 
+h2 small {
+	font-size: .55em;
+	font-weight:normal;
+	margin-left:1em;}
+	
+
 h3 {
     font-size: 1.3333em;
     line-height: 1.125;
@@ -1258,7 +1264,8 @@ th.filtered:last-child {
 #report_navigation th {
     padding-left: 15px;
     padding-top: 60px;
-    padding-bottom: 41px;}
+    padding-bottom: 41px;
+    width:16.6666%;}
 
 #report_navigation td {
     border-right: 1px solid #cacaca;
@@ -1393,11 +1400,18 @@ td.dec em{
     width:40px;
     text-align: center;}
 
-#test_results .total,
-#test_results .pass,
-#test_results .fail,
-#test_results .na {
+.th_pass_rate{
+  text-align: right;}
+
+#test_results_by_feature .total,
+#test_results_by_feature .pass,
+#test_results_by_feature .fail,
+#test_results_by_feature .na {
     text-align: center; }
+
+#test_results_by_feature .rate {
+  text-align: right;
+}
 
 .th_graph {
     width:25%;}
@@ -1707,7 +1721,7 @@ width: 35px;
 #nft_drilldown_graph {
         width: 823px;
         height: 314px;
-        padding: 10px;
+        padding: 20px;
         border: 1px solid #b2b2b2;
 }
 

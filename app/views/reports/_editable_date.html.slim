@@ -1,0 +1,21 @@
+- if @editing
+  | <div class="editable_text editable_date" id="test_category">
+
+dt Test execution date and category:
+dd
+  span.date= format_date_to_human_readable @report.tested_at
+  - if @editing
+    span.editmarkup style="display:none;"
+
+dd.category
+  = @test_session.release_version
+  |  &rsaquo; 
+  = @test_session.target
+  |  &rsaquo; 
+  = @test_session.testtype
+  |  &rsaquo; 
+  = @test_session.hwproduct
+
+- if @editing
+  | </div>
+

@@ -1,0 +1,11 @@
+- if @editing
+  | <div class="editable_text editable_area">
+
+h2 id=anchor
+  = title
+  span.heading_actions= back_to_top
+
+= editable_txt(field)
+
+- if @editing
+  | </div>

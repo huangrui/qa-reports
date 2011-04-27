@@ -2,30 +2,48 @@ require 'spec_helper'
 require 'report_comparison'
 require 'rspec/rails/mocks.rb'
 
+def MeegoTestSession.unsafe_import(attributes, files, user)
+  attr             = attributes.merge!({:uploaded_files => files})
+  result           = MeegoTestSession.new(attr)
+  result.tested_at = result.tested_at || Time.now
+  result.import_report(user, true)
+  result.save_uploaded_files
+  result.save(:validate => false)
+  result
+end
+
 class ReportComparisonSpec < ActiveSupport::TestCase
   
   describe ReportComparison do
     before(:each) do
+
+      @file1 = File.new("spec/fixtures/sim1.xml")
+      @file2 = File.new("spec/fixtures/sim2.xml")
+      @file1.stub!(:original_filename).and_return("sim1.xml")
+      @file2.stub!(:original_filename).and_return("sim2.xml")
+
       user = User.new({
           :email => "test@test.com",
           :password => "foobar",
           :name => "TestUser"
       })
-      @session1 = MeegoTestSession.import({
+      @session1 = MeegoTestSession.unsafe_import({
           :author => user,
           :title => "Test1",
           :target => "Core",
           :testtype => "Sanity",
-          :hwproduct => "N900"
-      }, [File.new("spec/fixtures/sim1.xml")], user)
+          :hwproduct => "N900",
+          :release_version => "1.2"
+      }, [@file1], user)
 
-      @session2 = MeegoTestSession.import({
+      @session2 = MeegoTestSession.unsafe_import({
           :author => user,
           :title => "Test1",
           :target => "Core",
           :testtype => "Sanity Testing",
-          :hwproduct => "N900"
-      }, [File.new("spec/fixtures/sim2.xml")], user)
+          :hwproduct => "N900",
+          :release_version => "1.2"
+      }, [@file2], user)
     end
 
     it "should compare two reports and list changed tests" do
