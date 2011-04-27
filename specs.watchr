@@ -1,8 +1,8 @@
 # Run with bundle exec watchr specs.watchr and enjoy BDD with continuous testing:
 
-watch( 'spec/(.*)_spec\.rb' )  {|md| system("bundle exec rspec #{md[0]}") }
-watch( 'lib/(.*)\.rb' )      {|md| system("rspec spec/#{md[1]}_spec.rb") }
-watch( 'app/(.*)\.rb' )      {|md| system("rspec spec/#{md[1]}_spec.rb") }
+watch( 'spec/(.*)\.rb' ) {|md| system("rspec #{md}") if File.exists?(md)}
+watch( 'lib/(.*)\.rb' )  {|md| system("rspec spec/lib/#{md[1]}_spec.rb") if File.exists?("spec/lib/#{md[1]}_spec.rb") }
+watch( 'app/(.*)\.rb' )  {|md| system("rspec spec/#{md[1]}_spec.rb") if File.exists?("spec/#{md[1]}_spec.rb") }
 
 # --------------------------------------------------
 # Signal Handling
