@@ -10,6 +10,7 @@ gem 'rack', :git => "https://github.com/rack/rack.git" # Use next release when a
 gem "will_paginate", "3.0.pre2"
 gem 'haml'
 gem 'slim'
+gem 'paperclip'
 
 group :production do
   gem 'newrelic_rpm'

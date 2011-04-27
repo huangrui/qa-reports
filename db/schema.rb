@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110406131351) do
+ActiveRecord::Schema.define(:version => 20110427101450) do
 
   create_table "meego_measurements", :force => true do |t|
     t.integer "meego_test_case_id"
@@ -23,6 +23,16 @@ ActiveRecord::Schema.define(:version => 20110406131351) do
   end
 
   add_index "meego_measurements", ["meego_test_case_id"], :name => "index_meego_measurements_on_meego_test_case_id"
+
+  create_table "meego_test_case_attachments", :force => true do |t|
+    t.integer  "meego_test_case_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "image_file_name"
+    t.string   "image_content_type"
+    t.integer  "image_file_size"
+    t.datetime "image_updated_at"
+  end
 
   create_table "meego_test_cases", :force => true do |t|
     t.integer "meego_test_set_id",                                        :null => false
