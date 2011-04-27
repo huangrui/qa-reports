@@ -18,9 +18,9 @@ describe ResultFileParser do
       # Result format should be
       # [
       #   {:feature => "Feature 1", :meego_test_cases => {
-      #      [{:name => "Test Case 1", :result => 1, :comment "OK"   },
-      #       {:name => "Test Case 2", :result => -1, :comment "FAIL"},
-      #       {:name => "Test Case 5", :result => -1, :comment "FAIL }
+      #      [{:name => "Test Case 1", :result => 1, :comment => "OK"   },
+      #       {:name => "Test Case 2", :result => -1, :comment => "FAIL"},
+      #       {:name => "Test Case 5", :result => -1, :comment => "FAIL }
       #      ] } 
       #   },
       #
@@ -37,7 +37,7 @@ describe ResultFileParser do
 
       @test_cases = {}
       @test_sets.each do |test_set|
-        @test_cases[test_set[:feature]] = test_set[:meego_test_cases]
+        @test_cases[test_set[:feature]] = test_set[:meego_test_cases_attributes]
       end
 
       # Usage = @test_cases["Feature"]["Testcase"][:field]
@@ -60,7 +60,7 @@ describe ResultFileParser do
     end
 
     it "should have five test cases" do
-      test_case_count = @test_sets.map { |test_set| test_set[:meego_test_cases].count }.reduce(:+)
+      test_case_count = @test_sets.map { |test_set| test_set[:meego_test_cases_attributes].count }.reduce(:+)
       test_case_count.should == 5
     end
 

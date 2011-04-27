@@ -27,6 +27,8 @@ class MeegoTestSet < ActiveRecord::Base
   belongs_to :meego_test_session
    
   has_many :meego_test_cases, :dependent => :destroy
+
+  accepts_nested_attributes_for :meego_test_cases
    
   include ReportSummary
   include Graph

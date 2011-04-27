@@ -42,7 +42,7 @@ class MeegoTestSession < ActiveRecord::Base
   attr_accessor :uploaded_files
 
   has_many :meego_test_sets, :dependent => :destroy
-  has_many :meego_test_cases
+  #has_many :meego_test_cases
   has_many :test_result_files, :dependent => :destroy
 
   belongs_to :author, :class_name => "User"
@@ -51,14 +51,16 @@ class MeegoTestSession < ActiveRecord::Base
   belongs_to :version_label, :class_name => "VersionLabel", :foreign_key => "version_label_id"
 
   validates_presence_of :title, :target, :testtype, :hwproduct
-  validates_presence_of :uploaded_files, :on => :create
+  #validates_presence_of :uploaded_files, :on => :create
 
   validates :tested_at, :date_time => true
 
-  validate :save_uploaded_files, :on => :create
+  #validate :save_uploaded_files, :on => :create
 
   validate :validate_labels
   validate :validate_type_hw
+
+  accepts_nested_attributes_for :meego_test_sets, :allow_destroy => true
 
   after_destroy :remove_uploaded_files
 
@@ -484,33 +486,33 @@ class MeegoTestSession < ActiveRecord::Base
   # File upload handlers                        #
   ###############################################
 
-  def save_uploaded_files
-
-    return unless @uploaded_files
-
-    total_cases  = 0
-    self.has_ft  = false
-    self.has_nft = false
-
-    @uploaded_files.each do |f|
-
-      return if not valid_filename_extension?(f.original_filename)
-      total_cases += parse_result_file(f.path, f.original_filename)
-
-      path_to_file = generate_file_destination_path(f.original_filename)
-      File.open(path_to_file, "wb") { |outf| outf.write(f.read) } #saves the uploaded file in server
-
-      self.test_result_files.build(:path => path_to_file) #add the new test result file
-    end
-    
-    if @uploaded_files.size > 0 and total_cases == 0
-      if @uploaded_files.size == 1
-        errors.add :uploaded_files, "The uploaded file didn't contain any valid test cases"
-      else
-        errors.add :uploaded_files, "None of the uploaded files contained any valid test cases"
-      end
-    end
-  end
+#  def save_uploaded_files
+#
+#    return unless @uploaded_files
+#
+#    total_cases  = 0
+#    self.has_ft  = false
+#    self.has_nft = false
+#
+#    @uploaded_files.each do |f|
+#
+#      return if not valid_filename_extension?(f.original_filename)
+#      total_cases += parse_result_file(f.path, f.original_filename)
+#
+#      path_to_file = generate_file_destination_path(f.original_filename)
+#      File.open(path_to_file, "wb") { |outf| outf.write(f.read) } #saves the uploaded file in server
+#
+#      self.test_result_files.build(:path => path_to_file) #add the new test result file
+#    end
+#
+#    if @uploaded_files.size > 0 and total_cases == 0
+#      if @uploaded_files.size == 1
+#        errors.add :uploaded_files, "The uploaded file didn't contain any valid test cases"
+#      else
+#        errors.add :uploaded_files, "None of the uploaded files contained any valid test cases"
+#      end
+#    end
+#  end
 
   def remove_uploaded_files
     # TODO: when report is deleted files should be deleted as well
@@ -591,76 +593,6 @@ class MeegoTestSession < ActiveRecord::Base
     cases
   end
 
-
-  def parse_csv_file(filename)
-    prev_feature = nil
-    test_set     = nil
-    set_counts = {}
-    sets       = {}
-    total = 0
-
-    rows         = CSV.read(filename);
-
-    rows.shift # skip header row
-    rows.each do |row|
-      self.has_ft = true
-      feature = row[0].toutf8.strip
-      summary = row[1].toutf8.strip
-      comments = row[2].toutf8.strip if row[2]
-      passed = row[3]
-      failed = row[4]
-      na     = row[5]
-      if feature != prev_feature
-        test_set = if sets.has_key? feature
-          sets[feature]
-        else
-          sets[feature] = self.meego_test_sets.build(:feature => feature)
-        end
-        prev_feature = feature
-      end
-
-      set_counter = if set_counts.has_key? feature
-        set_counts[feature]
-      else
-        set_counts[feature] = Counter.new()
-      end
-
-      if passed == "1"
-        result = 1
-        set_counter.add_pass_count()
-      elsif failed == "1"
-        result = -1
-      else
-        result = 0
-      end
-      set_counter.add_total_count()
-
-      if summary == ""
-        raise "Missing test case name in CSV"
-      end
-      test_case = test_set.meego_test_cases.build(
-          :name               => summary,
-          :result             => result,
-          :comment            => comments || "",
-          :meego_test_session => self
-      )
-
-      total += 1
-    end
-    
-    #if total == 0
-    #  raise "File didn't contain any test cases"
-    #end
-
-    sets.each do |feature, set_model|
-      feature_counter = set_counts[feature]
-      set_model.grading = calculate_grading(
-                  feature_counter.get_pass_count(),
-                  feature_counter.get_total_count()
-      )
-    end
-    total
-  end
 
   def parse_xml_file(filename)
     sets = {}

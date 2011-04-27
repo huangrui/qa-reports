@@ -1,6 +1,11 @@
 require 'spec_helper'
 
 describe MeegoTestSession do
+
+  it "should be valid with valid parameters" do
+
+  end
+  
   it "should accept valid tested_at date" do
     ['2010-07-15', '2010-11-4', '2011-12-30 23:45:59'].each do |date|
       mts = MeegoTestSession.new(:tested_at => date)
@@ -18,6 +23,22 @@ describe MeegoTestSession do
     mts = MeegoTestSession.new(:tested_at => '2010-13-15')
     mts.should_not be_valid
     mts.errors[:tested_at].should_not be_empty
+  end
+
+  it "should create test sets and test cases" do
+    params = {
+      :title => "Dummy test report",
+      :release_version => "1.2",
+      :hwproduct => "N900",
+      :target => "Core",
+      :testtype => "Sanity",
+      :tested_at => "2011-12-30 23:45:59",
+      :uploaded_files => "foo.csv"
+    }
+
+    mts = MeegoTestSession.new(params)
+    mts.valid?
+    puts mts.errors
   end
 
   describe "filters_exist?" do

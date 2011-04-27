@@ -17,7 +17,7 @@ module ResultFileParser
 
     test_sets = []
     test_cases.each do |feature, test_cases|
-      test_sets << {:feature => feature, :meego_test_cases => test_cases}
+      test_sets << {:feature => feature, :meego_test_cases_attributes => test_cases}
     end
 
     test_sets
