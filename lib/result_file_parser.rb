@@ -11,16 +11,11 @@ module ResultFileParser
       comment = row[2].toutf8.strip
       result  = parse_test_case_result(row[3], row[4], row[5])
 
-      test_cases[feature] ||= []
-      test_cases[feature] << {:name => name, :result => result, :comment => comment}
+      test_cases[feature] ||= {}
+      test_cases[feature][name] = {:name => name, :result => result, :comment => comment}
     end
 
-    test_sets = []
-    test_cases.each do |feature, test_cases|
-      test_sets << {:feature => feature, :meego_test_cases_attributes => test_cases}
-    end
-
-    test_sets
+    test_cases
   end
 
   private
