@@ -29,10 +29,14 @@ class MeegoTestSet < ActiveRecord::Base
   has_many :meego_test_cases, :dependent => :destroy
 
   accepts_nested_attributes_for :meego_test_cases
-   
+
   include ReportSummary
   include Graph
-   
+
+  def self.by_feature(feature)
+    where(:feature => feature).first
+  end
+
   def has_nft?
     has_nft
   end

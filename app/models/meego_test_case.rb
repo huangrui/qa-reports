@@ -33,6 +33,10 @@ class MeegoTestCase < ActiveRecord::Base
   FAIL = -1
   NA = 0
 
+  def self.by_name(name)
+    where(:name => name).first
+  end
+
   def unique_id
     (meego_test_set.name + "_" + name).downcase
   end
