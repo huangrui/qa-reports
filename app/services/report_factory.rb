@@ -4,6 +4,7 @@ module ReportFactory
     generate_title(params)
     generate_environment_txt(params)
     parse_result_files(params)
+    save_result_files(params)
 
     MeegoTestSession.new(params)
   end
@@ -21,13 +22,25 @@ module ReportFactory
   end
 
   def self.parse_result_files(params)
-    result_files = params[:uploaded_files]
-    params[:uploaded_files] = nil
-    params[:meego_test_sets_attributes] = []
+    test_cases = {}
+    params[:uploaded_files].each do |file|
+      new_test_cases = ResultFileParser.parse_csv(file)
 
-    result_files.each do |file|
-      params[:meego_test_sets_attributes] += ResultFileParser.parse_csv(file)
+      new_test_cases.each do |feature, tcs|
+        test_cases[feature] ||= {}
+        test_cases[feature].merge!(tcs)
+      end
     end
+
+    test_sets = []
+    test_cases.each do |feature, test_cases|
+      test_sets << {:feature => feature, :meego_test_cases_attributes => test_cases}
+    end
+
+    params[:meego_test_sets_attributes] = test_sets
   end
 
+  def self.save_result_files(params)
+    #TODO
+  end
 end
