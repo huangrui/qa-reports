@@ -13,26 +13,32 @@
       | : 
     = @target
 
-  h2 Summary
+ 
   .clearfix
+    h2
     .result_caption.big_number
-      strong#changed_to_pass.pass = @comparison_report.changed_to_pass
-      | Test result
-      br/
-      | changed to 
-      em pass
+      h3 Progress
+      strong#changed_to_pass.pass 5
+      .result_drilldown
+        span.pass.changed_result.changed_from_fail 2
+        br/
+        span.pass.changed_result.changed_from_na 2      
+      p   
+        | Existing tests 
+        br/
+        em changed to fixed
     .result_caption.big_number
-      strong#changed_to_fail.fail = @comparison_report.changed_to_fail
-      | Test result
-      br/
-      | changed to 
-      em fail
-    .result_caption.big_number
-      strong#changed_to_na = @comparison_report.changed_to_na
-      | Test result
-      br/
-      | changed to 
-      em N/A
+      h3 Regression
+      strong#changed_to_fail.fail 14
+      .result_drilldown
+			  span.pass.changed_result.changed_from_fail 9
+			  br/
+			  span.pass.changed_result.changed_from_na 5
+      p
+        | Existing tests
+        br/
+        em not passing anymore
+  
     .new_tests.result_caption
       .result_caption_header
         strong New tests:

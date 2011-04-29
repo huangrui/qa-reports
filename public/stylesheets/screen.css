@@ -1001,27 +1001,41 @@ div.formError, #error, form .error {
 .result_caption {
     float: left;
     overflow: hidden;
-    color: #989898;
-    margin:0 1em;}
+    color: #989898 !important;}
+ 
+.result_caption p {
+		margin-top: 1em;
+  	color: #989898 !important;}
+
+.result_drilldown {
+		float: right;
+		margin-top:1em;
+		font-weight:bold;}
+	
+.result_drilldown span {
+		background-position: left .4em;}
 
 .big_number {
-    margin:0 2em;}
+    text-align:left;
+    margin-right:5em;}
 
-.medium_number,
-.big_number {
+.medium_number{
     text-align:center;
-}
+    margin:0 .75em;}
 
 .big_number strong {
-    font-size: 4.3333em;}
+    font-size: 4.3333em;
+    margin-left: .25em;
+    margin-bottom: 1em;
+    line-height:1;}
 
 .medium_number strong {
-    font-size: 2em;}
+    font-size: 2em;
+    display:block;}
 
 .result_caption strong {
     font-weight: bold;
-    font-family: Arial, sans-serif;
-    display: block;}
+    font-family: Arial, sans-serif;}
 
 .result_caption_header {
     float: left;
@@ -1030,8 +1044,8 @@ div.formError, #error, form .error {
     padding-top: 3em;}
 
 .new_tests {
-    margin-top: 3.7em;
-    margin-left:2em;}
+    margin-top: 5.2em;
+    margin-left:0em;}
 
 .compare {
     padding-right: 13px;
