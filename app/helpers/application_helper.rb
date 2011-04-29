@@ -62,6 +62,7 @@ module ApplicationHelper
   html.html_safe
  end
 
+  # FIXME: Cleanup with link_to_unless_current
   def release_version_navigation(current_version, target='', testtype='', hwproduct='')
     html = '<ul class="clearfix">'
     link_text = ''

@@ -93,6 +93,23 @@ class MeegoTestSession < ActiveRecord::Base
          }, :meego_test_sets, :meego_test_cases])
   end
 
+  def self.testtypes
+    published.select("DISTINCT testtype").order("testtype").map { |row| row.testtype.humanize }
+  end
+
+  def self.popular_testtypes(limit=3)
+    published.select("testtype").order("COUNT(testtype) DESC").group(:testtype).map { |row| row.testtype.humanize }
+  end
+
+  def self.hardwares
+    published.select("DISTINCT hwproduct as hardware").order("hwproduct").map { |row| row.hardware.humanize }
+  end
+
+  def self.popular_hardwares(limit=3)
+    published.select("hwproduct as hardware").order("COUNT(hwproduct) DESC").
+      group(:hwproduct).limit(limit).map { |row| row.hardware.humanize }
+  end
+
   def target=(target)
     target = target.try(:downcase)
     write_attribute(:target, target)
@@ -108,6 +125,11 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def testtype
+    s = read_attribute(:testtype)
+    s.gsub(/\b\w/) { $&.upcase } if s
+  end
+
+  def self.testtype
     s = read_attribute(:testtype)
     s.gsub(/\b\w/) { $&.upcase } if s
   end
@@ -471,7 +493,7 @@ class MeegoTestSession < ActiveRecord::Base
   # For encapsulating the release_version          #
   ###############################################
   def release_version=(release_version)
-    version_label = VersionLabel.where( "normalized = ?", release_version.downcase)  
+    version_label = VersionLabel.where( :normalized => release_version.downcase)  
     self.version_label = version_label.first  
   end
 

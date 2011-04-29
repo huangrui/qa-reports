@@ -9,8 +9,9 @@
 
 .page_content
   = form_for @test_session, :url=>{:action => "upload"}, :html => {:id => 'upload_report', :multipart => true} do |f|
-    h1 Upload test data
+    h1 New Test Report
     = render :partial => 'shared/report_form', :object => f
+
     .field.last
       label for="report_test_data" Test data:
       #dragndrop_and_browse style="display:none"
@@ -49,6 +50,7 @@
         | next step:
         br/
         strong Finalize
+
 = javascript_include_tag 'handlebars'
 script name="attachment" type="text/x-handlebars-template"
   | <div id="{{fileid}}">
@@ -60,36 +62,32 @@ script name="attachment" type="text/x-handlebars-template"
     {{filename}}</span>
     <img style="float: left;  margin-left: -10px; margin-top: 5px;" src="/images/progress.gif" />
     </div>
-javascript:
-  $(document).ready(function() {
-    var targetSuggestions = [#{raw @targets.map{|t| '"%s"' % t}.join(',')}];
-    var typeSuggestions = [#{raw @types.map{|t| '"%s"' % t}.join(',')}];
-    var hardwareSuggestions = [#{raw @hardware.map{|t| '"%s"' % t}.join(',')}];
 
-    $(".date").datepicker({
+coffee:
+  $(document).ready ->
+    testTypeSuggestions = []
+    hardwareSuggestions = []
+
+    success = (collection, resource) ->
+      (data) ->
+        collection = data
+        $("#report_test_" + resource).autocomplete(source: collection)
+        activateSuggestionLinks("div.fields")
+
+    hardware_url = window.location.pathname.replace("upload","hardware")
+    testtype_url = window.location.pathname.replace("upload","testtype")
+    $.get(hardware_url, success(hardwareSuggestions, "hardware") )
+    $.get(testtype_url, success(testTypeSuggestions, "type") )
+
+    $(".date").datepicker(
       showOn: "both",
       buttonImage: "/images/calendar_icon.png",
       buttonImageOnly: true,
       firstDay: 1,
       selectOtherMonths: true,
       dateFormat: "yy-mm-dd"
-    });
+    )
 
-    var myDate = new Date();
-    var prettyDate = myDate.getUTCFullYear() + '-' + (myDate.getUTCMonth()+1) + '-' + myDate.getUTCDate();
-    $(".date").val(prettyDate);
-
-    $("#report_test_target").autocomplete({
-      source: targetSuggestions
-    });
-
-    $("#report_test_type").autocomplete({
-      source: typeSuggestions
-    });
-
-    $("#report_test_hardware").autocomplete({
-      source: hardwareSuggestions
-    });
-
-    activateSuggestionLinks("div.field");
-  });
+    myDate = new Date()
+    prettyDate = myDate.getUTCFullYear() + '-' + (myDate.getUTCMonth()+1) + '-' + myDate.getUTCDate()
+    $(".date").val(prettyDate)

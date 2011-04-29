@@ -189,10 +189,10 @@ class ReportsController < ApplicationController
       @no_upload_link = true
 
       @report         = @test_session
-      @targets = MeegoTestSession.list_targets @selected_release_version
-      @types = MeegoTestSession.list_types @selected_release_version
-      @hardware = MeegoTestSession.list_hardware @selected_release_version
-      @release_versions = MeegoTestSession.release_versions
+      @release_versions = VersionLabel.all.map { |release| release.label }
+      @targets = MeegoTestSession.targets
+      @testtypes = MeegoTestSession.release(@selected_release_version).testtypes
+      @hardware = MeegoTestSession.release(@selected_release_version).popular_hardwares
 
       @raw_result_files = @test_session.raw_result_files
 
@@ -274,10 +274,10 @@ class ReportsController < ApplicationController
     if id = params[:id].try(:to_i)
       @test_session   = MeegoTestSession.fetch_fully(id)
       @report         = @test_session
-      @targets = MeegoTestSession.list_targets @selected_release_version
-      @types = MeegoTestSession.list_types @selected_release_version
-      @hardware = MeegoTestSession.list_hardware @selected_release_version
-      @release_versions = MeegoTestSession.release_versions
+      @release_versions = VersionLabel.all.map { |release| release.label }
+      @targets = MeegoTestSession.targets
+      @testtypes = MeegoTestSession.release(@selected_release_version).testtypes
+      @hardware = MeegoTestSession.release(@selected_release_version).popular_hardwares
       @no_upload_link = true
       @files = FileStorage.new().list_files(@test_session) or []
       @raw_result_files = @test_session.raw_result_files

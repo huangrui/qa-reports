@@ -9,8 +9,6 @@
         - MeegoTestSession::targets.each do |target|
           th scope="col"
             = link_to target, profile_report_path(@selected_release_version, target)
-
+        = render :partial => "title", :collection => @profiles, :as => :profile
     tr
-      - MeegoTestSession::targets.each do |target|
-        td
-          = render :partial=>'testtype', :collection=>@types[target], :locals => {:target=>target}
+      = render :partial => "profile", :collection => @profiles

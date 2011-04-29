@@ -10,5 +10,5 @@ tr class="testcase #{result_class(testcase, 'result_')}" id="testcase-#{testcase
   td class="testcase_notes #{'edit' if @editing}"
     .content #{comment_html(testcase)}
     - if @editing
-      .comment_markup style="display:none;"
+      .comment_markup style="display:none;" #{testcase.comment}
       
