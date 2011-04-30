@@ -10,6 +10,7 @@ gem "will_paginate"
 gem 'slim'
 gem 'coffee-script'
 gem 'therubyracer', :require => false
+gem 'rest-client', :require => 'rest_client'
 
 group :production do
   gem 'newrelic_rpm'
