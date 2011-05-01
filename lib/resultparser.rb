@@ -37,8 +37,8 @@ class TestResults
     @results['environment'] || ""
   end
   
-  def hwproduct
-    @results['hwproduct'] || ""
+  def hardware
+    @results['hardware'] || ""
   end
   
   def hwbuild

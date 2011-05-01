@@ -32,7 +32,7 @@ class UploadController < ApplicationController
   
   def upload_form
     session[:new_report] ||= {}
-    [:release_version, :target, :testtype, :hwproduct].each do |key| 
+    [:release_version, :target, :testtype, :hardware].each do |key| 
       session[:new_report][key] = params[key] if params[key]
     end
 

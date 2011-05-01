@@ -40,33 +40,33 @@ Meegoqa::Application.routes.draw do
 
   # Constraint to allow a dot (.) in release vesion
   constraints(:release_version => /[a-zA-Z0-9._-]+/) do
-    match '(/:release_version(/:target(/:testtype(/:hwproduct))))/upload' => 'upload#upload_form', :via => "get", :as => :upload_form
-    match '(/:release_version(/:target(/:testtype(/:hwproduct))))/hardware' => 'hardwares#index', :via => "get", :as => :hardwares
-    match '(/:release_version(/:target(/:testtype(/:hwproduct))))/testtype' => 'test_types#index', :via => "get", :as => :test_types
+    match '(/:release_version(/:target(/:testtype(/:hardware))))/upload' => 'upload#upload_form', :via => "get", :as => :upload_form
+    match '(/:release_version(/:target(/:testtype(/:hardware))))/hardware' => 'hardwares#index', :via => "get", :as => :hardwares
+    match '(/:release_version(/:target(/:testtype(/:hardware))))/testtype' => 'test_types#index', :via => "get", :as => :test_types
     
 
-    match '/:release_version/:target/:testtype/:hwproduct/csv' => 'csv_export#export', :via => "get"
+    match '/:release_version/:target/:testtype/:hardware/csv' => 'csv_export#export', :via => "get"
     match '/:release_version/:target/:testtype/csv' => 'csv_export#export', :via => "get"
     match '/:release_version/:target/csv' => 'csv_export#export', :via => "get"
 
-    match '/:release_version/:target/:testtype/:hwproduct/rss' => 'rss#rss', :via => "get"
+    match '/:release_version/:target/:testtype/:hardware/rss' => 'rss#rss', :via => "get"
     match '/:release_version/:target/:testtype/rss' => 'rss#rss', :via => "get"
     match '/:release_version/:target/rss' => 'rss#rss', :via => "get"
     match '/:release_version/rss' => 'rss#rss', :via => "get"
     
     match '/:release_version/:target/:testtype/compare/:comparetype' => 'reports#compare', :via => "get"
 
-    match '/:release_version/:target/:testtype/:hwproduct/paging/:page' => 'index#filtered_list', :via => "get"
+    match '/:release_version/:target/:testtype/:hardware/paging/:page' => 'index#filtered_list', :via => "get"
     match '/:release_version/:target/:testtype/paging/:page' => 'index#filtered_list', :via => "get"
     match '/:release_version/:target/paging/:page' => 'index#filtered_list', :via => "get"
 
-    match '/:release_version/:target/:testtype/:hwproduct/:id' => 'reports#view', :via => "get"
-    match '/:release_version/:target/:testtype/:hwproduct/:id/edit' => 'reports#edit', :via => "get"
-    match '/:release_version/:target/:testtype/:hwproduct/:id/download' => 'csv_export#export_report', :via => "get"
-    match '/:release_version/:target/:testtype/:hwproduct/:id/delete' => 'reports#delete', :via => "post"
-    match '/:release_version/:target/:testtype/:hwproduct/:id/print' => 'reports#print', :via => "get"
+    match '/:release_version/:target/:testtype/:hardware/:id' => 'reports#view', :via => "get"
+    match '/:release_version/:target/:testtype/:hardware/:id/edit' => 'reports#edit', :via => "get"
+    match '/:release_version/:target/:testtype/:hardware/:id/download' => 'csv_export#export_report', :via => "get"
+    match '/:release_version/:target/:testtype/:hardware/:id/delete' => 'reports#delete', :via => "post"
+    match '/:release_version/:target/:testtype/:hardware/:id/print' => 'reports#print', :via => "get"
 
-    match '/:release_version/:target/:testtype/:hwproduct' => 'index#filtered_list', :via => "get", :as => :hardware_report
+    match '/:release_version/:target/:testtype/:hardware' => 'index#filtered_list', :via => "get", :as => :hardware_report
     match '/:release_version/:target/:testtype' => 'index#filtered_list', :via => "get", :as => :test_type_report
     match '/:release_version/:target' => 'index#filtered_list', :via => "get", :as => :profile_report
     match '/:release_version' => 'index#index', :via => "get"

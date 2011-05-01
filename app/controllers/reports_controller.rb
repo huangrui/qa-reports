@@ -215,7 +215,7 @@ class ReportsController < ApplicationController
                 :release_version => test_session.release_version,
                 :target          => test_session.target,
                 :testtype        => test_session.testtype,
-                :hwproduct       => test_session.hwproduct
+                :hardware       => test_session.hardware
   end
 
   def view
@@ -237,7 +237,7 @@ class ReportsController < ApplicationController
 
       @target    = @test_session.target
       @testtype  = @test_session.testtype
-      @hwproduct = @test_session.hwproduct
+      @hardware = @test_session.hardware
 
       @report    = @test_session
       @files = FileStorage.new().list_files(@test_session) or []
@@ -297,9 +297,9 @@ class ReportsController < ApplicationController
     @compare_cache_key = "compare_page_#{@release_version}_#{@target}_#{@testtype}_#{@comparison_test_type}"
 
     MeegoTestSession.published_hwversion_by_release_version_target_test_type(@release_version, @target, @testtype).each{|hardware|
-        left = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @testtype, hardware.hwproduct).first
-        right = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @comparison_testtype, hardware.hwproduct).first
-        @comparison.add_pair(hardware.hwproduct, left, right)
+        left = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @testtype, hardware.hardware).first
+        right = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @comparison_testtype, hardware.hardware).first
+        @comparison.add_pair(hardware.hardware, left, right)
     }
     @groups = @comparison.groups
     render :layout => "report"
