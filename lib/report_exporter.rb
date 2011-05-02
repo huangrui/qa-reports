@@ -19,7 +19,7 @@
 
 module ReportExporter
 
-  EXPORTER_CONFIG = YAML.load_file("#{Rails.root.to_s}/config/exporter_config.yml")
+  EXPORTER_CONFIG = YAML.load_file("#{Rails.root.to_s}/config/qa-dashboard_config.yml")
 
   def self.hashify_test_session(test_session)
     sets = []
@@ -28,7 +28,7 @@ module ReportExporter
       set.meego_test_cases.each do |c|
         bugs = c.comment.scan(/\[\[(\d+)\]\]/).map {|m| m[0].to_i}
         data = {
-          "qa_id" => c.id,
+          "report_id" => c.id,
           "name" => c.name,
 
           "result" => c.result,
@@ -40,7 +40,7 @@ module ReportExporter
       end
 
       data = {
-        "qa_id" => set.id,
+        "report_id" => set.id,
         "name" => set.feature,
       
         "total_cases" => set.total_cases,
@@ -56,14 +56,14 @@ module ReportExporter
     end
 
     data = {
-      "qa_id" => test_session.id,
+      "report_id" => test_session.id,
 
       "title" => test_session.title,
 
-      "hwproduct" => test_session.hwproduct,
-      "target" => test_session.target,
+      "hardware" => test_session.hardware,
+      "profile" => test_session.target,
       "testtype" => test_session.testtype,
-      "version" => test_session.release_version,
+      "release" => test_session.release_version,
 
       "created_at" => test_session.created_at.utc,
       "updated_at" => test_session.updated_at.utc,
@@ -82,8 +82,12 @@ module ReportExporter
 
   def self.post(data)
     postdata = { "token" => EXPORTER_CONFIG['apitoken'], "report" => data }
-    response = RestClient.post EXPORTER_CONFIG['uri'], postdata.to_json, :content_type => :json, :accept => :json
-    Rails.logger.debug "DEBUG: exporter post, test_session.id:" + data['qa_id'].to_s + " response:" + response.to_str #debug
+    begin
+      response = RestClient.post EXPORTER_CONFIG['uri'], postdata.to_json, :content_type => :json, :accept => :json
+    rescue Errno::ECONNREFUSED => e
+      Rails.logger.debug "DEBUG: ReportExporter::post failed, report_id:" + data['report_id'].to_s + " error:" + e.to_s
+    end
+
   end
 
   def self.export_test_session(test_session)

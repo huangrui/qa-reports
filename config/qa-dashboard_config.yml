@@ -1,4 +1,4 @@
-# Config for report exporter post
+# Config for QA Dashboard post
 # 
 uri: http://localhost:3030/import/qa-reports/update
-token: asdfasdf 
+token: 123456789abcdef0

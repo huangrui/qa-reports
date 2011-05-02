@@ -26,7 +26,5 @@ Slim::Engine.set_default_options :pretty => true
   # Only use best-standards-support built into browsers
   config.action_dispatch.best_standards_support = :builtin
 
-  # Observers for automatic exports. Needs server definition in config/exporter_config.yml
-  config.active_record.observers = :meego_test_session_observer, :meego_test_case_observer
 end
 
