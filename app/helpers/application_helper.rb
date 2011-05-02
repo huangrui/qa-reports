@@ -30,8 +30,8 @@ module ApplicationHelper
   end
   
   def upload_full_path
-    if @hwproduct
-      url_for :controller => "/upload", :action => :upload_form, :release_version => @selected_release_version, :testtype => @testtype, :target => @target, :hwproduct => @hwproduct
+    if @hardware
+      url_for :controller => "/upload", :action => :upload_form, :release_version => @selected_release_version, :testtype => @testtype, :target => @target, :hardware => @hardware
     elsif @target
       url_for :controller => "/upload", :action => :upload_form,  :release_version => @selected_release_version, :testtype => @testtype, :target => @target
     elsif @testtype
@@ -61,17 +61,17 @@ module ApplicationHelper
      end
    end
    if @testtype
-     unless @hwproduct
+     unless @hardware
        html += ' &rsaquo; <strong>' + @testtype + '</strong>'
      else
-       html += ' &rsaquo; <a href="' +url_for(:controller=>'index', :action=>'filtered_list', :target=>@target, :testtype=>@testtype, :hwproduct=>nil) + '">' + @testtype + '</a>'       
+       html += ' &rsaquo; <a href="' +url_for(:controller=>'index', :action=>'filtered_list', :target=>@target, :testtype=>@testtype, :hardware=>nil) + '">' + @testtype + '</a>'       
      end
    end
-   if @hwproduct
+   if @hardware
      unless @test_session
-       html += ' &rsaquo; <strong>' + @hwproduct + '</strong>'
+       html += ' &rsaquo; <strong>' + @hardware + '</strong>'
      else
-       html += ' &rsaquo; <a href="' +url_for(:controller=>'index', :action=>'filtered_list', :target=>@target, :testtype=>@testtype, :hwproduct=>@hwproduct) + '">' + @hwproduct + '</a>'
+       html += ' &rsaquo; <a href="' +url_for(:controller=>'index', :action=>'filtered_list', :target=>@target, :testtype=>@testtype, :hardware=>@hardware) + '">' + @hardware + '</a>'
      end
    end
    if @test_session
@@ -82,7 +82,7 @@ module ApplicationHelper
  end
 
   # FIXME: Cleanup with link_to_unless_current
-  def release_version_navigation(current_version, target='', testtype='', hwproduct='')
+  def release_version_navigation(current_version, target='', testtype='', hardware='')
     html = '<ul class="clearfix">'
     link_text = ''
     @meego_releases.each do |release|
@@ -118,8 +118,8 @@ module ApplicationHelper
         if testtype.present?
           path += '/' + testtype
         
-          if hwproduct.present?
-            path += '/' + hwproduct
+          if hardware.present?
+            path += '/' + hardware
           end
         end
       end
@@ -133,7 +133,7 @@ module ApplicationHelper
   end
 
   def report_url(s)
-      url_for :controller=>'reports',:action=>'view', :release_version=>s.release_version, :target=>s.target, :testtype=>s.testtype, :hwproduct=>s.hwproduct, :id=>s.id
+      url_for :controller=>'reports',:action=>'view', :release_version=>s.release_version, :target=>s.target, :testtype=>s.testtype, :hardware=>s.hardware, :id=>s.id
   end
 
   def format_date_to_human_readable(date)

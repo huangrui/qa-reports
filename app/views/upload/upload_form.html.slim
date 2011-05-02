@@ -68,16 +68,20 @@ coffee:
     testTypeSuggestions = []
     hardwareSuggestions = []
 
-    success = (collection, resource) ->
-      (data) ->
-        collection = data
-        $("#report_test_" + resource).autocomplete(source: collection)
-        activateSuggestionLinks("div.fields")
+    updateHardwareSuggestions = (data) ->
+      hardwareSuggestions = data
+      $("#report_test_hardware").autocomplete(source: hardwareSuggestions)
+      activateSuggestionLinks("div.field")
+
+    updateTestTypeSuggestions = (data) ->
+      testTypeSuggestions = data
+      $("#report_test_type").autocomplete(source: testTypeSuggestions)
+      activateSuggestionLinks("div.field")
 
     hardware_url = window.location.pathname.replace("upload","hardware")
     testtype_url = window.location.pathname.replace("upload","testtype")
-    $.get(hardware_url, success(hardwareSuggestions, "hardware") )
-    $.get(testtype_url, success(testTypeSuggestions, "type") )
+    $.get(hardware_url, updateHardwareSuggestions )
+    $.get(testtype_url, updateTestTypeSuggestions )
 
     $(".date").datepicker(
       showOn: "both",

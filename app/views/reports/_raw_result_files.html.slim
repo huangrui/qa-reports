@@ -1,14 +1,12 @@
 - if (@raw_result_files != nil && @raw_result_files.length > 0)
-  .emphasized_section
-    h2#raw_result_files Original Result Files
+  h2#raw_result_files Original Result Files
 
-    .container
-      ul#raw_result_file_list.item_list.attachment
-        span#raw_file_attachment_list_ready
-          - @raw_result_files.each do |file|
-            li
-              - if file[:exists]
-                a href=file[:url] target="_blank" #{file[:name]}
-              - else
-                = file[:name]
-                |  (deleted)
+  ul#raw_result_file_list.item_list.attachment
+    span#raw_file_attachment_list_ready
+      - @raw_result_files.each do |file|
+        li
+          - if file[:exists]
+            a href=file[:url] target="_blank" #{file[:name]}
+          - else
+            = file[:name]
+            |  (deleted)

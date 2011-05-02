@@ -32,7 +32,7 @@ class ReportComparisonSpec < ActiveSupport::TestCase
           :title => "Test1",
           :target => "Core",
           :testtype => "Sanity",
-          :hwproduct => "N900",
+          :hardware => "N900",
           :release_version => "1.2"
       }, [@file1], user)
 
@@ -41,14 +41,14 @@ class ReportComparisonSpec < ActiveSupport::TestCase
           :title => "Test1",
           :target => "Core",
           :testtype => "Sanity Testing",
-          :hwproduct => "N900",
+          :hardware => "N900",
           :release_version => "1.2"
       }, [@file2], user)
     end
 
     it "should compare two reports and list changed tests" do
       comparison = ReportComparison.new()
-      comparison.add_pair(@session1.hwproduct, @session1, @session2)
+      comparison.add_pair(@session1.hardware, @session1, @session2)
       results = comparison.changed_test_cases
       results[0].name.should == "SMOKE-SIM-Query_SIM_card_status"
       results[1].name.should == "SMOKE-SIM-Get_IMSI"
@@ -64,11 +64,11 @@ class ReportComparisonSpec < ActiveSupport::TestCase
 
     it "should be able to compare two different reports and group items" do
       comparison = ReportComparison.new()
-      comparison.add_pair(@session1.hwproduct, @session1, @session2)
+      comparison.add_pair(@session1.hardware, @session1, @session2)
       groups = comparison.groups
       groups.map{|group| group.name}.should == ['SIM']
       group = groups.first
-      first = group.row("SMOKE-SIM-Query_SIM_card_status").value(@session1.hwproduct)
+      first = group.row("SMOKE-SIM-Query_SIM_card_status").value(@session1.hardware)
       first.left.name.should == first.right.name
       first.changed.should == true
       group.changed.should == true
@@ -76,11 +76,11 @@ class ReportComparisonSpec < ActiveSupport::TestCase
 
     it "should be able to compare two similar reports and group items" do
       comparison = ReportComparison.new()
-      comparison.add_pair(@session1.hwproduct, @session1, @session1)
+      comparison.add_pair(@session1.hardware, @session1, @session1)
       groups = comparison.groups
       groups.map{|group| group.name}.should == ['SIM']
       group = groups.first
-      first = group.row("SMOKE-SIM-Query_SIM_card_status").value(@session1.hwproduct)
+      first = group.row("SMOKE-SIM-Query_SIM_card_status").value(@session1.hardware)
       first.left.name.should == first.right.name
       first.changed.should == false
       group.changed.should == false
