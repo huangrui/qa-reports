@@ -81,7 +81,7 @@ module ReportExporter
   end
 
   def self.post(data)
-    postdata = { "token" => EXPORTER_CONFIG['apitoken'], "report" => data }
+    postdata = { "token" => EXPORTER_CONFIG['token'], "report" => data }
     begin
       response = RestClient.post EXPORTER_CONFIG['uri'], postdata.to_json, :content_type => :json, :accept => :json
     rescue Errno::ECONNREFUSED => e
