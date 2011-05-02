@@ -84,9 +84,10 @@ module ReportExporter
     postdata = { "token" => EXPORTER_CONFIG['token'], "report" => data }
     begin
       response = RestClient.post EXPORTER_CONFIG['uri'], postdata.to_json, :content_type => :json, :accept => :json
-    rescue Errno::ECONNREFUSED => e
+    rescue => e
       Rails.logger.debug "DEBUG: ReportExporter::post failed, report_id:" + data['report_id'].to_s + " error:" + e.to_s
     end
+    Rails.logger.debug "DEBUG: ReportExporter::post report_id:" + data['report_id'].to_s + " res:" + response.to_str if !response.nil? #debug
 
   end
 
