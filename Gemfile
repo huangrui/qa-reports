@@ -1,6 +1,5 @@
 source 'http://rubygems.org'
 
-
 gem 'rails'
 gem 'mysql2'
 gem 'nokogiri'
@@ -10,6 +9,8 @@ gem 'rack', :git => "https://github.com/rack/rack.git" # Use next release when a
 gem "will_paginate"
 gem 'slim'
 gem 'paperclip'
+gem 'coffee-script'
+gem 'therubyracer', :require => false
 
 group :production do
   gem 'newrelic_rpm'

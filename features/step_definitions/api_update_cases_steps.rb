@@ -12,7 +12,7 @@ And /^I have sent the file "([^\"]*)" via the REST API$/ do |file|
       "release_version" => "1.2",
       "target"          => "Netbook",
       "testtype"        => "automated",
-      "hwproduct"       => "N900"
+      "hardware"        => "N900"
   }
 end
 

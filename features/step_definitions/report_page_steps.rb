@@ -44,7 +44,7 @@ end
 When /I view the report "([^"]*)"$/ do |report_string|
   version, target, test_type, hardware = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {"version_labels.normalized" => version, :target => target, :hwproduct => hardware, :testtype => test_type}, :include => :version_label 
+   {"version_labels.normalized" => version, :target => target, :hardware => hardware, :testtype => test_type}, :include => :version_label 
   )
   raise "report not found with parameters #{version}/#{target}/#{hardware}/#{test_type}!" unless report
   visit("/#{version}/#{target}/#{test_type}/#{hardware}/#{report.id}")
@@ -80,7 +80,7 @@ Given /^there exists a report for "([^"]*)"$/ do |report_name|
     :password => "password",
     :password_confirmation => "password")
 
-  session = MeegoTestSession.new(:target => target, :hwproduct => hardware,
+  session = MeegoTestSession.new(:target => target, :hardware => hardware,
     :testtype => test_type, :uploaded_files => [testfile],
     :tested_at => Time.now, :author => user, :editor => user, :release_version => version
   )
@@ -114,7 +114,7 @@ end
 Given /^I select test type "([^"]*)" and hardware "([^"]*)"(?: with date "([^\"]*)")?$/ do |test_type, hardware, date|
   When %{I fill in "report_test_execution_date" with "#{date}"} if date
   When %{I fill in "meego_test_session[testtype]" with "#{test_type}"}
-  When %{I fill in "meego_test_session[hwproduct]" with "#{hardware}"}
+  When %{I fill in "meego_test_session[hardware]" with "#{hardware}"}
 end
 
 Then /^I should see the header$/ do

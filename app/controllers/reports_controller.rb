@@ -189,10 +189,10 @@ class ReportsController < ApplicationController
       @no_upload_link = true
 
       @report         = @test_session
-      @targets = MeegoTestSession.list_targets @selected_release_version
-      @types = MeegoTestSession.list_types @selected_release_version
-      @hardware = MeegoTestSession.list_hardware @selected_release_version
-      @release_versions = MeegoTestSession.release_versions
+      @release_versions = VersionLabel.all.map { |release| release.label }
+      @targets = MeegoTestSession.targets
+      @testtypes = MeegoTestSession.release(@selected_release_version).testtypes
+      @hardware = MeegoTestSession.release(@selected_release_version).popular_hardwares
 
       @raw_result_files = @test_session.raw_result_files
 
@@ -215,7 +215,7 @@ class ReportsController < ApplicationController
                 :release_version => test_session.release_version,
                 :target          => test_session.target,
                 :testtype        => test_session.testtype,
-                :hwproduct       => test_session.hwproduct
+                :hardware       => test_session.hardware
   end
 
   def view
@@ -237,7 +237,7 @@ class ReportsController < ApplicationController
 
       @target    = @test_session.target
       @testtype  = @test_session.testtype
-      @hwproduct = @test_session.hwproduct
+      @hardware = @test_session.hardware
 
       @report    = @test_session
       @files = FileStorage.new().list_files(@test_session) or []
@@ -276,10 +276,10 @@ class ReportsController < ApplicationController
       @test_session.meego_test_cases.each{ |tc| tc.meego_test_case_attachments.build }
 
       @report         = @test_session
-      @targets = MeegoTestSession.list_targets @selected_release_version
-      @types = MeegoTestSession.list_types @selected_release_version
-      @hardware = MeegoTestSession.list_hardware @selected_release_version
-      @release_versions = MeegoTestSession.release_versions
+      @release_versions = VersionLabel.all.map { |release| release.label }
+      @targets = MeegoTestSession.targets
+      @testtypes = MeegoTestSession.release(@selected_release_version).testtypes
+      @hardware = MeegoTestSession.release(@selected_release_version).popular_hardwares
       @no_upload_link = true
       @files = FileStorage.new().list_files(@test_session) or []
       @raw_result_files = @test_session.raw_result_files
@@ -299,9 +299,9 @@ class ReportsController < ApplicationController
     @compare_cache_key = "compare_page_#{@release_version}_#{@target}_#{@testtype}_#{@comparison_test_type}"
 
     MeegoTestSession.published_hwversion_by_release_version_target_test_type(@release_version, @target, @testtype).each{|hardware|
-        left = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @testtype, hardware.hwproduct).first
-        right = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @comparison_testtype, hardware.hwproduct).first
-        @comparison.add_pair(hardware.hwproduct, left, right)
+        left = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @testtype, hardware.hardware).first
+        right = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @comparison_testtype, hardware.hardware).first
+        @comparison.add_pair(hardware.hardware, left, right)
     }
     @groups = @comparison.groups
     render :layout => "report"

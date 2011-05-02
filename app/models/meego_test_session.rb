@@ -50,7 +50,7 @@ class MeegoTestSession < ActiveRecord::Base
 
   belongs_to :version_label, :class_name => "VersionLabel", :foreign_key => "version_label_id"
 
-  validates_presence_of :title, :target, :testtype, :hwproduct
+  validates_presence_of :title, :target, :testtype, :hardware
   validates_presence_of :uploaded_files, :on => :create
 
   validates :tested_at, :date_time => true
@@ -63,6 +63,7 @@ class MeegoTestSession < ActiveRecord::Base
   after_destroy :remove_uploaded_files
 
   scope :published, :conditions => {:published => true}
+  scope :release, lambda { |release| published.joins(:version_label).where(:version_labels => {:normalized => release.downcase}) }
 
   RESULT_FILES_DIR = "public/reports"
   INVALID_RESULTS_DIR = "public/reports/invalid_files"
@@ -76,6 +77,23 @@ class MeegoTestSession < ActiveRecord::Base
            :meego_test_cases, {:meego_test_cases => :measurements}
           ]
          }, :meego_test_sets, :meego_test_cases])
+  end
+
+  def self.testtypes
+    published.select("DISTINCT testtype").order("testtype").map { |row| row.testtype.humanize }
+  end
+
+  def self.popular_testtypes(limit=3)
+    published.select("testtype").order("COUNT(testtype) DESC").group(:testtype).map { |row| row.testtype.humanize }
+  end
+
+  def self.hardwares
+    published.select("DISTINCT hardware as hardware").order("hardware").map { |row| row.hardware.humanize }
+  end
+
+  def self.popular_hardwares(limit=3)
+    published.select("hardware as hardware").order("COUNT(hardware) DESC").
+      group(:hardware).limit(limit).map { |row| row.hardware.humanize }
   end
 
   def target=(target)
@@ -97,13 +115,18 @@ class MeegoTestSession < ActiveRecord::Base
     s.gsub(/\b\w/) { $&.upcase } if s
   end
 
-  def hwproduct=(hwproduct)
-    hwproduct = hwproduct.try(:downcase)
-    write_attribute(:hwproduct, hwproduct)
+  def self.testtype
+    s = read_attribute(:testtype)
+    s.gsub(/\b\w/) { $&.upcase } if s
   end
 
-  def hwproduct
-    s = read_attribute(:hwproduct)
+  def hardware=(hardware)
+    hardware = hardware.try(:downcase)
+    write_attribute(:hardware, hardware)
+  end
+
+  def hardware
+    s = read_attribute(:hardware)
     s.gsub(/\b\w/) { $&.upcase } if s
   end
 
@@ -135,8 +158,8 @@ class MeegoTestSession < ActiveRecord::Base
     release_versions[0]
   end
 
-  def self.filters_exist?(target, testtype, hwproduct)
-    return true if target.blank? and testtype.blank? and hwproduct.blank?
+  def self.filters_exist?(target, testtype, hardware)
+    return true if target.blank? and testtype.blank? and hardware.blank?
     
     filters_exist = false
 
@@ -147,8 +170,8 @@ class MeegoTestSession < ActiveRecord::Base
         filters_exist &= find_by_testtype(testtype.downcase).present?
       end
 
-      if testtype.present? && hwproduct.present?
-        filters_exist &= find_by_hwproduct(hwproduct.downcase).present?
+      if testtype.present? && hardware.present?
+        filters_exist &= find_by_hardware(hardware.downcase).present?
       end
     end
 
@@ -163,11 +186,11 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   class << self
-    def by_release_version_target_test_type_product(release_version, target, testtype, hwproduct, order_by = "tested_at DESC, id DESC", limit = nil)
+    def by_release_version_target_test_type_product(release_version, target, testtype, hardware, order_by = "tested_at DESC, id DESC", limit = nil)
       target    = target.downcase
       testtype  = testtype.downcase
-      hwproduct = hwproduct.downcase
-      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testtype => testtype, :hwproduct => hwproduct).joins(:version_label).order(order_by).limit(limit)
+      hardware = hardware.downcase
+      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testtype => testtype, :hardware => hardware).joins(:version_label).order(order_by).limit(limit)
     end
 
     def published_by_release_version_target_test_type(release_version, target, testtype, order_by = "tested_at DESC, id DESC", limit = nil)
@@ -179,7 +202,7 @@ class MeegoTestSession < ActiveRecord::Base
     def published_hwversion_by_release_version_target_test_type(release_version, target, testtype)
       target   = target.downcase
       testtype = testtype.downcase
-      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testtype => testtype).select("DISTINCT hwproduct").joins(:version_label).order("hwproduct")
+      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testtype => testtype).select("DISTINCT hardware").joins(:version_label).order("hardware")
     end
 
     def published_by_release_version_target(release_version, target, order_by = "tested_at DESC, id DESC", limit = nil)
@@ -208,11 +231,11 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def self.list_hardware(release_version)
-    (published.all_lowercase(:select => 'DISTINCT hwproduct', :conditions=>{"version_labels.normalized" => release_version}, :include => :version_label).map { |s| s.hwproduct.gsub(/\b\w/) { $&.upcase } }).uniq
+    (published.all_lowercase(:select => 'DISTINCT hardware', :conditions=>{"version_labels.normalized" => release_version}, :include => :version_label).map { |s| s.hardware.gsub(/\b\w/) { $&.upcase } }).uniq
   end
 
   def self.list_hardware_for(release_version, target, testtype)
-    (published.all_lowercase(:select => 'DISTINCT hwproduct',  :conditions=>{:target => target, :testtype=> testtype,"version_labels.normalized" => release_version}, :include => :version_label).map { |s| s.hwproduct.gsub(/\b\w/) { $&.upcase } }).uniq
+    (published.all_lowercase(:select => 'DISTINCT hardware',  :conditions=>{:target => target, :testtype=> testtype,"version_labels.normalized" => release_version}, :include => :version_label).map { |s| s.hardware.gsub(/\b\w/) { $&.upcase } }).uniq
   end
 
 
@@ -225,7 +248,7 @@ class MeegoTestSession < ActiveRecord::Base
 
     # TODO: Works only if there's >= 1s difference between the timestamps
     @prev_session = MeegoTestSession.find(:first, :conditions => [
-        "tested_at < ? AND target = ? AND testtype = ? AND hwproduct = ? AND published = ? AND version_label_id = ?", time, target.downcase, testtype.downcase, hwproduct.downcase, true, version_label_id
+        "tested_at < ? AND target = ? AND testtype = ? AND hardware = ? AND published = ? AND version_label_id = ?", time, target.downcase, testtype.downcase, hardware.downcase, true, version_label_id
     ],
                           :order => "tested_at DESC", :include => [
          {:meego_test_sets => :meego_test_cases}, :meego_test_sets, :meego_test_cases])
@@ -237,7 +260,7 @@ class MeegoTestSession < ActiveRecord::Base
   def next_session
     return @next_session unless @next_session.nil? and @has_next.nil?
     @next_session = MeegoTestSession.find(:first, :conditions => [
-        "tested_at > ? AND target = ? AND testtype = ? AND hwproduct = ? AND published = ? AND version_label_id = ?", tested_at, target.downcase, testtype.downcase, hwproduct.downcase, true, version_label_id
+        "tested_at > ? AND target = ? AND testtype = ? AND hardware = ? AND published = ? AND version_label_id = ?", tested_at, target.downcase, testtype.downcase, hardware.downcase, true, version_label_id
     ],
                           :order => "tested_at ASC")
     @has_next = !@next_session.nil?
@@ -413,15 +436,15 @@ class MeegoTestSession < ActiveRecord::Base
       errors.add :testtype, "Incorrect test type. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( )"
     end
 
-    if not hwproduct.match(allowed)
-      errors.add :hwproduct, "Incorrect hardware. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( )"
+    if not hardware.match(allowed)
+      errors.add :hardware, "Incorrect hardware. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( )"
     end
   end
 
   def generate_defaults!
     time                 = tested_at || Time.now
-    self.title           ||= "%s Test Report: %s %s %s" % [target, hwproduct, testtype, time.strftime('%Y-%m-%d')]
-    self.environment_txt = "* Hardware: " + hwproduct if self.environment_txt.empty?
+    self.title           ||= "%s Test Report: %s %s %s" % [target, hardware, testtype, time.strftime('%Y-%m-%d')]
+    self.environment_txt = "* Hardware: " + hardware if self.environment_txt.empty?
   end
 
   def format_date
@@ -456,7 +479,7 @@ class MeegoTestSession < ActiveRecord::Base
   # For encapsulating the release_version          #
   ###############################################
   def release_version=(release_version)
-    version_label = VersionLabel.where( "normalized = ?", release_version.downcase)  
+    version_label = VersionLabel.where( :normalized => release_version.downcase)  
     self.version_label = version_label.first  
   end
 
@@ -522,7 +545,7 @@ class MeegoTestSession < ActiveRecord::Base
         release_version,
         target,
         testtype,
-        hwproduct,
+        hardware,
         title
     ]
 

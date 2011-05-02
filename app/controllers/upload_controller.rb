@@ -31,43 +31,20 @@ class UploadController < ApplicationController
   before_filter :authenticate_user!
   
   def upload_form
-    @test_session = MeegoTestSession.new
-    default_version = params[:release_version]
-    default_type = params[:testtype]
-    default_target = params[:target]
-    default_hwproduct = params[:hwproduct]
-
-    @test_session.target = if @test_session.target.present?
-      @test_session.target
-    elsif default_target.present?
-      default_target
-    elsif current_user.default_target.present?
-      current_user.default_target
-    else
-      TargetLabel.first_label
-    end
-    
-    @test_session.release_version = if @test_session.release_version.present?
-      @test_session.release_version
-    elsif default_version.present?
-      default_version
-    else
-      @selected_release_version
-    end
-    
-    @test_session.testtype = if @test_session.testtype.present?
-      @test_session.testtype
-    elsif default_type.present?
-      default_type
+    session[:new_report] ||= {}
+    [:release_version, :target, :testtype, :hardware].each do |key| 
+      session[:new_report][key] = params[key] if params[key]
     end
 
-    @test_session.hwproduct = if @test_session.hwproduct.present?
-      @test_session.hwproduct
-    elsif default_hwproduct.present?
-      default_hwproduct
-    end
+    @test_session = MeegoTestSession.new(session[:new_report])
+    @test_session.version_label = VersionLabel.find_by_label(session[:new_report][:release_version])
 
-    init_form_values
+    @release_versions = VersionLabel.all.map { |release| release.label }
+    @targets = MeegoTestSession.targets
+    @testtypes = MeegoTestSession.release(@selected_release_version).testtypes
+    @hardware = MeegoTestSession.release(@selected_release_version).popular_hardwares
+
+    @no_upload_link = true
   end
 
   def upload_report
@@ -114,18 +91,11 @@ class UploadController < ApplicationController
 
       redirect_to :controller => 'reports', :action => 'preview'
     else
-      init_form_values
+      @release_versions = VersionLabel.all.map { |release| release.label }
+      @targets = MeegoTestSession.targets
+      @testtypes = MeegoTestSession.release(@selected_release_version).testtypes
+      @hardware = MeegoTestSession.release(@selected_release_version).popular_hardwares
       render :upload_form
     end
-  end
-
-private
-
-  def init_form_values
-    @targets = MeegoTestSession.list_targets @selected_release_version
-    @types = MeegoTestSession.list_types @selected_release_version
-    @hardware = MeegoTestSession.list_hardware @selected_release_version
-    @release_versions = MeegoTestSession.release_versions
-    @no_upload_link = true
   end
 end

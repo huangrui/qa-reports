@@ -32,22 +32,22 @@ class IndexController < ApplicationController
     @profiles = TargetLabel.targets
     @target = params[:target]
     @testtype = params[:testtype]
-    @hwproduct = params[:hwproduct]
+    @hardware = params[:hardware]
     @show_rss = true
   end
 
   def filtered_list
     @target = params[:target]
     @testtype = params[:testtype]
-    @hwproduct = params[:hwproduct]
+    @hardware = params[:hardware]
     @show_rss = true
 
-    unless MeegoTestSession.filters_exist?(@target, @testtype, @hwproduct)
+    unless MeegoTestSession.filters_exist?(@target, @testtype, @hardware)
       return render_404
     end
 
-    if @hwproduct
-      sessions = MeegoTestSession.by_release_version_target_test_type_product(@selected_release_version, @target, @testtype, @hwproduct)
+    if @hardware
+      sessions = MeegoTestSession.by_release_version_target_test_type_product(@selected_release_version, @target, @testtype, @hardware)
     elsif @testtype
       sessions = MeegoTestSession.published_by_release_version_target_test_type(@selected_release_version, @target, @testtype)
     else
