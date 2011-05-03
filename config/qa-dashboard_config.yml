@@ -1,4 +1,5 @@
 # Config for QA Dashboard post
 # 
-uri: http://localhost:3030/import/qa-reports/update
+host: http://localhost:3030
+uri: /import/qa-reports/update
 token: 7435d17c3ccfa2b433b43cb8d712d4d15affcd18

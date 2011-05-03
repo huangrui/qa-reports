@@ -83,7 +83,7 @@ module ReportExporter
   def self.post(data)
     postdata = { "token" => EXPORTER_CONFIG['token'], "report" => data }
     begin
-      response = RestClient.post EXPORTER_CONFIG['uri'], postdata.to_json, :content_type => :json, :accept => :json
+      response = RestClient.post EXPORTER_CONFIG['host'] + EXPORTER_CONFIG['uri'], postdata.to_json, :content_type => :json, :accept => :json
     rescue => e
       Rails.logger.debug "DEBUG: ReportExporter::post failed, report_id:" + data['report_id'].to_s + " error:" + e.to_s
     end
