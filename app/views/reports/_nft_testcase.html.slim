@@ -45,7 +45,9 @@
               = m.med_html
     - else
       td.testcase_measurement= m.name
-      td.testcase_value= m.value_html
+      td.testcase_value= 
+        a.nft_trend_button href="" title="See history"
+          m.value_html
       td.testcase_target= m.target_html
       td.testcase_limit= m.failure_html
       td class="testcase_to_target #{result_class(m.target_result)}" =m.relative_html
