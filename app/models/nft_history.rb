@@ -101,7 +101,7 @@ class NftHistory
     end
 
     # Last one was not written in the loop above
-    add_value(feature, testcase, measurement, csv)
+    add_value(feature, testcase, measurement, csv) unless csv.empty?
 
     @csv_trend
   end
