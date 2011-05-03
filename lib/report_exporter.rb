@@ -28,7 +28,7 @@ module ReportExporter
       set.meego_test_cases.each do |c|
         bugs = c.comment.scan(/\[\[(\d+)\]\]/).map {|m| m[0].to_i}
         data = {
-          "report_id" => c.id,
+          "qa_id" => c.id,
           "name" => c.name,
 
           "result" => c.result,
@@ -40,7 +40,7 @@ module ReportExporter
       end
 
       data = {
-        "report_id" => set.id,
+        "qa_id" => set.id,
         "name" => set.feature,
       
         "total_cases" => set.total_cases,
@@ -56,7 +56,7 @@ module ReportExporter
     end
 
     data = {
-      "report_id" => test_session.id,
+      "qa_id" => test_session.id,
 
       "title" => test_session.title,
 
@@ -85,9 +85,9 @@ module ReportExporter
     begin
       response = RestClient.post EXPORTER_CONFIG['host'] + EXPORTER_CONFIG['uri'], postdata.to_json, :content_type => :json, :accept => :json
     rescue => e
-      Rails.logger.debug "DEBUG: ReportExporter::post failed, report_id:" + data['report_id'].to_s + " error:" + e.to_s
+      Rails.logger.debug "DEBUG: ReportExporter::post failed, report_id:" + data['qa_id'].to_s + " error:" + e.to_s
     end
-    Rails.logger.debug "DEBUG: ReportExporter::post report_id:" + data['report_id'].to_s + " res:" + response.to_str if !response.nil? #debug
+    Rails.logger.debug "DEBUG: ReportExporter::post report_id:" + data['qa_id'].to_s + " res:" + response.to_str if !response.nil? #debug
 
   end
 
