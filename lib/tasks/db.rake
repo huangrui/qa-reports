@@ -52,10 +52,11 @@ namespace :db do
 
   task :export_to_qadashboard => :environment do
     require 'report_exporter'
-    #print "Exporting..."
+    print "Exporting..."
     MeegoTestSession.published.each do |test_session|
       ReportExporter::export_test_session(test_session)
-      #print "."
+      print "."
+      STDOUT.flush
     end
     puts "Done!"
   end
