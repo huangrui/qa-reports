@@ -26,7 +26,7 @@ end
 When /^the client sends reports "([^"]*)" via the REST API to test type "([^"]*)" and hardware "([^"]*)"$/ do |files, testtype, hardware|
   data = @default_api_opts.merge({
     "testtype"        => testtype,
-    "hardware"        => hardware
+    "hwproduct"       => hardware
   })
   
   files.split(',').each_with_index do |file, index|

@@ -41,7 +41,8 @@ class ApiController < ApplicationController
     end
 
     data[:tested_at] ||= Time.now
-
+    data[:hardware] ||= data[:hwproduct]
+    data.delete(:hwproduct)
     begin
       @test_session = MeegoTestSession.new(data)
       @test_session.import_report(current_user, true)
