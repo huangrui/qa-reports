@@ -1,5 +1,6 @@
 require 'rubygems'
 
+
 namespace :db do
 
   desc "Import production database to development environment"
@@ -49,5 +50,14 @@ namespace :db do
     `rm qa_reports_production.sql.bz2`
   end
 
+  task :export_to_qadashboard => :environment do
+    require 'report_exporter'
+    #print "Exporting..."
+    MeegoTestSession.published.each do |test_session|
+      ReportExporter::export_test_session(test_session)
+      #print "."
+    end
+    puts "Done!"
+  end
 end
 
