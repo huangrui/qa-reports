@@ -89,7 +89,8 @@ html
           renderSeriesGraphs(".serial_canvas");
 
           $('#nft_trend_dialog').jqm({
-            modal:true
+            modal:true,
+            onShow:renderNftTrendGraph
           }).jqmAddTrigger('.nft_trend_button').jqmAddClose($('a.modal_close'));
         });
       }

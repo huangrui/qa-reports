@@ -48,6 +48,10 @@
       td.testcase_value
         a.nft_trend_button href="" title="See history"
           = m.value_html
+        div id="nft-trend-data-#{m.id}" style="display:none;"
+          span.nft_trend_graph_title
+          span.nft_trend_graph_unit
+          span.nft_trend_graph_data
       td.testcase_target= m.target_html
       td.testcase_limit= m.failure_html
       td class="testcase_to_target #{result_class(m.target_result)}" =m.relative_html
