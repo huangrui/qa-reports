@@ -52,6 +52,8 @@ after "deploy:setup" do
   end
   put YAML::dump(bugzilla_conf), "#{shared_path}/config/bugzilla.yml"
 
+  # Upload QA Dashboard configuration
+  deploy.qadashboard.setup
 end
 
 after "deploy:symlink" do
@@ -76,6 +78,9 @@ after "deploy:symlink" do
   # Remove current bugzilla config file and symlink to shared
   run "rm #{current_path}/config/bugzilla.yml"
   run "ln -nfs #{shared_path}/config/bugzilla.yml #{current_path}/config/bugzilla.yml"
+
+  # Remove default QA Dashboard config and symlink to shared.
+  deploy.qadashboard.symlink
 end
 
 namespace :deploy do
@@ -92,5 +97,34 @@ namespace :deploy do
   desc "Stop the app server"
   task :stop, :roles => :app do
     run "passenger stop --pid-file #{current_path}/passenger.3000.pid"
+  end
+
+  namespace :qadashboard do
+    desc "Upload QA Dashboard configuration"
+    task :setup do
+      # QA Dashboard configuration
+      qadashboard_conf = YAML.load_file("config/qa-dashboard_config.yml")
+      qadashboard_auth = Capistrano::CLI::ui.ask("Do you want to define configuration for automatic report exporting to QA Dashboard? Default: No")
+      if qadashboard_auth =~ /yes/i
+        qadashboard_host  = Capistrano::CLI::ui.ask("Please enter QA Dashboard URL (e.g. http://localhost:3030)")
+        qadashboard_token = Capistrano::CLI::ui.ask("Please enter authentication token for report upload")
+        qadashboard_conf["host"]  = qadashboard_host
+        qadashboard_conf["token"] = qadashboard_token
+      end
+      put YAML::dump(qadashboard_conf), "#{shared_path}/config/qa-dashboard_config.yml"
+    end
+
+    desc "Remove default QA Dashboard config and symlink to shared."
+    task :symlink do
+      run "rm #{current_path}/config/qa-dashboard_config.yml"
+      run "ln -nfs #{shared_path}/config/qa-dashboard_config.yml #{current_path}/config/qa-dashboard_config.yml"
+    end
+
+    desc "Update QA Dashboard configuration"
+    task :update do
+      deploy.qadashboard.setup
+      deploy.qadashboard.symlink
+      deploy.restart
+    end
   end
 end
