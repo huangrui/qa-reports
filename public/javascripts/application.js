@@ -240,6 +240,11 @@ var renderNftTrendGraph = function(hash) {
     var $elem = $("#nft-trend-data-" + m_id);
     
     var data = $elem.children(".nft_trend_graph_data").text();
+    // Don't break the whole thing if there's no data - now one can
+    // at least close the window
+    if (!data) {
+	data = "Date,Value";
+    }
     var title = $elem.find(".nft_trend_graph_title").text();
     var unit = $elem.find(".nft_trend_graph_unit").text();
     

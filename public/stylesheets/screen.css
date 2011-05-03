@@ -1718,7 +1718,7 @@ width: 35px;
 	margin-left: -440px;
 }
 
-#nft_drilldown_graph {
+#nft_drilldown_graph, #nft_trend_graph {
         width: 823px;
         height: 314px;
         padding: 20px;
