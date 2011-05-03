@@ -20,8 +20,8 @@ Meegoqa::Application.routes.draw do
 
   match '/ajax_update_txt' => 'reports#update_txt', :via => "post"
   match '/ajax_update_title' => 'reports#update_title', :via => "post"
-  match '/ajax_update_comment' => 'reports#update_case_comment', :via => "post"
-  match '/ajax_update_result' => 'reports#update_case_result', :via => "post"
+  match '/ajax_update_comment' => 'meego_test_cases#update_case_comment', :via => "post"
+  match '/ajax_update_result' => 'meego_test_cases#update_case_result', :via => "post"
   match '/ajax_remove_attachment' => 'reports#remove_attachment', :via => "post"
   match '/ajax_update_category' => 'reports#update_category', :via => "post"
   
