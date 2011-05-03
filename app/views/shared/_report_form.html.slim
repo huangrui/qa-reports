@@ -5,15 +5,15 @@
 .field
   label for="report_meego_version" MeeGo release:
   - @release_versions.each do |release_version|
-    = f.radio_button :release_version, release_version, {:class => "version"}
+    = f.radio_button :release_version, release_version, :class => "version"
     = f.label :release_version, release_version, :value => release_version, :class => "inline_label"
 
 .field
   label for="report_test_target" Target profile:
   - @targets.each do |target|
-    = f.radio_button :target, target, :id => target.downcase+'_target', :class => "target"
-    label.inline_label for="#{target.downcase}_target" #{target}
-    = f.error_message_on :target 
+    = f.radio_button :target, target.capitalize, :class => "target"
+    = f.label :target, target.humanize, :value => target.capitalize, :class => "inline_label"
+  = f.error_message_on :target
 
 .field
   label for="report_test_execution_date" Test execution date:
