@@ -25,16 +25,19 @@ class NftHistory
 
   def initialize()
     @csv_trend = nil
-    @session = nil
   end
   
   def persisted?
     false
   end
 
+  # Get measurement trends for given session
+  #
+  # Read all matching measurement values from the beginning of the time until
+  # given session (included) and return the data as CSV in a multidimensional 
+  # hash that has keys as follows:
+  # hash[feature_name][testcase_name][measurement_name] = CSV data
   def session_measurement_csv_trend(session)
-    @session = session
-
     query = <<-END
     SELECT
     meego_test_sets.feature AS feature,
@@ -53,7 +56,8 @@ class NftHistory
     meego_test_sessions.target=? AND
     meego_test_sessions.testtype=? AND
     meego_test_sessions.hardware=? AND
-    meego_test_sessions.tested_at <= ?
+    meego_test_sessions.tested_at <= ? AND
+    meego_test_sessions.published=?
     ORDER BY
     meego_test_sets.feature ASC, 
     meego_test_cases.name ASC,
@@ -62,11 +66,12 @@ class NftHistory
     END
 
     data = MeegoTestSession.find_by_sql([query,
-                                         @session.version_label_id,
-                                         @session.read_attribute(:target),
-                                         @session.testtype,
-                                         @session.hardware,
-                                         @session.tested_at])
+                                         session.version_label_id,
+                                         session.read_attribute(:target),
+                                         session.testtype,
+                                         session.hardware,
+                                         session.tested_at,
+                                         true])
 
 
     @csv_trend = Hash.new
