@@ -173,3 +173,33 @@ Feature: REST API
     And session "short3.csv" has been modified at "2011-03-01 01:01"
     When I download "/api/reports?limit_amount=1"
     Then resulting JSON should match file "short1.csv"
+
+  #For Hiding obsolete reports
+  Scenario: Hiding the existed test report
+    When the client sends file "sim.xml" via the REST API
+    Then the REST result "ok" is "1"
+    And I should be able to view the created report
+
+    When the client hides the report via the REST API to version "1.2", target "Core", testtype "automated", hardware "N900"
+    Then the REST result "ok" is "1"
+    Then the REST hided result "count" is 1
+    Then I should be able to view the report hided
+
+  Scenario: Hiding the existed test report with the invalid parameters
+    When the client sends file "sim.xml" via the REST API
+    Then the REST result "ok" is "1"
+    And I should be able to view the created report
+
+    When the client hides the report via the REST API to version "1.2", target "Netbook", testtype "automated", hardware "N900"
+    Then the REST result "ok" is "0"
+    Then the REST result "errors" is "No reports searched out via the keywords:version <= '1.2',target <= 'Netbook',testtype <= 'automated',hardware <= 'N900'"
+
+  Scenario: Hiding the existed test report with the lacked parameters
+    When the client sends file "sim.xml" via the REST API
+    Then the REST result "ok" is "1"
+    And I should be able to view the created report
+
+    When the client hides the report via the REST API to version "1.2", target "Core", testtype "automated" lacked the hardware
+    Then the REST result "ok" is "0"
+    Then the REST result "errors" is "Request input version, target, testtype, and hardware all the four keywords"
+

@@ -18,6 +18,29 @@ When /^the client sends file "([^"]*)" via the REST API$/ do |file|
   response.should be_success
 end
 
+When /^the client hides the report via the REST API to version "([^"]*)", target "([^"]*)", testtype "([^"]*)", hardware "([^"]*)"$/ do |release_version, target, testtype, hardware|
+  data = @default_api_opts.merge({
+    "release_version" => release_version,
+    "target" => target,
+    "testtype" => testtype,
+    "hwproduct" => hardware
+  })
+
+  post "api/hide", data
+  response.should be_success
+end
+
+When /^the client hides the report via the REST API to version "([^"]*)", target "([^"]*)", testtype "([^"]*)" lacked the hardware$/ do |release_version, target, testtype|
+  data = @hide_api_opts.merge({
+    "release_version" => release_version,
+    "target" => target,
+    "testtype" => testtype,
+  })
+
+  post "api/hide", data
+  response.should be_success
+end
+
 When /^the client sends file "([^"]*)" via the REST API with RESTful parameters$/ do |file|
   api_import @default_api_opts.merge("report.1" => Rack::Test::UploadedFile.new("features/resources/#{file}", "text/xml"))
   response.should be_success
@@ -110,6 +133,10 @@ Then /^I should be able to view the created report$/ do
   Then %{I view the report "1.2/Core/Automated/N900"}
 end
 
+Then /^I should be able to view the report hided$/ do
+  Then %{I view the report "1.2/Core/Automated/N900" hided}
+end
+
 Then /^the REST result "([^"]*)" is "([^"]*)"$/ do |key, value|
   json = ActiveSupport::JSON.decode(@response.body)
   key.split('|').each { |item| json = json[item] }
@@ -134,4 +161,10 @@ And /^resulting JSON should match file "([^"]*)"$/ do |file1|
   json = ActiveSupport::JSON.decode(response.body)
   json[0]['qa_id'].should == get_testsessionid(file1)
   json.count.should == 1
+end
+
+Then /^the REST hided result "([^"]*)" is (\d+)$/ do |key, value|
+  json = ActiveSupport::JSON.decode(@response.body)
+  key.split('|').each { |item| json = json[item] }
+  json.should == value.to_i
 end
