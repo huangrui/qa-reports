@@ -25,6 +25,7 @@
 - content_for :view_specific_js do
   = javascript_include_tag 'datetime'
   = javascript_include_tag 'jqModal.js'
+  = javascript_include_tag 'jquery.form.js'
   javascript:
     var SESSION_ID = "#{@test_session.id}";
     $(document).ready(function(){
