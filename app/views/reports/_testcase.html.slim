@@ -7,7 +7,4 @@ tr class="testcase #{result_class(testcase, 'result_')}" id="testcase-#{testcase
       a.dl_link href=(testcase.binary_link)
   td class="testcase_result #{result_class(testcase)} #{'edit' if @editing} #{testcase.find_change_class(@test_session.prev_session)} "
     span.content #{result_html(testcase)}
-  td class="testcase_notes #{'edit' if @editing}"
-    .content #{comment_html(testcase)}
-    - if @editing
-      .comment_markup style="display:none;" #{testcase.comment}      
+  = render :partial => "reports/testcase_comment", :locals => {:testcase => testcase}
