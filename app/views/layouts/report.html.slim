@@ -84,6 +84,14 @@ html
       .attachment_image_container
         img alt="attachment_image" src="/images/note_attachment_dummy_big.png"
     /! DUMMY HTML ENDS
+
+    /! TEMPLATE MODAL DIALOG HTML FOR NOTE ATTACHMENTS
+    #attachment_template.jqmWindow.attachment_to_notes_dialog style="display:none;"
+      h1 dummy_of_very_big_attachment.png
+      a.ui_btn.modal_close
+        span X
+      .attachment_image_container
+        img#foobar alt="attachment_image" src="/images/note_attachment_dummy_big.png"
                 
     = javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js"
     javascript:
@@ -109,6 +117,22 @@ html
         $('#attachment_to_notes_dialog_big').jqm({
           modal:true
         }).jqmAddTrigger('#open_note_attachment_dialog_big')
+        .jqmAddClose('.modal_close');
+
+        var updateTemplateImage = function(params) {
+          console.log(params.t.text); 
+          var attachment_url = params.t.text; 
+          //TODO
+          $('img#foobar').attr('src', attachment_url);
+          params.w.show();
+          //find('attachment_path').text());
+        };
+
+        // var markup = $feature.find('.comment_markup').text();
+        $('#attachment_template').jqm({
+          modal:true,
+          onShow:updateTemplateImage
+        }).jqmAddTrigger('.note_attachment')
         .jqmAddClose('.modal_close');
       });
 

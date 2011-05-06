@@ -45,6 +45,7 @@ function capitalize(s) {
 }
 
 function toTitlecase(s) {
+  // TODO: s may be undefined when editing report
   return s.replace(/\w\S*/g, capitalize);
 }
 
@@ -538,7 +539,6 @@ function handleCommentFormSubmit() {
     var markup = $form.find('.comment_field').val();
 
     var data = $form.serialize();
-    console.log(data);
     var url = $form.attr('action');
     $testcase.find('.comment_markup').text(markup);
     var html = formatMarkup(markup);
@@ -546,22 +546,19 @@ function handleCommentFormSubmit() {
     $form.detach();
     $div.show();
     $testcase.find('.testcase_notes').click(handleCommentEdit).addClass('edit');
-    // TODO
-    //$.post(url, data);
-    fetchBugzillaInfo();
 
-    var filename = $form.find("#attachment").val();
-    $.ajax({ 
-        type: "POST",
-        url: url,
-        enctype: 'multipart/form-data',
-        data: {file: filename, comment: "foobar", 
-            authenticity_token: "zL36derLRTxE2xqyw29jOXchQO6sKLsEfMZfHTfZLf8=",
-            id: "113291"},
-        success: function(){
-           alert( "Data Uploaded: ");
+    var options = {datatype: 'xml',
+        success: function (responseText, statusText, xhr, $form)  { 
+            // if the ajaxSubmit method was passed an Options Object with the dataType 
+            // property set to 'json' then the first argument to the success callback 
+            // is the json data object returned by the server 
+
+            $testcase.find('.testcase_notes').html(responseText);
+
         }
-    });
+    }
+    $form.ajaxSubmit(options);
+    fetchBugzillaInfo();
 
     return false;
 }
