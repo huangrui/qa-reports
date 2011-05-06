@@ -53,5 +53,5 @@
     - if first
       td class="testcase_result multiple_results #{result_class(testcase)} #{'edit' if @editing} #{testcase.find_change_class(@test_session.prev_session)} " rowspan=all.size
         span.content= result_html(testcase)
-    = render :partial => "reports/testcase_comment", :locals => {:testcase => testcase}
+      = render :partial => "reports/testcase_comment", :locals => {:testcase => testcase }
     - first = false

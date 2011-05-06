@@ -56,31 +56,6 @@
             th#th_result Result
             th#th_notes Notes
 
-        /! ***** DUMMY HTML FOR NOTE ATTACHEMNTS STARTS ********
-        tr.testcase.result_fail id="" style=""
-          td.testcase_name
-            | Dummy html only, remove ********************
-          td.testcase_result.fail
-            span.content Fail
-          td.testcase_notes
-            .content
-              a.bugzilla.bugzilla_status.bugzilla_append.resolved href="http://bugs.meego.com/show_bug.cgi?id=5706" title="VKB launched incorrectly with apps which need input text field. (FIXED)"
-              | Dummy notes, remove **********
-              br/
-              a#open_note_attachment_dialog.note_attachment Open attachment
-        tr.testcase.result_fail id="" style=""
-          td.testcase_name
-            | Dummy html only, remove ********************
-          td.testcase_result.fail
-            span.content Fail
-          td.testcase_notes
-            .content
-              a.bugzilla.bugzilla_status.bugzilla_append.resolved href="http://bugs.meego.com/show_bug.cgi?id=5706" title="VKB launched incorrectly with apps which need input text field. (FIXED)"
-              | Dummy notes, remove **********
-              br/
-              a#open_note_attachment_dialog_big.note_attachment Open attachment
-        /! ************* DUMMY HTML ENDS *******************
-
         = render :partial => "feature", :collection => @test_session.non_nft_sets
 
       - if @history
@@ -117,34 +92,6 @@
             th.th_to_target % of target
             th.th_result Result
             th#th_notes Notes
-
-        /! ***** DUMMY HTML FOR NOTE ATTACHEMNTS STARTS ********
-        tbody
-          tr#test-set-370.feature_name
-            td colspan="8"
-              | N/A
-              a.see_all_toggle href="#" style="display: none; " - hide passing tests
-        tbody
-          tr#testcase-823.testcase.multiple_rows.odd
-            td.testcase_name rowspan="60"
-              | DUMMY HTML ONLY, remove ****************
-            td.testcase_measurement GPS fixes
-            td.testcase_value
-            td.testcase_target
-              | 80
-              span.unit %
-            td.testcase_limit
-              | 75
-              span.unit %
-            td.testcase_to_target.na
-              | 90
-              span.unit %
-            td.testcase_result.multiple_results.pass rowspan="60"
-              span.content Pass
-            td.testcase_notes rowspan="60"
-              .content
-                a#open_note_attachment_dialog.note_attachment Open attachment
-        /! ************* DUMMY HTML ENDS *******************
 
         = render :partial => "nft_feature", :collection => @test_session.nft_sets
 

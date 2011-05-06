@@ -3,4 +3,6 @@ class MeegoTestCaseAttachment < ActiveRecord::Base
 	validates_presence_of :meego_test_case
 
 	has_attached_file :image
+    #, :url => "/attachments/:basename.:extension?:id"
+    #, :path => ":rails_root/public/system/:attachment/:id/:style/:filename"
 end

@@ -546,7 +546,8 @@ function handleCommentFormSubmit() {
     $form.detach();
     $div.show();
     $testcase.find('.testcase_notes').click(handleCommentEdit).addClass('edit');
-
+        
+    console.log($testcase.html());
     var options = {datatype: 'xml',
         success: function (responseText, statusText, xhr, $form)  { 
             // if the ajaxSubmit method was passed an Options Object with the dataType 
@@ -554,11 +555,10 @@ function handleCommentFormSubmit() {
             // is the json data object returned by the server 
 
             $testcase.find('.testcase_notes').html(responseText);
-
+            fetchBugzillaInfo();
         }
     }
     $form.ajaxSubmit(options);
-    fetchBugzillaInfo();
 
     return false;
 }
