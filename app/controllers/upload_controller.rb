@@ -36,11 +36,14 @@ class UploadController < ApplicationController
       new_report[key] = params[key] if params[key]
     end
 
+    new_report[:release] = new_report[:release].downcase if new_report[:release]
+    new_report[:target] ||= new_report[:target].downcase if new_report[:target]
+    new_report[:target] ||= MeegoTestSession.targets.first.downcase
     @test_session = MeegoTestSession.new(new_report)
-    @test_session.version_label = VersionLabel.find_by_label(new_report[:release_version])
+    @test_session.version_label = VersionLabel.find_by_label(new_report[:release_version]) || VersionLabel.latest
 
-    @release_versions = VersionLabel.all.map { |release| release.label }
-    @targets = MeegoTestSession.targets
+    @release_versions = VersionLabel.in_sort_order.map { |release| release.label }
+    @targets = MeegoTestSession.targets.map {|target| target.downcase}
     @testtypes = MeegoTestSession.release(@selected_release_version).testtypes
     @hardware = MeegoTestSession.release(@selected_release_version).popular_hardwares
 

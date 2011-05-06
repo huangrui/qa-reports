@@ -471,6 +471,10 @@ label.inline_label {
     margin: 0 0.75em 0 0;
     display: inline;}
 
+div.field div.field_with_errors {
+    display: inline;
+}
+
 fieldset {
     padding:1.4em;
     margin:0 0 1.5em 0;
