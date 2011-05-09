@@ -26,6 +26,10 @@ class MeegoTestSessionObserver < ActiveRecord::Observer
     ReportExporter::export_test_session(test_session)
   end 
 
+  def before_destroy(test_session)
+    ReportExporter::delete_test_session_export(test_session)
+  end
+
 end
 
 

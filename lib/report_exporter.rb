@@ -80,19 +80,25 @@ module ReportExporter
     data
   end
 
-  def self.post(data)
-    postdata = { "token" => EXPORTER_CONFIG['token'], "report" => data }
-    begin
-      response = RestClient.post EXPORTER_CONFIG['host'] + EXPORTER_CONFIG['uri'], postdata.to_json, :content_type => :json, :accept => :json
-    rescue => e
-      Rails.logger.debug "DEBUG: ReportExporter::post failed, report_id:" + data['qa_id'].to_s + " error:" + e.to_s
-    end
-    Rails.logger.debug "DEBUG: ReportExporter::post report_id:" + data['qa_id'].to_s + " res:" + response.to_str if !response.nil? #debug
+  def self.post(data, action)
+    post_data = { "token" => EXPORTER_CONFIG['token'], "report" => data }
+    uri       = EXPORTER_CONFIG['host'] + EXPORTER_CONFIG['uri'] + action
+    Rails.logger.debug "DEBUG: ReportExporter::post qa_id:#{data['qa_id'].to_s} uri:#{uri}"
 
+    begin
+      response = RestClient.post uri, post_data.to_json, :content_type => :json, :accept => :json
+    rescue => e
+      Rails.logger.debug "DEBUG: ReportExporter::post exception: #{e.to_s}"
+    end
+    Rails.logger.debug "DEBUG: ReportExporter::post res: #{response.to_str}" unless response.nil? #debug
   end
 
   def self.export_test_session(test_session)
-    post(ReportExporter::hashify_test_session(test_session))
+    post ReportExporter::hashify_test_session(test_session), "update"
+  end
+
+  def self.delete_test_session_export(test_session)
+    post({ "qa_id" => test_session.id }, "delete")
   end
 
 end
