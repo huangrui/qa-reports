@@ -547,7 +547,6 @@ function handleCommentFormSubmit() {
     $div.show();
     $testcase.find('.testcase_notes').click(handleCommentEdit).addClass('edit');
         
-    console.log($testcase.html());
     var options = {datatype: 'xml',
         success: function (responseText, statusText, xhr, $form)  { 
             // if the ajaxSubmit method was passed an Options Object with the dataType 

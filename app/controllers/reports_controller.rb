@@ -248,7 +248,6 @@ class ReportsController < ApplicationController
 
     if id = params[:id].try(:to_i)
       @test_session   = MeegoTestSession.fetch_fully(id)
-      @test_session.meego_test_cases.each{ |tc| tc.meego_test_case_attachments.build }
 
       @report         = @test_session
       @release_versions = VersionLabel.all.map { |release| release.label }

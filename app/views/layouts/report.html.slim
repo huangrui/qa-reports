@@ -83,18 +83,11 @@ html
     = javascript_include_tag 'application'
     = yield :view_specific_js
     javascript:
-      // IE hack
-      if (typeof G_vmlCanvasManager != 'undefined') {
-        $(window).load(function(){
-          renderSeriesGraphs(".serial_canvas");
-        });
-      } else {
-      }
-      $(document).ready(function(){
+
+      var on_ready_steps = function() {
         renderSeriesGraphs(".serial_canvas");
-  
+
         var updateTemplateImage = function(params) {
-          console.log(params.t.text); 
           var attachment_url = params.t.text;
           var attachment_filename = attachment_url.match(/\/([^/]*)\?/).pop()
           $('h1#attachment_dialog_header').html(attachment_filename);
@@ -107,6 +100,18 @@ html
           onShow:updateTemplateImage
         }).jqmAddTrigger('.note_attachment')
         .jqmAddClose('.modal_close');
-      });
+      }
+
+      // IE hack
+      if (typeof G_vmlCanvasManager != 'undefined') {
+        $(window).load(function(){
+          on_ready_steps();
+        });
+      } else {
+        $(document).ready(function(){
+          on_ready_steps();
+        });
+      }  
+
 
     = clicktale_bottom_tag
