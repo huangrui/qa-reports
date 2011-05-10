@@ -15,11 +15,11 @@
     javascript:
       $(document).ready(function() {
         var uploadify_script_data = {};
-        var csrf_token = $('meta[name=csrf-token]').attr('content');
+        var csrf_token = encodeURIComponent(encodeURIComponent($('meta[name=csrf-token]').attr('content')));
         var csrf_param = $('meta[name=csrf-param]').attr('content');
-        uploadify_script_data[csrf_token] = encodeURI(csrf_param);
-        uploadify_script_data['#{session_key}'] = '#{cookies[session_key]}';
-        uploadify_script_data['id'] = #{@test_session.id}     
+        uploadify_script_data[csrf_param] = csrf_token;
+        uploadify_script_data['#{session_key}'] = encodeURIComponent(encodeURIComponent('#{u cookies[session_key]}'));
+        uploadify_script_data['id'] = #{@test_session.id};
         $('#file_upload').uploadify({
             'uploader'   : '/javascripts/uploadify/uploadify.swf',
             'script'     : '/upload_attachment/',
@@ -34,13 +34,17 @@
                 return false;
             },
             'onSelect'  : function(event, queueId, fileObj) {
-                $("#file_attachment_list").append($('<li id="file_upload'+queueId+'"><a href="javascript:$(\'#file_upload\').uploadifyCancel(\'' + queueId + '\')" class="remove_list_item">Remove</a>'+fileObj.name+'  <img src="/images/progress.gif" /> <span id="file_upload' + queueId + 'ProgressBar">    /span></li>'));
+                $("#file_attachment_list").append($('<li id="file_upload'+queueId+'"><a href="javascript:$(\'#file_upload\').uploadifyCancel(\'' + queueId + '\')" class="remove_list_item">Remove</a>'+fileObj.name+'  <img src="/images/progress.gif" /> <span id="file_upload' + queueId + 'ProgressBar"></span></li>'));
                 return false;
             },
             'onComplete': function(event, queueId, fileObj, response, data) {
                 $("#file_attachment_list_ready").html(response);
+            },
+            'onError': function(event, ID, fileobj, errorobj) {
+                console.log(errorobj.info);
+                console.log(errorobj);
             }
-        })    
+        });    
         // From http://stackoverflow.com/questions/2483662/uploadify-button-style-with-css
         var $buttonWrapper = $(".uploadify_button_wrapper");
         var $objectWrapper = $(".uploadify_object_wrapper");
