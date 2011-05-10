@@ -1,7 +1,9 @@
-td class="testcase_notes #{'edit' if @editing}" rowspan="#{testcase.has_nft && testcase.all_measurements.size || '1'}"
+td class="testcase_notes #{'edit' if @editing}" rowspan="#{testcase.all_measurements.size if testcase.has_nft }"
   .content 
     = comment_html(testcase)
-    - if not testcase.meego_test_case_attachments.empty?
-      a.note_attachment =testcase.meego_test_case_attachments.first.image.url
+    - if not testcase.attachments.empty?
+      - attachment = testcase.attachments.first
+      / TODO: remove attachment a.remove_list_item 
+      a class="note_attachment #{'image_attachment' if attachment.image?}" href="#{attachment.resource.url}" title=attachment.filename =attachment.resource.url
   - if @editing
     .comment_markup style="display:none;" #{testcase.comment}

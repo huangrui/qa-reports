@@ -34,7 +34,7 @@
                 return false;
             },
             'onSelect'  : function(event, queueId, fileObj) {
-                $("#file_attachment_list").append($('<li id="file_upload'+queueId+'"><a href="javascript:$(\'#file_upload\').uploadifyCancel(\'' + queueId + '\')" class="remove_list_item">Remove</a>'+fileObj.name+'  <img src="/images/progress.gif" /> <span id="file_upload' + queueId + 'ProgressBar">    /span></li>'));
+                $("#file_attachment_list").append($('<li id="file_upload'+queueId+'"><a href="javascript:$(\'#file_upload\').uploadifyCancel(\'' + queueId + '\')" class="remove_list_item">Remove</a>'+fileObj.name+'  <img src="/images/progress.gif" /> <span id="file_upload' + queueId + 'ProgressBar"    /span></li>'));
                 return false;
             },
             'onComplete': function(event, queueId, fileObj, response, data) {

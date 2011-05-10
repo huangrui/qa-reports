@@ -62,12 +62,16 @@ class MeegoTestCase < ActiveRecord::Base
     end
   end
 
+  def attachments
+    meego_test_case_attachments
+  end
+  
   def update_attachment(attachment)
     unless attachment.nil?
-      if meego_test_case_attachments.empty?
-        meego_test_case_attachments.create({:image=>attachment})
+      if attachments.empty?
+        attachments.create({:attachment=>attachment})
       else
-        meego_test_case_attachments.first.update_attribute(:image, attachment)
+        attachments.first.update_attribute(:attachment, attachment)
       end
     end
   end
