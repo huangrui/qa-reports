@@ -1633,6 +1633,27 @@ td.testcase_notes.edit:hover {
 td.testcase_notes.edit:hover .note_attachment {
 	display: none;}
 
+td.testcase_notes .field.inplace .attachment {
+    background: #f4f4f4 url('../images/attachment_icon.png') no-repeat 4px 5px;
+    border: 1px solid #eee;
+    padding: 3px 5px 4px 25px;
+    margin-bottom: 3px;
+}
+
+td.testcase_notes .field.inplace .attachment .delete {
+    float: right;
+    display: block;
+    width: 14px;
+    height: 13px;
+    background: transparent url('../images/remove_list_item.png') no-repeat left top;
+    text-indent: -99999px;
+    margin: 2px 2px 0 0;
+}
+
+td.testcase_notes .field.inplace .attachment .delete:hover {
+    background-image: url('../images/remove_list_item_hover.png');
+}
+
 td.testcase_notes p {
     margin-bottom: 0; }
 
