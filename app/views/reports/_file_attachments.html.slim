@@ -39,10 +39,6 @@
             },
             'onComplete': function(event, queueId, fileObj, response, data) {
                 $("#file_attachment_list_ready").html(response);
-            },
-            'onError': function(event, ID, fileobj, errorobj) {
-                console.log(errorobj.info);
-                console.log(errorobj);
             }
         });    
         // From http://stackoverflow.com/questions/2483662/uploadify-button-style-with-css
