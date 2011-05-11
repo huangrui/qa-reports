@@ -31,16 +31,19 @@ class UploadController < ApplicationController
   before_filter :authenticate_user!
   
   def upload_form
-    session[:new_report] ||= {}
+    new_report = {}
     [:release_version, :target, :testtype, :hardware].each do |key| 
-      session[:new_report][key] = params[key] if params[key]
+      new_report[key] = params[key] if params[key]
     end
 
-    @test_session = MeegoTestSession.new(session[:new_report])
-    @test_session.version_label = VersionLabel.find_by_label(session[:new_report][:release_version])
+    new_report[:release] = new_report[:release].downcase if new_report[:release]
+    new_report[:target] ||= new_report[:target].downcase if new_report[:target]
+    new_report[:target] ||= MeegoTestSession.targets.first.downcase
+    @test_session = MeegoTestSession.new(new_report)
+    @test_session.version_label = VersionLabel.find_by_label(new_report[:release_version]) || VersionLabel.latest
 
-    @release_versions = VersionLabel.all.map { |release| release.label }
-    @targets = MeegoTestSession.targets
+    @release_versions = VersionLabel.in_sort_order.map { |release| release.label }
+    @targets = MeegoTestSession.targets.map {|target| target.downcase}
     @testtypes = MeegoTestSession.release(@selected_release_version).testtypes
     @hardware = MeegoTestSession.release(@selected_release_version).popular_hardwares
 

@@ -49,10 +49,11 @@
     form.result_form.float_container action=url_for(:controller=>'meego_test_cases', :action=>'update_case_result') method="post"
       input name="authenticity_token" type="hidden" value=form_authenticity_token
       input.id_field name="id" type="hidden" value=""
-      select.float_above name="result"
-        option value="1" Pass
-        option value="-1" Fail
-        option value="0" N/A
+      div.float_above
+        select name="result"
+          option value="1" Pass
+          option value="-1" Fail
+          option value="0" N/A
   #feature_comment_edit_form
     form.comment_form action=url_for(:controller=>'reports', :action=>'update_feature_comment') method="post"
       input name="authenticity_token" type="hidden" value=form_authenticity_token
