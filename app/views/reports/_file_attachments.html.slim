@@ -6,6 +6,7 @@
         = render :partial => "reports/file_attachment_list", :locals => {:report => @report, :files => @files || []}
 
   - if @editing
+    / TODO: make uploads use plain JS instead of flash
     .uploadify_button_wrapper
       a#upload_button.small_btn + Add attachment
       .uploadify_object_wrapper
@@ -18,6 +19,7 @@
         var csrf_token = encodeURIComponent(encodeURIComponent($('meta[name=csrf-token]').attr('content')));
         var csrf_param = $('meta[name=csrf-param]').attr('content');
         uploadify_script_data[csrf_param] = csrf_token;
+        // TODO: can this be made cleaner?
         uploadify_script_data['#{session_key}'] = encodeURIComponent(encodeURIComponent('#{u cookies[session_key]}'));
         uploadify_script_data['id'] = #{@test_session.id};
         $('#file_upload').uploadify({
