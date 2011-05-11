@@ -362,6 +362,7 @@ function handleFeatureCommentEdit() {
     }
     var $feature = $node.closest('.feature_record');
     var $form = $('#feature_comment_edit_form form').clone();
+
     var $field = $form.find('.comment_field');
     
     var id = $feature.attr('id').substring(8);
@@ -384,6 +385,7 @@ function handleFeatureCommentEdit() {
     $node.removeClass('edit');
     $div.hide();
     $form.insertAfter($div);
+
     $field.change();
     $field.focus();
     return false;
@@ -505,6 +507,34 @@ function handleCommentEdit() {
     var $testcase = $node.closest('.testcase');
     var $form = $('#comment_edit_form form').clone();
     var $field = $form.find('.comment_field');
+
+    var attachment_url = $div.find('.note_attachment').attr('href') || '';
+    var $current_attachment = $form.find('div.attachment:not(.add)');
+    var $add_attachment = $form.find('div.attachment.add');
+
+    if (attachment_url == '') {
+        $current_attachment.hide();
+    }
+    else {
+        $add_attachment.hide();
+
+        var $attachment_link = $current_attachment.find('#attachment_link');
+        var attachment_filename = attachment_url.match(/\/([^/]*)\?/).pop();
+        $attachment_link.attr('href', attachment_url);
+        $attachment_link.html(attachment_filename);
+            
+        $current_attachment.find('input').attr('value', attachment_filename);
+
+        $current_attachment.find('.delete').click(function () {
+            var $attachment_field = $(this).closest('.field');
+            var $current_attachment = $attachment_field.find('div.attachment:not(.add)');
+            var $add_attachment = $attachment_field.find('div.attachment.add');
+
+            $current_attachment.hide();
+            $current_attachment.find('input').attr('value', '');
+            $add_attachment.show();
+        });
+    }
 
     var id = $testcase.attr('id').substring(9);
     $form.find('.id_field').val(id);

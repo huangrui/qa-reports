@@ -39,8 +39,9 @@
       textarea.comment_field name="comment"
       div.field.inplace
         div.attachment
-          a href="#" attachment_file.xml
-          a.delete href="#" x
+          a#attachment_link href="#" attachment_file.xml
+          input type="hidden" name="old_attachment" value=""
+          a.delete x
         div.attachment.add
           input#attachment type="file" name="attachment"
       input.small_btn.save type="submit" value="Save"

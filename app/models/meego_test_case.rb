@@ -28,7 +28,7 @@ class MeegoTestCase < ActiveRecord::Base
 
   has_many :measurements, :dependent => :destroy, :class_name => "::MeegoMeasurement"
   has_many :serial_measurements, :dependent => :destroy
-  has_many :meego_test_case_attachments, :dependent => :destroy
+  has_many :meego_test_case_attachments
 
   def unique_id
     (meego_test_set.name + "_" + name).downcase
@@ -67,11 +67,8 @@ class MeegoTestCase < ActiveRecord::Base
   end
   
   def update_attachment(attachment)
-    if attachments.empty?
-      attachments.create({:attachment=>attachment}) unless attachment.unique_idl?
-    else
-      attachments.first.update_attribute(:attachment, attachment)
-    end
+    attachments.clear
+    attachments.create({:attachment=>attachment}) unless attachment.nil?
   end
 end
 
