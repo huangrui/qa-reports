@@ -9,7 +9,7 @@ gem 'rack', :git => "https://github.com/rack/rack.git" # Use next release when a
 gem "will_paginate"
 gem 'slim'
 gem 'coffee-script'
-gem 'therubyracer', :require => false
+gem 'therubyracer', '0.9.0beta3', :require => false
 gem 'rest-client', :require => 'rest_client'
 
 group :production do
