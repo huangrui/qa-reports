@@ -509,17 +509,19 @@ function handleCommentEdit() {
     var $field = $form.find('.comment_field');
 
     var attachment_url = $div.find('.note_attachment').attr('href') || '';
+    var filename_match = attachment_url.match(/\/([^/]*)\?/);
+    var attachment_filename = filename_match ? filename_match.pop() : '';
+
     var $current_attachment = $form.find('div.attachment:not(.add)');
     var $add_attachment = $form.find('div.attachment.add');
 
-    if (attachment_url == '') {
+    if (attachment_url == '' || attachment_filename == '') {
         $current_attachment.hide();
     }
     else {
         $add_attachment.hide();
 
         var $attachment_link = $current_attachment.find('#attachment_link');
-        var attachment_filename = attachment_url.match(/\/([^/]*)\?/).pop();
         $attachment_link.attr('href', attachment_url);
         $attachment_link.html(attachment_filename);
             
@@ -573,7 +575,7 @@ function handleCommentFormSubmit() {
     $testcase.find('.comment_markup').text(markup);
     var html = formatMarkup(markup);
     $div.html(html);
-    $form.detach();
+    $form.hide();
     $div.show();
     $testcase.find('.testcase_notes').click(handleCommentEdit).addClass('edit');
         
