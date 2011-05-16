@@ -10,7 +10,7 @@ gem "will_paginate"
 gem 'slim'
 gem 'paperclip'
 gem 'coffee-script'
-gem 'therubyracer', :require => false
+gem 'therubyracer', '0.9.0beta3', :require => false
 gem 'rest-client', :require => 'rest_client'
 
 group :production do
