@@ -101,14 +101,30 @@ When /^I click to delete the report$/ do
   When "I follow \"delete-button\" within \"#edit_report\""
 end
 
-When /^I attach the report "([^"]*)"$/ do |file|
-  And "attach the file \"#{Dir.getwd}/features/resources/#{file}\" to \"meego_test_session[uploaded_files][]\""
+When /^(?:|I )click the element "([^"]*)" for the test case "([^"]*)"$/ do |element, test_case|
+  find(:xpath, "//tr[contains(.,'#{test_case}')]").find(element).click
+end
+
+When /^(?:|I )submit the comment for the test case "([^"]*)"$/ do |test_case|
+  When "I click the element \".small_btn\" for the test case \"#{test_case}\""
 end
 
 When /^(?:|I )attach the file "([^"]*)" to test case "([^"]*)"$/ do |file, test_case|
-  And "attach the file \"#{Dir.getwd}/features/resources/#{file}\" to \"testcase_attachment\" within \"#{test_case}\""
+  within(:xpath, "//tr[contains(.,'#{test_case}')]") do
+    And "attach the file \"#{Dir.getwd}/features/resources/#{file}\" to \"testcase_attachment\""
+  end
+
+  And "I submit the comment for the test case \"#{test_case}\""  
 end
 
+When /^I remove the attachment from the test case "([^"]*)"$/ do |test_case|
+  And "I click the element \"#delete_attachment\" for the test case \"#{test_case}\""
+  And "I submit the comment for the test case \"#{test_case}\""  
+end
+
+When /^I attach the report "([^"]*)"$/ do |file|
+  And "attach the file \"#{Dir.getwd}/features/resources/#{file}\" to \"meego_test_session[uploaded_files][]\""
+end
 
 Given /^I select target "([^"]*)", test type "([^"]*)" and hardware "([^"]*)"(?: with date "([^\"]*)")?/ do |target, test_type, hardware, date|
   When %{I fill in "report_test_execution_date" with "#{date}"} if date

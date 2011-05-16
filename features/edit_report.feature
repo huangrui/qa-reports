@@ -9,20 +9,18 @@ Feature: Edit Report
     When I view the report "1.1/Core/Sanity/Aava"
     And I click to edit the report
 
-    When I click the element ".testcase_notes" within "#testcase-2"
-    And attach the file "short1.csv" to test case "#testcase-2"
-    And submit the form at ".small_btn" within "#testcase-2"
-
+    When I click the element ".testcase_notes" for the test case "SMOKE-SIM-Get_IMSI"
+    And I attach the file "short1.csv" to test case "SMOKE-SIM-Get_IMSI"
     And I wait until all Ajax requests are complete
-    When I click the element ".testcase_notes" within "#testcase-2"
-    Then I should see "short1.csv" within "#testcase-2"
+
+    Then I click the element ".testcase_notes" for the test case "SMOKE-SIM-Get_IMSI"
+    And I should see "short1.csv"
     
-    When I click the element ".delete" within "#testcase-2"
-    And submit the form at ".small_btn" within "#testcase-2"
-
+    When I remove the attachment from the test case "SMOKE-SIM-Get_IMSI"
     And I wait until all Ajax requests are complete
-    When I click the element ".testcase_notes" within "#testcase-2"
-    Then I should not see "short1.csv" within "#testcase-2"
+
+    When I click the element ".testcase_notes" for the test case "SMOKE-SIM-Get_IMSI"
+    Then I should not see "short1.csv"
 
   @selenium
   Scenario: Edit title

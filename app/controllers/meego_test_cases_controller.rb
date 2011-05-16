@@ -15,7 +15,7 @@ class MeegoTestCasesController < ApplicationController
     test_session = testcase.meego_test_session
     test_session.updated_by(current_user)
     @editing = true
-    expire_caches_for(@test_session)
+    expire_caches_for(testcase.meego_test_session)
 
     render :partial => 'reports/testcase_comment', :locals => {:testcase => testcase}
   end
@@ -28,7 +28,7 @@ class MeegoTestCasesController < ApplicationController
 
     test_session = testcase.meego_test_session
     test_session.updated_by(current_user)
-    expire_caches_for(test_session, true)
+    expire_caches_for(testcase.meego_test_session, true)
 
     render :text => "OK"
   end
