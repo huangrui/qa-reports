@@ -5,6 +5,20 @@ Feature: Edit Report
     And I have created the "1.1/Core/Sanity/Aava" report using "sim.xml"
 
   @selenium
+  Scenario: Add and view a test case attachment for existing report
+    When I view the report "1.1/Core/Sanity/Aava"
+    And I click to edit the report
+
+    When I click the element ".testcase_notes" for the test case "SMOKE-SIM-Get_IMSI"
+    And I attach the file "attachment.txt" to test case "SMOKE-SIM-Get_IMSI"
+    And I wait until all Ajax requests are complete
+
+    When I click the element ".testcase_notes" for the test case "SMOKE-SIM-Get_IMSI"
+    And I click the element "#attachment_link" for the test case "SMOKE-SIM-Get_IMSI"
+    
+    Then I should see "Content of the attachment file"
+
+  @selenium
   Scenario: Add and remove a test case attachment from existing report
     When I view the report "1.1/Core/Sanity/Aava"
     And I click to edit the report
