@@ -7,6 +7,16 @@ When /submit the form(?: at "([^"]*)")?$/ do |form_id|
   find(target).click
 end
 
+When /submit the form at "([^"]*)" within "([^"]*)"?$/ do |submit_button, selector|
+  with_scope(selector) do
+    find(submit_button).click
+  end
+end
+
+And /wait for "([^"]*)" seconds$/ do |seconds|
+  sleep seconds.to_i
+end
+
 
 Then /^the link "([^"]*)" within "([^"]*)" should point to the report "([^"]*)"/ do |link, selector, expected_report|
   with_scope(selector) do
@@ -24,6 +34,12 @@ end
 
 When /^I click the element "([^"]*)"$/ do |selector|
   find(selector).click
+end
+
+When /^I click the element "([^"]*)" within "([^"]*)"$/ do |element, selector|
+  with_scope(selector) do
+    find(element).click
+  end
 end
 
 When /^fill in "([^"]*)" within "([^"]*)" with:$/ do |field, selector, data|

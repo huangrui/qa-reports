@@ -105,6 +105,11 @@ When /^I attach the report "([^"]*)"$/ do |file|
   And "attach the file \"#{Dir.getwd}/features/resources/#{file}\" to \"meego_test_session[uploaded_files][]\""
 end
 
+When /^(?:|I )attach the file "([^"]*)" to test case "([^"]*)"$/ do |file, test_case|
+  And "attach the file \"#{Dir.getwd}/features/resources/#{file}\" to \"testcase_attachment\" within \"#{test_case}\""
+end
+
+
 Given /^I select target "([^"]*)", test type "([^"]*)" and hardware "([^"]*)"(?: with date "([^\"]*)")?/ do |target, test_type, hardware, date|
   When %{I fill in "report_test_execution_date" with "#{date}"} if date
   When %{I choose "#{target}"}
