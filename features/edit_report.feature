@@ -4,22 +4,7 @@ Feature: Edit Report
     Given I am a new, authenticated user
     And I have created the "1.1/Core/Sanity/Aava" report using "sim.xml"
 
-# NOTE: the next test already has these exact steps as preparation
-#  @selenium
-#  @javascript
-#  Scenario: Add a test case attachment to existing report
-#    When I view the report "1.1/Core/Sanity/Aava"
-#    And I click to edit the report
-#
-#    When I click the element ".testcase_notes" within "#testcase-2"
-#    And attach the file "short1.csv" to test case "#testcase-2"
-#    And submit the form at ".small_btn" within "#testcase-2"
-#
-#    When I click the element ".testcase_notes" within "#testcase-2"
-#    Then I should see "short1.csv" within "#testcase-2"
-
   @selenium
-  @javascript
   Scenario: Add and remove a test case attachment from existing report
     When I view the report "1.1/Core/Sanity/Aava"
     And I click to edit the report
@@ -28,15 +13,14 @@ Feature: Edit Report
     And attach the file "short1.csv" to test case "#testcase-2"
     And submit the form at ".small_btn" within "#testcase-2"
 
-# TODO: can the 2 second delay be replaced by a trigger from ajax reply instead
-    And I wait for "2" seconds
+    And I wait until all Ajax requests are complete
     When I click the element ".testcase_notes" within "#testcase-2"
     Then I should see "short1.csv" within "#testcase-2"
     
     When I click the element ".delete" within "#testcase-2"
     And submit the form at ".small_btn" within "#testcase-2"
 
-    And I wait for "2" seconds
+    And I wait until all Ajax requests are complete
     When I click the element ".testcase_notes" within "#testcase-2"
     Then I should not see "short1.csv" within "#testcase-2"
 

@@ -13,8 +13,10 @@ When /submit the form at "([^"]*)" within "([^"]*)"?$/ do |submit_button, select
   end
 end
 
-And /wait for "([^"]*)" seconds$/ do |seconds|
-  sleep seconds.to_i
+When /^I wait until all Ajax requests are complete$/ do
+  wait_until do
+    page.evaluate_script('$.active') == 0
+  end
 end
 
 
