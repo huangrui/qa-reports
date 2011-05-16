@@ -509,8 +509,7 @@ function handleCommentEdit() {
     var $field = $form.find('.comment_field');
 
     var attachment_url = $div.find('.note_attachment').attr('href') || '';
-    var filename_match = attachment_url.match(/\/([^/]*)\?/);
-    var attachment_filename = filename_match ? filename_match.pop() : '';
+    var attachment_filename = attachment_url.split('/').pop();
 
     var $current_attachment = $form.find('div.attachment:not(.add)');
     var $add_attachment = $form.find('div.attachment.add');

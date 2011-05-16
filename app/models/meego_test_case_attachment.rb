@@ -24,13 +24,10 @@ class MeegoTestCaseAttachment < ActiveRecord::Base
 	belongs_to :meego_test_case
 	validates_presence_of :meego_test_case
 
-	has_attached_file :attachment
-    # TODO: make the nicer version of URL work
-    #, :url => "/attachments/:basename.:extension?:id"
-    #, :path => ":rails_root/public/system/:attachment/:id/:style/:filename"
+	has_attached_file :attachment, :url => "/files/attachments/:id/:filename"
 
   def image?
-    (attachment.url =~ /(jpg|jpeg|gif|png|bmp)/) if attachment.present?
+    (attachment.url =~ /\.(jpg|jpeg|gif|png|bmp)/) if attachment.present?
   end
 
   def filename
@@ -39,6 +36,10 @@ class MeegoTestCaseAttachment < ActiveRecord::Base
 
   def resource
     attachment
+  end
+
+  def pretty_url
+    attachment.url.split('?').first
   end
 
 end

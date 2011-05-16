@@ -3,6 +3,6 @@ td class="testcase_notes #{'edit' if @editing}" rowspan="#{testcase.all_measurem
     = comment_html(testcase)
     - if not testcase.attachments.empty?
       - attachment = testcase.attachments.first
-      a class="note_attachment #{'image_attachment' if attachment.image?}" href="#{attachment.resource.url}" title=attachment.filename =attachment.resource.url
+      a class="note_attachment #{'image_attachment' if attachment.image?}" href="#{attachment.pretty_url}" title=attachment.filename =attachment.pretty_url
   - if @editing
     .comment_markup style="display:none;" #{testcase.comment}

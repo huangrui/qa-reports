@@ -89,7 +89,7 @@ html
 
         var updateTemplateImage = function(params) {
           var attachment_url = params.t.text;
-          var attachment_filename = attachment_url.match(/\/([^/]*)\?/).pop()
+          var attachment_filename = attachment_url.split('/').pop()
 
           $('h1#attachment_dialog_header').html(attachment_filename);
           $('img#attachment_dialog_image').attr('src', attachment_url);
