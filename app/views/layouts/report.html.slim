@@ -77,6 +77,12 @@ html
       .attachment_image_container
         img#attachment_dialog_image alt="attachment_image" src=""
                 
+    #nft_trend_dialog.jqmWindow.nft_drilldown_modal_window style="display:none;"
+      h1 test case name
+      a.ui_btn.modal_close href=""
+        span X
+      #nft_trend_graph style="width:790px; height:290px;"
+
     = javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js"
     javascript:
       var BUGZILLA_URI = "#{BUGZILLA_CONFIG['link_uri']}";
@@ -100,8 +106,12 @@ html
         $('#attachment_template').jqm({
           modal:true,
           onShow:updateTemplateImage
-        }).jqmAddTrigger('.image_attachment')
-        .jqmAddClose('.modal_close');
+        }).jqmAddTrigger('.image_attachment').jqmAddClose('.modal_close');
+
+        $('#nft_trend_dialog').jqm({
+          modal:true,
+          onShow:renderNftTrendGraph
+        }).jqmAddTrigger('.nft_trend_button').jqmAddClose($('a.modal_close'));
       }
 
       // IE hack
