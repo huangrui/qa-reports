@@ -222,7 +222,7 @@ class ReportsController < ApplicationController
 
       @nft_trends = nil
       if @test_session.has_nft?
-        @nft_trends = NftHistory.new().session_measurement_csv_trend(@test_session)
+        @nft_trends = NftHistory.new(@test_session)
       end
 
       render :layout => "report"

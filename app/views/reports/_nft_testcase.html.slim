@@ -59,7 +59,7 @@
             span.nft_trend_graph_unit
               = m.unit
             span.nft_trend_graph_data
-              = @nft_trends[feature][testcase.name][m.name]
+              = @nft_trends.measurements[feature][testcase.name][m.name]
 
       td.testcase_target= m.target_html
       td.testcase_limit= m.failure_html
