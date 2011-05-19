@@ -59,7 +59,7 @@
                 | N/A
 
         = render :partial=>'month', :collection => @headers
-        = will_paginate @paginated_sessions
+        / TODO remove = will_paginate @paginated_sessions
 
 - if @trend_graph_data_abs
   javascript:
