@@ -9,9 +9,8 @@ Feature: As a Test Manager I want to see changes between latest test sessions
 
   Scenario: View group report
     When I view the group report "1.2/Core/Sanity/FeaturePassRate"
-    Then I should see "+3" within "#changed_to_pass"
-    And I should see "+1" within "#changed_to_fail"
-    And I should see "+2" within "#changed_to_na"
-    And I should see "1" within "#total_passed"
-    And I should see "2" within "#total_failed"
-    And I should see "5" within "#total_na"
+    Then I should see "3" within "#changed_to_pass"
+    And I should see "3" within "#changed_from_pass"
+    And I should see "1" within "#new_passing"
+    And I should see "2" within "#new_failing"
+    And I should see "5" within "#new_na"

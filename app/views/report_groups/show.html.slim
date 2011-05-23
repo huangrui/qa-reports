@@ -23,41 +23,7 @@
 
         - if @group_report.comparison
           .index_section
-            h2 
-              | Changes from previous results
-              / TODO: link to comparison view
-              / a.compare href=""
-            .clearfix
-              .result_caption.big_number
-                strong#changed_to_pass.pass = print_with_sign(@group_report.comparison.changed_to_pass)
-                | Test result
-                br/
-                | changed to 
-                em pass
-              .result_caption.big_number
-                strong#changed_to_fail.fail = print_with_sign(@group_report.comparison.changed_to_fail)
-                | Test result
-                br/
-                | changed to 
-                em fail
-              .result_caption.big_number
-                strong#changed_to_na = print_with_sign(@group_report.comparison.changed_to_na)
-                | Test result
-                br/
-                | changed to 
-                em N/A
-              .new_tests.result_caption
-                .result_caption_header
-                  strong New tests:
-                .result_caption.medium_number
-                  strong#total_passed.pass =@group_report.comparison.new_passed
-                  | Passing
-                .result_caption.medium_number
-                  strong#total_failed.fail =@group_report.comparison.new_failed
-                  | Failing
-                .result_caption.medium_number
-                  strong#total_na = @group_report.comparison.new_na
-                  | N/A
+            = render :partial => "shared/report_comparison_summary", :locals => {:comparison => @group_report.comparison}
 
         = render :partial=>'month', :collection => @group_report.reports_by_month.keys
 
@@ -88,39 +54,39 @@
         background_colors: ['white', 'white']
         });
       }
-      
+
       function draw_abs_graph() {
         init_graph();
         g.data('pass', trend_abs_passed, '#bcd483');
         g.data('fail', trend_abs_failed, '#f36c6c');
         g.data('n/a',  trend_abs_na,     '#ddd');
         g.labels = trend_labels;
-        
+
         g.draw();
       }
-      
+
       function draw_rel_graph() {
         init_graph();
         g.data('pass', trend_rel_passed, '#bcd483');
         g.data('fail', trend_rel_failed, '#f36c6c');
         g.data('n/a',  trend_rel_na,     '#ddd');
         g.labels = trend_labels;
-        
+
         g.draw();
       }
-      
+
       $("#abs_button").click(function(){
         $("#abs_button").addClass("inactive");
         $("#rel_button").removeClass("inactive");
         draw_abs_graph();
       });
-      
+
       $("#rel_button").click(function(){
         $("#abs_button").removeClass("inactive");
         $("#rel_button").addClass("inactive");
         draw_rel_graph();
       });
-      
+
       draw_abs_graph();
     });
 

@@ -52,11 +52,11 @@ class ComparisonReport
   end
 
   def new_passing
-    @comparisons.map{|k, v| v.new_passed}.reduce(:+)
+    @comparisons.map{|k, v| v.new_passing}.reduce(:+)
   end
 
   def new_failing
-    @comparisons.map{|k, v| v.new_failed}.reduce(:+)
+    @comparisons.map{|k, v| v.new_failing}.reduce(:+)
   end
 
   def new_na
@@ -86,10 +86,6 @@ class ComparisonReport
       @test_cases += r1.meego_test_cases + r2.meego_test_cases
       @comparisons[hardware] = ReportComparison.new(r1, r2)
     end
-
-    ####
-
-    ####
 
     # Group by feature
     @test_cases = @test_cases.group_by { |tc| tc.meego_test_set.feature }

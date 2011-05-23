@@ -36,11 +36,11 @@ class ReportComparison
     @regression_to_na ||= find_change_count(MeegoTestCase::PASS,MeegoTestCase::NA)
   end
 
-  def new_passed
+  def new_passing
     @new_passed ||= find_new_count(MeegoTestCase::PASS)
   end
 
-  def new_failed
+  def new_failing
     @new_failed ||= find_new_count(MeegoTestCase::FAIL)
   end
 
