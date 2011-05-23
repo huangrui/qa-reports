@@ -8,6 +8,10 @@ class ReportComparison
     @changed_to_pass ||= find_changed_count(MeegoTestCase::PASS)
   end
 
+  def changed_from_pass
+    regression_to_fail + regression_to_na
+  end
+
   def changed_to_fail
     @changed_to_fail ||= find_changed_count(MeegoTestCase::FAIL)
   end
@@ -21,15 +25,15 @@ class ReportComparison
   end
 
   def fixed_from_na
-    @fixed_from_na ||= find_fixed_count(MeegoTestCase::NA)
+    @fixed_from_na ||= find_change_count(MeegoTestCase::NA, MeegoTestCase::PASS)
   end
 
   def regression_to_fail
-    @regression_to_fail ||= find_regression_count(MeegoTestCase::FAIL)
+    @regression_to_fail ||= find_change_count(MeegoTestCase::PASS, MeegoTestCase::FAIL)
   end
 
   def regression_to_na
-    @regression_to_na ||= find_regression_count(MeegoTestCase::NA)
+    @regression_to_na ||= find_change_count(MeegoTestCase::PASS,MeegoTestCase::NA)
   end
 
   def new_passed
@@ -70,7 +74,7 @@ class ReportComparison
   end
 
   def find_change_count(from, to)
-    rows = test_result_comparisons.filter do |row|
+    rows = test_result_comparisons.find_all do |row|
       row.previous_result == from && row.latest_result == to
     end
 
@@ -97,10 +101,10 @@ class ReportComparison
       JOIN meego_test_sets AS p_ts ON ( previous.meego_test_set_id = p_ts.id ))
 
       ON (LOWER(latest.name), LOWER(l_ts.feature)) = (LOWER(previous.name), LOWER(p_ts.feature))
-      WHERE latest.meego_test_session_id = 2714 AND previous.meego_test_session_id = 869;
+      WHERE latest.meego_test_session_id = #{@latest.id} AND previous.meego_test_session_id = #{@previous.id};
     END
 
-    ActiveRecord.find_by_sql(find_test_result_comparisons_query)
+    MeegoTestCase.find_by_sql(find_test_result_comparisons_query)
   end
 
   def find_regression_test_cases
@@ -203,7 +207,6 @@ class ReportComparison
   end
 
   def make_test_case_pairs
-    Rails.logger.info "löldjfdkfjdkj"
     result_pairs = {}
 
     #group by feature
@@ -224,7 +227,7 @@ class ReportComparison
           (latest_cases[feature][case_name] || [])[0]]
       end
     end
-    Rails.logger.info result_pairs
+
     result_pairs
   end
 end

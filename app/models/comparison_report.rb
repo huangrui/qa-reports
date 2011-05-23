@@ -23,6 +23,10 @@ class ComparisonReport
     @comparisons.map{|k, v| v.changed_to_pass}.reduce(:+)
   end
 
+  def changed_from_pass
+    @comparisons.map{|k, v| v.changed_from_pass}.reduce(:+)
+  end
+
   def changed_to_fail
     @comparisons.map{|k, v| v.changed_to_fail}.reduce(:+)
   end

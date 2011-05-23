@@ -18,22 +18,22 @@
     h2
     .result_caption.big_number
       h3 Progress
-      strong#changed_to_pass.pass @comparison_report.changed_to_pass
+      strong#changed_to_pass.pass =@comparison_report.changed_to_pass
       .result_drilldown
-        span.pass.changed_result.changed_from_fail @comparison_report.fixed_from_fail
+        span.pass.changed_result.changed_from_fail =@comparison_report.fixed_from_fail
         br/
-        span.pass.changed_result.changed_from_na 2
+        span.pass.changed_result.changed_from_na =@comparison_report.fixed_from_na
       p
         | Existing tests
         br/
         em changed to fixed
     .result_caption.big_number
       h3 Regression
-      strong#changed_to_fail.fail 14
+      strong#changed_to_fail.fail =@comparison_report.changed_from_pass
       .result_drilldown
-			  span.pass.changed_result.changed_from_fail 9
+			  span.fail.changed_result.changed_from_pass =@comparison_report.regression_to_fail
 			  br/
-			  span.pass.changed_result.changed_from_na 5
+			  span.na.changed_result.changed_from_pass =@comparison_report.regression_to_na
       p
         | Existing tests
         br/
@@ -74,7 +74,6 @@
           th class="column_#{index + @comparison_report.hardwares.length} column_head_2" #{name}
 
     tbody
-      = @comparison_report.features.count
       = render :partial => "feature", :collection => @comparison_report.features
 
 - content_for :view_specific_js do
