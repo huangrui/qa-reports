@@ -17,6 +17,7 @@ class ComparisonReportsController < ApplicationController
 #    @groups = @comparison.groups
 
     @comparison_report = ComparisonReport.new(@release_version, @target, @testtype, @comparison_testtype)
+    @comparisons = @comparison_report.comparisons
   end
 
 end

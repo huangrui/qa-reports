@@ -7,18 +7,18 @@ tr.feature_name
 
 tbody
   - reset_cycle()
-  - @comparison_report.test_cases[feature].each do |test_case, test_cases|
-    tr id="test_case_#{test_cases}" class="testcase #{'has_changes' if @comparison_report.result_changed(feature, test_case)} #{cycle('odd','even')}" style="#{'display:none;' if !@comparison_report.result_changed(feature, test_case)}"
+  - @comparison_report.test_cases[feature].each_with_index do |(test_case, test_cases), test_case_index|
+    tr id="test_case_#{test_case_index}" class="testcase #{'has_changes' if @comparison_report.result_changed?(feature, test_case)} #{cycle('odd','even')}" style="#{'display:none;' if !@comparison_report.result_changed?(feature, test_case)}"
 
       td.testcase_name= test_case
 
       - @comparison_report.hardwares.each_with_index do |hardware, hardware_index|
-        - testcase = test_cases[hardware]
+        - testcase = @comparisons[hardware].test_case_pair(feature, test_case)[0]
         td class="testcase_result #{result_class(testcase)} hardware_#{hardware_index}" =result_html(testcase)
 
-      td class="change_indicator #{' changed_result' if test_case.changed}"
-      
+      td class="change_indicator #{' changed_result' if @comparison_report.result_changed?(feature, test_case)}"
+
       - @comparison_report.hardwares.each_with_index do |hardware, hardware_index|
-        - testcase = test_case.result(hardware).right
+        - testcase = @comparisons[hardware].test_case_pair(feature, test_case)[1]
         td class="testcase_result #{result_class(testcase)} hardware_#{hardware_index + @comparison_report.hardwares.length}" =result_html(testcase)
 

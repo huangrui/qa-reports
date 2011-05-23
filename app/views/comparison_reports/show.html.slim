@@ -8,23 +8,23 @@
   h1
     em
       = @testtype
-      |  vs. 
+      |  vs.
       = @comparison_testtype
-      | : 
+      | :
     = @target
 
- 
+
   .clearfix
     h2
     .result_caption.big_number
       h3 Progress
-      strong#changed_to_pass.pass 5
+      strong#changed_to_pass.pass @comparison_report.changed_to_pass
       .result_drilldown
-        span.pass.changed_result.changed_from_fail 2
+        span.pass.changed_result.changed_from_fail @comparison_report.fixed_from_fail
         br/
-        span.pass.changed_result.changed_from_na 2      
-      p   
-        | Existing tests 
+        span.pass.changed_result.changed_from_na 2
+      p
+        | Existing tests
         br/
         em changed to fixed
     .result_caption.big_number
@@ -38,7 +38,7 @@
         | Existing tests
         br/
         em not passing anymore
-  
+
     .new_tests.result_caption
       .result_caption_header
         strong New tests:
