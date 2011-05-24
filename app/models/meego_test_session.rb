@@ -583,7 +583,6 @@ class MeegoTestSession < ActiveRecord::Base
     if prev
       self.objective_txt     = prev.objective_txt if self.objective_txt.empty?
       self.build_txt         = prev.build_txt if self.build_txt.empty?
-      self.build_id_txt      = prev.build_id_txt if self.build_id_txt.empty?
       self.qa_summary_txt    = prev.qa_summary_txt if self.qa_summary_txt.empty?
       self.issue_summary_txt = prev.issue_summary_txt if self.issue_summary_txt.empty?
     end
