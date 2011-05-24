@@ -49,10 +49,10 @@
           tr
             th#th_test_case
               span.sort
-                a.see_only_failed_button.sort_btn.active href="#" See only failed
-                a.see_all_button.sort_btn href="#" See all
+                a.see_only_failed_button.sort_btn.non_nft_button.active href="#" See only failed
+                a.see_all_button.sort_btn.non_nft_button href="#" See all
                 - if @history
-                  a.see_history_button.sort_btn href="#" See history
+                  a.see_history_button.sort_btn.non_nft_button href="#" See history
             th#th_result Result
             th#th_notes Notes
 
@@ -64,9 +64,9 @@
             tr
               th#th_history_test_case
                 span.sort
-                  a.see_only_failed_button.sort_btn href="#" See only failed
-                  a.see_all_button.sort_btn href="#" See all
-                  a.see_history_button.sort_btn.active href="#" See history
+                  a.see_only_failed_button.sort_btn.non_nft_button href="#" See only failed
+                  a.see_all_button.sort_btn.non_nft_button href="#" See all
+                  a.see_history_button.sort_btn.non_nft_button.active href="#" See history
               = history_headers(@history)
               th.th_result Current
               th
@@ -81,6 +81,11 @@
         thead
           tr
             th#th_nft_test_case
+              span.sort
+                a.see_latest_button.sort_btn.active.nft_button href="#"
+                  | See latest
+                a.see_nft_history_button.sort_btn.nft_button href="#"
+                  | See history
             th.th_name Measurement
             th.th_measured Value
             th.th_target Target
@@ -90,18 +95,15 @@
             th#th_notes Notes
 
         = render :partial => "nft_feature", :collection => @test_session.nft_sets
-      /! Dummy version from original UX design
-      h2#detailed_nft_results
-        | Non-functional Test Results (dummy)
-        span.heading_actions= back_to_top
-      table.non-functional_results.detailed_results.history
+      /! NFT history representation
+      table.non-functional_results.detailed_results.history style="display:none;"
         thead
           tr
             th#th_nft_test_case
               span.sort
-                a.see_all_button.sort_btn href="#"
+                a.see_latest_button.sort_btn.nft_button href="#"
                   | See latest
-                a.see_history_button.sort_btn.active href="#"
+                a.see_nft_history_button.sort_btn.active.nft_button href="#"
                   | See history
             th.th_name Measurement
             th.th_measured colspan="6"
@@ -109,6 +111,7 @@
         tbody
           tr#test-set-372.feature_name
             td colspan="8"
+              | N/A
               a.see_all_toggle href="#"
                 | + see passing tests
         tbody

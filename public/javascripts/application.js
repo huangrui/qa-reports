@@ -1101,7 +1101,7 @@ function filterResults(rowsToHide, typeText) {
     });
 
     $(".see_all_button").click(function(){
-        $("a.sort_btn").removeClass("active");
+        $("a.sort_btn.non_nft_button").removeClass("active");
         $(this).addClass("active");
         $(rowsToHide).show();
         updateToggles();
@@ -1109,7 +1109,7 @@ function filterResults(rowsToHide, typeText) {
     });
 
     $(".see_only_failed_button").click(function(){
-        $("a.sort_btn").removeClass("active");
+        $("a.sort_btn.non_nft_button").removeClass("active");
         $(this).addClass("active");
         $(rowsToHide).hide();
         updateToggles();
@@ -1139,6 +1139,23 @@ function filterResults(rowsToHide, typeText) {
         $detail.show();
         $detail.find(".see_only_failed_button").click();
     });
+    
+    // NFT history
+    $(".see_nft_history_button").click(function(){
+      $nft_detail.hide();
+      $nft_history.show();
+      return false;
+    });
+
+    $(".see_latest_button").click(function(){
+        $nft_history.hide();
+        $nft_detail.show();
+        return false;
+    });
+
+
+    var $nft_detail  = $("table.non-functional_results.detailed_results").first(); 
+    var $nft_history = $("table.non-functional_results.detailed_results.history");
 }
 
 jQuery(function($) {
