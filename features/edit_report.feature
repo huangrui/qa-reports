@@ -2,7 +2,7 @@ Feature: Edit Report
 
   Background:
     Given I am a new, authenticated user
-    And I have created the "1.1/Core/Sanity/Aava" report using "sim.xml"
+    And I have created the "1.1/Core/Sanity/Aava" report using "sim.xml" and build id "1.2.0.90.0.20050517.1"
 
   @selenium
   Scenario: Add and view a test case attachment for existing report

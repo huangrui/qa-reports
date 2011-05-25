@@ -50,7 +50,7 @@ When /I view the report "([^"]*)"$/ do |report_string|
   visit("/#{version}/#{target}/#{test_type}/#{hardware}/#{report.id}")
 end
 
-Given /^I have created the "([^"]*)" report(?: using "([^"]*)")?$/ do |report_name, report_template|
+Given /^I have created the "([^"]*)" report(?: using "([^"]*)")?(?: and build id "([^"]*)")?$/ do |report_name, report_template, build_id|
 #Given /^I have created the "([^"]*)" report$/ do |report_name|
 
   version, target, test_type, hardware = report_name.split('/')
@@ -64,6 +64,7 @@ Given /^I have created the "([^"]*)" report(?: using "([^"]*)")?$/ do |report_na
   And %{I fill in "report_test_execution_date" with "2010-02-02"}
   And %{I choose "#{version}"}
   And %{I select target "#{target}", test type "#{test_type}" and hardware "#{hardware}"}
+  And %{I select build id "#{build_id}"}
   And %{I attach the report "#{report_template}"}
   And %{I submit the form at "upload_report_submit"}
   And %{I submit the form at "upload_report_submit"}
@@ -136,6 +137,10 @@ Given /^I select test type "([^"]*)" and hardware "([^"]*)"(?: with date "([^\"]
   When %{I fill in "report_test_execution_date" with "#{date}"} if date
   When %{I fill in "meego_test_session[testtype]" with "#{test_type}"}
   When %{I fill in "meego_test_session[hardware]" with "#{hardware}"}
+end
+
+Given /^I select build id "([^"]*)"$/ do |build_id|
+  When %{I fill in "meego_test_session[build_id]" with "#{build_id}"}
 end
 
 Then /^I should see the header$/ do
