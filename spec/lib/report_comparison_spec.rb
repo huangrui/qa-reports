@@ -33,11 +33,11 @@ describe ReportComparison do
     end
 
     it "should know the amount of new passed cases" do
-      @comparison.new_passed.should == 0
+      @comparison.new_passing.should == 0
     end
 
     it "should know the amount of new failed cases" do
-      @comparison.new_failed.should == 0
+      @comparison.new_failing.should == 0
     end
 
     it "should know the amount of new na cases" do
@@ -52,11 +52,11 @@ describe ReportComparison do
     end
 
     it "should know the amount of new passed cases" do
-      @comparison.new_passed.should == @new_pass_count.count
+      @comparison.new_passing.should == @new_pass_count.count
     end
 
     it "should know the amount of new failed cases" do
-      @comparison.new_failed.should == @new_fail_count.count
+      @comparison.new_failing.should == @new_fail_count.count
     end
 
     it "should know the amount of new na cases" do
