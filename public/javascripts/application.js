@@ -61,7 +61,7 @@ renderSeriesGraphs = function(selector) {
 
     var renderGraph = function(index, div) {
         var $div = $(div);
-        var $modal_info = $div.prev()
+        var $modal_info = $div.prev();
         var values = eval($div.text());
         if (values.length > 0) {
             if (values.length == 1) {

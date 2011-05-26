@@ -21,12 +21,16 @@
 #
 
 class NftHistory
-  attr_reader :session_measurement_csv_trend
+  attr_reader :measurements, :start_date
+
+  include MeasurementUtils
+  
 
   def initialize(session)
     @session = session
     @first_nft_result_date = nil
-    @csv_trend = nil
+
+    @trend_data = nil
   end
   
   def persisted?
@@ -61,8 +65,8 @@ class NftHistory
   # given session (included) and return the data as CSV in a multidimensional 
   # hash that has keys as follows:
   # hash[feature_name][testcase_name][measurement_name] = CSV data
-  def measurements()
-    return @csv_trend unless @csv_trend.nil?
+  def measurements
+    return @trend_data unless @trend_data.nil?
 
     query = <<-END
     SELECT
@@ -99,50 +103,93 @@ class NftHistory
                                          @session.tested_at,
                                          true])
 
-
-    @csv_trend = Hash.new
+    @trend_data = Hash.new
     feature = ""
     testcase = ""
     measurement = ""
     csv = ""
+    json = []
     data.each do |m|
       # Start a new measurement
       if feature != m.feature or 
           testcase != m.test_case or 
           measurement != m.measurement 
         
-        add_value(feature, testcase, measurement, csv) unless csv.empty?
+        add_value(feature, testcase, measurement, "csv", csv) unless csv.empty?
+        add_value(feature, testcase, measurement, "json", json) unless json.empty?
 
         unit = "Value"
         if not m.unit.nil?
           unit = m.unit
         end
         csv = "Date,#{unit}\n"
+        json = []
         feature = m.feature
         testcase = m.test_case
         measurement = m.measurement
       end
       
       csv << m.tested_at.strftime("%Y-%m-%d") << "," << m.value.to_s << "\n"
-      # @first_nft_result_date = m.tested_at if m.tested_at < @first_nft_result_date
+      json << m.value
     end
 
     # Last one was not written in the loop above
-    add_value(feature, testcase, measurement, csv) unless csv.empty?
+    add_value(feature, testcase, measurement, "csv", csv) unless csv.empty?
+    add_value(feature, testcase, measurement, "json", json) unless json.empty?
 
-    @csv_trend
+    count_key_figures
+
+    @trend_data
   end
 
-  def add_value(feature, testcase, measurement, csv)
+  protected
 
-    if not @csv_trend.has_key?(feature)
-      @csv_trend[feature] = Hash.new
+  def add_value(feature, testcase, measurement, format, data)
+
+    if not @trend_data.has_key?(feature)
+      @trend_data[feature] = Hash.new
     end
 
-    if not @csv_trend[feature].has_key?(testcase)
-      @csv_trend[feature][testcase] = Hash.new
+    if not @trend_data[feature].has_key?(testcase)
+      @trend_data[feature][testcase] = Hash.new
     end
 
-    @csv_trend[feature][testcase][measurement] = csv
+    if not @trend_data[feature][testcase].has_key?(measurement)
+      @trend_data[feature][testcase][measurement] = Hash.new
+    end
+    
+    @trend_data[feature][testcase][measurement][format] = data
   end
+
+  def count_key_figures
+    @trend_data.each do |f_key, f_value|
+      f_value.each do |t_key, t_value|
+        t_value.each do |m_key, m_value|
+          if m_value.has_key?('json')
+            data = m_value['json']
+            
+            m_value['min'] = 'N/A'
+            m_value['max'] = 'N/A'
+            m_value['avg'] = 'N/A'
+            m_value['med'] = 'N/A'
+
+            size = data.size
+            if (size > 0)
+              if (size % 2) == 0
+                median = (data[size/2] + data[size/2-1])/2.0
+              elsif size > 0
+                median = data[size/2]
+              end
+
+              m_value['max'] = format_value(data.max, 3)
+              m_value['min'] = format_value(data.min, 3)
+              m_value['med'] = format_value(median, 3)
+              m_value['avg'] = format_value(data.inject{|sum,el| sum + el}.to_f / size, 3)
+            end
+          end
+        end
+      end
+    end
+  end
+
 end
