@@ -328,6 +328,16 @@ class ReportsController < ApplicationController
     redirect_to :controller => :index, :action => :index
   end
 
+  def redirect_by_id
+    # Shortcut for accessing the correct report using report ID only
+    begin
+      s = MeegoTestSession.find(params[:id].to_i)
+      redirect_to :controller => 'reports', :action => 'view', :release_version => s.release_version, :target => s.target, :testtype => s.testtype, :hardware => s.hardware, :id => s.id
+    rescue ActiveRecord::RecordNotFound
+      redirect_to :controller => :index, :action => :index
+    end
+  end
+
   protected
 
   def bugzilla_cache_key
@@ -347,4 +357,5 @@ class ReportsController < ApplicationController
   def just_published?
     @published
   end
+
 end
