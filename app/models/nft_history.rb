@@ -31,6 +31,7 @@ class NftHistory
     @first_nft_result_date = nil
 
     @trend_data = nil
+    @serial_trend_data = nil
   end
   
   def persisted?
@@ -64,7 +65,8 @@ class NftHistory
   # Read all matching measurement values from the beginning of the time until
   # given session (included) and return the data as CSV in a multidimensional 
   # hash that has keys as follows:
-  # hash[feature_name][testcase_name][measurement_name] = CSV data
+  # hash[feature_name][testcase_name][measurement_name]['csv'] = CSV data
+  # hash[feature_name][testcase_name][measurement_name]['json'] = array
   def measurements
     return @trend_data unless @trend_data.nil?
 
@@ -115,8 +117,10 @@ class NftHistory
           testcase != m.test_case or 
           measurement != m.measurement 
         
-        add_value(feature, testcase, measurement, "csv", csv) unless csv.empty?
-        add_value(feature, testcase, measurement, "json", json) unless json.empty?
+        add_value(@trend_data, feature, testcase, 
+                  measurement, "csv", csv) unless csv.empty?
+        add_value(@trend_data, feature, testcase, 
+                  measurement, "json", json) unless json.empty?
 
         unit = "Value"
         if not m.unit.nil?
@@ -134,35 +138,126 @@ class NftHistory
     end
 
     # Last one was not written in the loop above
-    add_value(feature, testcase, measurement, "csv", csv) unless csv.empty?
-    add_value(feature, testcase, measurement, "json", json) unless json.empty?
+    add_value(@trend_data, feature, testcase, 
+              measurement, "csv", csv) unless csv.empty?
+    add_value(@trend_data, feature, testcase, 
+              measurement, "json", json) unless json.empty?
 
-    count_key_figures
+    count_key_figures(@trend_data)
 
     @trend_data
   end
 
-  protected
 
-  def add_value(feature, testcase, measurement, format, data)
+  # Get serial measurement trends for given session
+  def serial_measurements
+    return @serial_trend_data unless @serial_trend_data.nil?
 
-    if not @trend_data.has_key?(feature)
-      @trend_data[feature] = Hash.new
+    # Nearly same, heavy query as in function measurements
+    query = <<-END
+    SELECT
+    meego_test_sets.feature AS feature,
+    meego_test_cases.name AS test_case,
+    serial_measurements.name AS measurement,
+    serial_measurements.unit AS unit,
+    serial_measurements.min_value AS min_value,
+    serial_measurements.max_value AS max_value,
+    serial_measurements.avg_value AS avg_value,
+    serial_measurements.median_value AS med_value,
+    meego_test_sessions.tested_at AS tested_at
+    FROM
+    serial_measurements, meego_test_cases, meego_test_sets, meego_test_sessions
+    WHERE
+    serial_measurements.meego_test_case_id=meego_test_cases.id AND
+    meego_test_cases.meego_test_set_id=meego_test_sets.id AND
+    meego_test_sets.meego_test_session_id=meego_test_sessions.id AND
+    meego_test_sessions.version_label_id=? AND
+    meego_test_sessions.target=? AND
+    meego_test_sessions.testtype=? AND
+    meego_test_sessions.hardware=? AND
+    meego_test_sessions.tested_at <= ? AND
+    meego_test_sessions.published=?
+    ORDER BY
+    meego_test_sets.feature ASC, 
+    meego_test_cases.name ASC,
+    serial_measurements.name ASC,
+    meego_test_sessions.tested_at ASC
+    END
+
+    data = MeegoTestSession.find_by_sql([query,
+                                         @session.version_label_id,
+                                         @session.read_attribute(:target),
+                                         @session.testtype,
+                                         @session.hardware,
+                                         @session.tested_at,
+                                         true])
+
+    @serial_trend_data = Hash.new
+    feature = ""
+    testcase = ""
+    measurement = ""
+    csv = ""
+    json = []
+    data.each do |m|
+      # Start a new measurement
+      if feature != m.feature or 
+          testcase != m.test_case or 
+          measurement != m.measurement 
+        
+        add_value(@serial_trend_data, feature, testcase, 
+                  measurement, "csv", csv) unless csv.empty?
+        add_value(@serial_trend_data, feature, testcase, 
+                  measurement, "json", json) unless json.empty?
+
+        unit = "Value"
+        if not m.unit.nil?
+          unit = m.unit
+        end
+        csv = "Date,Max #{unit},Avg #{unit}, Med #{unit}, Min #{unit}\n"
+        json = []
+        feature = m.feature
+        testcase = m.test_case
+        measurement = m.measurement
+      end
+      
+      csv << m.tested_at.strftime("%Y-%m-%d") << "," << m.max_value.to_s << "," << m.avg_value.to_s << "," << m.med_value.to_s << "," << m.min_value.to_s << "\n"
+      # Only medians here, used in the small graph
+      json << m.med_value
     end
 
-    if not @trend_data[feature].has_key?(testcase)
-      @trend_data[feature][testcase] = Hash.new
-    end
+    # Last one was not written in the loop above
+    add_value(@serial_trend_data, feature, testcase, 
+              measurement, "csv", csv) unless csv.empty?
+    add_value(@serial_trend_data, feature, testcase, 
+              measurement, "json", json) unless json.empty?
 
-    if not @trend_data[feature][testcase].has_key?(measurement)
-      @trend_data[feature][testcase][measurement] = Hash.new
-    end
-    
-    @trend_data[feature][testcase][measurement][format] = data
+    count_key_figures(@serial_trend_data)
+
+    @serial_trend_data
   end
 
-  def count_key_figures
-    @trend_data.each do |f_key, f_value|
+
+  protected
+
+  def add_value(container, feature, testcase, measurement, format, data)
+
+    if not container.has_key?(feature)
+      container[feature] = Hash.new
+    end
+
+    if not container[feature].has_key?(testcase)
+      container[feature][testcase] = Hash.new
+    end
+
+    if not container[feature][testcase].has_key?(measurement)
+      container[feature][testcase][measurement] = Hash.new
+    end
+    
+    container[feature][testcase][measurement][format] = data
+  end
+
+  def count_key_figures(container)
+    container.each do |f_key, f_value|
       f_value.each do |t_key, t_value|
         t_value.each do |m_key, m_value|
           if m_value.has_key?('json')

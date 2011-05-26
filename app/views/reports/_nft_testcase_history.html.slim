@@ -13,7 +13,10 @@
           a.dl_link href=testcase.binary_link rpm
 
     - if m.is_serial?
-      td.testcase_measurement= m.name
+      td.testcase_measurement
+        = m.name
+        br
+        small.un2 (Based on medians)
       td.testcase_graph colspan="4"
         .modal_graph style="display:none"
           span.modal_graph_title= testcase.name
@@ -21,8 +24,8 @@
           span.modal_graph_x_unit= m.interval_unit or ""
           span.modal_graph_y_unit= m.unit
 
-        .serial_canvas id="graph-#{m.id}" style="visibility:hidden;width:287px;height:46px"
-          = m.short_json
+        .serial_canvas id="serial-history-graph-#{m.id}" style="visibility:hidden;width:287px;height:46px"
+          = ints2js @nft_trends.serial_measurements[feature][testcase.name][m.name]['json']
 
         table.nft_graph_key_figures
           tr
