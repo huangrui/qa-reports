@@ -54,31 +54,6 @@ module AjaxMixin
     render :text => "OK"
   end
 
-  def update_case_comment
-    case_id  = params[:id]
-    comment  = params[:comment]
-    testcase = MeegoTestCase.find(case_id)
-    testcase.update_attribute(:comment, comment)
-
-    test_session = testcase.meego_test_session
-    test_session.updated_by(current_user)
-    expire_caches_for(test_session)
-
-    render :text => "OK"
-  end
-
-  def update_case_result
-    case_id  = params[:id]
-    result   = params[:result]
-    testcase = MeegoTestCase.find(case_id)
-    testcase.update_attribute(:result, result.to_i)
-
-    test_session = testcase.meego_test_session
-    test_session.updated_by(current_user)
-    expire_caches_for(test_session, true)
-
-    render :text => "OK"
-  end
 
   def update_txt
     @preview_id   = params[:id]
@@ -215,7 +190,7 @@ class ReportsController < ApplicationController
                 :release_version => test_session.release_version,
                 :target          => test_session.target,
                 :testtype        => test_session.testtype,
-                :hwproduct       => test_session.hwproduct
+                :hardware       => test_session.hardware
   end
 
   def view
@@ -237,13 +212,18 @@ class ReportsController < ApplicationController
 
       @target    = @test_session.target
       @testtype  = @test_session.testtype
-      @hwproduct = @test_session.hwproduct
+      @hardware = @test_session.hardware
 
       @report    = @test_session
       @files = FileStorage.new().list_files(@test_session) or []
       @raw_result_files = @test_session.raw_result_files
       @editing = false
       @wizard  = false
+
+      @nft_trends = nil
+      if @test_session.has_nft?
+        @nft_trends = NftHistory.new(@test_session)
+      end
 
       render :layout => "report"
     else
@@ -273,6 +253,7 @@ class ReportsController < ApplicationController
 
     if id = params[:id].try(:to_i)
       @test_session   = MeegoTestSession.fetch_fully(id)
+
       @report         = @test_session
       @release_versions = VersionLabel.all.map { |release| release.label }
       @targets = MeegoTestSession.targets
@@ -297,9 +278,9 @@ class ReportsController < ApplicationController
     @compare_cache_key = "compare_page_#{@release_version}_#{@target}_#{@testtype}_#{@comparison_test_type}"
 
     MeegoTestSession.published_hwversion_by_release_version_target_test_type(@release_version, @target, @testtype).each{|hardware|
-        left = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @testtype, hardware.hwproduct).first
-        right = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @comparison_testtype, hardware.hwproduct).first
-        @comparison.add_pair(hardware.hwproduct, left, right)
+        left = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @testtype, hardware.hardware).first
+        right = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @comparison_testtype, hardware.hardware).first
+        @comparison.add_pair(hardware.hardware, left, right)
     }
     @groups = @comparison.groups
     render :layout => "report"

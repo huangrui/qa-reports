@@ -7,6 +7,18 @@ When /submit the form(?: at "([^"]*)")?$/ do |form_id|
   find(target).click
 end
 
+When /submit the form at "([^"]*)" within "([^"]*)"?$/ do |submit_button, selector|
+  with_scope(selector) do
+    find(submit_button).click
+  end
+end
+
+When /^I wait until all Ajax requests are complete$/ do
+  wait_until do
+    page.evaluate_script('$.active') == 0
+  end
+end
+
 
 Then /^the link "([^"]*)" within "([^"]*)" should point to the report "([^"]*)"/ do |link, selector, expected_report|
   with_scope(selector) do
@@ -14,7 +26,7 @@ Then /^the link "([^"]*)" within "([^"]*)" should point to the report "([^"]*)"/
 
     version, target, test_type, hardware = expected_report.downcase.split('/')
     report = MeegoTestSession.first(:conditions =>
-     {"version_labels.normalized" => version, :target => target, :hwproduct => hardware, :testtype => test_type}, :include => :version_label
+     {"version_labels.normalized" => version, :target => target, :hardware => hardware, :testtype => test_type}, :include => :version_label
     )
     raise "report not found with parameters #{version}/#{target}/#{hardware}/#{test_type}!" unless report
 
@@ -24,6 +36,12 @@ end
 
 When /^I click the element "([^"]*)"$/ do |selector|
   find(selector).click
+end
+
+When /^I click the element "([^"]*)" within "([^"]*)"$/ do |element, selector|
+  with_scope(selector) do
+    find(element).click
+  end
 end
 
 When /^fill in "([^"]*)" within "([^"]*)" with:$/ do |field, selector, data|

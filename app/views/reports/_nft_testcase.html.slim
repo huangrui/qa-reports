@@ -45,7 +45,22 @@
               = m.med_html
     - else
       td.testcase_measurement= m.name
-      td.testcase_value= m.value_html
+      td.testcase_value
+        - if @editing
+          = m.value_html
+        -else
+          a.nft_trend_button id="nft-trend-button-#{m.id}" href="" title="See history"
+            = m.value_html
+          div id="nft-trend-data-#{m.id}" style="display:none;"
+            span.nft_trend_graph_title
+              = testcase.name
+              | : 
+              = m.name
+            span.nft_trend_graph_unit
+              = m.unit
+            span.nft_trend_graph_data
+              = @nft_trends.measurements[feature][testcase.name][m.name]
+
       td.testcase_target= m.target_html
       td.testcase_limit= m.failure_html
       td class="testcase_to_target #{result_class(m.target_result)}" =m.relative_html
@@ -53,8 +68,5 @@
     - if first
       td class="testcase_result multiple_results #{result_class(testcase)} #{'edit' if @editing} #{testcase.find_change_class(@test_session.prev_session)} " rowspan=all.size
         span.content= result_html(testcase)
-      td class="testcase_notes #{'edit' if @editing}" rowspan=all.size
-        .content= comment_html(testcase)
-        - if @editing
-          .comment_markup style="display:none;" #{testcase.comment}
+      = render :partial => "reports/testcase_comment", :locals => {:testcase => testcase }
     - first = false

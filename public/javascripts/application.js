@@ -45,6 +45,7 @@ function capitalize(s) {
 }
 
 function toTitlecase(s) {
+  // TODO: s may be undefined when editing report
   return s.replace(/\w\S*/g, capitalize);
 }
 
@@ -225,6 +226,36 @@ prepareCategoryUpdate = function(div) {
 
 }
 
+/**
+ * Add content to the NFT trend graph when it's shown.
+ * 
+ * Each callback is passed the "hash" object consisting of the 
+ * following properties; 
+ *  w: (jQuery object) The dialog element
+ *  c: (object) The config object (dialog's parameters)
+ *  o: (jQuery object) The overlay
+ *  t: (DOM object) The triggering element 
+ */
+var renderNftTrendGraph = function(hash) {
+    var m_id = hash.t.id.match("[0-9]{1,}$");
+    var $elem = $("#nft-trend-data-" + m_id);
+    
+    var data = $elem.children(".nft_trend_graph_data").text();
+    // Don't break the whole thing if there's no data - now one can
+    // at least close the window
+    if (!data) {
+	data = "Date,Value";
+    }
+    var title = $elem.find(".nft_trend_graph_title").text();
+    var unit = $elem.find(".nft_trend_graph_unit").text();
+    
+    var graph = document.getElementById("nft_trend_graph");
+    dyg = new Dygraph(graph, data);
+
+    hash.w.find("h1").text(title);
+    hash.w.show();
+};
+
 function linkEditButtons() {
     $('div.editable_area').each(function(i, node) {
         var $node = $(node);
@@ -361,6 +392,7 @@ function handleFeatureCommentEdit() {
     }
     var $feature = $node.closest('.feature_record');
     var $form = $('#feature_comment_edit_form form').clone();
+
     var $field = $form.find('.comment_field');
     
     var id = $feature.attr('id').substring(8);
@@ -383,6 +415,7 @@ function handleFeatureCommentEdit() {
     $node.removeClass('edit');
     $div.hide();
     $form.insertAfter($div);
+
     $field.change();
     $field.focus();
     return false;
@@ -505,6 +538,35 @@ function handleCommentEdit() {
     var $form = $('#comment_edit_form form').clone();
     var $field = $form.find('.comment_field');
 
+    var attachment_url = $div.find('.note_attachment').attr('href') || '';
+    var attachment_filename = attachment_url.split('/').pop();
+
+    var $current_attachment = $form.find('div.attachment:not(.add)');
+    var $add_attachment = $form.find('div.attachment.add');
+
+    if (attachment_url == '' || attachment_filename == '') {
+        $current_attachment.hide();
+    }
+    else {
+        $add_attachment.hide();
+
+        var $attachment_link = $current_attachment.find('#attachment_link');
+        $attachment_link.attr('href', attachment_url);
+        $attachment_link.html(attachment_filename);
+            
+        $current_attachment.find('input').attr('value', attachment_filename);
+
+        $current_attachment.find('.delete').click(function () {
+            var $attachment_field = $(this).closest('.field');
+            var $current_attachment = $attachment_field.find('div.attachment:not(.add)');
+            var $add_attachment = $attachment_field.find('div.attachment.add');
+
+            $current_attachment.hide();
+            $current_attachment.find('input').attr('value', '');
+            $add_attachment.show();
+        });
+    }
+
     var id = $testcase.attr('id').substring(9);
     $form.find('.id_field').val(id);
 
@@ -542,11 +604,22 @@ function handleCommentFormSubmit() {
     $testcase.find('.comment_markup').text(markup);
     var html = formatMarkup(markup);
     $div.html(html);
-    $form.detach();
+    $form.hide();
     $div.show();
     $testcase.find('.testcase_notes').click(handleCommentEdit).addClass('edit');
-    $.post(url, data);
-    fetchBugzillaInfo();
+        
+    var options = {datatype: 'xml',
+        success: function (responseText, statusText, xhr, $form)  { 
+            // if the ajaxSubmit method was passed an Options Object with the dataType 
+            // property set to 'json' then the first argument to the success callback 
+            // is the json data object returned by the server 
+
+            $testcase.find('.testcase_notes').html(responseText);
+            fetchBugzillaInfo();
+        }
+    }
+    $form.ajaxSubmit(options);
+
     return false;
 }
 

@@ -117,7 +117,7 @@ end
 #      results[0].name.should == "SMOKE-SIM-Query_SIM_card_status"
 #      results[1].name.should == "SMOKE-SIM-Get_IMSI"
 #      results[2].name.should == "SMOKE-SIM-Disable_PIN_query"
-#      results[3].name.should == "SMOKE-SIM-Query_Service_Provider_name"      
+#      results[3].name.should == "SMOKE-SIM-Query_Service_Provider_name"
 #      results.length.should == 4
 #      comparison.changed_to_fail.should == "-2"
 #      comparison.changed_to_pass.should == "+1"

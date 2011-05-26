@@ -66,7 +66,7 @@ end
 
 When /^the client sends a request with extra parameter "([^"]*)" via the REST API$/ do |extra|
   # TODO: this step should be replaced with the step defined below
-  post "/api/import?auth_token=foobar&release_version=1.2&target=Core&testtype=automated&hwproduct=N900&" + extra, {
+  post "/api/import?auth_token=foobar&release_version=1.2&target=Core&testtype=automated&hardware=N900&" + extra, {
       "report.1"        => Rack::Test::UploadedFile.new("features/resources/sim.xml", "text/xml")
   }
   response.should be_success
@@ -84,7 +84,7 @@ end
 
 When /^I view the latest report "([^"]*)"/ do |report_string|
   version, target, test_type, hardware = report_string.downcase.split('/')
-  report = MeegoTestSession.joins(:version_label).where(:version_labels => {:label => version}, :target => target, :hwproduct => hardware, :testtype => test_type).order("created_at DESC").first
+  report = MeegoTestSession.joins(:version_label).where(:version_labels => {:label => version}, :target => target, :hardware => hardware, :testtype => test_type).order("created_at DESC").first
   raise "report not found with parameters #{version}/#{target}/#{hardware}/#{test_type}!" unless report
   visit("/#{version}/#{target}/#{test_type}/#{hardware}/#{report.id}")
 end

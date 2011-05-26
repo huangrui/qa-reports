@@ -2,10 +2,10 @@ class CreateTestSessions < ActiveRecord::Migration
   def self.up
     create_table :meego_test_sessions do |t|
       t.string :environment, :default => ""
-      
+
       t.string :hwproduct, :default => ""
       t.string :hwbuild, :default => ""
-      
+
       t.string :xmlpath, :default => ""
 
       t.string :title, :null => false

@@ -151,9 +151,9 @@ h2 {
     font-size: 1.6666em;
     line-height:1;
     color: #000;
-    margin:1.5em 0 0.75em 0;
+    margin:1.0em 0 0.5em 0;
     border-top: 1px solid #ccc;
-    padding-top: 10px;}
+    padding-top: 20px;}
 
 h2 small {
 	font-size: .55em;
@@ -457,6 +457,14 @@ form h1,
     margin-left: 10px;
     width: auto; }
 
+.field.inplace{
+	border-bottom: none;
+	padding:5px 0 15px;}
+
+.field.inplace label {
+	font-size: 11px;
+	width: auto;}
+
 label { margin-right:10px; display:block;
     float: left;
     width: 200px;
@@ -472,6 +480,10 @@ label.inline_label {
     text-align: inherit;
     margin: 0 0.75em 0 0;
     display: inline;}
+
+div.field div.field_with_errors {
+    display: inline;
+}
 
 fieldset {
     padding:1.4em;
@@ -680,7 +692,7 @@ input#report_test_data.file {
     -webkit-box-shadow: #aaa 0px 0px 2px;
     -moz-box-shadow: #aaa 0px 0px 2px;
     box-shadow: #aaa 0px 0px 2px;
-    filter: progid:DXImageTransform.Microsoft.Shadow(color='#969696', Direction=135, Strength=3);}
+    /*filter: progid:DXImageTransform.Microsoft.Shadow(color='#969696', Direction=135, Strength=3);*/}
 
 .ui_btn:active {
     background-image: url(../images/ui_btn_bg_active.png);
@@ -977,6 +989,7 @@ div.formError, #error, form .error {
     background: url(../images/heading_shade.png) repeat-x 0 bottom;
     margin-bottom:0;
     margin-top: 0;
+    padding-top: 10px;
     padding-right: 20px;
     padding-bottom: 6px;
     padding-left: 20px;}
@@ -1557,8 +1570,26 @@ td.feature_record_notes p {
 	position:relative;}
 
 .float_above {
+    position: absolute;
+    left:-10%;}
+	
+div.float_above {
 	position: absolute;
-	left:-10%;}
+	left: -25px;
+    top: -6px;
+    background: #fff;
+    border: 5px solid white !important;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    display: block !important;
+    box-shadow: 0px 0px 5px #555 !important;
+    -moz-box-shadow: 0px 0px 5px #555 !important;
+    -webkit-box-shadow: 0px 0px 5px #555 !important;}
+
+div.float_above select {
+    outline: none;
+}
 
 td.feature_record_grading {
 	text-align:center;}
@@ -1665,9 +1696,36 @@ td.testcase_notes {
     padding-right: 33px;
     margin-bottom: 0;}
 
+td.testcase_notes .content {
+	position: relative;}
+
 td.testcase_notes.edit:hover {
     background: #fff8de url(../images/edit_icon.png) no-repeat 97% 5px;
     cursor: pointer;}
+    
+td.testcase_notes.edit:hover .note_attachment {
+	display: none;}
+
+td.testcase_notes .field.inplace .attachment {
+    background: #f4f4f4 url('../images/attachment_icon.png') no-repeat 4px 5px;
+    border: 1px solid #eee;
+    padding: 3px 5px 4px 25px;
+    margin-bottom: 3px;
+}
+
+td.testcase_notes .field.inplace .attachment .delete {
+    float: right;
+    display: block;
+    width: 14px;
+    height: 13px;
+    background: transparent url('../images/remove_list_item.png') no-repeat left top;
+    text-indent: -99999px;
+    margin: 2px 2px 0 0;
+}
+
+td.testcase_notes .field.inplace .attachment .delete:hover {
+    background-image: url('../images/remove_list_item_hover.png');
+}
 
 td.testcase_notes p {
     margin-bottom: 0; }
@@ -1692,6 +1750,9 @@ td.fail {
 .unit {
 	color: #aaa;
 	font-size:0.91666em;}
+
+a:hover .unit {
+	color: #000;}
 
 #test_results .sort {
     margin-left: 3em;}
@@ -1745,17 +1806,27 @@ table.nft_graph_key_figures {
 width: 35px;
 }
 
+.nft_trend_button {
+	padding-right: 17px;
+	background: transparent no-repeat right 2px url(../images/nft_trend_icon.png);
+	text-decoration:none;}
+
+.nft_trend_button:hover {
+	background-image: url(../images/nft_trend_icon_hover.png);
+	cursor: pointer;
+}
+
 .testcase_graph canvas {
 	cursor: pointer;
 }
 
 .nft_drilldown_modal_window {
 	width: 800px;
-	padding: 40px;
+	padding: 14px 40px 40px;
 	margin-left: -440px;
 }
 
-#nft_drilldown_graph {
+#nft_drilldown_graph, #nft_trend_graph {
         width: 823px;
         height: 314px;
         padding: 20px;
@@ -1789,6 +1860,29 @@ width: 35px;
 .nft_graph_options div {
 	width: 33%;
 	float: left;
+}
+
+.note_attachment {
+	position: absolute;
+	right: -24px;
+	top: 0;
+	width: 14px;
+	padding: 0 5px;
+	margin-left: 5px;
+	z-index: 100;
+	text-indent: -9999px;
+	background: transparent no-repeat 5px 0 url(../images/attachment_icon.png);
+}
+
+.note_attachment:hover {
+	background-image: url(../images/attachment_icon_hover.png);
+	cursor: pointer; }
+
+.attachment_to_notes_dialog img {
+	max-width: 600px;}
+
+.attachment_image_container {
+	width: 600px ;
 }
 
 /* @end */

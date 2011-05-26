@@ -44,7 +44,7 @@ end
 When /I view the report "([^"]*)"$/ do |report_string|
   version, target, test_type, hardware = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {"version_labels.normalized" => version, :target => target, :hwproduct => hardware, :testtype => test_type}, :include => :version_label 
+   {"version_labels.normalized" => version, :target => target, :hardware => hardware, :testtype => test_type}, :include => :version_label 
   )
   raise "report not found with parameters #{version}/#{target}/#{hardware}/#{test_type}!" unless report
   visit("/#{version}/#{target}/#{test_type}/#{hardware}/#{report.id}")
@@ -85,7 +85,7 @@ Given /^there exists a report for "([^"]*)"$/ do |report_name|
     :password => "password",
     :password_confirmation => "password")
 
-  session = MeegoTestSession.new(:target => target, :hwproduct => hardware,
+  session = MeegoTestSession.new(:target => target, :hardware => hardware,
     :testtype => test_type, :uploaded_files => [testfile],
     :tested_at => Time.now, :author => user, :editor => user, :release_version => version
   )
@@ -106,6 +106,27 @@ When /^I click to delete the report$/ do
   When "I follow \"delete-button\" within \"#edit_report\""
 end
 
+When /^(?:|I )click the element "([^"]*)" for the test case "([^"]*)"$/ do |element, test_case|
+  find(:xpath, "//tr[contains(.,'#{test_case}')]").find(element).click
+end
+
+When /^(?:|I )submit the comment for the test case "([^"]*)"$/ do |test_case|
+  When "I click the element \".small_btn\" for the test case \"#{test_case}\""
+end
+
+When /^(?:|I )attach the file "([^"]*)" to test case "([^"]*)"$/ do |file, test_case|
+  within(:xpath, "//tr[contains(.,'#{test_case}')]") do
+    And "attach the file \"#{Dir.getwd}/features/resources/#{file}\" to \"testcase_attachment\""
+  end
+
+  And "I submit the comment for the test case \"#{test_case}\""  
+end
+
+When /^I remove the attachment from the test case "([^"]*)"$/ do |test_case|
+  And "I click the element \"#delete_attachment\" for the test case \"#{test_case}\""
+  And "I submit the comment for the test case \"#{test_case}\""  
+end
+
 When /^I attach the report "([^"]*)"$/ do |file|
   And "attach the file \"#{Dir.getwd}/features/resources/#{file}\" to \"meego_test_session[uploaded_files][]\""
 end
@@ -119,7 +140,7 @@ end
 Given /^I select test type "([^"]*)" and hardware "([^"]*)"(?: with date "([^\"]*)")?$/ do |test_type, hardware, date|
   When %{I fill in "report_test_execution_date" with "#{date}"} if date
   When %{I fill in "meego_test_session[testtype]" with "#{test_type}"}
-  When %{I fill in "meego_test_session[hwproduct]" with "#{hardware}"}
+  When %{I fill in "meego_test_session[hardware]" with "#{hardware}"}
 end
 
 Then /^I should see the header$/ do

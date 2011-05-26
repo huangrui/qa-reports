@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110406131351) do
+ActiveRecord::Schema.define(:version => 20110509121536) do
 
   create_table "meego_measurements", :force => true do |t|
     t.integer "meego_test_case_id"
@@ -23,6 +23,16 @@ ActiveRecord::Schema.define(:version => 20110406131351) do
   end
 
   add_index "meego_measurements", ["meego_test_case_id"], :name => "index_meego_measurements_on_meego_test_case_id"
+
+  create_table "meego_test_case_attachments", :force => true do |t|
+    t.integer  "meego_test_case_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "attachment_file_name"
+    t.string   "attachment_content_type"
+    t.integer  "attachment_file_size"
+    t.datetime "attachment_updated_at"
+  end
 
   create_table "meego_test_cases", :force => true do |t|
     t.integer "meego_test_set_id",                                        :null => false
@@ -40,7 +50,7 @@ ActiveRecord::Schema.define(:version => 20110406131351) do
 
   create_table "meego_test_sessions", :force => true do |t|
     t.string   "environment",                       :default => ""
-    t.string   "hwproduct",                         :default => ""
+    t.string   "hardware",                          :default => ""
     t.string   "title",                                                :null => false
     t.string   "target",                            :default => ""
     t.string   "testtype",                          :default => ""
@@ -64,7 +74,7 @@ ActiveRecord::Schema.define(:version => 20110406131351) do
     t.integer  "version_label_id",                  :default => 1,     :null => false
   end
 
-  add_index "meego_test_sessions", ["version_label_id", "target", "testtype", "hwproduct"], :name => "index_meego_test_sessions_key"
+  add_index "meego_test_sessions", ["version_label_id", "target", "testtype", "hardware"], :name => "index_meego_test_sessions_key"
 
   create_table "meego_test_sets", :force => true do |t|
     t.string  "feature",               :default => ""

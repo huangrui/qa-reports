@@ -65,7 +65,7 @@ class ComparisonReport
 
   def initialize(release, profile, test_type, comparison_test_type)
     comparison_scope = MeegoTestSession.release(release).profile(profile)
-    hw_scope = comparison_scope.select("DISTINCT(hwproduct) as hardware")
+    hw_scope = comparison_scope.select("DISTINCT(hardware) as hardware")
 
     @hardwares = (
       hw_scope.test_type(test_type) &
@@ -96,7 +96,7 @@ class ComparisonReport
 
       @test_cases[feature].each_key do |test_case|
         # Group by hardware
-        @test_cases[feature][test_case] = @test_cases[feature][test_case].group_by {|tc| tc.meego_test_session.hwproduct.downcase}
+        @test_cases[feature][test_case] = @test_cases[feature][test_case].group_by {|tc| tc.meego_test_session.hardware.downcase}
 
       end
     end

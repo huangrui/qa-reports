@@ -4,6 +4,11 @@
 - content_for :notification_area do
   .notification Edit the report information.
 
+- content_for :button_area do
+  form#edit_report action=""
+    - if user_signed_in?
+      a.edit-button.small_btn.submit href=url_for(:controller=>'reports', :action=>'view', :id=>@test_session.id) Done
+
 - content_for :table_of_contents do
   = render :partial => "toc"
 
@@ -25,6 +30,8 @@
 - content_for :view_specific_js do
   = javascript_include_tag 'datetime'
   = javascript_include_tag 'jqModal.js'
+  = javascript_include_tag 'jquery.form.js'
+  
   javascript:
     var SESSION_ID = "#{@test_session.id}";
     $(document).ready(function(){

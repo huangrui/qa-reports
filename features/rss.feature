@@ -33,10 +33,10 @@ Feature: RSS Feed
     And I should see "Core"
     And I should see "Handset"
 
-  Scenario: Verify that offered RSS feeds change according to the page 
+  Scenario: Verify that offered RSS feeds change according to the page
     When I view the page for the release version "1.1"
     Then I should see the page header offer RSS feed for "1.1"
-    
+
     When I view the page for the "Handset" profile of release version "1.1"
     Then I should see the page header offer RSS feed for "1.1/Handset"
 
@@ -45,7 +45,7 @@ Feature: RSS Feed
 
     When I view the page for "Sanity" testing of "N900" hardware with profile "Handset" in version "1.1"
     Then I should see the page header offer RSS feed for "1.1/Handset/Sanity/N900"
-      
+
 
 
 

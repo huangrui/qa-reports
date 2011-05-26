@@ -33,7 +33,7 @@
 - content_for :wizard_actions do
   #wizard_actions
     #wizard_buttons
-      form action=url_for( :controller=>'reports', :action=>'delete', :release_version=>@selected_release_version, :target=>@test_session.target, :testtype=>@test_session.testtype, :hwproduct=>@test_session.hwproduct, :id=>@test_session.id) method="post"
+      form action=url_for( :controller=>'reports', :action=>'delete', :release_version=>@selected_release_version, :target=>@test_session.target, :testtype=>@test_session.testtype, :hardware=>@test_session.hardware, :id=>@test_session.id) method="post"
         input name="authenticity_token" type="hidden" value=form_authenticity_token
         input.id_field name="id" type="hidden" value=@test_session.id
         input#cancel-publish.big_btn.cancel type="submit" value="Cancel"
@@ -53,6 +53,8 @@
 - content_for :view_specific_js do
   = javascript_include_tag 'datetime'
   = javascript_include_tag 'jqModal.js'
+  = javascript_include_tag 'jquery.form.js'
+
   javascript:
     var SESSION_ID = "#{@test_session.id}";
     $(document).ready(function(){

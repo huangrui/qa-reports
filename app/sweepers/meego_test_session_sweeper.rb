@@ -1,19 +1,19 @@
 class MeegoTestSessionSweeper < ActionController::Caching::Sweeper
   observe MeegoTestSession
-  
+
   def after_save(test_session)
     expire_cache(test_session)
     expire_index_for(test_session)
   end
- 
+
   private
-   
+
 
   def expire_index_for(test_session)
     expire_page :controller => 'index', :action => :index
     expire_page :controller => 'upload', :action => :upload_form
 
-    expire_paging_action :controller => "report_groups", :action => "show", :release_version => test_session.release_version, :target => test_session.target, :testtype => test_session.testtype, :hwproduct => test_session.hwproduct
+    expire_paging_action :controller => "report_groups", :action => "show", :release_version => test_session.release_version, :target => test_session.target, :testtype => test_session.testtype, :hardware => test_session.hardware
     expire_paging_action :controller => "report_groups", :action => "show", :release_version => test_session.release_version, :target => test_session.target, :testtype => test_session.testtype
     expire_paging_action :controller => "report_groups", :action => "show", :release_version => test_session.release_version, :target => test_session.target
   end
