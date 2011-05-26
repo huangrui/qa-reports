@@ -152,12 +152,12 @@ html
 
         $('#nft_trend_dialog').jqm({
           modal:true,
-          onShow:renderNftTrendGraph
-        }).jqmAddTrigger('.nft_trend_button').jqmAddClose($('a.modal_close'));
-
-        $('#nft_trend_dialog').jqm({
-          modal:true
-        }).jqmAddTrigger('.nft_history_modal_graph_toggle').jqmAddClose($('a.modal_close'));
+          topTop:true
+        }).jqmAddClose('.modal_close')
+        $('.nft_trend_button').click(function() {
+            m_id = $(this).attr("id").match("[0-9]{1,}$");
+            renderNftTrendGraph(m_id);
+        });
 
         $('#nft_series_history_dialog').jqm({
           modal:true

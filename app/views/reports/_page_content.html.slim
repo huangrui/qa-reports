@@ -81,11 +81,12 @@
         thead
           tr
             th#th_nft_test_case
-              span.sort
-                a.see_latest_button.sort_btn.active.nft_button href="#"
-                  | See latest
-                a.see_nft_history_button.sort_btn.nft_button href="#"
-                  | See history
+              -if @history
+                span.sort
+                  a.see_latest_button.sort_btn.active.nft_button href="#"
+                    | See latest
+                  a.see_nft_history_button.sort_btn.nft_button href="#"
+                    | See history
             th.th_name Measurement
             th.th_measured Value
             th.th_target Target
@@ -95,8 +96,25 @@
             th#th_notes Notes
 
         = render :partial => "nft_feature", :collection => @test_session.nft_sets
-      /! NFT history representation
-      table.non-functional_results.detailed_results.history style="display:none;"
+      /! NFT history
+      -if @history
+        table.non-functional_results.detailed_results.history style="display:none;"
+          thead
+            tr
+              th#th_nft_test_case
+                span.sort
+                  a.see_latest_button.sort_btn.nft_button href="#"
+                    | See latest
+                  a.see_nft_history_button.sort_btn.active.nft_button href="#"
+                    | See history
+              th.th_name Measurement
+              th.th_measured colspan="6"
+                | TODO 18/12 - 01/01/2011
+
+          = render :partial => "nft_feature_history", :collection => @test_session.nft_sets
+
+      /! NFT history representation DUMMY
+      table.non-functional_results.detailed_results_dummy.history
         thead
           tr
             th#th_nft_test_case
@@ -125,15 +143,27 @@
             td.testcase_graph colspan="5"
               a.nft_series_history_modal_toggle
                 img src="/images/dummy_graph.png"
-          tr#testcase-834.testcase.multiple_rows
+          tr#testcase-835.testcase.multiple_rows
             td.testcase_name rowspan="5"
               | simple case 2
             td.testcase_measurement temperature
             td.testcase_graph colspan="5"
-              a.nft_history_modal_graph_toggle href=""
-                img src="/images/dummy_graph2.png"
+              div.modal_graph style="display:none"
+                span.modal_graph_title 
+                  testcase.name
+                  ' :
+                  | TODO temperature
+                span.modal_graph_data
+                  | Date,bps
+                  | 2011-04-06,3192.59
+                  | 2011-04-07,3192.59
+                span.modal_graph_x_unit Date
+                span.modal_graph_y_unit mA
+              div.serial_canvas id="graph-2480" style="visibility:hidden;width:287px;height:46px"
+                  | [1.7e+03,3.2e+03,3.2e+03]
               table.nft_graph_key_figures
-                td.unit mA
+                tr
+                  td.unit mA
                 td
                   span.unit min.
                   | 478

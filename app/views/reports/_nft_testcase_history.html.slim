@@ -1,9 +1,9 @@
-- testcase = nft_testcase
+- testcase = nft_testcase_history
 - first = true
 - all = testcase.all_measurements
 
 - all.each do |m|
-  tr class="testcase multiple_rows #{'even' if (nft_testcase_counter%2) == 0}" id="#{'testcase-' + testcase.id.to_s if first}"
+  tr class="testcase multiple_rows #{'even' if (nft_testcase_history_counter%2) == 0}" id="#{'testcase-' + testcase.id.to_s if first}"
     - if first
       td.testcase_name rowspan=all.size
         = testcase.name
@@ -45,19 +45,33 @@
               = m.med_html
     - else
       td.testcase_measurement= m.name
-      td.testcase_value
-        - if @editing
-          = m.value_html
-        -else
-          a.nft_trend_button id="nft-trend-button-#{m.id}" href="" title="See history"
-            = m.value_html
+      td.testcase_graph
+        div.modal_graph id="nft-trend-data-#{m.id}" style="display:none"
+          span.nft_trend_graph_title
+            = testcase.name
+            | : 
+            = m.name
+          span.nft_trend_graph_unit
+            = m.unit
+          span.nft_trend_graph_data
+            = @nft_trends.measurements[feature][testcase.name][m.name]
 
-      td.testcase_target= m.target_html
-      td.testcase_limit= m.failure_html
-      td class="testcase_to_target #{result_class(m.target_result)}" =m.relative_html
+        div.serial_canvas.nft_history id="nft-history-graph-#{m.id}" style="visibility:hidden;width:287px;height:46px"
+            | [1.7e+03,3.2e+03,3.2e+03]
+        table.nft_graph_key_figures
+          tr
+            td.unit= m.unit
+            td
+              span.unit min.
+              | 478
+            td
+              span.unit avg.
+              | 486
+            td
+              span.unit max.
+              | 500
+            td
+              span.unit med.
+              | 486
 
-    - if first
-      td class="testcase_result multiple_results #{result_class(testcase)} #{'edit' if @editing} #{testcase.find_change_class(@test_session.prev_session)} " rowspan=all.size
-        span.content= result_html(testcase)
-      = render :partial => "reports/testcase_comment", :locals => {:testcase => testcase }
     - first = false
