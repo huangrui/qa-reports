@@ -25,11 +25,34 @@ class NftHistory
 
   def initialize(session)
     @session = session
+    @first_nft_result_date = nil
     @csv_trend = nil
   end
   
   def persisted?
     false
+  end
+
+  # Get the date of the first session with NFT results
+  def start_date
+    return @first_nft_result_date unless @first_nft_result_date.nil?
+
+    first_session = MeegoTestSession.find(:first, 
+                                          :conditions => 
+                                          ["target = ? AND " + 
+                                           "testtype = ? AND " +
+                                           "hardware = ? AND " +
+                                           "published = ? AND " +
+                                           "version_label_id = ? AND " +
+                                           "has_nft = ?",
+                                           @session.target.downcase,
+                                           @session.testtype.downcase,
+                                           @session.hardware.downcase,
+                                           true,
+                                           @session.version_label_id,
+                                           true],
+                                          :order => "tested_at ASC")
+    @first_nft_result_date = first_session.tested_at
   end
 
   # Get measurement trends for given session
@@ -39,6 +62,8 @@ class NftHistory
   # hash that has keys as follows:
   # hash[feature_name][testcase_name][measurement_name] = CSV data
   def measurements()
+    return @csv_trend unless @csv_trend.nil?
+
     query = <<-END
     SELECT
     meego_test_sets.feature AS feature,
@@ -99,6 +124,7 @@ class NftHistory
       end
       
       csv << m.tested_at.strftime("%Y-%m-%d") << "," << m.value.to_s << "\n"
+      # @first_nft_result_date = m.tested_at if m.tested_at < @first_nft_result_date
     end
 
     # Last one was not written in the loop above

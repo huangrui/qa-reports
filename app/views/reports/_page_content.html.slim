@@ -109,7 +109,9 @@
                     | See history
               th.th_name Measurement
               th.th_measured colspan="6"
-                | TODO 18/12 - 01/01/2011
+                = format_date_for_nft_history @nft_trends.start_date
+                ' -
+                = format_date_for_nft_history @report.tested_at
 
           = render :partial => "nft_feature_history", :collection => @test_session.nft_sets
 
