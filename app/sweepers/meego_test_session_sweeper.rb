@@ -1,4 +1,4 @@
-import 'test_type'
+require 'test_type'
 
 class MeegoTestSessionSweeper < ActionController::Caching::Sweeper
   observe MeegoTestSession
