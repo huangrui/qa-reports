@@ -1021,6 +1021,7 @@ div.formError, #error, form .error {
   	color: #989898 !important;}
 
 .result_drilldown {
+        text-align:left;
 		float: right;
 		margin-top:1em;
 		font-weight:bold;}
@@ -1029,7 +1030,7 @@ div.formError, #error, form .error {
 		background-position: left .4em;}
 
 .big_number {
-    text-align:left;
+    text-align:center;
     margin-right:5em;
     width:120px;}
 
@@ -1572,7 +1573,7 @@ td.feature_record_notes p {
 .float_above {
     position: absolute;
     left:-10%;}
-	
+
 div.float_above {
 	position: absolute;
 	left: -25px;
@@ -1702,7 +1703,7 @@ td.testcase_notes .content {
 td.testcase_notes.edit:hover {
     background: #fff8de url(../images/edit_icon.png) no-repeat 97% 5px;
     cursor: pointer;}
-    
+
 td.testcase_notes.edit:hover .note_attachment {
 	display: none;}
 
