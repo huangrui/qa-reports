@@ -14,11 +14,11 @@ tbody
 
       - @comparison_report.hardwares.each_with_index do |hardware, hardware_index|
         - testcase = @comparisons[hardware].test_case_pair(feature, test_case)[0]
-        td class="testcase_result #{result_class(testcase)} hardware_#{hardware_index}" =result_html(testcase)
+        td class="testcase_result #{result_class(testcase)} column_#{hardware_index}" =result_html(testcase)
 
       td class="change_indicator #{' changed_result' if @comparison_report.result_changed?(feature, test_case)}"
 
       - @comparison_report.hardwares.each_with_index do |hardware, hardware_index|
         - testcase = @comparisons[hardware].test_case_pair(feature, test_case)[1]
-        td class="testcase_result #{result_class(testcase)} hardware_#{hardware_index + @comparison_report.hardwares.length}" =result_html(testcase)
+        td class="testcase_result #{result_class(testcase)} column_#{hardware_index + @comparison_report.hardwares.length}" =result_html(testcase)
 

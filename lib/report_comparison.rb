@@ -1,6 +1,6 @@
 class ReportComparison
 
-  def initialize(latest, previous)
+  def initialize(previous, latest)
     @latest, @previous = latest, previous
   end
 
@@ -50,12 +50,17 @@ class ReportComparison
 
   def test_case_pair(feature, test_case)
     @test_case_pairs ||= make_test_case_pairs
-    @test_case_pairs[feature][test_case]
+
+    if @test_case_pairs[feature].nil? || @test_case_pairs[feature][test_case].nil?
+      [nil, nil]
+    else
+      @test_case_pairs[feature][test_case]
+    end
   end
 
   def test_case_changed?(feature, test_case)
     pair = test_case_pair(feature, test_case)
-    pair[0].present? && pair[1].present? && pair[0].result != pair[1].result
+    pair.present? && pair[0].present? && pair[1].present? && pair[0].result != pair[1].result
   end
 
   private

@@ -32,11 +32,11 @@
       tr.compare_testtype
         th.first_col
         - @comparison_report.hardwares.each_with_index do |name, index|
-          th class="column_#{index} column_head_2" #{name}
+          th class="column_#{index} column_head_2" #{name.humanize}
 
         th.column_head_separate_2
         - @comparison_report.hardwares.each_with_index do |name, index|
-          th class="column_#{index + @comparison_report.hardwares.length} column_head_2" #{name}
+          th class="column_#{index + @comparison_report.hardwares.length} column_head_2" #{name.humanize}
 
     tbody
       = render :partial => "feature", :collection => @comparison_report.features

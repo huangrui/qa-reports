@@ -5,7 +5,7 @@ class ReportGroupViewModel
   include Graph
 
   def initialize(release, target, testtype, hwproduct)
-    @params = { 
+    @params = {
       :version_labels => {:label => release},
       :target => target,
       :testtype => testtype,
@@ -26,7 +26,7 @@ class ReportGroupViewModel
   end
 
   def comparison
-    @comparison ||= ReportComparison.new(latest, previous) if has_comparison?
+    @comparison ||= ReportComparison.new(previous, latest) if has_comparison?
   end
 
   def max_cases
