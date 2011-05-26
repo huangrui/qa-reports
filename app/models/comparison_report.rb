@@ -68,8 +68,7 @@ class ComparisonReport
     hw_scope = comparison_scope.select("DISTINCT(hardware) as hardware")
 
     @hardwares = (
-      hw_scope.test_type(test_type) &
-      hw_scope.test_type(comparison_test_type)
+      hw_scope.test_type(test_type).merge(hw_scope.test_type(comparison_test_type))
       ).map{ |row| row.hardware }
 
     @reports = []

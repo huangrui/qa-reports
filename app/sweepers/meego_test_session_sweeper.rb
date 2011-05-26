@@ -1,3 +1,5 @@
+import 'test_type'
+
 class MeegoTestSessionSweeper < ActionController::Caching::Sweeper
   observe MeegoTestSession
 
@@ -29,14 +31,16 @@ class MeegoTestSessionSweeper < ActionController::Caching::Sweeper
   def expire_cache(test_session)
     expire_fragments_for test_session
 
-	prev_session = test_session.prev_session
-	next_session = test_session.next_session
+  	prev_session = test_session.prev_session
+  	next_session = test_session.next_session
 
-	expire_fragments_for prev_session
-	expire_fragments_for next_session
+  	expire_fragments_for prev_session
+  	expire_fragments_for next_session
 
-	next_session = next_session.try(:next_session)
-	expire_fragments_for next_session
+  	next_session = next_session.try(:next_session)
+  	expire_fragments_for next_session
+
+    TestType.invalidate_cache
   end
 
 end
