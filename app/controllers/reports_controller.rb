@@ -130,7 +130,7 @@ module AjaxMixin
     grading = params[:grading]
     testset = MeegoTestSet.find(set_id)
     testset.update_attribute(:grading, grading)
- 
+
     test_session = testset.meego_test_session
     test_session.updated_by(current_user)
     expire_caches_for(test_session)
@@ -143,8 +143,8 @@ end
 class ReportsController < ApplicationController
   include AjaxMixin
   include CacheHelper
-  
-  before_filter :authenticate_user!, :except => ["view", "print", "compare", "fetch_bugzilla_data"]
+
+  before_filter :authenticate_user!, :except => ["view", "print", "compare", "fetch_bugzilla_data", "redirect_by_id"]
 
   #caches_page :print
   #caches_page :index, :upload_form, :email, :filtered_list
@@ -274,7 +274,7 @@ class ReportsController < ApplicationController
     @release_version = params[:release_version]
     @target = params[:target]
     @testtype = params[:testtype]
-    @comparison_testtype = params[:comparetype]    
+    @comparison_testtype = params[:comparetype]
     @compare_cache_key = "compare_page_#{@release_version}_#{@target}_#{@testtype}_#{@comparison_test_type}"
 
     MeegoTestSession.published_hwversion_by_release_version_target_test_type(@release_version, @target, @testtype).each{|hardware|
@@ -328,6 +328,16 @@ class ReportsController < ApplicationController
     redirect_to :controller => :index, :action => :index
   end
 
+  def redirect_by_id
+    # Shortcut for accessing the correct report using report ID only
+    begin
+      s = MeegoTestSession.find(params[:id].to_i)
+      redirect_to :controller => 'reports', :action => 'view', :release_version => s.release_version, :target => s.target, :testtype => s.testtype, :hardware => s.hardware, :id => s.id
+    rescue ActiveRecord::RecordNotFound
+      redirect_to :controller => :index, :action => :index
+    end
+  end
+
   protected
 
   def bugzilla_cache_key
@@ -337,7 +347,7 @@ class ReportsController < ApplicationController
 
   def history(s)
     h = []
-    while h.size < 5 
+    while h.size < 5
       h << s
       s = s.prev_session if s
     end
@@ -347,4 +357,5 @@ class ReportsController < ApplicationController
   def just_published?
     @published
   end
+
 end
