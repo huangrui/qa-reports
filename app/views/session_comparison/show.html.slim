@@ -1,0 +1,41 @@
+- content_for :page_header do
+  = render :partial => "reports/page_header"
+
+- content_for :breadcrumbs do
+  = breadcrumbs
+
+- content_for :page_content do
+  h1
+    em
+      = current_filter_path
+      ' :
+      = @reports[0].format_date
+      |  vs.
+      = @reports[1].format_date
+
+
+  .clearfix
+    = render :partial => "shared/report_comparison_summary", :locals => {:comparison => @comparison}
+
+  /h2 Detailed results
+  table#compare_details.detailed_results
+    thead
+      tr
+        th#th_test_case
+          span.sort
+            /! <a href="#" id="see_only_regression_button" class="sort_btn active">Regression</a>
+            a.see_only_failed_button.sort_btn.active href="#" Changed
+            a.see_all_button.sort_btn href="#" See all
+        th.column_head_1 =@reports[0].format_date
+        th.column_head_separate
+        th.column_head_1 =@reports[1].format_date
+
+    tbody
+      = render :partial => "feature", :collection => @comparison.features
+
+- content_for :view_specific_js do
+  javascript:
+    $(document).ready(function(){
+    filterResults("tr.testcase:not(.has_changes)", "unchanged tests");
+    fetchBugzillaInfo();
+    });

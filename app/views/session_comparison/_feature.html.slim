@@ -1,0 +1,21 @@
+tr.feature_name
+  td colspan=4
+    = print_title_link(feature)
+    a.see_all_toggle href="#" + see all
+
+| </tbody>
+
+tbody
+  - reset_cycle()
+  - @comparison.test_case_pairs[feature].each_with_index do |(test_case, test_cases), test_case_index|
+    tr id="test_case_#{test_case_index}" class="testcase #{'has_changes' if @comparison.result_changed?(feature, test_case)} #{cycle('odd','even')}" style="#{'display:none;' if !@comparison.result_changed?(feature, test_case)}"
+
+      td.testcase_name= test_case
+
+      - testcase = test_cases[0]
+      td class="testcase_result #{result_class(testcase)} column_0" =result_html(testcase)
+
+      td class="change_indicator #{' changed_result' if @comparison.result_changed?(feature, test_case)}"
+
+      - testcase = test_cases[1]
+      td class="testcase_result #{result_class(testcase)} column_1" =result_html(testcase)

@@ -4,6 +4,11 @@ class ReportComparison
     @latest, @previous = latest, previous
   end
 
+  def features
+    @test_case_pairs ||= make_test_case_pairs
+    @test_case_pairs.keys
+  end
+
   def changed_to_pass
     @changed_to_pass ||= find_changed_count(MeegoTestCase::PASS)
   end
@@ -48,6 +53,10 @@ class ReportComparison
     @new_na ||= find_new_count(MeegoTestCase::NA)
   end
 
+  def test_case_pairs
+    @test_case_pairs ||= make_test_case_pairs
+  end
+
   def test_case_pair(feature, test_case)
     @test_case_pairs ||= make_test_case_pairs
 
@@ -58,7 +67,7 @@ class ReportComparison
     end
   end
 
-  def test_case_changed?(feature, test_case)
+  def result_changed?(feature, test_case)
     pair = test_case_pair(feature, test_case)
     pair.present? && pair[0].present? && pair[1].present? && pair[0].result != pair[1].result
   end

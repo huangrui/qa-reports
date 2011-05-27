@@ -23,6 +23,7 @@
 
         - if @group_report.comparison
           .index_section
+            a.compare href=compare_latest_to_previous_url compare
             = render :partial => "shared/report_comparison_summary", :locals => {:comparison => @group_report.comparison}
 
         = render :partial=>'month', :collection => @group_report.reports_by_month.keys

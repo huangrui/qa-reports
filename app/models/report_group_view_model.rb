@@ -41,8 +41,6 @@ class ReportGroupViewModel
     @trend_graph_data_rel ||= calculate_trend_graph_data
   end
 
-  private
-
   def latest
     reports[0] if reports.count > 0
   end
@@ -50,6 +48,8 @@ class ReportGroupViewModel
   def previous
     reports[1] if reports.count > 1
   end
+
+  private
 
   def calculate_trend_graph_data
     chosen, days = find_trend_sessions(reports, 20)

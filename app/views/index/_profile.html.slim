@@ -9,7 +9,7 @@ td
       strong
         = link_to testtype.humanize, test_type_report_path(@selected_release_version, profile, testtype)
       - if compare then
-        a.compare href=comparison_report_path(@selected_release_version, profile, testtype_base, comparetype) compare
+        a.compare href=branch_comparison_path(@selected_release_version, profile, testtype_base, comparetype) compare
       ul
         - hardwares.each do |hw|
           li
