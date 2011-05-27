@@ -44,6 +44,9 @@ class MeegoTestSession < ActiveRecord::Base
   has_many :meego_test_sets, :dependent => :destroy
   has_many :meego_test_cases
   has_many :test_result_files, :dependent => :destroy
+  has_many :passed, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::PASS}"
+  has_many :failed, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::FAIL}"
+  has_many :na, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::NA}"
 
   belongs_to :author, :class_name => "User"
   belongs_to :editor, :class_name => "User"
@@ -62,13 +65,24 @@ class MeegoTestSession < ActiveRecord::Base
 
   after_destroy :remove_uploaded_files
 
-  scope :published, :conditions => {:published => true}
+  scope :published, where(:published => true)
   scope :release, lambda { |release| published.joins(:version_label).where(:version_labels => {:normalized => release.downcase}) }
+  scope :profile, lambda { |profile| published.where(:target => profile.downcase) }
+  scope :test_type, lambda { |test_type| published.where(:testtype => test_type.downcase) }
+  scope :hardware, lambda { |hardware| published.where(:hardware => hardware.downcase) }
 
   RESULT_FILES_DIR = "public/reports"
   INVALID_RESULTS_DIR = "public/reports/invalid_files"
 
   include ReportSummary
+
+  def self.latest
+    published.order(:tested_at).last
+  end
+
+  def month
+    @month ||= tested_at.strftime("%B %Y")
+  end
 
 
   def self.fetch_fully(id)
@@ -148,7 +162,7 @@ class MeegoTestSession < ActiveRecord::Base
 
   def self.targets
     TargetLabel.find(:all, :order => "sort_order ASC").map &:label
-  end  
+  end
 
   def self.release_versions
     VersionLabel.find(:all, :order => "sort_order ASC").map &:label
@@ -160,7 +174,7 @@ class MeegoTestSession < ActiveRecord::Base
 
   def self.filters_exist?(target, testtype, hardware)
     return true if target.blank? and testtype.blank? and hardware.blank?
-    
+
     filters_exist = false
 
     if target.present?
@@ -317,7 +331,7 @@ class MeegoTestSession < ActiveRecord::Base
       na     << 0
       labels << ""
     end
-    
+
     passed << total_passed
     failed << total_failed
     na     << total_na
@@ -422,7 +436,7 @@ class MeegoTestSession < ActiveRecord::Base
     end
 
   end
-  
+
   # Validate user entered test type and hw product. If all characters are
   # allowed users may enter characters that break the functionality. Thus,
   # restrict the allowed subset to certainly safe
@@ -479,16 +493,16 @@ class MeegoTestSession < ActiveRecord::Base
   # For encapsulating the release_version          #
   ###############################################
   def release_version=(release_version)
-    version_label = VersionLabel.where( :normalized => release_version.downcase)  
-    self.version_label = version_label.first  
+    version_label = VersionLabel.where( :normalized => release_version.downcase)
+    self.version_label = version_label.first
   end
 
-  def release_version 
+  def release_version
     if self.version_label
       return self.version_label.label
     else
       return nil
-    end 
+    end
   end
 
   def generate_file_destination_path(original_filename)
@@ -525,7 +539,7 @@ class MeegoTestSession < ActiveRecord::Base
 
       self.test_result_files.build(:path => path_to_file) #add the new test result file
     end
-    
+
     if @uploaded_files.size > 0 and total_cases == 0
       if @uploaded_files.size == 1
         errors.add :uploaded_files, "The uploaded file didn't contain any valid test cases"
@@ -670,7 +684,7 @@ class MeegoTestSession < ActiveRecord::Base
 
       total += 1
     end
-    
+
     #if total == 0
     #  raise "File didn't contain any test cases"
     #end
@@ -725,10 +739,10 @@ class MeegoTestSession < ActiveRecord::Base
                   :name       => m.name,
                   :sort_index => nft_index,
                   :short_json => series_json(m.measurements, maxsize=40),
-                  :long_json  => series_json_withx(m, outline.interval_unit, maxsize=200), 
+                  :long_json  => series_json_withx(m, outline.interval_unit, maxsize=200),
                   :unit       => m.unit,
                   :interval_unit => outline.interval_unit,
-                  
+
                   :min_value    => outline.minval,
                   :max_value    => outline.maxval,
                   :avg_value    => outline.avgval,
@@ -808,11 +822,11 @@ class Counter
     @pass_count = 0
     @total_count   = 0
   end
-  
+
   def add_pass_count()
     @pass_count += 1
   end
-  
+
   def add_total_count()
     @total_count +=1
   end
@@ -824,5 +838,5 @@ class Counter
   def get_total_count()
     @total_count
   end
-end  
+end
 

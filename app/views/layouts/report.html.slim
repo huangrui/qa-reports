@@ -1,29 +1,5 @@
 doctype html
-html 
-  /!
-    \/*
-    * This file is part of meego-test-reports
-    *
-    * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
-    *
-    * Authors: Jussi Jokinen <jussijokinen@iki.fi>
-    *	       Sami Hangaslammi <sami.hangaslammi@leonidasoy.fi>
-    *
-    * This program is free software; you can redistribute it and/or
-    * modify it under the terms of the GNU Lesser General Public License
-    * version 2.1 as published by the Free Software Foundation.
-    *
-    * This program is distributed in the hope that it will be useful, but
-    * WITHOUT ANY WARRANTY; without even the implied warranty of
-    * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-    * Lesser General Public License for more details.
-    *
-    * You should have received a copy of the GNU Lesser General Public
-    * License along with this program; if not, write to the Free Software
-    * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-    * 02110-1301 USA
-    *
-    */
+html
   head
     meta content="text/html; charset=UTF-8" http-equiv="Content-Type"
     meta content="IE=8" http-equiv="X-UA-Compatible"
@@ -68,16 +44,18 @@ html
             | Shift-drag to pan.
             br/
             | Doubleclick to zoom out.
-    
+    = javascript_include_tag "jquery-ui.min.js"
+
     /! Modal dialog template for viewing test case image attachments
     #attachment_template.jqmWindow.attachment_to_notes_dialog style="display:none;"
-      h1#attachment_dialog_header 
+      h1#attachment_dialog_header
       a.ui_btn.modal_close
         span X
       .attachment_image_container
         img#attachment_dialog_image alt="attachment_image" src=""
 
     /! Modal window for NFT history graph (trend for single measured values)
+
     #nft_trend_dialog.jqmWindow.nft_drilldown_modal_window style="display:none;"
       h1 test case name
       a.ui_btn.modal_close href=""
@@ -125,7 +103,6 @@ html
             br/
             | Doubleclick to zoom out.
 
-    = javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js"
     javascript:
       var BUGZILLA_URI = "#{BUGZILLA_CONFIG['link_uri']}";
     = javascript_include_tag 'application'
@@ -173,7 +150,7 @@ html
         $(document).ready(function(){
           on_ready_steps();
         });
-      }  
+      }
 
 
     = clicktale_bottom_tag

@@ -70,11 +70,11 @@ renderSeriesGraphs = function(selector) {
             var id = $div.attr("id");
             //var $canvas = $('<canvas id="'+id+'" width="287" height="46"/>');
             var canvas = document.createElement("canvas");
-            // if it is IE 
+            // if it is IE
             if (typeof G_vmlCanvasManager != 'undefined') {
                 canvas = G_vmlCanvasManager.initElement(canvas);
-            }            
-            
+            }
+
             var $canvas = $(canvas);
             $canvas.attr("id", id);
             $canvas.attr("width", "287");
@@ -86,7 +86,7 @@ renderSeriesGraphs = function(selector) {
             g = new Bluff.Line(id, '287x46');
             g.tooltips = false;
             g.sort = false;
-            
+
             g.hide_title  = true;
             g.hide_dots   = true;
             g.hide_legend = true;
@@ -137,7 +137,7 @@ renderSeriesGraphs = function(selector) {
         var updateLabels = function() {
             $(graph).find("div").each(function(idx,e) {
                 var $e = $(e);
-                if ($e.css.has("top")) { 
+                if ($e.css.has("top")) {
                     $e.css("width", parseInt($e.css("width"))+10);
                     $e.css("left", -10);
                     $e.text($e.text() + yunit);
@@ -152,8 +152,8 @@ renderSeriesGraphs = function(selector) {
           drawCallback: updateLabels,
           includeZero: true
           //xValueFormatter: function(x) {return x + xunit;}
-          //yValueFormatter: function(y) {return y + yunit;}          
-        }); 
+          //yValueFormatter: function(y) {return y + yunit;}
+        });
 
     }
 
@@ -167,13 +167,13 @@ prepareCategoryUpdate = function(div) {
     var $cancel   = $div.find(".dialog-cancel");
     var $testtype = $div.find(".field .testtype");
     var $date     = $div.find(".field .date");
-    var $hardware = $div.find(".field .hwproduct");
+    var $hardware = $div.find(".field .hardware");
     var $catpath  = $("dd.category");
     var $datespan = $("span.date");
     var $donebtn  = $('#wizard_buttons a');
 
     var arrow     = $('<div/>').html(" &rsaquo; ").text();
-    
+
     $testtype.val(toTitlecase($testtype.val()));
     $hardware.val(toTitlecase($hardware.val()));
 
@@ -197,7 +197,7 @@ prepareCategoryUpdate = function(div) {
         $('.error.tested_at').text("Test date cannot be empty.").show();
         return false;
       } else if (hwval == '') {
-        $('.error.hwproduct').text("Hardware cannot be empty.").show();
+        $('.error.hardware').text("Hardware cannot be empty.").show();
         return false;
       }
 
@@ -211,14 +211,14 @@ prepareCategoryUpdate = function(div) {
       $.post(url, data, function(data) {
           console.log($catpath);
           $datespan.text(data);
-          
-          $catpath.html(htmlEscape(versionval) + arrow + htmlEscape(targetval) 
-                                               + arrow + htmlEscape(typeval) 
+
+          $catpath.html(htmlEscape(versionval) + arrow + htmlEscape(targetval)
+                                               + arrow + htmlEscape(typeval)
                                                + arrow + htmlEscape(hwval));
 
-          $donebtn.attr("href", "/" + encodeURI(versionval) + 
-                                "/" + encodeURI(targetval) + 
-                                "/" + encodeURI(typeval) + 
+          $donebtn.attr("href", "/" + encodeURI(versionval) +
+                                "/" + encodeURI(targetval) +
+                                "/" + encodeURI(typeval) +
                                 "/" + encodeURI(hwval) +
                                 "/" + SESSION_ID);
       });
@@ -244,7 +244,7 @@ var renderNftTrendGraph = function(m_id) {
     }
     var title = $elem.find(".nft_trend_graph_title").text();
     var unit = $elem.find(".nft_trend_graph_unit").text();
-    
+
     var graph = document.getElementById("nft_trend_graph");
     dyg = new Dygraph(graph, data);
 
@@ -270,7 +270,7 @@ function linkEditButtons() {
         $result.click(handleResultEdit);
         $comment.click(handleCommentEdit);
     });
-    
+
     $('.feature_record').each(function(i, node) {
         var $node = $(node);
         var $comment = $node.find('.feature_record_notes');
@@ -390,14 +390,14 @@ function handleFeatureCommentEdit() {
     var $form = $('#feature_comment_edit_form form').clone();
 
     var $field = $form.find('.comment_field');
-    
+
     var id = $feature.attr('id').substring(8);
     $form.find('.id_field').val(id);
-    
+
     var markup = $feature.find('.comment_markup').text();
     $field.autogrow();
     $field.val(markup);
-    
+
     $form.submit(handleFeatureCommentFormSubmit);
     $form.find('.cancel').click(function() {
         $form.detach();
@@ -549,7 +549,7 @@ function handleCommentEdit() {
         var $attachment_link = $current_attachment.find('#attachment_link');
         $attachment_link.attr('href', attachment_url);
         $attachment_link.html(attachment_filename);
-            
+
         $current_attachment.find('input').attr('value', attachment_filename);
 
         $current_attachment.find('.delete').click(function () {
@@ -603,12 +603,12 @@ function handleCommentFormSubmit() {
     $form.hide();
     $div.show();
     $testcase.find('.testcase_notes').click(handleCommentEdit).addClass('edit');
-        
+
     var options = {datatype: 'xml',
-        success: function (responseText, statusText, xhr, $form)  { 
-            // if the ajaxSubmit method was passed an Options Object with the dataType 
-            // property set to 'json' then the first argument to the success callback 
-            // is the json data object returned by the server 
+        success: function (responseText, statusText, xhr, $form)  {
+            // if the ajaxSubmit method was passed an Options Object with the dataType
+            // property set to 'json' then the first argument to the success callback
+            // is the json data object returned by the server
 
             $testcase.find('.testcase_notes').html(responseText);
             fetchBugzillaInfo();
@@ -784,7 +784,7 @@ function removeAttachment(report, fileName, callback) {
             callback.call(this);
         }
     });
-};    
+};
 
 (function($) {
 
@@ -1083,16 +1083,16 @@ function filterResults(rowsToHide, typeText) {
           updateToggle($tbody, $(this));
         });
     }
-   
-    
+
+
 
     $(".see_history_button").click(function(){
     	//setTableLoaderSize('#detailed_functional_test_results', '#history_loader');
-    	//$('#history_loader').show();  
+    	//$('#history_loader').show();
     	//history loader should be visible during AJAX loading
-      $("#detailed_functional_test_results").hide();     
+      $("#detailed_functional_test_results").hide();
       $history.show();
-      $history.find(".see_history_button").addClass("active");      
+      $history.find(".see_history_button").addClass("active");
       return false;
     });
 
@@ -1123,7 +1123,7 @@ function filterResults(rowsToHide, typeText) {
         });
     });
 
-    var $detail  = $("table.detailed_results").first(); 
+    var $detail  = $("table.detailed_results").first();
     var $history = $("table.detailed_results.history");
     $history.find(".see_all_button").click(function(){
         $history.hide();
@@ -1294,5 +1294,5 @@ jQuery(function($) {
     } else {
         // Fallback to normal file input
         $('#dragndrop_and_browse').remove();
-    }    
+    }
 });

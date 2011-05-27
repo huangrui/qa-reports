@@ -1,0 +1,49 @@
+- content_for :page_header do
+  = render :partial => "reports/page_header"
+
+- content_for :breadcrumbs do
+  = breadcrumbs
+
+- content_for :page_content do
+  h1
+    em
+      = @testtype
+      |  vs.
+      = @comparison_testtype
+      | :
+    = @target
+
+
+  .clearfix
+    = render :partial => "shared/report_comparison_summary", :locals => {:comparison => @comparison_report}
+
+  h2 Detailed results
+  table#compare_details.detailed_results
+    thead
+      tr
+        th#th_test_case
+          span.sort
+            /! <a href="#" id="see_only_regression_button" class="sort_btn active">Regression</a>
+            a.see_only_failed_button.sort_btn.active href="#" Changed
+            a.see_all_button.sort_btn href="#" See all
+        th.column_head_1 colspan=@comparison_report.hardwares.length #{@testtype}
+        th.column_head_separate
+        th.column_head_1 colspan=@comparison_report.hardwares.length #{@comparison_testtype}
+      tr.compare_testtype
+        th.first_col
+        - @comparison_report.hardwares.each_with_index do |name, index|
+          th class="column_#{index} column_head_2" #{name.humanize}
+
+        th.column_head_separate_2
+        - @comparison_report.hardwares.each_with_index do |name, index|
+          th class="column_#{index + @comparison_report.hardwares.length} column_head_2" #{name.humanize}
+
+    tbody
+      = render :partial => "feature", :collection => @comparison_report.features
+
+- content_for :view_specific_js do
+  javascript:
+    $(document).ready(function(){
+    filterResults("tr.testcase:not(.has_changes)", "unchanged tests");
+    fetchBugzillaInfo();
+    });

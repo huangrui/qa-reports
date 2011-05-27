@@ -115,7 +115,7 @@ a.mailto {
 a.external {
 	background-image: url('../images/external_icon.png');
 	padding-right:15px;}
-	
+
 a.mailto {
 	background-image: url('../images/mailto_icon.png');
 	padding-right:20px;}
@@ -158,8 +158,10 @@ h2 {
 h2 small {
 	font-size: .55em;
 	font-weight:normal;
-	margin-left:1em;}
-	
+	margin-left:1em;
+	display:inline-block;
+	vertical-align:middle;
+}
 
 h3 {
     font-size: 1.3333em;
@@ -932,6 +934,16 @@ div.formError, #error, form .error {
     margin-top: 1em;
     margin-bottom: 1em; }
 
+#breadcrumb li {
+    display: inline;
+    font-weight: bold;
+}
+
+#breadcrumb li a {
+    display: inline;
+    font-weight: normal;
+}
+
 .clearfix:after {
     content:".";
     display: block;
@@ -1004,27 +1016,43 @@ div.formError, #error, form .error {
 .result_caption {
     float: left;
     overflow: hidden;
-    color: #989898;
-    margin:0 1em;}
+    color: #989898 !important;}
 
-.big_number {
-    margin:0 2em;}
+.result_caption p {
+		margin-top: 1em;
+  	color: #989898 !important;}
 
-.medium_number,
+.result_drilldown {
+        text-align:left;
+		float: right;
+		margin-top:1em;
+		font-weight:bold;}
+
+.result_drilldown span {
+		background-position: left .4em;}
+
 .big_number {
     text-align:center;
-}
+    margin-right:5em;
+    width:120px;}
+
+.medium_number{
+    text-align:center;
+    margin:0 .75em;}
 
 .big_number strong {
-    font-size: 4.3333em;}
+    font-size: 4.3333em;
+    margin-left: .25em;
+    margin-bottom: 1em;
+    line-height:1;}
 
 .medium_number strong {
-    font-size: 2em;}
+    font-size: 2em;
+    display:block;}
 
 .result_caption strong {
     font-weight: bold;
-    font-family: Arial, sans-serif;
-    display: block;}
+    font-family: Arial, sans-serif;}
 
 .result_caption_header {
     float: left;
@@ -1033,8 +1061,8 @@ div.formError, #error, form .error {
     padding-top: 3em;}
 
 .new_tests {
-    margin-top: 3.7em;
-    margin-left:3em;}
+    margin-top: 5.2em;
+    margin-left:0em;}
 
 .compare {
     padding-right: 13px;
@@ -1100,7 +1128,7 @@ div.formError, #error, form .error {
 #upper_header a {
 	text-decoration:none;
 	font-weight:bold;}
-	
+
 #upper_header ul {
 	float: right;}
 
@@ -1258,7 +1286,7 @@ th.filtered {
 /*border-right: 1px solid #cacaca; */
     border-left: 1px solid #fff;
     border-bottom: 1px solid #cacaca;}
-   
+
 #report_navigation th a {
 	text-shadow: #fff 1px 1px 1px;
 	text-decoration:none;}
@@ -1321,6 +1349,30 @@ td.date {
 .chart_actions.stack_chart {
 /*margin-left: 25px;*/
     margin-bottom: 36px;}
+
+.index_section {
+	margin-left: -40px;
+	margin-right: -10px;
+	margin-bottom: 40px;
+	padding-left: 40px;
+	padding-right: 10px;
+	padding-bottom: 40px;
+	padding-top: 5px;
+	border-top:1px solid #cacaca;
+	border-bottom:1px solid #cacaca;}
+
+.index_section h2 {
+margin-top: 0;
+	border-top: none;}
+
+.index_section em {
+	padding: 0 !important;
+	font-style: italic;
+}
+
+h2 .compare {
+	font-size: 0.6em;
+	font-weight:normal;}
 /* @end */
 
 
@@ -1497,7 +1549,7 @@ table.detailed_results  {
 
 .detailed_results .sort {
 }
-   
+
 .detailed_results .sort.right {
      position:absolute;
      right:1em;}
@@ -1531,7 +1583,7 @@ td.feature_record_notes p {
 .float_above {
     position: absolute;
     left:-10%;}
-	
+
 div.float_above {
 	position: absolute;
 	left: -25px;
@@ -1588,7 +1640,7 @@ select.grading_select {
 td.testcase_name {
     padding-left: 20px;
     padding-right: 20px; }
-    
+
 .testcase_value,
 .testcase_limit,
 .testcase_target,
@@ -1626,7 +1678,7 @@ td.testcase_name {
 
 .unchanged_result {
     background-image: none;}
-    
+
 .changed_from_fail,
 .changed_from_pass,
 .changed_from_na {
@@ -1661,7 +1713,7 @@ td.testcase_notes .content {
 td.testcase_notes.edit:hover {
     background: #fff8de url(../images/edit_icon.png) no-repeat 97% 5px;
     cursor: pointer;}
-    
+
 td.testcase_notes.edit:hover .note_attachment {
 	display: none;}
 
@@ -1730,7 +1782,7 @@ a:hover .unit {
 
 #test_results .sort a {
     vertical-align: 40%;}
-   
+
 .dl_link {
 	background: transparent url('../images/download_arrow.png') no-repeat right 50%;
 	font-size: 10px;
@@ -1739,7 +1791,7 @@ a:hover .unit {
 	text-decoration: none;
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
-	border-radius: 4px;	
+	border-radius: 4px;
 	behavior: url(/javascripts/pie.htc);}
 
 .dl_link:hover {
@@ -1834,7 +1886,7 @@ width: 35px;
 	margin-left: -40px;
 	margin-right: -40px;
 	padding: 30px 40px;
-} 
+}
 
 .nft_graph_options div {
 	width: 33%;
@@ -2011,7 +2063,7 @@ p.next_step {
 
 #compare_details th {
 	padding-bottom: .5em;
-	padding-top: .2em;	
+	padding-top: .2em;
 }
 
 #compare_details #th_test_case {

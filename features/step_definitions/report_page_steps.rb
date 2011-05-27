@@ -51,17 +51,22 @@ When /I view the report "([^"]*)"$/ do |report_string|
 end
 
 Given /^I have created the "([^"]*)" report(?: using "([^"]*)")?$/ do |report_name, report_template|
+
+  Given %{I have created the "#{report_name}" report with date "2010-02-02" using "#{report_template}"}
+end
+
+Given /^I have created the "([^"]*)" report with date "([^"]*)"(?: using "([^"]*)")?$/ do |report_name, report_date, report_template|
 #Given /^I have created the "([^"]*)" report$/ do |report_name|
 
   version, target, test_type, hardware = report_name.split('/')
 
-  if not report_template
+  if not report_template.present?
     report_template = "sample.csv"
   end
 
   Given "I am on the front page"
   When %{I follow "Add report"}
-  And %{I fill in "report_test_execution_date" with "2010-02-02"}
+  And %{I fill in "report_test_execution_date" with "#{report_date}"}
   And %{I choose "#{version}"}
   And %{I select target "#{target}", test type "#{test_type}" and hardware "#{hardware}"}
   And %{I attach the report "#{report_template}"}

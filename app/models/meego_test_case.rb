@@ -30,6 +30,10 @@ class MeegoTestCase < ActiveRecord::Base
   has_many :serial_measurements, :dependent => :destroy
   has_many :meego_test_case_attachments
 
+  PASS = 1
+  FAIL = -1
+  NA = 0
+
   def unique_id
     (meego_test_set.name + "_" + name).downcase
   end
