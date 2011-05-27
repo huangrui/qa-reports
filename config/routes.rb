@@ -37,7 +37,7 @@ Meegoqa::Application.routes.draw do
   match '/raise_exception' => 'exceptions#index' unless Rails.env.production?
 
   # Shortcut by report ID
-  match '/id/:id' => 'reports#redirect_by_id', :via => "get"
+  match '/reports/:id' => 'reports#redirect_by_id', :via => "get"
 
   # Constraint to allow a dot (.) in release vesion
   constraints(:release_version => /[a-zA-Z0-9._-]+/) do
