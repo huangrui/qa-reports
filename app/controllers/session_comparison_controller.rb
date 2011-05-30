@@ -4,11 +4,6 @@ class SessionComparisonController < ApplicationController
   layout "report"
 
   def show
-    @release_version = params[:release_version]
-    @target = params[:target]
-    @testtype = params[:testtype]
-    @hardware = params[:hardware]
-
     @ids = [params[:id], params[:compare_id]]
     @reports = [MeegoTestSession.find(@ids[0]), MeegoTestSession.find(@ids[1])]
 

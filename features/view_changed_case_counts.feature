@@ -26,7 +26,6 @@ Feature: As a Test Manager I want to see changes between latest test sessions
     And I should see "2" within "#new_failing"
     And I should see "5" within "#new_na"
 
-    Then show me the page
     And I should see "Description 1" within "#test_case_0 .testcase_name"
     And I should see values "Fail,Pass" in columns of "#test_case_0 td"
 
