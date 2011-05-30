@@ -3,7 +3,7 @@
 
   - content_for :version_navi do
     #version_navi
-     = release_version_navigation(@selected_release_version, @target, @testtype, @hwproduct)
+     = release_version_navigation(@selected_release_version, @target, @testtype, @hardware)
 
   table#report_filtered_navigation.filtered
     thead
@@ -19,7 +19,7 @@
               canvas#trend_graph_abs height="250" width="700"
             a#abs_button.ui_btn.inactive Absolute values
             a#rel_button.ui_btn Relative %
-            a#csv_report_link href=url_for(:controller=>'csv_export', :action=>'export', :release_version=>@selected_release_version, :target=>@target, :testtype=>@testtype, :hwproduct=>@hwproduct) Download as CSV
+            a#csv_report_link href=url_for(:controller=>'csv_export', :action=>'export', :release_version=>@selected_release_version, :target=>@target, :testtype=>@testtype, :hardware=>@hardware) Download as CSV
 
         - if @group_report.comparison
           .index_section
