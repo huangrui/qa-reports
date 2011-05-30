@@ -39,6 +39,8 @@ Meegoqa::Application.routes.draw do
   # Shortcut by report ID
   match '/reports/:id' => 'reports#redirect_by_id', :via => "get"
 
+  match '/reports/:id/compare/:compare_id' => 'session_comparison#show', :via => "get", :as => :session_comparison
+
   # Constraint to allow a dot (.) in release vesion
   constraints(:release_version => /[a-zA-Z0-9._-]+/) do
     match '(/:release_version(/:target(/:testtype(/:hardware))))/upload' => 'upload#upload_form', :via => "get", :as => :upload_form
@@ -55,7 +57,6 @@ Meegoqa::Application.routes.draw do
     match '/:release_version/rss' => 'rss#rss', :via => "get"
 
     match '/:release_version/:target/:testtype/compare/:comparetype' => 'comparison_reports#show', :via => "get", :as => :branch_comparison
-    match '/:release_version/:target/:testtype/:hardware/:id/compare/:compare_id' => 'session_comparison#show', :via => "get", :as => :session_comparison
 
     match '/:release_version/:target/:testtype/:hardware/:id' => 'reports#view', :via => "get"
     match '/:release_version/:target/:testtype/:hardware/:id/edit' => 'reports#edit', :via => "get"
