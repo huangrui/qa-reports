@@ -18,7 +18,7 @@ Feature: As a Test Manager I want to see changes between latest test sessions
 
   Scenario: Comparing results between latest and previous test reports
     When I view the group report "1.2/Core/Sanity/FeaturePassRate"
-    And I follow "compare"
+    And I follow "See detailed comparison"
 
     Then I should see "3" within "#changed_to_pass"
     And I should see "3" within "#changed_from_pass"
