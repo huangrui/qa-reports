@@ -49,6 +49,8 @@ class ReportGroupViewModel
     reports[1] if reports.count > 1
   end
 
+  private
+
   def calculate_trend_graph_data (relative)
     chosen, days = find_trend_sessions(reports, 20)
 
