@@ -34,11 +34,11 @@ class ReportGroupViewModel
   end
 
   def trend_graph_data_abs
-    @trend_graph_data_abs ||= calculate_trend_graph_data
+    @trend_graph_data_abs ||= calculate_trend_graph_data(false)
   end
 
   def trend_graph_data_rel
-    @trend_graph_data_rel ||= calculate_trend_graph_data
+    @trend_graph_data_rel ||= calculate_trend_graph_data(true)
   end
 
   def latest
@@ -49,14 +49,11 @@ class ReportGroupViewModel
     reports[1] if reports.count > 1
   end
 
-  private
-
-  def calculate_trend_graph_data
+  def calculate_trend_graph_data (relative)
     chosen, days = find_trend_sessions(reports, 20)
 
     if chosen.length > 0
-      @trend_graph_data_abs = generate_trend_graph_data(chosen, days, false, 20)
-      @trend_graph_data_rel = generate_trend_graph_data(chosen, days, true, 20)
+      generate_trend_graph_data(chosen, days, relative, 20)
     end
   end
 
