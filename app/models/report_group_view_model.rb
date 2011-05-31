@@ -67,15 +67,7 @@ class ReportGroupViewModel
   end
 
   def find_max_cases
-    max_cases_query = <<-END
-      SELECT COUNT(id) as count
-      FROM meego_test_cases
-      WHERE meego_test_session_id IN (#{reports.map{|report| report.id}.join(",")})
-      GROUP BY meego_test_session_id
-      ORDER BY count DESC
-      LIMIT 1;
-    END
-
-    MeegoTestCase.find_by_sql(max_cases_query).first.count
+    MeegoTestCase.where(:meego_test_session_id => reports.map(&:id)).
+      count(:group=>:meego_test_session_id).values.first
   end
 end
