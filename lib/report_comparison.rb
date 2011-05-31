@@ -78,21 +78,17 @@ class ReportComparison
     @new_test_cases ||= find_new_test_cases
   end
 
-  def changed_test_cases
-    @changed_test_cases ||= find_changed_test_cases
-  end
-
-  def find_changed_count(verdict)
-    row = changed_test_cases.find{|row| row.verdict == verdict }
-    row ? row.count : 0
+  def find_changed_count(to)
+    test_result_comparisons.find_all{|row| row.result_to == to && row.result_to != row.result_from }.
+      map(&:count).reduce(:+) || 0
   end
 
   def find_change_count(from, to)
-    rows = test_result_comparisons.find_all do |row|
-      row.previous_result == from && row.latest_result == to
+    row = test_result_comparisons.find do |row|
+      row.result_from == from && row.result_to == to
     end
 
-    rows.count
+    row ? row.count : 0
   end
 
   def test_result_comparisons
@@ -100,13 +96,13 @@ class ReportComparison
   end
 
   def find_new_count(verdict)
-    row = new_test_cases.find{|row| row.verdict == verdict }
+    row = new_test_cases.find{|row| row.result_to == verdict }
     row ? row.count : 0
   end
 
   def find_test_result_comparisons
     find_test_result_comparisons_query = <<-END
-      SELECT previous.result AS previous_result, latest.result AS latest_result
+      SELECT previous.result AS previous_result, latest.result AS latest_result, count(*) AS count
 
       FROM meego_test_cases AS latest
       JOIN meego_test_sets AS l_ts ON ( latest.meego_test_set_id = l_ts.id )
@@ -115,89 +111,11 @@ class ReportComparison
       JOIN meego_test_sets AS p_ts ON ( previous.meego_test_set_id = p_ts.id ))
 
       ON (LOWER(latest.name), LOWER(l_ts.feature)) = (LOWER(previous.name), LOWER(p_ts.feature))
-      WHERE latest.meego_test_session_id = #{@latest.id} AND previous.meego_test_session_id = #{@previous.id};
+      WHERE latest.meego_test_session_id = #{@latest.id} AND previous.meego_test_session_id = #{@previous.id}
+      GROUP BY previous.result, latest.result;
     END
 
-    MeegoTestCase.find_by_sql(find_test_result_comparisons_query)
-  end
-
-  def find_regression_test_cases
-    find_regression_test_cases_query = <<-END
-      SELECT tc.result as verdict, COUNT(tc.result) as count
-      FROM meego_test_cases as tc
-      JOIN meego_test_sets as ts ON ( tc.meego_test_set_id = ts.id )
-
-      -- Test case is in both reports and it passed in the previous one
-      WHERE tc.meego_test_session_id = #{@latest.id} AND (LOWER(feature), LOWER(name)) IN (
-        SELECT LOWER(ts.feature) as feature, LOWER(tc.name) as name
-        FROM meego_test_cases as tc
-        JOIN meego_test_sets as ts ON ( tc.meego_test_set_id = ts.id )
-        WHERE tc.meego_test_session_id = #{@previous.id} AND tc.result = 1)
-
-      -- The latest result is different than in the previous report
-      AND (LOWER(feature), LOWER(name), tc.result) NOT IN (
-        SELECT LOWER(ts.feature) as feature, LOWER(tc.name) as name, tc.result as verdict
-        FROM meego_test_cases as tc
-        JOIN meego_test_sets as ts ON ( tc.meego_test_set_id = ts.id )
-        WHERE tc.meego_test_session_id = #{@previous.id})
-      GROUP BY result
-      ORDER BY verdict DESC;
-    END
-
-    MeegoTestCase.find_by_sql(find_regression_test_cases_query)
-  end
-
-  def find_fixed_test_cases
-    find_fixed_test_cases_query = <<-END
-      SELECT tc.result as verdict, COUNT(tc.result) as count
-      FROM meego_test_cases as tc
-      JOIN meego_test_sets as ts ON ( tc.meego_test_set_id = ts.id )
-
-      -- Test case passes in the latest report is in both reports
-      WHERE tc.meego_test_session_id = #{@latest.id} AND tc.result = 1 AND
-          (LOWER(feature), LOWER(name)) IN (
-        SELECT LOWER(ts.feature) as feature, LOWER(tc.name) as name
-        FROM meego_test_cases as tc
-        JOIN meego_test_sets as ts ON ( tc.meego_test_set_id = ts.id )
-        WHERE tc.meego_test_session_id = #{@previous.id})
-
-      -- The latest result is different than in the previous report
-      AND (LOWER(feature), LOWER(name), tc.result) NOT IN (
-        SELECT LOWER(ts.feature) as feature, LOWER(tc.name) as name, tc.result as verdict
-        FROM meego_test_cases as tc
-        JOIN meego_test_sets as ts ON ( tc.meego_test_set_id = ts.id )
-        WHERE tc.meego_test_session_id = #{@previous.id})
-      GROUP BY result
-      ORDER BY verdict DESC;
-    END
-
-    MeegoTestCase.find_by_sql(find_fixed_test_cases_query)
-  end
-
-  def find_changed_test_cases
-    find_changed_test_cases_query = <<-END
-      SELECT tc.result as verdict, COUNT(tc.result) as count
-      FROM meego_test_cases as tc
-      JOIN meego_test_sets as ts ON ( tc.meego_test_set_id = ts.id )
-
-      -- Test case is in both reports
-      WHERE tc.meego_test_session_id = #{@latest.id} AND (LOWER(feature), LOWER(name)) IN (
-        SELECT LOWER(ts.feature) as feature, LOWER(tc.name) as name
-        FROM meego_test_cases as tc
-        JOIN meego_test_sets as ts ON ( tc.meego_test_set_id = ts.id )
-        WHERE tc.meego_test_session_id = #{@previous.id})
-
-      -- The latest result is different than in the previous report
-      AND (LOWER(feature), LOWER(name), tc.result) NOT IN (
-        SELECT LOWER(ts.feature) as feature, LOWER(tc.name) as name, tc.result as verdict
-        FROM meego_test_cases as tc
-        JOIN meego_test_sets as ts ON ( tc.meego_test_set_id = ts.id )
-        WHERE tc.meego_test_session_id = #{@previous.id})
-      GROUP BY result
-      ORDER BY verdict DESC;
-    END
-
-    MeegoTestCase.find_by_sql(find_changed_test_cases_query)
+    ReportComparisonDifference.find_by_sql(find_test_result_comparisons_query)
   end
 
   def find_new_test_cases
@@ -217,7 +135,7 @@ class ReportComparison
       ORDER BY verdict DESC;
     END
 
-    MeegoTestCase.find_by_sql(find_new_test_cases_query)
+    ReportComparisonDifference.find_by_sql(find_new_test_cases_query)
   end
 
   def make_test_case_pairs
