@@ -39,7 +39,7 @@ class MeegoTestCase < ActiveRecord::Base
   end
 
   def find_matching_case(session)
-    session.test_case_by_name(name) unless session.nil?
+    session.test_case_by_name(meego_test_set.feature, name) unless session.nil?
   end
 
   def all_measurements

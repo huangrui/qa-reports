@@ -296,9 +296,12 @@ class MeegoTestSession < ActiveRecord::Base
     meego_test_sets.select {|set| set.has_non_nft?}
   end
 
-  def test_case_by_name(name)
-    @test_case_hash ||= Hash[meego_test_cases.map { |tc| [tc.name, tc] }]
-    @test_case_hash[name]
+  def test_case_by_name(feature, name)
+    @test_case_hash ||= Hash[meego_test_cases.map do |tc|
+      [[tc.meego_test_set.feature, tc.name], tc]
+    end ]
+
+    @test_case_hash[ [feature, name] ]
   end
 
   ###############################################
