@@ -13,22 +13,38 @@ describe ReportComparison do
     @previous_report.stub!(:failed).and_return(8)
     @previous_report.stub!(:na).and_return(3)
 
-    @new_pass_count = mock_model(MeegoTestCase)
-    @new_pass_count.stub!(:verdict).and_return(1)
+    @new_pass_count = mock_model(ReportComparisonDifference)
+    @new_pass_count.stub!(:result_to).and_return(1)
     @new_pass_count.stub!(:count).and_return(8)
 
-    @new_fail_count = mock_model(MeegoTestCase)
-    @new_fail_count.stub!(:verdict).and_return(-1)
+    @new_fail_count = mock_model(ReportComparisonDifference)
+    @new_fail_count.stub!(:result_to).and_return(-1)
     @new_fail_count.stub!(:count).and_return(4)
 
-    @new_na_count = mock_model(MeegoTestCase)
-    @new_na_count.stub!(:verdict).and_return(0)
+    @new_na_count = mock_model(ReportComparisonDifference)
+    @new_na_count.stub!(:result_to).and_return(0)
     @new_na_count.stub!(:count).and_return(2)
+
+    @changed_pass_count = mock_model(ReportComparisonDifference)
+    @changed_pass_count.stub!(:result_to).and_return(1)
+    @changed_pass_count.stub!(:result_from).and_return(-1)
+    @changed_pass_count.stub!(:count).and_return(3)
+
+    @changed_pass_count2 = mock_model(ReportComparisonDifference)
+    @changed_pass_count2.stub!(:result_to).and_return(1)
+    @changed_pass_count2.stub!(:result_from).and_return(0)
+    @changed_pass_count2.stub!(:count).and_return(1)
+
+    @changed_fail_count = mock_model(ReportComparisonDifference)
+    @changed_fail_count.stub!(:result_to).and_return(-1)
+    @changed_fail_count.stub!(:result_from).and_return(1)
+    @changed_fail_count.stub!(:count).and_return(5)
   end
 
-  describe "with new passed cases" do
+
+  describe "with new na cases" do
     before(:each) do
-      MeegoTestCase.stub!(:find_by_sql).and_return([@new_na_count])
+      ReportComparisonDifference.stub!(:find_by_sql).and_return([@new_na_count])
       @comparison = ReportComparison.new(@latest_report, @previous_report)
     end
 
@@ -45,9 +61,29 @@ describe ReportComparison do
     end
   end
 
+  describe "with changed cases" do
+    before(:each) do
+      ReportComparisonDifference.stub!(:find_by_sql).
+        and_return([@changed_pass_count, @changed_pass_count2, @changed_fail_count])
+      @comparison = ReportComparison.new(@latest_report, @previous_report)
+    end
+
+    it "should know the amount of fixed cases" do
+      @comparison.changed_to_pass.should == 4
+    end
+
+    it "should know the amount of regression cases" do
+      @comparison.changed_from_pass.should == 5
+    end
+
+    it "should know the amount of fixed cases" do
+      @comparison.changed_to_fail.should == 5
+    end
+  end
+
   describe "with new passed, failed and na cases" do
     before(:each) do
-      MeegoTestCase.stub!(:find_by_sql).and_return([@new_pass_count, @new_na_count, @new_fail_count])
+      ReportComparisonDifference.stub!(:find_by_sql).and_return([@new_pass_count, @new_na_count, @new_fail_count])
       @comparison = ReportComparison.new(@latest_report, @previous_report)
     end
 
