@@ -149,7 +149,7 @@ Feature:
     And submit the form at "upload_report_submit"
     And I press "Publish"
 
-    Then show me the page
+    When I go to the front page
     And I follow "Hardware_32"
 
     Then I should see "Test_type" within ".index_month .odd .report_name"
