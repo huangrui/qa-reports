@@ -29,19 +29,19 @@
             td.unit= m.unit
             td
               span.unit min.
-              '  
+              '
               = m.min_html
             td
               span.unit avg.
-              '  
+              '
               = m.avg_html
             td
               span.unit max.
-              '  
+              '
               = m.max_html
             td
               span.unit med.
-              '  
+              '
               = m.med_html
     - else
       td.testcase_measurement= m.name
@@ -54,7 +54,7 @@
           div id="nft-trend-data-#{m.id}" style="display:none;"
             span.nft_trend_graph_title
               = testcase.name
-              | : 
+              | :
               = m.name
             span.nft_trend_graph_unit
               = m.unit
@@ -68,5 +68,14 @@
     - if first
       td class="testcase_result multiple_results #{result_class(testcase)} #{'edit' if @editing} #{testcase.find_change_class(@test_session.prev_session)} " rowspan=all.size
         span.content= result_html(testcase)
-      = render :partial => "reports/testcase_comment", :locals => {:testcase => testcase }
+      / NOTE: The following is identical in _nft_testcase and _testcase_comment.
+      / Partial not used here because of seriously bad performance.
+      td class="testcase_notes #{'edit' if @editing}" rowspan="#{testcase.all_measurements.size if testcase.has_nft }"
+      .content
+        = comment_html(testcase)
+        - if not testcase.attachments.empty?
+          - attachment = testcase.attachments.first
+          a class="note_attachment #{'image_attachment' if attachment.image?}" href="#{attachment.pretty_url}" title=attachment.filename =attachment.pretty_url
+      - if @editing
+        .comment_markup style="display:none;" #{testcase.comment}
     - first = false
