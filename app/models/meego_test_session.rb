@@ -348,6 +348,9 @@ class MeegoTestSession < ActiveRecord::Base
     data
   end
 
+  def max_feature_cases
+    meego_test_sets.map{|item| item.total_cases}.max
+  end
 
   def small_graph_img_tag(max_cases)
     html_graph(total_passed, total_failed, total_na, max_cases)
