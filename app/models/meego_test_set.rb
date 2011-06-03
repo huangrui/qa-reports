@@ -39,16 +39,12 @@ class MeegoTestSet < ActiveRecord::Base
     has_ft
   end
 
-  def all_cases
-    @all_cases = meego_test_cases.all :include => :meego_test_case_attachments
-  end
-
   def nft_cases
-    all_cases.select {|tc| tc.has_nft}
+    meego_test_cases.select {|tc| tc.has_nft}
   end
 
   def non_nft_cases
-    all_cases.select {|tc| !tc.has_nft}
+    meego_test_cases.select {|tc| !tc.has_nft}
   end
 
   def prev_summary
