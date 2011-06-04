@@ -68,6 +68,6 @@ class ReportGroupViewModel
 
   def find_max_cases
     MeegoTestCase.where(:meego_test_session_id => reports.map(&:id)).
-      count(:group=>:meego_test_session_id).values.first
+      count(:group=>:meego_test_session_id, :order => 'count_all DESC').values.first
   end
 end
