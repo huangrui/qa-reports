@@ -88,7 +88,7 @@ class MeegoTestSession < ActiveRecord::Base
   def self.fetch_fully(id)
     find(id, :include =>
          {:meego_test_sets =>
-           {:meego_test_cases => [:measurements, :meego_test_case_attachments]}
+           {:meego_test_cases => [:measurements, :meego_test_case_attachments, :meego_test_set, :meego_test_session]}
          })
   end
 
@@ -263,8 +263,8 @@ class MeegoTestSession < ActiveRecord::Base
     @prev_session = MeegoTestSession.find(:first, :conditions => [
         "tested_at < ? AND target = ? AND testtype = ? AND hardware = ? AND published = ? AND version_label_id = ?", time, target.downcase, testtype.downcase, hardware.downcase, true, version_label_id
     ],
-                          :order => "tested_at DESC", :include => [
-         {:meego_test_sets => :meego_test_cases}, :meego_test_sets, :meego_test_cases])
+                          :order => "tested_at DESC", :include =>
+         [{:meego_test_sets => :meego_test_cases}, {:meego_test_cases => :meego_test_set}])
 
     @has_prev = !@prev_session.nil?
     @prev_session
