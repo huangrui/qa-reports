@@ -296,11 +296,8 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def test_case_by_name(feature, name)
-    @test_case_hash ||= Hash[meego_test_cases.map do |tc|
-      [[tc.meego_test_set.feature, tc.name], tc]
-    end ]
-
-    @test_case_hash[ [feature, name] ]
+    @test_case_hash ||= make_test_case_hash
+    @test_case_hash[feature][name] unless @test_case_hash[feature].nil?
   end
 
   ###############################################
@@ -825,6 +822,15 @@ class MeegoTestSession < ActiveRecord::Base
   def create_labels
     create_version_label && create_target_label
   end
+
+  def make_test_case_hash
+    test_cases = meego_test_cases.group_by {|tc| tc.meego_test_set.feature }
+    test_cases.each_key do |feature|
+      test_cases[feature] = Hash[test_cases[feature].map {|tc| [tc.name, tc]}]
+    end
+    test_cases
+  end
+
 end
 
 class Counter
