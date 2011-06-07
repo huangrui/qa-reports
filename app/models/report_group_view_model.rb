@@ -63,7 +63,7 @@ class ReportGroupViewModel
     MeegoTestSession.published.
       includes(:version_label, :meego_test_cases).
       joins(:version_label).
-      where(@params).order("tested_at DESC")
+      where(@params).order("tested_at DESC, created_at DESC")
   end
 
   def find_max_cases
