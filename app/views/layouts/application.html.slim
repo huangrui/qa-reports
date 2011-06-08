@@ -9,6 +9,7 @@ html
       link href="/stylesheets/themes/nokia.css" media="all" rel="stylesheet" type="text/css"
     = javascript_include_tag "jquery.min.js"
     = javascript_include_tag "jquery-ui.min.js"
+    = javascript_include_tag "jquery-infinite-scroll/jquery.infinitescroll.js"
     = javascript_include_tag 'bluff/js-class.js'
     = javascript_include_tag 'bluff/excanvas.js'
     = javascript_include_tag 'bluff/bluff-min.js'
@@ -18,7 +19,7 @@ html
       link href=rss_url rel="alternate" title="RSS" type="application/rss+xml"
     = google_analytics_tag
     = clicktale_top_tag
-    
+
   body
     a name="top"
     = render :partial => "reports/page_header"

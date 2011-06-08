@@ -472,6 +472,10 @@ class MeegoTestSession < ActiveRecord::Base
     tested_at.strftime("%d.%m")
   end
 
+  def format_year
+    tested_at.strftime("%Y")
+  end
+
   def self.map_result(result)
     result = result.downcase
     if result == "pass"

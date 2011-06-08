@@ -5,6 +5,14 @@
     #version_navi
      = release_version_navigation(@selected_release_version, @target, @testtype, @hardware)
 
+  / Template for new month tables
+  table.month_template style="display:none"
+    tr
+      td.index_month_title colspan="3"
+        strong#month Month
+
+  table#infinite_scroll_results style="display:none"
+
   table#report_filtered_navigation.filtered
     thead
       tr
@@ -26,10 +34,46 @@
             a.compare href=compare_latest_to_previous_url See detailed comparison
             = render :partial => "shared/report_comparison_summary", :locals => {:comparison => @group_report.comparison}
 
-        = render :partial=>'month', :collection => @group_report.reports_by_month.keys
 
 - if @group_report.trend_graph_data_abs
   javascript:
+    var resultTableName = 'table#infinite_scroll_results'
+
+    $(window).infinitescroll({
+      url: "#{{report_list_path(@selected_release_version, @target, @testtype, @hardware)}}",
+      appendTo: resultTableName,
+      triggerAt: 500,
+      page: 1
+    });
+
+    var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    var previousYear = -1;
+    var previousMonth = -1;
+    var currentMonthTable;
+    $(resultTableName).bind('infinitescroll.finish', function() {
+      var rows = $(resultTableName + ' tr');
+
+      $.each(rows, function(index, row) {
+        var row = $(this);
+        var year = row.children('.year').first().html();
+        var month = parseInt(row.children('.date').first().html().split('.').pop());
+
+        if (previousYear != year || previousMonth != month) {
+          var monthTable = $('table.month_template').clone();
+          monthTable.removeClass('month_template');
+          monthTable.find('#month').html(monthNames[month - 1] + ' ' + year);
+          monthTable.show();
+          monthTable.appendTo('td.filtered');
+          currentMonthTable = monthTable;
+
+          previousYear = year;
+          previousMonth = month;
+        }
+
+        row.appendTo(currentMonthTable);
+      });
+    });
+
     $(window).load(function(){
       var trend_abs_passed = #{ints2js @group_report.trend_graph_data_abs.passed};
       var trend_abs_failed = #{ints2js @group_report.trend_graph_data_abs.failed};
