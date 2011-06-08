@@ -1022,17 +1022,19 @@ div.formError, #error, form .error {
 
 .result_drilldown {
         text-align:left;
-		float: right;
+		float: left;
 		margin-top:1em;
-		font-weight:bold;}
+		font-weight:bold;
+        margin-left: 10px;}
 
 .result_drilldown span {
 		background-position: left .4em;}
 
 .big_number {
-    text-align:center;
-    margin-right:5em;
-    width:120px;}
+    text-align:left;
+    margin-right:2.0em;
+    width:190px;
+    padding-left: 5px;}
 
 .medium_number{
     text-align:center;
@@ -1040,9 +1042,14 @@ div.formError, #error, form .error {
 
 .big_number strong {
     font-size: 4.3333em;
-    margin-left: .25em;
-    margin-bottom: 1em;
-    line-height:1;}
+    margin-left: 0em;
+    margin-bottom: 0;
+    line-height:1;
+    float: left;}
+
+.big_number p {
+    margin-top: 80px;
+}
 
 .medium_number strong {
     font-size: 2em;
