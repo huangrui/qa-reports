@@ -58,7 +58,7 @@ Meegoqa::Application.routes.draw do
 
     match '/:release_version/:target/:testtype/compare/:comparetype' => 'comparison_reports#show', :via => "get", :as => :branch_comparison
 
-    match '/:release_version/:target(/:testtype(/:hardware))/report_list(/:page)' => 'report_groups#report_range', :via => "get", :as => :report_list
+    match '/:release_version/:target(/:testtype(/:hardware))/report_list(/:page)' => 'report_groups#report_page', :via => "get", :as => :report_list
 
     match '/:release_version/:target/:testtype/:hardware/:id' => 'reports#view', :via => "get"
     match '/:release_version/:target/:testtype/:hardware/:id/edit' => 'reports#edit', :via => "get"
