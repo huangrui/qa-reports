@@ -13,12 +13,11 @@ When /submit the form at "([^"]*)" within "([^"]*)"?$/ do |submit_button, select
   end
 end
 
-When /^I wait until all Ajax requests are complete$/ do
+When /^(?:|I )wait until all Ajax requests are complete$/ do
   wait_until do
     page.evaluate_script('$.active') == 0
   end
 end
-
 
 Then /^the link "([^"]*)" within "([^"]*)" should point to the report "([^"]*)"/ do |link, selector, expected_report|
   with_scope(selector) do

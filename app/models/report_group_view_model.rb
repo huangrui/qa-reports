@@ -23,7 +23,7 @@ class ReportGroupViewModel
   end
 
   def reports_by_month
-    @reports_by_month ||= reports.group_by(&:month)
+    @reports_by_month ||= all_reports.group_by(&:month)
   end
 
   def has_comparison?

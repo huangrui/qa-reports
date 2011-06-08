@@ -34,6 +34,7 @@
             a.compare href=compare_latest_to_previous_url See detailed comparison
             = render :partial => "shared/report_comparison_summary", :locals => {:comparison => @group_report.comparison}
 
+        .index_month
 
 - if @group_report.trend_graph_data_abs
   javascript:
@@ -63,7 +64,7 @@
           monthTable.removeClass('month_template');
           monthTable.find('#month').html(monthNames[month - 1] + ' ' + year);
           monthTable.show();
-          monthTable.appendTo('td.filtered');
+          monthTable.appendTo('.index_month');
           currentMonthTable = monthTable;
 
           previousYear = year;
@@ -73,6 +74,8 @@
         row.appendTo(currentMonthTable);
       });
     });
+
+    $(window).trigger('infinitescroll.scrollpage', 1);
 
     $(window).load(function(){
       var trend_abs_passed = #{ints2js @group_report.trend_graph_data_abs.passed};

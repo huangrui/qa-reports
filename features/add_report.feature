@@ -141,6 +141,7 @@ Feature:
     Then I should see "Check home screen"
     And I should see "Handset" within "h1"
 
+  @javascript
   Scenario: Add new report with underscore in test type and hardware names
     When I follow "Add report"
 
