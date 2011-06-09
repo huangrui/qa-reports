@@ -6,7 +6,7 @@ class ReportGroupViewModel
 
   def initialize(release, target, testtype, hardware)
     @params = {
-      :version_labels => {:label => release},
+      :version_label_id => VersionLabel.find_by_label(release),
       :target => target,
       :testtype => testtype,
       :hardware => hardware
@@ -69,20 +69,19 @@ class ReportGroupViewModel
   def find_all_reports
     MeegoTestSession.published.
       includes(:version_label, :meego_test_cases).
-      joins(:version_label).
       where(@params).order("tested_at DESC, created_at DESC")
   end
 
   def find_max_cases
     MeegoTestSession.published.
-      joins(:version_label, :meego_test_cases).where(@params).
+      joins(:meego_test_cases).where(@params).
       count(:group=>:meego_test_session_id, :order => 'count_all DESC', :limit => 1).
       values.first
   end
 
   def find_report_range(range)
     MeegoTestSession.published.includes(:version_label, :meego_test_cases).
-      joins(:version_label).where(@params).
+      where(@params).
       limit(range.count).offset(range.begin).
       order("tested_at DESC, created_at DESC")
   end
