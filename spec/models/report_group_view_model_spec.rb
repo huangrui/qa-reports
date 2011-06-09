@@ -31,8 +31,8 @@ describe ReportGroupViewModel do
 
   describe "Group with multiple reports" do
     before(:each) do
-      MeegoTestSession.stub_chain(:published, :includes, :joins, :where, :order).and_return([@latest_report, @previous_report, @oldest_report])
-      MeegoTestSession.stub_chain(:published, :includes, :joins, :where, :limit, :offset, :order).and_return([@latest_report, @previous_report, @oldest_report])
+      MeegoTestSession.stub_chain(:published, :includes, :where, :order).and_return([@latest_report, @previous_report, @oldest_report])
+      MeegoTestSession.stub_chain(:published, :includes, :where, :limit, :offset, :order).and_return([@latest_report, @previous_report, @oldest_report])
       @rgvm.stub!(:find_max_cases).and_return(@latest_tc_count)
     end
 
@@ -51,8 +51,8 @@ describe ReportGroupViewModel do
 
   describe "Group with one report" do
     before(:each) do
-      MeegoTestSession.stub_chain(:published, :includes, :joins, :where, :order).and_return([@latest_report])
-      MeegoTestSession.stub_chain(:published, :includes, :joins, :where, :limit, :offset, :order).and_return([@latest_report])
+      MeegoTestSession.stub_chain(:published, :includes, :where, :order).and_return([@latest_report])
+      MeegoTestSession.stub_chain(:published, :includes, :where, :limit, :offset, :order).and_return([@latest_report])
       @rgvm.stub!(:find_max_cases).and_return(@latest_tc_count)
     end
 
