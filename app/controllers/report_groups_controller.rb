@@ -12,7 +12,8 @@ class ReportGroupsController < ApplicationController
 
   def report_page
     @reports_per_page = 40
-    @page_index = params[:page].to_i - 1 rescue 0
+    @page = [1, params[:page].to_i].max rescue 1
+    @page_index = @page - 1 
     @selected_release_version, @target, @testtype, @hardware =
       params[:release_version], params[:target], params[:testtype], params[:hardware]
 
