@@ -50,7 +50,6 @@ class MeegoTestSession < ActiveRecord::Base
 
   belongs_to :author, :class_name => "User"
   belongs_to :editor, :class_name => "User"
-  belongs_to :version_label, :class_name => "VersionLabel", :foreign_key => "release_version"
 
   belongs_to :version_label, :class_name => "VersionLabel", :foreign_key => "version_label_id"
 
@@ -213,7 +212,7 @@ class MeegoTestSession < ActiveRecord::Base
       published.where("version_labels.normalized" => release_version.downcase, :target => target, :testtype => testtype).joins(:version_label).order(order_by).limit(limit)
     end
 
-    def published_hwversion_by_release_version_target_test_type(release_version_label, target, testtype)
+    def published_hwversion_by_release_version_target_test_type(release_version, target, testtype)
       target   = target.downcase
       testtype = testtype.downcase
       published.where("version_labels.normalized" => release_version.downcase, :target => target, :testtype => testtype).select("DISTINCT hardware").joins(:version_label).order("hardware")
@@ -433,13 +432,13 @@ class MeegoTestSession < ActiveRecord::Base
       end
     end
 
-    if not release_version or release_version == 0
-      errors.add :release_version, "should be provided"
+    if release_version.blank?
+      errors.add :release_version, "can't be blank"
     else
-      label = VersionLabel.find_by_id(release_version)
+      label = VersionLabel.find(:first, :conditions => {:normalized => release_version.downcase})
       if not label
         valid_versions = VersionLabel.versions.join(",")
-        errors.add :release_version, "Incorrect release version id'#{release_version}'. Valid ones are #{valid_versions}."
+        errors.add :release_version, "Incorrect release version '#{release_version}'. Valid ones are #{valid_versions}."
       end
     end
 
@@ -495,17 +494,6 @@ class MeegoTestSession < ActiveRecord::Base
       errors.add :uploaded_files, "You can only upload files with the extension .xml or .csv"
       return false
     end
-  end
-
-  ##############################################
-  # Optional Param handlers                    #
-  ##############################################
-  def optional_params_file=(param_file)
-    @optional_params_file = param_file
-  end
-
-  def optional_params_file
-    @optional_params_file
   end
 
   ###############################################
@@ -820,6 +808,16 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 
+  def create_target_label
+    tarlabel = TargetLabel.find(:first, :conditions => {:normalized => target.downcase})
+    if tarlabel
+      self.target = tarlabel.label
+      save
+    else
+      tarlabel = TargetLabel.new(:label => target, :normalized => target.downcase)
+      tarlabel.save
+    end
+  end
 
   def create_labels
     create_version_label && create_target_label

@@ -1460,9 +1460,6 @@ td.dec em{
 .th_total,
 .th_passed,
 .th_failed,
-.th_feature_pass_rate,
-.th_grading,
-.th_notes,
 .th_not_testable{
     width:40px;
     text-align: center;}
@@ -1527,6 +1524,7 @@ td.dec em{
 #th_nft_test_case {
     width: 40%; }
 
+
 tr.feature_name td{
     font-weight: bold;
     font-size: 13px;
@@ -1535,46 +1533,6 @@ tr.feature_name td{
     background: #e1e1e1 url(../images/heading_shade.png) repeat-x 0 bottom;
     padding-left: 14px;
     padding-bottom: 3px; }
-
-table.feature_detailed_results {
-    border: 0px solid #ccc;
-    margin-bottom: 40px;}
-
-.feature_detailed_results th {
-/*    text-align: left;*/
-    border-left: 0px solid #ddd;
-    padding-top: 0.8em;
-    padding-bottom: 0.8em; }
-
-.feature_detailed_results .sort {
-}
-
-.feature_detailed_results .sort.right {
-     position:absolute;
-     right:1em;}
-
-.feature_detailed_results th:first-child {
-    border-left-style: none; }
-
-table.feature_detailed_results_with_passrate_history {
-    border: 0px solid #ccc;
-    margin-bottom: 40px;}
-
-.feature_detailed_results_with_passrate_history th {
-/*    text-align: left;*/
-    border-left: 0px solid #ddd;
-    padding-top: 0.8em;
-    padding-bottom: 0.8em; }
-
-.feature_detailed_results_with_passrate_history.sort {
-}
-
-.feature_detailed_results_with_passrate_history.sort.right {
-     position:absolute;
-     right:1em;}
-
-.feature_detailed_results_with_passrate_history th:first-child {
-    border-left-style: none; }
 
 table.detailed_results  {
     border: 1px solid #ccc;
@@ -1789,14 +1747,6 @@ td.fail {
 
 .fail {
     color: #ec4343; }
-
-.feature_history_result {
-        background: transparent no-repeat right 0.8em url(../images/history_arrow.png);}
-
-.feature_history_result,
-.current_feature_history_result {
-        width:40px;}
-
 
 .history_result {
 	background: transparent no-repeat right 0.8em url(../images/history_arrow.png);}

@@ -86,17 +86,10 @@ class UploadController < ApplicationController
       params[:meego_test_session][:uploaded_files].push( DragnDropUploadedFile.new("public" + name, "rb") )
     end 
 
-    #ver_label = params[:meego_test_session][:release_version]
-    #if params[:meego_test_session][:release_version]
-    #  params[:meego_test_session][:release_version] = VersionLabel.find(:first, :conditions => {:label => params[:meego_test_session][:release_version]}).id
-    #end
-    logger.info "*********************** params[:meego_test_session][:release_version]: #{params[:meego_test_session][:release_version]} *******************"
-
     @test_session = MeegoTestSession.new(params[:meego_test_session])
     @test_session.import_report(current_user)
+
     if @test_session.save
-      ver_label = VersionLabel.find_by_id(params[:meego_test_session][:release_version]).label
-      logger.info "*********************** ver_label: #{ver_label} *******************"
       session[:preview_id] = @test_session.id
 
       redirect_to :controller => 'reports', :action => 'preview'

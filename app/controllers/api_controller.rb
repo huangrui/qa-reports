@@ -20,7 +20,6 @@
 
 require 'file_storage'
 require 'cache_helper'
-
 class ApiController < ApplicationController
   include CacheHelper
 
@@ -47,7 +46,7 @@ class ApiController < ApplicationController
     begin
       @test_session = MeegoTestSession.new(data)
       @test_session.import_report(current_user, true)
-      
+
     rescue ActiveRecord::UnknownAttributeError => error
       render :json => {:ok => '0', :errors => error.message}
       return

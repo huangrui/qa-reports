@@ -67,7 +67,7 @@ module ApplicationHelper
     html = '<ul class="clearfix">'
     link_text = ''
     @meego_releases.each do |release|
-      if release =~ /^[0-9]/
+      if release =~ /\d+\.\d+/
         if release == current_version
             html += '<li class="current">'
             link_text = "MeeGo v#{release}"
@@ -84,9 +84,7 @@ module ApplicationHelper
           link_text = "#{release}"
         end
       else
-        html += '<li>'
         if release == current_version
-          html += '<li>'
           html += '<li class="current">'
         else
           html += '<li>'

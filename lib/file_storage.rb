@@ -24,10 +24,6 @@ class FileStorage
     @baseurl = baseurl
   end
 
-  def get_params_file_path (model)
-    get_directory(model)
-  end
-
   def add_file(model, file, name)
     dir = get_directory(model, true)
     target = get_file_path(dir, name)

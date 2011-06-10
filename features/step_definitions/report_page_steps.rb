@@ -63,18 +63,6 @@ Given /^I have created the "([^"]*)" report with date "([^"]*)"(?: using "([^"]*
   if not report_template.present?
     report_template = "sample.csv"
   end
-  
-  if not report_at
-    report_at = "2010-02-02"
-  end
-
-  #if version.eql?"1.2"
-  #   version = 1;
-  #elsif version.eql? "1.1"
-  #   version = 2;
-  #else
-  #   version = 3;
-  #end
 
   Given "I am on the front page"
   When %{I follow "Add report"}
