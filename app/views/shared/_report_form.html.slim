@@ -1,0 +1,38 @@
+- f = report_form
+- if @test_session
+  input.id_field name="id" type="hidden" value=(@test_session.id)
+
+.field
+  label for="report_meego_version" MeeGo release:
+  - @release_versions.each do |release_version|
+    = f.radio_button :release_version, release_version, :class => "version"
+    = f.label :release_version, release_version, :value => release_version, :class => "inline_label"
+
+.field
+  label for="report_test_target" Target profile:
+  - @targets.each do |target|
+    = f.radio_button :target, target.capitalize, :class => "target"
+    = f.label :target, target.humanize, :value => target.capitalize, :class => "inline_label"
+  = f.error_message_on :target
+
+.field
+  label for="report_test_execution_date" Test execution date:
+  = f.text_field :tested_at, :id =>'report_test_execution_date', :class => 'date'
+  = f.error_message_on :tested_at
+  = form_ajax_error_msg "tested_at"
+
+.field
+  label for="report_test_type" Test type:
+  = f.text_field :testtype, :id => "report_test_type", :class => "text testtype", :tabindex => 3
+  small.suggestions
+    | e.g. #{render :partial=>'shared/suggestion', :collection => @testtypes[0,3], :spacer_template => 'shared/comma'}
+  = f.error_message_on :testtype
+  = form_ajax_error_msg "testtype"
+
+.field
+  label for="report_test_hardware" Hardware:
+  = f.text_field :hardware, :id => "report_test_hardware", :class => "text hardware", :tabindex => 5
+  small.suggestions
+    | e.g. #{render :partial=>'shared/suggestion', :collection => @hardware[0,3], :spacer_template => 'shared/comma'}
+  = f.error_message_on :hardware
+  = form_ajax_error_msg "hardware"

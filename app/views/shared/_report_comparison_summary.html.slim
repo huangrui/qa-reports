@@ -1,0 +1,37 @@
+.clearfix
+  h2
+  .result_caption.big_number
+    h3 Progress
+    strong#changed_to_pass.pass =comparison.changed_to_pass
+    .result_drilldown
+      span.pass.changed_result.changed_from_fail =comparison.fixed_from_fail
+      br/
+      span.pass.changed_result.changed_from_na =comparison.fixed_from_na
+    p
+      | Existing tests
+      br/
+      em changed to fixed
+  .result_caption.big_number
+    h3 Regression
+    strong#changed_from_pass.fail =comparison.changed_from_pass
+    .result_drilldown
+            span.fail.changed_result.changed_from_pass =comparison.regression_to_fail
+            br/
+            span.na.changed_result.changed_from_pass =comparison.regression_to_na
+    p
+      | Existing tests
+      br/
+      em not passing anymore
+
+  .new_tests.result_caption
+    .result_caption_header
+      strong New tests:
+    .result_caption.medium_number
+      strong#new_passing.pass = comparison.new_passing
+      | Passing
+    .result_caption.medium_number
+      strong#new_failing.fail = comparison.new_failing
+      | Failing
+    .result_caption.medium_number
+      strong#new_na = comparison.new_na
+      | N/A

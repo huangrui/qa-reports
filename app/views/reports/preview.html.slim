@@ -1,0 +1,92 @@
+- content_for :page_header do
+  = render :partial => "page_header"
+
+- content_for :wizard_progress do
+  #wizard_progress.page_header
+    strong Publish test report:
+    span#wizard_finalize
+      span#upload Upload
+      strong &raquo;
+      span#finalize Finalize
+      strong &raquo;
+      span#publish Publish
+
+- content_for :notification_area do
+  .notification Fill in the remaining information and finalize the report.
+
+- content_for :table_of_contents do
+  = render :partial => "toc"
+
+- content_for :meta_info do
+  #meta_info
+    dl
+      dt Author:
+      dd John Longername
+      dt Last modified by:
+      dd Jane Doe, 24th November 2010
+      dt Test execution date:
+      dd 23th October 2010
+
+- content_for :result_edit_notification do
+  = render :partial => "result_edit_notification"
+
+- content_for :wizard_actions do
+  #wizard_actions
+    #wizard_buttons
+      form action=url_for( :controller=>'reports', :action=>'delete', :release_version=>@selected_release_version, :target=>@test_session.target, :testtype=>@test_session.testtype, :hardware=>@test_session.hardware, :id=>@test_session.id) method="post"
+        input name="authenticity_token" type="hidden" value=form_authenticity_token
+        input.id_field name="id" type="hidden" value=@test_session.id
+        input#cancel-publish.big_btn.cancel type="submit" value="Cancel"
+
+      form action=url_for( :controller=>'reports', :action=>'publish') method="post"
+        input name="authenticity_token" type="hidden" value=form_authenticity_token
+        input name="report_id" type="hidden" value=@test_session.id
+        input#upload_report_submit.big_btn.submit type="submit" value="Publish"
+
+- content_for :inplace_edit_templates do
+  = render :partial => "inplace_edit_templates"
+
+- content_for :view_specific_js_head do
+  = javascript_include_tag "uploadify/swfobject.js"
+  = javascript_include_tag "uploadify/jquery.uploadify.v2.1.4.min.js"
+
+- content_for :view_specific_js do
+  = javascript_include_tag 'datetime'
+  = javascript_include_tag 'jqModal.js'
+  = javascript_include_tag 'jquery.form.js'
+
+  javascript:
+    var SESSION_ID = "#{@test_session.id}";
+    $(document).ready(function(){
+    $('#category-dialog').jqm({
+    modal:true
+    }).jqmAddTrigger('#test_category');
+    
+    $("#report_test_execution_date").datepicker({
+    showOn: "both",
+    buttonImage: "/images/calendar_icon.png",
+    buttonImageOnly: true,
+    firstDay: 1,
+    selectOtherMonths: true,
+    dateFormat: "yy-mm-dd"
+    });
+    
+    $('#report_test_execution_date').val("#{@test_session.formatted_date}");
+    
+    activateSuggestionLinks("div.field");
+    
+    filterResults("tr.result_pass", "passing tests");
+    linkEditButtons();
+    fetchBugzillaInfo();
+    prepareCategoryUpdate("#category-dialog");
+    });
+
+- content_for :category_dialog do
+  #category-dialog.jqmWindow style="display:none;"
+    = form_for @test_session, :url=>{:action => "update_category"}, :html => {:id => 'upload_report', :method=>'post'} do |f|
+      h1 Change test category
+      = render :partial => 'shared/report_form', :object => f
+    form
+      #wizard_actions
+        input.dialog-cancel.jqmClose type="button" value="Cancel"
+        input.dialog-delete type="submit" value="Save"

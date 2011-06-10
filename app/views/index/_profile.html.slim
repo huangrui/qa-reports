@@ -1,0 +1,16 @@
+td
+  - if @hardwares[profile.downcase]
+    - @hardwares[profile.downcase].each do |testtype, hardwares|
+
+      - testtype_base = testtype.split(":")[0]
+      - comparetype = testtype_base + ":Testing"
+      - compare = TestType.has_comparison?(profile.downcase, testtype_base)
+
+      strong
+        = link_to testtype.capitalize, test_type_report_path(@selected_release_version, profile, testtype)
+      - if compare then
+        a.compare href=branch_comparison_path(@selected_release_version, profile, testtype_base, comparetype) compare
+      ul
+        - hardwares.each do |hw|
+          li
+            = link_to hw.capitalize, hardware_report_path(@selected_release_version, profile, testtype, hw)

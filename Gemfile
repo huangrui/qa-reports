@@ -1,12 +1,17 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.4'
+gem 'rails'
 gem 'mysql2'
 gem 'nokogiri'
-gem 'devise', '1.1.3'
+gem 'devise', '1.1.9'
 gem 'fastercsv'
 gem 'rack', :git => "https://github.com/rack/rack.git" # Use next release when available
-gem "will_paginate", "3.0.pre"
+gem "will_paginate"
+gem 'slim'
+gem 'paperclip'
+gem 'coffee-script'
+gem 'therubyracer', '0.9.0beta3', :require => false
+gem 'rest-client', :require => 'rest_client'
 
 group :production do
   gem 'newrelic_rpm'
@@ -20,9 +25,8 @@ end
 
 group :development, :test do 
   gem 'launchy'
-  gem 'rspec', '2.0.1'
-  gem 'rspec-rails', '2.0.1'
-  #gem 'capybara', '0.3.9'
+  gem 'rspec'
+  gem 'rspec-rails'
   gem 'capybara', :git => "https://github.com/jnicklas/capybara.git"
   gem 'cucumber'
   gem 'rcov', :require => false

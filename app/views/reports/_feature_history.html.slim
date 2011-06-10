@@ -1,0 +1,7 @@
+- feature = feature_history
+tbody
+	tr.feature_name id="test-set-history-#{feature.id}"
+	  td colspan="8"
+	    = print_title_link(feature.name)
+tbody
+  = render :partial => "testcase_history", :collection => feature.non_nft_cases

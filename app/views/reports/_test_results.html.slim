@@ -1,0 +1,102 @@
+h2#test_results
+  | Test Results
+  span.heading_actions= back_to_top
+.section.emphasized_section
+  .container
+    = yield :test_result_navigation
+
+    h3.first Result Summary
+    .wrap
+      table#test_result_overview
+        tr.even
+          td.title Total test cases
+          td.value
+            strong= @report.total_cases
+          td class="change #{@report.total_change_class}"
+            em= @report.total_change
+          td rowspan="7" style="background-color: white;"
+            #summary_graph_wrapper
+              canvas#summary_graph_canvas height="210" width="395"
+        tr.odd
+          td Passed
+          td
+            strong.pass= @report.total_passed
+          td class=@report.passed_change_class
+            em= @report.passed_change
+        tr.even
+          td Failed
+          td
+            strong.fail= @report.total_failed
+          td class=@report.failed_change_class
+            em= @report.failed_change
+        tr.odd
+          td N/A
+          td
+            strong= @report.total_na
+          td class=@report.na_change_class
+            em= @report.na_change
+        tr.even
+          td Run rate
+          td
+            strong= @report.run_rate
+          td class=@report.run_rate_change_class
+            em= @report.run_rate_change
+        tr.odd
+          td Pass rate of total
+          td
+            strong= @report.total_pass_rate
+          td class=@report.total_pass_rate_change_class
+            em= @report.total_pass_rate_change
+        tr.even
+          td Pass rate of executed
+          td
+            strong= @report.executed_pass_rate
+          td class=@report.executed_pass_rate_change_class
+            em= @report.executed_pass_rate_change
+
+    h3#test_features Test Results by Feature
+    table#test_results_by_feature
+      thead.even
+        tr
+          th.th_feature Feature
+          th.th_total Total
+          th.th_passed Passed
+          th.th_failed Failed
+          th.th_not_testable N/A
+          th.th_pass_rate Pass%
+          th.th_graph &nbsp;
+          th.th_notes Comments
+          th.th_grading Grading
+
+      = render :partial => 'feature_summary', :collection => @test_session.meego_test_sets, :locals => {:max_cases => @test_session.max_feature_cases}
+
+- data = @report.summary_data
+
+javascript:
+  $(window).load(function() {
+
+    var summary_passed = #{ ints2js data.passed } ;
+    var summary_failed = #{ ints2js data.failed } ;
+    var summary_na     = #{ ints2js data.na } ;
+    var summary_labels = #{ strs2js data.labels } ;
+
+    var g = new Bluff.StackedBar("summary_graph_canvas", "395x210");
+    g.hide_title = true;
+    g.tooltips = true;
+    g.sort = false;
+    g.bar_spacing = 0.7;
+    g.marker_font_size = 18;
+    g.legend_font_size = 24;
+    g.set_theme({
+      colors: ['#acacac'],
+      marker_color: '#dedede',
+      font_color: '#6f6f6f',
+      background_colors: ['white', 'white']
+    });
+
+    g.data('pass', summary_passed, '#bcd483');
+    g.data('fail', summary_failed, '#f36c6c');
+    g.data('n/a',  summary_na,     '#ddd');
+    g.labels = summary_labels;
+    g.draw();
+  });

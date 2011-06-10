@@ -1,0 +1,105 @@
+doctype html
+html
+  head
+    meta content="text/html; charset=UTF-8" http-equiv="Content-Type"
+    meta content="IE=8" http-equiv="X-UA-Compatible"
+
+    title MeeGo QA Reports
+    = stylesheet_link_tag :all
+    - if use_nokia_layout?
+      link href="/stylesheets/themes/nokia.css" media="all" rel="stylesheet" type="text/css"
+    = csrf_meta_tag
+    = javascript_include_tag "jquery.min.js"
+    = javascript_include_tag 'bluff/js-class.js'
+    = javascript_include_tag 'bluff/excanvas.js'
+    = javascript_include_tag 'bluff/bluff-min.js'
+    = javascript_include_tag 'dygraph-combined.js'
+    = yield :view_specific_js_head
+    = google_analytics_tag
+    = clicktale_top_tag
+
+  body
+    a name="top"
+    = yield :page_header
+    = yield :version_navi
+    #page
+      = yield :breadcrumbs
+      = yield :wizard_progress
+      = (out=yield :page_content)!='' ? out : render(:partial => 'page_content')
+      = yield :inplace_edit_templates
+      = yield :delete_dialog
+      = yield :category_dialog
+    #footer
+    .nft_drilldown_dialog.jqmWindow.nft_drilldown_modal_window style="display:none;"
+      h1 test case name
+      a.ui_btn.modal_close href=""
+        span X
+      #nft_drilldown_graph style="width:790px; height:290px;"
+      .nft_graph_options
+        div
+          h3 Usage
+          p
+            | Click and drag to zoom
+            br/
+            | Shift-drag to pan.
+            br/
+            | Doubleclick to zoom out.
+    = javascript_include_tag "jquery-ui.min.js"
+
+    /! Modal dialog template for viewing test case image attachments
+    #attachment_template.jqmWindow.attachment_to_notes_dialog style="display:none;"
+      h1#attachment_dialog_header
+      a.ui_btn.modal_close
+        span X
+      .attachment_image_container
+        img#attachment_dialog_image alt="attachment_image" src=""
+
+    #nft_trend_dialog.jqmWindow.nft_drilldown_modal_window style="display:none;"
+      h1 test case name
+      a.ui_btn.modal_close href=""
+        span X
+      #nft_trend_graph style="width:790px; height:290px;"
+
+    javascript:
+      var BUGZILLA_URI = "#{BUGZILLA_CONFIG['link_uri']}";
+    = javascript_include_tag 'application'
+    = yield :view_specific_js
+    javascript:
+
+      var on_ready_steps = function() {
+        renderSeriesGraphs(".serial_canvas");
+
+        var updateTemplateImage = function(params) {
+          var attachment_url = params.t.text;
+          var attachment_filename = attachment_url.split('/').pop()
+
+          $('h1#attachment_dialog_header').html(attachment_filename);
+          $('img#attachment_dialog_image').attr('src', attachment_url);
+          params.w.show();
+
+        };
+
+        $('#attachment_template').jqm({
+          modal:true,
+          onShow:updateTemplateImage
+        }).jqmAddTrigger('.image_attachment').jqmAddClose('.modal_close');
+
+        $('#nft_trend_dialog').jqm({
+          modal:true,
+          onShow:renderNftTrendGraph
+        }).jqmAddTrigger('.nft_trend_button').jqmAddClose($('a.modal_close'));
+      }
+
+      // IE hack
+      if (typeof G_vmlCanvasManager != 'undefined') {
+        $(window).load(function(){
+          on_ready_steps();
+        });
+      } else {
+        $(document).ready(function(){
+          on_ready_steps();
+        });
+      }
+
+
+    = clicktale_bottom_tag

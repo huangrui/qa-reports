@@ -1,0 +1,13 @@
+- content_for :view_specific_js do
+  javascript:
+    $(document).ready(function(){
+    filterResults("tr.result_pass", "passing tests");
+    $("#see_all_button").click();
+    fetchBugzillaInfo();
+    });
+
+- content_for :view_in_browser_link do
+  .report-backlink
+    = link_to "Click here", url_for(:controller=>'reports', :action=>'view', :release_version=>@selected_release_version, :target=>@test_session.target.capitalize, :testtype=>@test_session.testtype, :hardware=>@test_session.hardware, :id=>@test_session.id)
+    |  to view this message in your browser or handheld device
+  br/

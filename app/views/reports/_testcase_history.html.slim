@@ -1,0 +1,11 @@
+- testcase = testcase_history
+tr.testcase
+  td.testcase_name= testcase.name
+  - @history.reverse_each do |h|
+    - tc = testcase.find_matching_case(h)
+    - if tc
+      td class="testcase_result history_result #{result_class(tc)}" #{result_html(tc)}
+    - else
+      td class="testcase_result history_result" -
+  td class="testcase_result #{result_class(testcase)} current_result" #{result_html(testcase)}
+  td

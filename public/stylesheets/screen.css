@@ -115,7 +115,7 @@ a.mailto {
 a.external {
 	background-image: url('../images/external_icon.png');
 	padding-right:15px;}
-	
+
 a.mailto {
 	background-image: url('../images/mailto_icon.png');
 	padding-right:20px;}
@@ -151,9 +151,17 @@ h2 {
     font-size: 1.6666em;
     line-height:1;
     color: #000;
-    margin:1.5em 0 0.75em 0;
+    margin:1.0em 0 0.5em 0;
     border-top: 1px solid #ccc;
-    padding-top: 10px;}
+    padding-top: 20px;}
+
+h2 small {
+	font-size: .55em;
+	font-weight:normal;
+	margin-left:1em;
+	display:inline-block;
+	vertical-align:middle;
+}
 
 h3 {
     font-size: 1.3333em;
@@ -449,6 +457,14 @@ form h1,
     margin-left: 10px;
     width: auto; }
 
+.field.inplace{
+	border-bottom: none;
+	padding:5px 0 15px;}
+
+.field.inplace label {
+	font-size: 11px;
+	width: auto;}
+
 label { margin-right:10px; display:block;
     float: left;
     width: 200px;
@@ -464,6 +480,10 @@ label.inline_label {
     text-align: inherit;
     margin: 0 0.75em 0 0;
     display: inline;}
+
+div.field div.field_with_errors {
+    display: inline;
+}
 
 fieldset {
     padding:1.4em;
@@ -672,7 +692,7 @@ input#report_test_data.file {
     -webkit-box-shadow: #aaa 0px 0px 2px;
     -moz-box-shadow: #aaa 0px 0px 2px;
     box-shadow: #aaa 0px 0px 2px;
-    filter: progid:DXImageTransform.Microsoft.Shadow(color='#969696', Direction=135, Strength=3);}
+    /*filter: progid:DXImageTransform.Microsoft.Shadow(color='#969696', Direction=135, Strength=3);*/}
 
 .ui_btn:active {
     background-image: url(../images/ui_btn_bg_active.png);
@@ -912,6 +932,16 @@ div.formError, #error, form .error {
     margin-top: 1em;
     margin-bottom: 1em; }
 
+#breadcrumb li {
+    display: inline;
+    font-weight: bold;
+}
+
+#breadcrumb li a {
+    display: inline;
+    font-weight: normal;
+}
+
 .clearfix:after {
     content:".";
     display: block;
@@ -959,6 +989,7 @@ div.formError, #error, form .error {
     background: url(../images/heading_shade.png) repeat-x 0 bottom;
     margin-bottom:0;
     margin-top: 0;
+    padding-top: 10px;
     padding-right: 20px;
     padding-bottom: 6px;
     padding-left: 20px;}
@@ -983,27 +1014,50 @@ div.formError, #error, form .error {
 .result_caption {
     float: left;
     overflow: hidden;
-    color: #989898;
-    margin:0 1em;}
+    color: #989898 !important;}
+
+.result_caption p {
+		margin-top: 1em;
+  	color: #989898 !important;}
+
+.result_drilldown {
+        text-align:left;
+		float: left;
+		margin-top:1em;
+		font-weight:bold;
+        margin-left: 10px;}
+
+.result_drilldown span {
+		background-position: left .4em;}
 
 .big_number {
-    margin:0 2em;}
+    text-align:left;
+    margin-right:2.0em;
+    width:190px;
+    padding-left: 5px;}
 
-.medium_number,
-.big_number {
+.medium_number{
     text-align:center;
-}
+    margin:0 .75em;}
 
 .big_number strong {
-    font-size: 4.3333em;}
+    font-size: 4.3333em;
+    margin-left: 0em;
+    margin-bottom: 0;
+    line-height:1;
+    float: left;}
+
+.big_number p {
+    margin-top: 80px;
+}
 
 .medium_number strong {
-    font-size: 2em;}
+    font-size: 2em;
+    display:block;}
 
 .result_caption strong {
     font-weight: bold;
-    font-family: Arial, sans-serif;
-    display: block;}
+    font-family: Arial, sans-serif;}
 
 .result_caption_header {
     float: left;
@@ -1012,8 +1066,8 @@ div.formError, #error, form .error {
     padding-top: 3em;}
 
 .new_tests {
-    margin-top: 3.7em;
-    margin-left:3em;}
+    margin-top: 5.2em;
+    margin-left:0em;}
 
 .compare {
     padding-right: 13px;
@@ -1079,7 +1133,7 @@ div.formError, #error, form .error {
 #upper_header a {
 	text-decoration:none;
 	font-weight:bold;}
-	
+
 #upper_header ul {
 	float: right;}
 
@@ -1237,7 +1291,7 @@ th.filtered {
 /*border-right: 1px solid #cacaca; */
     border-left: 1px solid #fff;
     border-bottom: 1px solid #cacaca;}
-   
+
 #report_navigation th a {
 	text-shadow: #fff 1px 1px 1px;
 	text-decoration:none;}
@@ -1250,7 +1304,8 @@ th.filtered:last-child {
 #report_navigation th {
     padding-left: 15px;
     padding-top: 60px;
-    padding-bottom: 41px;}
+    padding-bottom: 41px;
+    width:16.6666%;}
 
 #report_navigation td {
     border-right: 1px solid #cacaca;
@@ -1299,6 +1354,30 @@ td.date {
 .chart_actions.stack_chart {
 /*margin-left: 25px;*/
     margin-bottom: 36px;}
+
+.index_section {
+	margin-left: -40px;
+	margin-right: -10px;
+	margin-bottom: 40px;
+	padding-left: 40px;
+	padding-right: 10px;
+	padding-bottom: 40px;
+	padding-top: 5px;
+	border-top:1px solid #cacaca;
+	border-bottom:1px solid #cacaca;}
+
+.index_section h2 {
+margin-top: 0;
+	border-top: none;}
+
+.index_section em {
+	padding: 0 !important;
+	font-style: italic;
+}
+
+h2 .compare {
+	font-size: 0.6em;
+	font-weight:normal;}
 /* @end */
 
 
@@ -1388,11 +1467,18 @@ td.dec em{
     width:40px;
     text-align: center;}
 
-#test_results .total,
-#test_results .pass,
-#test_results .fail,
-#test_results .na {
+.th_pass_rate{
+  text-align: right;}
+
+#test_results_by_feature .total,
+#test_results_by_feature .pass,
+#test_results_by_feature .fail,
+#test_results_by_feature .na {
     text-align: center; }
+
+#test_results_by_feature .rate {
+  text-align: right;
+}
 
 .th_graph {
     width:25%;}
@@ -1502,7 +1588,7 @@ table.detailed_results  {
 
 .detailed_results .sort {
 }
-   
+
 .detailed_results .sort.right {
      position:absolute;
      right:1em;}
@@ -1532,10 +1618,28 @@ td.feature_record_notes p {
 
 .float_container {
 	position:relative;}
-	
+
 .float_above {
+    position: absolute;
+    left:-10%;}
+
+div.float_above {
 	position: absolute;
-	left:-10%;}
+	left: -25px;
+    top: -6px;
+    background: #fff;
+    border: 5px solid white !important;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    display: block !important;
+    box-shadow: 0px 0px 5px #555 !important;
+    -moz-box-shadow: 0px 0px 5px #555 !important;
+    -webkit-box-shadow: 0px 0px 5px #555 !important;}
+
+div.float_above select {
+    outline: none;
+}
 
 td.feature_record_grading {
 	text-align:center;}
@@ -1575,7 +1679,7 @@ select.grading_select {
 td.testcase_name {
     padding-left: 20px;
     padding-right: 20px; }
-    
+
 .testcase_value,
 .testcase_limit,
 .testcase_target,
@@ -1613,7 +1717,7 @@ td.testcase_name {
 
 .unchanged_result {
     background-image: none;}
-    
+
 .changed_from_fail,
 .changed_from_pass,
 .changed_from_na {
@@ -1642,9 +1746,36 @@ td.testcase_notes {
     padding-right: 33px;
     margin-bottom: 0;}
 
+td.testcase_notes .content {
+	position: relative;}
+
 td.testcase_notes.edit:hover {
     background: #fff8de url(../images/edit_icon.png) no-repeat 97% 5px;
     cursor: pointer;}
+
+td.testcase_notes.edit:hover .note_attachment {
+	display: none;}
+
+td.testcase_notes .field.inplace .attachment {
+    background: #f4f4f4 url('../images/attachment_icon.png') no-repeat 4px 5px;
+    border: 1px solid #eee;
+    padding: 3px 5px 4px 25px;
+    margin-bottom: 3px;
+}
+
+td.testcase_notes .field.inplace .attachment .delete {
+    float: right;
+    display: block;
+    width: 14px;
+    height: 13px;
+    background: transparent url('../images/remove_list_item.png') no-repeat left top;
+    text-indent: -99999px;
+    margin: 2px 2px 0 0;
+}
+
+td.testcase_notes .field.inplace .attachment .delete:hover {
+    background-image: url('../images/remove_list_item_hover.png');
+}
 
 td.testcase_notes p {
     margin-bottom: 0; }
@@ -1678,12 +1809,15 @@ td.fail {
 	color: #aaa;
 	font-size:0.91666em;}
 
+a:hover .unit {
+	color: #000;}
+
 #test_results .sort {
     margin-left: 3em;}
 
 #test_results .sort a {
     vertical-align: 40%;}
-   
+
 .dl_link {
 	background: transparent url('../images/download_arrow.png') no-repeat right 50%;
 	font-size: 10px;
@@ -1692,7 +1826,7 @@ td.fail {
 	text-decoration: none;
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
-	border-radius: 4px;	
+	border-radius: 4px;
 	behavior: url(/javascripts/pie.htc);}
 
 .dl_link:hover {
@@ -1730,20 +1864,30 @@ table.nft_graph_key_figures {
 width: 35px;
 }
 
+.nft_trend_button {
+	padding-right: 17px;
+	background: transparent no-repeat right 2px url(../images/nft_trend_icon.png);
+	text-decoration:none;}
+
+.nft_trend_button:hover {
+	background-image: url(../images/nft_trend_icon_hover.png);
+	cursor: pointer;
+}
+
 .testcase_graph canvas {
 	cursor: pointer;
 }
 
 .nft_drilldown_modal_window {
 	width: 800px;
-	padding: 40px;
+	padding: 14px 40px 40px;
 	margin-left: -440px;
 }
 
-#nft_drilldown_graph {
+#nft_drilldown_graph, #nft_trend_graph {
         width: 823px;
         height: 314px;
-        padding: 10px;
+        padding: 20px;
         border: 1px solid #b2b2b2;
 }
 
@@ -1769,11 +1913,34 @@ width: 35px;
 	margin-left: -40px;
 	margin-right: -40px;
 	padding: 30px 40px;
-} 
+}
 
 .nft_graph_options div {
 	width: 33%;
 	float: left;
+}
+
+.note_attachment {
+	position: absolute;
+	right: -24px;
+	top: 0;
+	width: 14px;
+	padding: 0 5px;
+	margin-left: 5px;
+	z-index: 100;
+	text-indent: -9999px;
+	background: transparent no-repeat 5px 0 url(../images/attachment_icon.png);
+}
+
+.note_attachment:hover {
+	background-image: url(../images/attachment_icon_hover.png);
+	cursor: pointer; }
+
+.attachment_to_notes_dialog img {
+	max-width: 600px;}
+
+.attachment_image_container {
+	width: 600px ;
 }
 
 /* @end */
@@ -1923,7 +2090,7 @@ p.next_step {
 
 #compare_details th {
 	padding-bottom: .5em;
-	padding-top: .2em;	
+	padding-top: .2em;
 }
 
 #compare_details #th_test_case {

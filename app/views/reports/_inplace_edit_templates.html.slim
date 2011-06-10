@@ -1,0 +1,73 @@
+#templates style="display:none;"
+  #txt_edit_form
+    form.txt_form action=url_for(:controller=>'reports', :action=>'update_txt') method="post"
+      .editables
+        input name="authenticity_token" type="hidden" value=form_authenticity_token
+        input.id_field name="id" type="hidden" value=@test_session.id
+        textarea.txt_edit
+        input.small_btn.save type="submit" value="Save"
+        input.small_btn.cancel type="button" value="Cancel"
+      .help
+        strong Markup Reference
+        pre
+          | == Header ==
+            === Subheader ===
+            ''italics''
+            '''bold'''
+            * bulleted list
+            [[http://foo.bar/ Link]]
+            [[1234]] (Bugzilla issue link)
+                
+  #title_edit_form
+    form.title_form action=url_for(:controller=>'reports', :action=>'update_title') method="post"
+      input name="authenticity_token" type="hidden" value=form_authenticity_token
+      input.id_field name="id" type="hidden" value=@test_session.id
+      input.title_field name="meego_test_session[title]" type="text"
+      input.small_btn.save type="submit" value="Save"
+      input.small_btn.cancel type="button" value="Cancel"
+  #date_edit_form
+    form.date_form action=url_for(:controller=>'reports', :action=>'update_tested_at') method="post"
+      input name="authenticity_token" type="hidden" value=form_authenticity_token
+      input.id_field name="id" type="hidden" value=@test_session.id
+      input.date_field name="meego_test_session[tested_at]" type="text"
+      input.small_btn.save type="submit" value="Save"
+      input.small_btn.cancel type="button" value="Cancel"
+  #comment_edit_form
+    form.comment_form action=url_for(:controller=>'meego_test_cases', :action=>'update_case_comment') method="post"
+      input name="authenticity_token" type="hidden" value=form_authenticity_token
+      input.id_field name="id" type="hidden" value=""
+      textarea.comment_field name="comment"
+      div.field.inplace
+        div.attachment
+          a#attachment_link href="#" attachment_file.xml
+          input type="hidden" name="old_attachment" value=""
+          a#delete_attachment.delete x
+        div.attachment.add
+          input#testcase_attachment type="file" name="attachment"
+      input.small_btn.save type="submit" value="Save"
+      input.small_btn.cancel.last type="button" value="Cancel"
+  #result_edit_form
+    form.result_form.float_container action=url_for(:controller=>'meego_test_cases', :action=>'update_case_result') method="post"
+      input name="authenticity_token" type="hidden" value=form_authenticity_token
+      input.id_field name="id" type="hidden" value=""
+      div.float_above
+        select name="result"
+          option value="1" Pass
+          option value="-1" Fail
+          option value="0" N/A
+  #feature_comment_edit_form
+    form.comment_form action=url_for(:controller=>'reports', :action=>'update_feature_comment') method="post"
+      input name="authenticity_token" type="hidden" value=form_authenticity_token
+      input.id_field name="id" type="hidden" value=""
+      textarea.comment_field name="comment"
+      input.small_btn.save type="submit" value="Save"
+      input.small_btn.cancel.last type="button" value="Cancel"
+  #feature_grading_edit_form
+    form.result_form.float_container action=url_for(:controller=>'reports', :action=>'update_feature_grading') method="post"
+      input name="authenticity_token" type="hidden" value=form_authenticity_token
+      input.id_field name="id" type="hidden" value=""
+      select.grading_select.float_above name="grading"
+        option value="0" N/A
+        option value="1" Red
+        option value="2" Yellow
+        option value="3" Green

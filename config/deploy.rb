@@ -5,6 +5,7 @@ require 'config/deploy/capistrano_database_yml'
 require 'bundler/capistrano'
 require 'yaml'
 
+set :user, "www-data"
 set :use_sudo, false
 set :copy_compression, :zip
 
@@ -13,31 +14,7 @@ set :repository, "http://git.gitorious.org/meego-quality-assurance/qa-reports.gi
 set :deploy_via, :remote_cache
 
 ssh_options[:forward_agent] = true
-
-# If you have previously been relying upon the code to start, stop
-# and restart your mongrel application, or if you rely on the database
-# migration code, please uncomment the lines you require below
-
-# If you are deploying a rails app you probably need these:
-
-# load 'ext/rails-database-migrations.rb'
-# load 'ext/rails-shared-directories.rb'
-
-# There are also new utility libaries shipped with the core these
-# include the following, please see individual files for more
-# documentation, or run `cap -vT` with the following lines commented
-# out to see what they make available.
-
-# load 'ext/spinner.rb'              # Designed for use with script/spin
-# load 'ext/passenger-mod-rails.rb'  # Restart task for use with mod_rails
-# load 'ext/web-disable-enable.rb'   # Gives you web:disable and web:enable
-
-# If you aren't deploying to /u/apps/#{application} on the target
-# servers (which is the default), you can specify the actual location
-# via the :deploy_to variable:
-
-# If you aren't using Subversion to manage your source code, specify
-# your SCM below:
+ssh_options[:user] = "www-data"
 
 after "deploy:setup" do
   # Create shared directories
@@ -75,6 +52,8 @@ after "deploy:setup" do
   end
   put YAML::dump(bugzilla_conf), "#{shared_path}/config/bugzilla.yml"
 
+  # Upload QA Dashboard configuration
+  deploy.qadashboard.setup
 end
 
 after "deploy:symlink" do
@@ -99,18 +78,53 @@ after "deploy:symlink" do
   # Remove current bugzilla config file and symlink to shared
   run "rm #{current_path}/config/bugzilla.yml"
   run "ln -nfs #{shared_path}/config/bugzilla.yml #{current_path}/config/bugzilla.yml"
+
+  # Remove default QA Dashboard config and symlink to shared.
+  deploy.qadashboard.symlink
 end
 
 namespace :deploy do
-  desc "Restart Application"
+  desc "Restart the app server"
   task :restart, :roles => :app do
     run "touch #{current_path}/tmp/restart.txt"
   end
 
   desc "Start the app server"
   task :start, :roles => :app do
-    run "touch #{current_path}/tmp/restart.txt"
+    run "passenger start #{current_path} --daemonize --environment #{rails_env} --port 3000" 
   end
 
-end
+  desc "Stop the app server"
+  task :stop, :roles => :app do
+    run "passenger stop --pid-file #{current_path}/passenger.3000.pid"
+  end
 
+  namespace :qadashboard do
+    desc "Upload QA Dashboard configuration"
+    task :setup do
+      # QA Dashboard configuration
+      qadashboard_conf = YAML.load_file("config/qa-dashboard_config.yml")
+      qadashboard_auth = Capistrano::CLI::ui.ask("Do you want to define configuration for automatic report exporting to QA Dashboard? Default: No")
+      if qadashboard_auth =~ /yes/i
+        qadashboard_host  = Capistrano::CLI::ui.ask("Please enter QA Dashboard URL (e.g. http://localhost:3030)")
+        qadashboard_token = Capistrano::CLI::ui.ask("Please enter authentication token for report upload")
+        qadashboard_conf["host"]  = qadashboard_host
+        qadashboard_conf["token"] = qadashboard_token
+      end
+      put YAML::dump(qadashboard_conf), "#{shared_path}/config/qa-dashboard_config.yml"
+    end
+
+    desc "Remove default QA Dashboard config and symlink to shared."
+    task :symlink do
+      run "rm #{current_path}/config/qa-dashboard_config.yml"
+      run "ln -nfs #{shared_path}/config/qa-dashboard_config.yml #{current_path}/config/qa-dashboard_config.yml"
+    end
+
+    desc "Update QA Dashboard configuration"
+    task :update do
+      deploy.qadashboard.setup
+      deploy.qadashboard.symlink
+      deploy.restart
+    end
+  end
+end
