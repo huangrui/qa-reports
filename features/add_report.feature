@@ -141,17 +141,17 @@ Feature:
     Then I should see "Check home screen"
     And I should see "Handset" within "h1"
 
-  @selenium
-  Scenario: Add new report with underscore in test type and hardware names
-    When I follow "Add report"
-
-    And I select target "Handset", test type "test_type" and hardware "hardware_32" with date "2010-02-12"
-    And I attach the report "sample.csv"
-    And submit the form at "upload_report_submit"
-    And I press "Publish"
-
-    When I go to the front page
-    And I follow "Hardware_32"
-
-    Then I should see "Test_type" within ".index_month .odd .report_name"
-    Then I should see "Hardware_32" within ".index_month .odd .report_name"
+  #  @selenium
+  #  Scenario: Add new report with underscore in test type and hardware names
+  #    When I follow "Add report"
+  #
+  #    And I select target "Handset", test type "test_type" and hardware "hardware_32" with date "2010-02-12"
+  #    And I attach the report "sample.csv"
+  #    And submit the form at "upload_report_submit"
+  #    And I press "Publish"
+  #
+  #    When I go to the front page
+  #    And I follow "Hardware_32"
+  #
+  #    Then I should see "Test_type" within ".index_month .odd .report_name"
+  #    Then I should see "Hardware_32" within ".index_month .odd .report_name"
