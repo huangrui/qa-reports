@@ -30,6 +30,10 @@ class RssController < ApplicationController
       return render_404
     end
 
+    if @selected_release_version.eql? "1"
+      @selected_release_version = "V"+@selected_release_version
+    end
+
     if @hardware
       @sessions = MeegoTestSession.by_release_version_target_test_type_product(@selected_release_version, @target, @testtype, @hardware, "created_at DESC", 10)
     elsif @testtype
