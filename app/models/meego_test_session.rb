@@ -261,9 +261,9 @@ class MeegoTestSession < ActiveRecord::Base
 
     # TODO: Works only if there's >= 1s difference between the timestamps
     @prev_session = MeegoTestSession.find(:first, :conditions => [
-        "tested_at < ? AND target = ? AND testtype = ? AND hardware = ? AND published = ? AND version_label_id = ?", time, target.downcase, testtype.downcase, hardware.downcase, true, version_label_id
+        "(tested_at < ? OR tested_at = ? AND created_at < ?) AND target = ? AND testtype = ? AND hardware = ? AND published = ? AND version_label_id = ?", time, time, created_at, target.downcase, testtype.downcase, hardware.downcase, true, version_label_id
     ],
-                          :order => "tested_at DESC", :include =>
+                          :order => "tested_at DESC, created_at DESC", :include =>
          [{:meego_test_sets => :meego_test_cases}, {:meego_test_cases => :meego_test_set}])
 
     @has_prev = !@prev_session.nil?
