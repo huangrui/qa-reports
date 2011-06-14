@@ -31,12 +31,13 @@ describe ReportGroupViewModel do
 
   describe "Group with multiple reports" do
     before(:each) do
-      MeegoTestCase.stub_chain(:where, :count, :values, :first).and_return(@latest_tc_count)
-      MeegoTestSession.stub_chain(:published, :includes, :joins, :where, :order).and_return([@latest_report, @previous_report, @oldest_report])
+      MeegoTestSession.stub_chain(:published, :includes, :where, :order).and_return([@latest_report, @previous_report, @oldest_report])
+      MeegoTestSession.stub_chain(:published, :includes, :where, :limit, :offset, :order).and_return([@latest_report, @previous_report, @oldest_report])
+      @rgvm.stub!(:find_max_cases).and_return(@latest_tc_count)
     end
 
     it "should have three reports" do
-      @rgvm.reports.should == [@latest_report, @previous_report, @oldest_report]
+      @rgvm.all_reports.should == [@latest_report, @previous_report, @oldest_report]
     end
 
     it "should have comparison" do
@@ -50,12 +51,13 @@ describe ReportGroupViewModel do
 
   describe "Group with one report" do
     before(:each) do
-      MeegoTestCase.stub_chain(:where, :count, :values, :first).and_return(@latest_tc_count)
-      MeegoTestSession.stub_chain(:published, :includes, :joins, :where, :order).and_return([@latest_report])
+      MeegoTestSession.stub_chain(:published, :includes, :where, :order).and_return([@latest_report])
+      MeegoTestSession.stub_chain(:published, :includes, :where, :limit, :offset, :order).and_return([@latest_report])
+      @rgvm.stub!(:find_max_cases).and_return(@latest_tc_count)
     end
 
     it "should have one report" do
-      @rgvm.reports.should == [@latest_report]
+      @rgvm.all_reports.should == [@latest_report]
     end
 
     it "should not have comparison" do

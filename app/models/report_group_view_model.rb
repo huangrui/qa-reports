@@ -6,19 +6,24 @@ class ReportGroupViewModel
 
   def initialize(release, target, testtype, hardware)
     @params = {
-      :version_labels => {:label => release},
+      :version_label_id => VersionLabel.find_by_label(release),
       :target => target,
       :testtype => testtype,
       :hardware => hardware
     }.delete_if { |key, value| value.nil? }
   end
 
-  def reports
-    @reports ||= find_reports
+  def all_reports
+    @all_reports ||= find_all_reports
+  end
+
+  def reports_by_range(range)
+    @report_ranges ||= {}
+    @report_ranges[range] ||= find_report_range(range)
   end
 
   def reports_by_month
-    @reports_by_month ||= reports.group_by(&:month)
+    @reports_by_month ||= all_reports.group_by(&:month)
   end
 
   def has_comparison?
@@ -42,32 +47,42 @@ class ReportGroupViewModel
   end
 
   def latest
-    reports[0] if reports.count > 0
+    reports_by_range((0..1))[0] rescue nil
   end
 
   def previous
-    reports[1] if reports.count > 1
+    reports_by_range((0..1))[1] rescue nil
   end
 
   private
 
   def calculate_trend_graph_data (relative)
-    chosen, days = find_trend_sessions(reports, 20)
+    trend_length = 20
+
+    chosen, days = find_trend_sessions(reports_by_range((0..trend_length - 1)), trend_length)
 
     if chosen.length > 0
-      generate_trend_graph_data(chosen, days, relative, 20)
+      generate_trend_graph_data(chosen, days, relative, trend_length)
     end
   end
 
-  def find_reports
+  def find_all_reports
     MeegoTestSession.published.
       includes(:version_label, :meego_test_cases).
-      joins(:version_label).
       where(@params).order("tested_at DESC, created_at DESC")
   end
 
   def find_max_cases
-    MeegoTestCase.where(:meego_test_session_id => reports.map(&:id)).
-      count(:group=>:meego_test_session_id, :order => 'count_all DESC').values.first
+    MeegoTestSession.published.
+      joins(:meego_test_cases).where(@params).
+      count(:group=>:meego_test_session_id, :order => 'count_all DESC', :limit => 1).
+      values.first
+  end
+
+  def find_report_range(range)
+    MeegoTestSession.published.includes(:version_label, :meego_test_cases).
+      where(@params).
+      limit(range.count).offset(range.begin).
+      order("tested_at DESC, created_at DESC")
   end
 end
