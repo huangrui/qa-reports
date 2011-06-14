@@ -184,7 +184,7 @@ prepareCategoryUpdate = function(div) {
       if (targetval == '') {
         return false;
       } else if (typeval == '') {
-        $('.error.testtype').text("Test type cannot be empty.").show();
+        $('.error.testtype').text("Test set cannot be empty.").show();
         return false;
       } else if (versionval == '') {
         return false;

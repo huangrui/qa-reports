@@ -15,7 +15,7 @@ Feature: Edit Report
 
     When I click the element ".testcase_notes" for the test case "SMOKE-SIM-Get_IMSI"
     And I click the element "#attachment_link" for the test case "SMOKE-SIM-Get_IMSI"
-    
+
     Then I should see "Content of the attachment file"
 
   @selenium
@@ -29,7 +29,7 @@ Feature: Edit Report
 
     Then I click the element ".testcase_notes" for the test case "SMOKE-SIM-Get_IMSI"
     And I should see "short1.csv"
-    
+
     When I remove the attachment from the test case "SMOKE-SIM-Get_IMSI"
     And I wait until all Ajax requests are complete
 

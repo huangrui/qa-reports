@@ -16,7 +16,7 @@ Feature:
 
   Scenario: Should see publish notification
     When I follow "Add report"
-    And I select target "Handset", test type "Smokey" and hardware "N990" with date "2010-11-22"
+    And I select target "Handset", test set "Smokey" and hardware "N990" with date "2010-11-22"
     And I attach the report "sim.xml"
     And submit the form at "upload_report_submit"
     And I press "Publish"
@@ -25,7 +25,7 @@ Feature:
 
   Scenario: Should not see publish notification after reloading report
     When I follow "Add report"
-    And I select target "Handset", test type "Smokey" and hardware "N990" with date "2010-11-22"
+    And I select target "Handset", test set "Smokey" and hardware "N990" with date "2010-11-22"
     And I attach the report "sim.xml"
     And submit the form at "upload_report_submit"
     And I press "Publish"
@@ -36,7 +36,7 @@ Feature:
   Scenario Outline: Add new report with valid data
     When I follow "Add report"
 
-    And I select target "Handset", test type "Smokey" and hardware "N990" with date "2010-11-22"
+    And I select target "Handset", test set "Smokey" and hardware "N990" with date "2010-11-22"
     And I attach the report "<attachment>"
 
     And submit the form at "upload_report_submit"
@@ -58,7 +58,7 @@ Feature:
   Scenario: Add new report with invalid filename extension
     When I follow "Add report"
 
-    And I select target "Core", test type "Smokey" and hardware "n990"
+    And I select target "Core", test set "Smokey" and hardware "n990"
     And I attach the report "invalid_ext.txt"
 
     And submit the form at "upload_report_submit"
@@ -69,7 +69,7 @@ Feature:
 
     When I follow "Add report"
 
-    And I select target "Core", test type "Smokey" and hardware "n990"
+    And I select target "Core", test set "Smokey" and hardware "n990"
     And I attach the report "invalid.csv"
 
     And submit the form at "upload_report_submit"
@@ -81,7 +81,7 @@ Feature:
 
     When I follow "Add report"
 
-    And I select target "Core", test type "Smokey" and hardware "n990"
+    And I select target "Core", test set "Smokey" and hardware "n990"
     And I attach the report "empty.csv"
 
     And submit the form at "upload_report_submit"
@@ -92,7 +92,7 @@ Feature:
 
     When I follow "Add report"
 
-    And I select target "Core", test type "Smokey" and hardware "n990"
+    And I select target "Core", test set "Smokey" and hardware "n990"
     And I attach the report "empty.xml"
 
     And submit the form at "upload_report_submit"
@@ -104,7 +104,7 @@ Feature:
 
     When I follow "Add report"
 
-    And I select target "Core", test type "Smokey" and hardware "n990"
+    And I select target "Core", test set "Smokey" and hardware "n990"
     And I attach the report "invalid.xml"
 
     And submit the form at "upload_report_submit"
@@ -115,7 +115,7 @@ Feature:
 
     When I follow "Add report"
 
-    And I select target "Core", test type "Smokey" and hardware "n990"
+    And I select target "Core", test set "Smokey" and hardware "n990"
 
     And submit the form at "upload_report_submit"
 
@@ -124,7 +124,7 @@ Feature:
   Scenario: Add new report with saved default target
     When I follow "Add report"
 
-    And I select target "Handset", test type "Smokey" and hardware "n990" with date "2010-02-12"
+    And I select target "Handset", test set "Smokey" and hardware "n990" with date "2010-02-12"
     And I attach the report "sample.csv"
     And submit the form at "upload_report_submit"
     And submit the form at "upload_report_submit"
@@ -133,7 +133,7 @@ Feature:
     And I should see "Handset" within "h1"
 
     When I follow "Add report"
-    And I select test type "Smokey" and hardware "n990" with date "2010-02-12"
+    And I select test set "Smokey" and hardware "n990" with date "2010-02-12"
 
     And I attach the report "sample.csv"
     And submit the form at "upload_report_submit"
@@ -142,10 +142,10 @@ Feature:
     And I should see "Handset" within "h1"
 
   #  @selenium
-  #  Scenario: Add new report with underscore in test type and hardware names
+  #  Scenario: Add new report with underscore in test set and hardware names
   #    When I follow "Add report"
   #
-  #    And I select target "Handset", test type "test_type" and hardware "hardware_32" with date "2010-02-12"
+  #    And I select target "Handset", test set "test_set" and hardware "hardware_32" with date "2010-02-12"
   #    And I attach the report "sample.csv"
   #    And submit the form at "upload_report_submit"
   #    And I press "Publish"
@@ -153,5 +153,5 @@ Feature:
   #    When I go to the front page
   #    And I follow "Hardware_32"
   #
-  #    Then I should see "Test_type" within ".index_month .odd .report_name"
+  #    Then I should see "Test_set" within ".index_month .odd .report_name"
   #    Then I should see "Hardware_32" within ".index_month .odd .report_name"

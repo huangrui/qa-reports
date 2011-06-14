@@ -27,7 +27,7 @@ module CsvGenerator
       csv << ["Test execution date",
               "MeeGo release",
               "Profile",
-              "Test type",
+              "Test set",
               "Hardware",
               "Test report name",
               "Feature",
