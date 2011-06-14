@@ -451,14 +451,14 @@ class MeegoTestSession < ActiveRecord::Base
     # \A and \z instead of ^ and $ cause multiline strings to fail validation.
     # And for the record: at least these characters break the navigation:
     # . % \ / (yes, dot is there as well for some oddball reason)
-    allowed = /\A[\w\ \-:;,\(\)]+\z/
+    allowed = /\A[\w\ \-:;,"\+\(\)]+\z/
 
     if not testtype.match(allowed)
-      errors.add :testtype, "Incorrect test type. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( )"
+      errors.add :testtype, "Incorrect test type. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( ) \" +"
     end
 
     if not hardware.match(allowed)
-      errors.add :hardware, "Incorrect hardware. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( )"
+      errors.add :hardware, "Incorrect hardware. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( ) \" +"
     end
   end
 
