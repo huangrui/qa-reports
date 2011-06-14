@@ -3,22 +3,22 @@ class ChangeTestSetNamesData < ActiveRecord::Migration
   def self.up
     mappings = {
       'acceptance-auto-test' => {:test_set => 'Acceptance'},
-      'acceptance for developer edition' => {:test_set => 'Acceptance', :hw_suffix => '_CE'},
+      'acceptance for developer edition' => {:test_set => 'Acceptance', :hw_suffix => 'CE'},
       'basic feature testing' => {:test_set => 'Basic Feature'},
-      'data flow for developer edition' =>  {:test_set => 'Dataflow', :hw_suffix => '_CE'},
-      'de-feature' => {:test_set => 'Key Feature', :hw_suffix => '_CE'},
-      'de-sanity' => {:test_set => 'Sanity', :hw_suffix => '_CE'},
+      'data flow for developer edition' =>  {:test_set => 'Dataflow', :hw_suffix => 'CE'},
+      'de-feature' => {:test_set => 'Key Feature', :hw_suffix => 'CE'},
+      'de-sanity' => {:test_set => 'Sanity', :hw_suffix => 'CE'},
       'full feature testing' =>  {:test_set => 'Extended Feature'},
       'fullpass' =>  {:test_set => 'Milestone'},
       'key basic feature' =>  {:test_set => 'Basic Feature'},
-      'key basic feature for developer edition' =>  {:test_set => 'Basic Feature', :hw_suffix => '_CE'},
+      'key basic feature for developer edition' =>  {:test_set => 'Basic Feature', :hw_suffix => 'CE'},
       'sanity-auto-test' => {:test_set => 'Sanity'},
-      'sanity for developer edition' =>  {:test_set => 'Sanity', :hw_suffix => '_CE'},
+      'sanity for developer edition' =>  {:test_set => 'Sanity', :hw_suffix => 'CE'},
       'system function' =>  {:test_set => 'System Functional'},
       'update system function' =>  {:test_set => 'System Functional'},
       'update sanity' =>  {:test_set => 'Sanity'},
       'updated sanity' =>  {:test_set => 'Sanity'},
-      'use case testing for developer edition' =>  {:test_set => 'Key Feature', :hw_suffix => '_CE'},
+      'use case testing for developer edition' =>  {:test_set => 'Key Feature', :hw_suffix => 'CE'},
       'winxp 32bit ia32 basic' =>  {:test_set => 'Basic Feature'}
     }
 
@@ -31,7 +31,7 @@ class ChangeTestSetNamesData < ActiveRecord::Migration
     end
 
     MeegoTestSession.where(:hardware => 'N900de').each do |s|
-      s.hardware = 'N900_CE'
+      s.hardware = 'N900CE'
       s.save
     end
 
