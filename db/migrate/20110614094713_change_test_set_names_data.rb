@@ -36,13 +36,13 @@ class ChangeTestSetNamesData < ActiveRecord::Migration
     end
 
     # Not to be processed:
-    #'Sanity-automated' => {:test_set => 'Sanity'},
-    #'Sanity:testing' => {:test_set => 'Sanity:testing'},
-    #'Sanity - automated' =>  {:test_set => 'Sanity'},
-    #'Hourly - automated' =>  {:test_set => ' (have no idea which TestSet it belongs to, Sanity?)'},
-    #'Nightly-automated' =>  {:test_set => ' (have no idea which TestSet it belongs to, Acceptance?)'},
-    #'Sample report' =>  {:test_set => ' (have no idea which TestSet it belongs to, System functional?)'},
-    #'Installation' =>  {:test_set => ''},
+    #'Sanity-automated'
+    #'Sanity:testing'
+    #'Sanity - automated'
+    #'Hourly - automated'
+    #'Nightly-automated'
+    #'Sample report'
+    #'Installation'
   end
 
   def self.down
