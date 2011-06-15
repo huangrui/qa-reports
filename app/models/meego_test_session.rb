@@ -159,6 +159,24 @@ class MeegoTestSession < ActiveRecord::Base
     FileStorage.new(dir="public/reports", baseurl="/reports/").list_report_files(self)
   end
 
+  def update_nft_non_nft
+    meego_test_sets.find(:all, :include => :meego_test_cases).each {|set|
+      set.update_has_nft
+      set.update_has_non_nft
+    }
+    update_has_nft
+    update_has_non_nft
+  end
+
+  def self.import(attributes, files, user)
+    attr             = attributes.merge!({:uploaded_files => files})
+    result           = MeegoTestSession.new(attr)
+    result.tested_at = result.tested_at || Time.now
+    result.import_report(user, true)
+    result.save!
+    result
+  end
+
   def self.targets
     TargetLabel.find(:all, :order => "sort_order ASC").map &:label
   end

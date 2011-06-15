@@ -3,9 +3,11 @@
 - all = testcase.all_measurements
 
 - all.each do |m|
-  tr class="testcase multiple_rows #{'even' if (nft_testcase_counter%2) == 0}" id="#{'testcase-' + testcase.id.to_s if first}"
+  tr class="testcase multiple_rows #{'even' if (nft_testcase_counter%2) == 0} testcase-nft-#{testcase.id}" id="#{'testcase-' + testcase.id.to_s if first}"
     - if first
       td.testcase_name rowspan=all.size
+        - if @editing
+          a href="#" onclick="if(confirm('Do you really want to remove \'#{testcase.escaped_name}\'?'))removeTestCase(#{testcase.id}, function(){ $('#testcase-#{testcase.id}').hide();}); return false;" class="remove_list_item" Remove
         = testcase.name
         - if not testcase.source_link.blank?
           a.dl_link href=testcase.source_link src

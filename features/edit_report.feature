@@ -82,3 +82,36 @@ Feature: Edit Report
 
     Then I should see "[FEA] Automatic reporting interface to MeeGo QA reports" within ".editable_area ul li"
 
+  @selenium
+  Scenario: I delete a test case
+    When I view the report "1.1/Core/Sanity/Aava"
+    And I click to edit the report
+    And I click the delete button for case "SMOKE-SIM-Get_IMSI"
+    And I follow "Done"
+
+    Then I should not see "SMOKE-SIM-Get_IMSI"
+
+  @selenium
+  Scenario: I delete all cases
+    When I view the report "1.1/Core/Sanity/Aava"
+    And I click to edit the report
+    And I follow "See all"
+    And I click the delete button for case "SMOKE-SIM-Get_IMSI"
+    And I click the delete button for case "SMOKE-SIM-Query_SIM_card_status"
+    And I click the delete button for case "SMOKE-SIM-Query_Service_Provider_name"	
+    And I click the delete button for case "SMOKE-SIM-Read_HPLMN"
+    And I click the delete button for case "SMOKE-SIM-Get_Languages"
+    And I click the delete button for case "SMOKE-SIM-Get_PIN_state"
+    And I click the delete button for case "SMOKE-SIM-Disable_and_enable_PIN_query"
+    And I click the delete button for case "SMOKE-SIM-Verify_PIN"
+    And I click the delete button for case "SMOKE-SIM-Change_PIN"
+    And I click the delete button for case "SMOKE-SIM-Get_available_PIN_attempts"
+    And I click the delete button for case "SMOKE-SIM-Verify_PUK"
+    And I click the delete button for case "SMOKE-SIM-Get_PUK_required_notification"
+    And I click the delete button for case "SMOKE-SIM-Get_all_phonebook_infos"
+    And I click the delete button for case "SMOKE-SIM-Write_read_and_delete_ADN_phonebook_entry"
+    And I click the delete button for case "SMOKE-SIM-Update_ADN_phonebook_entry"
+    And I click the delete button for case "SMOKE-SIM-Disable_PIN_query"
+    And I follow "Done"
+
+    Then I should not see "Detailed Test Results"

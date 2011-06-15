@@ -1,5 +1,7 @@
 tr class="testcase #{result_class(testcase, 'result_')}" id="testcase-#{testcase.id}" style=hide_passing(testcase)
   td.testcase_name
+    - if @editing
+      a href="#" onclick="if(confirm('Do you really want to remove \'#{testcase.escaped_name}\'?'))removeTestCase(#{testcase.id}, function(){ $('#testcase-#{testcase.id}').hide();}); return false;" class="remove_list_item" Remove
     = testcase.name
     - if not testcase.source_link.blank?
       a.dl_link href=(testcase.source_link)
