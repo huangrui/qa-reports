@@ -6,7 +6,7 @@ class Hardware
     END
 
     @hardwares = MeegoTestSession.published.select(selection).joins(:version_label).
-      where(:version_labels => {:normalized => release.downcase})
+      where(:version_labels => {:normalized => release.downcase}).order(:testtype, :hardware)
 
     @hardwares = @hardwares.group_by(&:profile)
 
