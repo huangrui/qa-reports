@@ -56,8 +56,11 @@ after "deploy:setup" do
   deploy.qadashboard.setup
 end
 
-# Remove default QA Dashboard config and symlink to shared.
-after "deploy:update_code", "deploy:qadashboard:symlink"
+after "deploy:update_code" do
+  # Remove default QA Dashboard config and symlink to shared.
+  run "rm #{latest_release}/config/qa-dashboard_config.yml"
+  run "ln -nfs #{shared_path}/config/qa-dashboard_config.yml #{latest_release}/config/qa-dashboard_config.yml"
+end
 
 after "deploy:symlink" do
   # Remove local directories
