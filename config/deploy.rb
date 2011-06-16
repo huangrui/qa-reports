@@ -25,13 +25,13 @@ after "deploy:setup" do
 
   # Create newrelic configuration file
   enable_newrelic = Capistrano::CLI::ui.ask("Do you want to enable NewRelic performance monitoring? Please note this sends data to external service. Default: no")
-  newrelic_config = YAML.load_file("config/newrelic.yml") 
+  newrelic_config = YAML.load_file("config/newrelic.yml")
   if enable_newrelic =~ /yes/i
     newrelic_config["production"]["monitor_mode"] = true
     newrelic_config["staging"]["monitor_mode"] = true
   end
   put YAML::dump(newrelic_config), "#{shared_path}/config/newrelic.yml"
-  
+
   # Create registeration token
   registeration_token = Capistrano::CLI::ui.ask("What registeration token you want to use? (/users/<token>/register). Default: none")
   put registeration_token, "#{shared_path}/config/registeration_token"
@@ -56,10 +56,16 @@ after "deploy:setup" do
   deploy.qadashboard.setup
 end
 
+after "deploy:update_code" do
+  # Remove default QA Dashboard config and symlink to shared.
+  run "rm #{latest_release}/config/qa-dashboard_config.yml"
+  run "ln -nfs #{shared_path}/config/qa-dashboard_config.yml #{latest_release}/config/qa-dashboard_config.yml"
+end
+
 after "deploy:symlink" do
   # Remove local directories
   run "rm -fr #{current_path}/public/reports"
-  
+
   # Link to shared folders
   run "ln -nfs #{shared_path}/reports #{current_path}/public/"
   run "ln -nfs #{shared_path}/files #{current_path}/public/"
@@ -74,13 +80,10 @@ after "deploy:symlink" do
 
   # Symlink exception notifier config to shared
   run "ln -nfs #{shared_path}/config/exception_notifier #{current_path}/config/exception_notifier"
-  
+
   # Remove current bugzilla config file and symlink to shared
   run "rm #{current_path}/config/bugzilla.yml"
   run "ln -nfs #{shared_path}/config/bugzilla.yml #{current_path}/config/bugzilla.yml"
-
-  # Remove default QA Dashboard config and symlink to shared.
-  deploy.qadashboard.symlink
 end
 
 namespace :deploy do
@@ -91,7 +94,7 @@ namespace :deploy do
 
   desc "Start the app server"
   task :start, :roles => :app do
-    run "passenger start #{current_path} --daemonize --environment #{rails_env} --port 3000" 
+    run "passenger start #{current_path} --daemonize --environment #{rails_env} --port 3000"
   end
 
   desc "Stop the app server"

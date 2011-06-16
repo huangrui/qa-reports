@@ -30,12 +30,12 @@ Feature: REST API
     And I should see "icon_alert.gif" within "#file_attachment_list"
 
   Scenario: Adding a report with tests that do not belong to any feature
-    When the client sends reports "spec/fixtures/no_features.xml" via the REST API to test type "Automated" and hardware "N900"
+    When the client sends reports "spec/fixtures/no_features.xml" via the REST API to test set "Automated" and hardware "N900"
     And I should be able to view the created report
 
     Then I should see "N/A" within ".feature_name"
     And I should see "8" within "td.total"
-    
+
   Scenario: Sending REST import with string values instead of files
     When the client sends a request with string value instead of a files via the REST API
 
@@ -102,10 +102,10 @@ Feature: REST API
   # For the optional parameters, title, build_txt/Build (image), objective_txt (Test Objective), qa_summary_txt/(Quality Summary), issue_summary_txt
   Scenario: Sending REST import with valid optional title parameter
     When the client sends a request with extra parameter "title=Core+Test+Report%3A+N900+UX+Key+Feature+%2D+20110320+%28for+0315+release%29" via the REST API
-    
+
     Then the REST result "ok" is "1"
     And I should be able to view the created report
-    And I should see "Core Test Report: N900 UX Key Feature - 20110320 (for 0315 release)" within "h1" 
+    And I should see "Core Test Report: N900 UX Key Feature - 20110320 (for 0315 release)" within "h1"
 
 
   Scenario: Sending REST import with valid optional build_image parameter
@@ -130,21 +130,21 @@ Feature: REST API
     Then the REST result "ok" is "1"
     And I should be able to view the created report
     And I should see "Improvement:- Notification UX can be shown now (top bug 5518 is fixed), but new IM message failed to show in notification UI;- Be able to transfer files using Chat;"
- 
 
-  Scenario: Sending REST import with valid optional issue_summary_txt 
+
+  Scenario: Sending REST import with valid optional issue_summary_txt
     When the client sends a request with extra parameter "issue_summary_txt=New+Issue%285%29%3A6306+System+time+setting+is+wrong+for+Los+Angeles%3B+6235+VKB+in+browser+does+not+launch+in+some+text+fields%3B+6043+Mismatched+sync+service+icon+and+text+in+Sync+Details+page%3B+6055+Sync+shared+credentials+not+reflected+in+Sync+Settings+main+page%3B+6056+Sync+UI+intermittent+crash+after+log+in" via the REST API
- 
+
     Then the REST result "ok" is "1"
     And I should be able to view the created report
     And I should see "New Issue(5):6306 System time setting is wrong for Los Angeles; 6235 VKB in browser does not launch in some text fields; 6043 Mismatched sync service icon and text in Sync Details page; 6055 Sync shared credentials not reflected in Sync Settings main page; 6056 Sync UI intermittent crash after log in"
-  
+
   Scenario: Sending REST import with all valid optional parameters
     When the client sends a request with extra parameter "title=Core+Test+Report%3A+N900+UX+Key+Feature+%2D+20110320+%28for+0315+release%29&build_txt=meego%2Dtablet%2Dia32%2Dproduct%2DPinetrail%2D1%2E1%2E90%2E7%2E20110315%2E10%2Eiso&objective_txt=It+is+a+weekly+testing+cycle+for+preview+images+released+by+distribution+team+to+ensure+MeeGo+Tablet+UX+delivers+correct+software+feature+integrations+and+stable+existed+functions%2E+Based+on+the+Tablet+requirements+documented%2C+our+testing+focus+would+be+basic+feature+testing%2C+bug+verification+and+regression+test+according+to+package+changes%2E&qa_summary_txt=Improvement%3A%2D+Notification+UX+can+be+shown+now+%28top+bug+5518+is+fixed%29%2C+but+new+IM+message+failed+to+show+in+notification+UI%3B%2D+Be+able+to+transfer+files+using+Chat%3B&issue_summary_txt=New+Issue%285%29%3A6306+System+time+setting+is+wrong+for+Los+Angeles%3B+6235+VKB+in+browser+does+not+launch+in+some+text+fields%3B+6043+Mismatched+sync+service+icon+and+text+in+Sync+Details+page%3B+6055+Sync+shared+credentials+not+reflected+in+Sync+Settings+main+page%3B+6056+Sync+UI+intermittent+crash+after+log+in" via the REST API
-  
+
     Then the REST result "ok" is "1"
     And I should be able to view the created report
-   
+
     And I should see "Core Test Report: N900 UX Key Feature - 20110320 (for 0315 release)" within "h1"
     And I should see "meego-tablet-ia32-product-Pinetrail-1.1.90.7.20110315.10.iso"
     And I should see "It is a weekly testing cycle for preview images released by distribution team to ensure MeeGo Tablet UX delivers correct software feature integrations and stable existed functions. Based on the Tablet requirements documented, our testing focus would be basic feature testing, bug verification and regression test according to package changes."

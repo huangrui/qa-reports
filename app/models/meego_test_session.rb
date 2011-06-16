@@ -444,7 +444,7 @@ class MeegoTestSession < ActiveRecord::Base
 
   end
 
-  # Validate user entered test type and hw product. If all characters are
+  # Validate user entered test set and hw product. If all characters are
   # allowed users may enter characters that break the functionality. Thus,
   # restrict the allowed subset to certainly safe
   def validate_type_hw
@@ -454,7 +454,7 @@ class MeegoTestSession < ActiveRecord::Base
     allowed = /\A[\w\ \-:;,"\+\(\)]+\z/
 
     if not testtype.match(allowed)
-      errors.add :testtype, "Incorrect test type. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( ) \" +"
+      errors.add :testtype, "Incorrect test set. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( ) \" +"
     end
 
     if not hardware.match(allowed)

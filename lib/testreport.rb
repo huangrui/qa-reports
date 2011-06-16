@@ -32,14 +32,14 @@ module MeegoTestReport
     end
     ids
   end
-  
+
   def MeegoTestReport.format_txt(txt)
     html = []
     ul = false
     txt.gsub! '&', '&amp;'
     txt.gsub! '<', '&lt;'
     txt.gsub! '>', '&gt;'
-    
+
     txt.each_line do |line|
       line.strip!
       if ul and not line =~ /^\*/
@@ -72,56 +72,56 @@ module MeegoTestReport
         html << "<li>#{$1}</li>"
       else
         html << "#{line}<br/>"
-      end 
+      end
     end
-    
+
     (html.join '').html_safe
   end
-  
+
 end
 
 module ReportSummary
 
   def total_cases
-    if meego_test_cases.loaded?
+    @total_cases ||= if meego_test_cases.loaded?
       meego_test_cases.length
     else
       meego_test_cases.count
     end
   end
-  
+
   def total_passed
-    if meego_test_cases.loaded?
+    @total_passed ||= if meego_test_cases.loaded?
       meego_test_cases.to_a.count {|x| x.result == 1}
     else
       meego_test_cases.count(:conditions => {:result => 1})
     end
   end
-  
+
   def total_failed
-    if meego_test_cases.loaded?
+    @total_failed ||= if meego_test_cases.loaded?
       meego_test_cases.to_a.count {|x| x.result == -1}
     else
       meego_test_cases.count(:conditions => {:result => -1})
     end
   end
-  
+
   def total_na
-    if meego_test_cases.loaded?
+    @total_na ||= if meego_test_cases.loaded?
       meego_test_cases.to_a.count {|x| x.result == 0}
     else
       meego_test_cases.count(:conditions => {:result => 0})
     end
   end
-  
+
   def total_executed
     total_passed + total_failed
   end
-  
+
   def run_rate
     "%i%%" % run_rate_value
   end
-  
+
   def total_pass_rate
     if total_cases == 0
       "n/a"
@@ -129,7 +129,7 @@ module ReportSummary
       "%i%%" % total_pass_rate_value
     end
   end
-  
+
   def executed_pass_rate
     if total_executed == 0
       "n/a"
@@ -137,7 +137,7 @@ module ReportSummary
       "%i%%" % executed_pass_rate_value
     end
   end
-  
+
   def run_rate_value
     if total_cases > 0
       (total_executed*100.0/total_cases + 0.5)
@@ -145,7 +145,7 @@ module ReportSummary
       0
     end
   end
-  
+
   def total_pass_rate_value
     if total_cases > 0
       (total_passed*100.0/total_cases + 0.5)
@@ -153,7 +153,7 @@ module ReportSummary
       0
     end
   end
-  
+
   def executed_pass_rate_value
     if total_executed > 0
       (total_passed*100.0/total_executed + 0.5)
@@ -161,7 +161,7 @@ module ReportSummary
       0
     end
   end
-  
+
   def total_change_class
     if not prev_summary or total_cases == prev_summary.total_cases
       "unchanged"
@@ -173,7 +173,7 @@ module ReportSummary
   end
 
   def passed_change_class
-    if not prev_summary or total_passed == prev_summary.total_passed 
+    if not prev_summary or total_passed == prev_summary.total_passed
       "unchanged"
     elsif total_passed < prev_summary.total_passed
       "dec"
@@ -201,8 +201,8 @@ module ReportSummary
       "inc"
     end
   end
-  
-  
+
+
   def total_change
     if not prev_summary or total_cases == prev_summary.total_cases
       ""
@@ -234,7 +234,7 @@ module ReportSummary
       "%+i" % (total_na - prev_summary.total_na)
     end
   end
-  
+
   def run_rate_change_class
     if not prev_summary or run_rate_value == prev_summary.run_rate_value
       "unchanged"
@@ -264,7 +264,7 @@ module ReportSummary
       "inc"
     end
   end
-  
+
   def total_pass_rate_change
     if not prev_summary or total_pass_rate_value == prev_summary.total_pass_rate_value
       ""
