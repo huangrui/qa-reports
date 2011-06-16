@@ -68,7 +68,7 @@ h2#test_results
           th.th_notes Comments
           th.th_grading Grading
 
-      = render :partial => 'feature_summary', :collection => @test_session.meego_test_sets
+      = render :partial => 'feature_summary', :collection => @test_session.meego_test_sets, :locals => {:max_cases => @test_session.max_feature_cases}
 
 - data = @report.summary_data
 
@@ -79,7 +79,7 @@ javascript:
     var summary_failed = #{ ints2js data.failed } ;
     var summary_na     = #{ ints2js data.na } ;
     var summary_labels = #{ strs2js data.labels } ;
-    
+
     var g = new Bluff.StackedBar("summary_graph_canvas", "395x210");
     g.hide_title = true;
     g.tooltips = true;
@@ -93,7 +93,7 @@ javascript:
       font_color: '#6f6f6f',
       background_colors: ['white', 'white']
     });
-    
+
     g.data('pass', summary_passed, '#bcd483');
     g.data('fail', summary_failed, '#f36c6c');
     g.data('n/a',  summary_na,     '#ddd');

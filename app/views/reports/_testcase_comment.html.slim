@@ -1,5 +1,7 @@
+/ TODO: make template partial rendering somehow fast
+/ NOTE: if changed, update also _testcase and _nft_testcase. DRY violated because of seriously bad partial rendering performance.
 td class="testcase_notes #{'edit' if @editing}" rowspan="#{testcase.all_measurements.size if testcase.has_nft }"
-  .content 
+  .content
     = comment_html(testcase)
     - if not testcase.attachments.empty?
       - attachment = testcase.attachments.first

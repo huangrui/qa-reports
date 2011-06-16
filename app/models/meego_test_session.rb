@@ -86,11 +86,10 @@ class MeegoTestSession < ActiveRecord::Base
 
 
   def self.fetch_fully(id)
-    find(id, :include => [
-         {:meego_test_sets => [
-           :meego_test_cases, {:meego_test_cases => :measurements}
-          ]
-         }, :meego_test_sets, :meego_test_cases])
+    find(id, :include =>
+         {:meego_test_sets =>
+           {:meego_test_cases => [:measurements, :meego_test_case_attachments, :meego_test_set, :meego_test_session]}
+         })
   end
 
   def self.testtypes
@@ -262,10 +261,10 @@ class MeegoTestSession < ActiveRecord::Base
 
     # TODO: Works only if there's >= 1s difference between the timestamps
     @prev_session = MeegoTestSession.find(:first, :conditions => [
-        "tested_at < ? AND target = ? AND testtype = ? AND hardware = ? AND published = ? AND version_label_id = ?", time, target.downcase, testtype.downcase, hardware.downcase, true, version_label_id
+        "(tested_at < ? OR tested_at = ? AND created_at < ?) AND target = ? AND testtype = ? AND hardware = ? AND published = ? AND version_label_id = ?", time, time, created_at, target.downcase, testtype.downcase, hardware.downcase, true, version_label_id
     ],
-                          :order => "tested_at DESC", :include => [
-         {:meego_test_sets => :meego_test_cases}, :meego_test_sets, :meego_test_cases])
+                          :order => "tested_at DESC, created_at DESC", :include =>
+         [{:meego_test_sets => :meego_test_cases}, {:meego_test_cases => :meego_test_set}])
 
     @has_prev = !@prev_session.nil?
     @prev_session
@@ -294,6 +293,11 @@ class MeegoTestSession < ActiveRecord::Base
 
   def non_nft_sets
     meego_test_sets.select {|set| set.has_non_nft?}
+  end
+
+  def test_case_by_name(feature, name)
+    @test_case_hash ||= make_test_case_hash
+    @test_case_hash[feature][name] unless @test_case_hash[feature].nil?
   end
 
   ###############################################
@@ -340,6 +344,9 @@ class MeegoTestSession < ActiveRecord::Base
     data
   end
 
+  def max_feature_cases
+    meego_test_sets.map{|item| item.total_cases}.max
+  end
 
   def small_graph_img_tag(max_cases)
     html_graph(total_passed, total_failed, total_na, max_cases)
@@ -437,7 +444,7 @@ class MeegoTestSession < ActiveRecord::Base
 
   end
 
-  # Validate user entered test type and hw product. If all characters are
+  # Validate user entered test set and hw product. If all characters are
   # allowed users may enter characters that break the functionality. Thus,
   # restrict the allowed subset to certainly safe
   def validate_type_hw
@@ -447,7 +454,7 @@ class MeegoTestSession < ActiveRecord::Base
     allowed = /\A[\w\ \-:;,\(\)]+\z/
 
     if not testtype.match(allowed)
-      errors.add :testtype, "Incorrect test type. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( )"
+      errors.add :testtype, "Incorrect test set. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( )"
     end
 
     if not hardware.match(allowed)
@@ -463,6 +470,10 @@ class MeegoTestSession < ActiveRecord::Base
 
   def format_date
     tested_at.strftime("%d.%m")
+  end
+
+  def format_year
+    tested_at.strftime("%Y")
   end
 
   def self.map_result(result)
@@ -815,6 +826,15 @@ class MeegoTestSession < ActiveRecord::Base
   def create_labels
     create_version_label && create_target_label
   end
+
+  def make_test_case_hash
+    test_cases = meego_test_cases.group_by {|tc| tc.meego_test_set.feature }
+    test_cases.each_key do |feature|
+      test_cases[feature] = Hash[test_cases[feature].map {|tc| [tc.name, tc]}]
+    end
+    test_cases
+  end
+
 end
 
 class Counter

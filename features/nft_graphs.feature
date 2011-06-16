@@ -7,7 +7,7 @@ Feature: Check NFT graphs from the web page
     Given I am a new, authenticated user
 
     When I follow "Add report"
-    And I select target "Handset", test type "NFT" and hardware "N900" with date "2010-11-22"
+    And I select target "Handset", test set "NFT" and hardware "N900" with date "2010-11-22"
     And I attach the report "serial_result.xml"
     And submit the form at "upload_report_submit"
     And I press "Publish"

@@ -25,12 +25,12 @@ require 'graph'
 
 class MeegoTestSet < ActiveRecord::Base
   belongs_to :meego_test_session
-   
+
   has_many :meego_test_cases, :dependent => :destroy
-   
+
   include ReportSummary
   include Graph
-   
+
   def has_nft?
     has_nft
   end
@@ -60,17 +60,13 @@ class MeegoTestSet < ActiveRecord::Base
   def name
     feature
   end
-  
-  def max_cases
-    meego_test_session.meego_test_sets.map{|item| item.total_cases}.max
-  end
 
-  def graph_img_tag
+  def graph_img_tag(max_cases)
     html_graph(total_passed, total_failed, total_na, max_cases)
   end
 
   def test_set_link
     "#test-set-%i" % id
   end
-  
+
 end

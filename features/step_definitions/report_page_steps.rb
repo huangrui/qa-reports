@@ -44,7 +44,7 @@ end
 When /I view the report "([^"]*)"$/ do |report_string|
   version, target, test_type, hardware = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {"version_labels.normalized" => version, :target => target, :hardware => hardware, :testtype => test_type}, :include => :version_label 
+   {"version_labels.normalized" => version, :target => target, :hardware => hardware, :testtype => test_type}, :include => :version_label
   )
   raise "report not found with parameters #{version}/#{target}/#{hardware}/#{test_type}!" unless report
   visit("/#{version}/#{target}/#{test_type}/#{hardware}/#{report.id}")
@@ -68,7 +68,7 @@ Given /^I have created the "([^"]*)" report with date "([^"]*)"(?: using "([^"]*
   When %{I follow "Add report"}
   And %{I fill in "report_test_execution_date" with "#{report_date}"}
   And %{I choose "#{version}"}
-  And %{I select target "#{target}", test type "#{test_type}" and hardware "#{hardware}"}
+  And %{I select target "#{target}", test set "#{test_type}" and hardware "#{hardware}"}
   And %{I attach the report "#{report_template}"}
   And %{I submit the form at "upload_report_submit"}
   And %{I submit the form at "upload_report_submit"}
@@ -119,25 +119,25 @@ When /^(?:|I )attach the file "([^"]*)" to test case "([^"]*)"$/ do |file, test_
     And "attach the file \"#{Dir.getwd}/features/resources/#{file}\" to \"testcase_attachment\""
   end
 
-  And "I submit the comment for the test case \"#{test_case}\""  
+  And "I submit the comment for the test case \"#{test_case}\""
 end
 
 When /^I remove the attachment from the test case "([^"]*)"$/ do |test_case|
   And "I click the element \"#delete_attachment\" for the test case \"#{test_case}\""
-  And "I submit the comment for the test case \"#{test_case}\""  
+  And "I submit the comment for the test case \"#{test_case}\""
 end
 
 When /^I attach the report "([^"]*)"$/ do |file|
   And "attach the file \"#{Dir.getwd}/features/resources/#{file}\" to \"meego_test_session[uploaded_files][]\""
 end
 
-Given /^I select target "([^"]*)", test type "([^"]*)" and hardware "([^"]*)"(?: with date "([^\"]*)")?/ do |target, test_type, hardware, date|
+Given /^I select target "([^"]*)", test set "([^"]*)" and hardware "([^"]*)"(?: with date "([^\"]*)")?/ do |target, test_type, hardware, date|
   When %{I fill in "report_test_execution_date" with "#{date}"} if date
   When %{I choose "#{target}"}
-  And %{I select test type "#{test_type}" and hardware "#{hardware}"}
+  And %{I select test set "#{test_type}" and hardware "#{hardware}"}
 end
 
-Given /^I select test type "([^"]*)" and hardware "([^"]*)"(?: with date "([^\"]*)")?$/ do |test_type, hardware, date|
+Given /^I select test set "([^"]*)" and hardware "([^"]*)"(?: with date "([^\"]*)")?$/ do |test_type, hardware, date|
   When %{I fill in "report_test_execution_date" with "#{date}"} if date
   When %{I fill in "meego_test_session[testtype]" with "#{test_type}"}
   When %{I fill in "meego_test_session[hardware]" with "#{hardware}"}

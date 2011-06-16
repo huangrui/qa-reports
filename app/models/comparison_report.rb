@@ -13,7 +13,7 @@ class ComparisonReport
 
   def result_changed?(feature, test_case)
     @comparisons.each_value do |comparison|
-      return true if comparison.test_case_changed?(feature, test_case)
+      return true if comparison.result_changed?(feature, test_case)
     end
 
     return false

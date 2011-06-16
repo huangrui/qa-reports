@@ -208,7 +208,7 @@ class ReportsController < ApplicationController
 
       return render_404 unless @selected_release_version.downcase.eql? @test_session.release_version.downcase
 
-      @history = history(@test_session.prev_session)
+      @history = history(@test_session, 5)
 
       @target    = @test_session.target
       @testtype  = @test_session.testtype
@@ -240,6 +240,11 @@ class ReportsController < ApplicationController
       @files = FileStorage.new().list_files(@test_session) or []
       @wizard = false
       @email  = true
+
+      @nft_trends = nil
+      if @test_session.has_nft?
+        @nft_trends = NftHistory.new(@test_session)
+      end
 
       render :layout => "report"
     else
@@ -345,13 +350,10 @@ class ReportsController < ApplicationController
     "bugzilla_#{h}"
   end
 
-  def history(s)
-    h = []
-    while h.size < 5
-      h << s
-      s = s.prev_session if s
-    end
-    return h
+  def history(s, cnt)
+    MeegoTestSession.where("(tested_at < '#{s.tested_at}' OR tested_at = '#{s.tested_at}' AND created_at < '#{s.created_at}') AND target = '#{s.target.downcase}' AND testtype = '#{s.testtype.downcase}' AND hardware = '#{s.hardware.downcase}' AND published = 1 AND version_label_id = #{s.version_label_id}").
+        order("tested_at DESC, created_at DESC").limit(cnt).
+        includes([{:meego_test_sets => :meego_test_cases}, {:meego_test_cases => :meego_test_set}])
   end
 
   def just_published?

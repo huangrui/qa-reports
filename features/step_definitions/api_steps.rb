@@ -23,12 +23,12 @@ When /^the client sends file "([^"]*)" via the REST API with RESTful parameters$
   response.should be_success
 end
 
-When /^the client sends reports "([^"]*)" via the REST API to test type "([^"]*)" and hardware "([^"]*)"$/ do |files, testtype, hardware|
+When /^the client sends reports "([^"]*)" via the REST API to test set "([^"]*)" and hardware "([^"]*)"$/ do |files, testtype, hardware|
   data = @default_api_opts.merge({
     "testtype"        => testtype,
     "hwproduct"       => hardware
   })
-  
+
   files.split(',').each_with_index do |file, index|
     data["report."+(index+1).to_s] = Rack::Test::UploadedFile.new(file, "text/xml")
   end

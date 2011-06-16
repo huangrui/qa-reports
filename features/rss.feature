@@ -13,7 +13,7 @@ Feature: RSS Feed
     When I fetch the rss feed for "1.1/Core/Sanity/Aava"
     Then I should see 1 instance of "item"
 
-  Scenario: Fetch RSS feed for test type level filter
+  Scenario: Fetch RSS feed for test set level filter
     When I fetch the rss feed for "1.1/Core/Sanity"
     Then I should see 2 instances of "item"
     And I should see "Aava"
