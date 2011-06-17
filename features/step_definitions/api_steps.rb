@@ -18,7 +18,7 @@ When /^the client sends file "([^"]*)" via the REST API$/ do |file|
   response.should be_success
 end
 
-When /^the client hides the report via the REST API to version "([^"]*)", target "([^"]*)", testtype "([^"]*)", hardware "([^"]*)"$/ do |release_version, target, testtype, hardware|
+When /^the client hides the report via the REST API to version "([^"]*)", target "([^"]*)", test set "([^"]*)", hardware "([^"]*)"$/ do |release_version, target, testtype, hardware|
   data = @default_api_opts.merge({
     "release_version" => release_version,
     "target" => target,
@@ -30,7 +30,7 @@ When /^the client hides the report via the REST API to version "([^"]*)", target
   response.should be_success
 end
 
-When /^the client hides the report via the REST API to version "([^"]*)", target "([^"]*)", testtype "([^"]*)" lacked the hardware$/ do |release_version, target, testtype|
+When /^the client hides the report via the REST API to version "([^"]*)", target "([^"]*)", test set "([^"]*)" lacked the hardware$/ do |release_version, target, testtype|
   data = @hide_api_opts.merge({
     "release_version" => release_version,
     "target" => target,
