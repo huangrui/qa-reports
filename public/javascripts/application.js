@@ -266,14 +266,7 @@ function linkEditButtons() {
         $node.click(handleEditButton);
     });
     $('div.editable_title').click(handleTitleEdit);
-    $('.testcase').each(function(i, node) {
-        var $node = $(node);
-        var $comment = $node.find('.testcase_notes');
-        var $result = $node.find('.testcase_result');
-
-        $result.click(handleResultEdit);
-        $comment.click(handleCommentEdit);
-    });
+    $('.testcase').each(function(i, node) { linkTestCaseButtons(node); });
 
     $('.feature_record').each(function(i, node) {
         var $node = $(node);
@@ -283,6 +276,24 @@ function linkEditButtons() {
         $comment.click(handleFeatureCommentEdit);
         $grading.click(handleFeatureGradingEdit);
     });
+}
+
+function unlinkTestCaseButtons(node) {
+    var $node = $(node);
+    var $comment = $node.find('.testcase_notes');
+    var $result = $node.find('.testcase_result');
+
+    $result.unbind('click');
+    $comment.unbind('click');
+}
+
+function linkTestCaseButtons(node) {
+    var $node = $(node);
+    var $comment = $node.find('.testcase_notes');
+    var $result = $node.find('.testcase_result');
+
+    $result.click(handleResultEdit);
+    $comment.click(handleCommentEdit);
 }
 
 /**
@@ -790,6 +801,31 @@ function removeAttachment(report, fileName, callback) {
     });
 };
 
+function toggleRemoveTestCase(id) {
+  var $testCaseRow = $('#testcase-' + id.toString());
+  if ($testCaseRow.hasClass('removed')) {
+    restoreTestCase(id, function(){});
+    linkTestCaseButtons($testCaseRow);
+  }
+  else {
+    removeTestCase(id, function(){});
+    unlinkTestCaseButtons($testCaseRow);
+  }
+
+  $nftRows = $('.testcase-nft-' + id.toString());
+  if ($nftRows) {
+    $nftRows.toggleClass('removed');
+  } else {
+    $testCaseRow.toggleClass('removed');
+  }
+
+  $testCaseRow.find('.testcase_name').toggleClass('removed');
+  $testCaseRow.find('.testcase_name a').toggleClass('remove_list_item');
+  $testCaseRow.find('.testcase_name a').toggleClass('undo_remove_list_item');
+  $testCaseRow.find('.testcase_notes').toggleClass('edit');
+  $testCaseRow.find('.testcase_result').toggleClass('edit');
+}
+
 function removeTestCase(id, callback) {
     $.post("/ajax_remove_testcase", {
         id: id
@@ -799,6 +835,17 @@ function removeTestCase(id, callback) {
     	}
     });
 }
+
+function restoreTestCase(id, callback) {
+    $.post("/ajax_restore_testcase", {
+      id:         id,
+    }, function(data, status) {
+      if (data.ok == 1 && callback != null) {
+        callback.call(this);
+      }
+    });
+}
+
 
 (function($) {
 

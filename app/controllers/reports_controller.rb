@@ -42,25 +42,20 @@ module AjaxMixin
 
   def remove_testcase
     case_id = params[:id].to_i
-    testcase = MeegoTestCase.find(case_id)
-    set = testcase.meego_test_set
-    test_session = set.meego_test_session
-    testcase.destroy
+    tc = MeegoTestCase.find(case_id)
+    tc.remove_from_session
 
-    # Empty set, let's remove it
-    if set.total_cases == 0
-        set.destroy
-    end
-    
-    # Update nft and fute information from test session. This is done
-    # here since not all people use the "Done" button even if this
-    # will cause multiple DB calls when user keeps deleting cases.
-    # Also worth to notice that unlike empty sets, empty sessions are not
-    # removed - on purpose.
-    test_session.update_nft_non_nft
-
-    expire_caches_for(test_session)
+    expire_caches_for(tc.meego_test_session)
     render :json => {:ok => '1'}
+  end
+
+  def restore_testcase
+    case_id         = params[:id].to_i
+    tc = MeegoTestCase.deleted.find(case_id)
+    tc.restore_to_session
+
+    expire_caches_for(tc.meego_test_session)
+    render :json => { :ok => '1' }
   end
 
   def update_title

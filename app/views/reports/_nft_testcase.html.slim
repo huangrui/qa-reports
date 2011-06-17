@@ -7,7 +7,7 @@
     - if first
       td.testcase_name rowspan=all.size
         - if @editing
-          a href="#" onclick="if(confirm('Do you really want to remove \'#{testcase.escaped_name}\'?'))removeTestCase(#{testcase.id}, function(){ $('#testcase-#{testcase.id}').hide();}); return false;" class="remove_list_item" Remove
+          a href="#" onclick="toggleRemoveTestCase(#{testcase.id}); return false;" class="remove_list_item" Remove
         = testcase.name
         - if not testcase.source_link.blank?
           a.dl_link href=testcase.source_link src

@@ -1648,19 +1648,26 @@ select.grading_select {
 .testcase td:first-child {
     border-left: 1px none #ddd;}
 
-.testcase.removed {
-    display: none;
-}
-
 .testcase.removed td {
     background-color: #f8f8f8 !important;
+    text-decoration: line-through;
 }
+
+.testcase.removed.even td {
+    background-color: #ececec !important;}
 
 .testcase.removed td * {
     filter: alpha(opacity=30);
     -moz-opacity:0.3;
     -khtml-opacity:0.3;
     opacity: 0.3;
+}
+
+.testcase.removed td * * {
+    filter: alpha(opacity=100);
+    -moz-opacity:1.0;
+    -khtml-opacity:1.0;
+    opacity: 1.0;
 }
 
 .testcase.removed .undo_remove_list_item {

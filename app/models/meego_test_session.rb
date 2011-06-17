@@ -159,15 +159,6 @@ class MeegoTestSession < ActiveRecord::Base
     FileStorage.new(dir="public/reports", baseurl="/reports/").list_report_files(self)
   end
 
-  def update_nft_non_nft
-    meego_test_sets.find(:all, :include => :meego_test_cases).each {|set|
-      set.update_has_nft
-      set.update_has_non_nft
-    }
-    update_has_nft
-    update_has_non_nft
-  end
-
   def self.import(attributes, files, user)
     attr             = attributes.merge!({:uploaded_files => files})
     result           = MeegoTestSession.new(attr)
@@ -735,11 +726,8 @@ class MeegoTestSession < ActiveRecord::Base
       suite.sets.each do |set|
         ReportParser::parse_features(set.feature).each do |feature|
 
-          set_model = if sets.has_key? feature
-            sets[feature]
-          else
-            sets[feature] = self.meego_test_sets.build(:feature => feature)
-          end
+          sets[feature] ||= self.meego_test_sets.build(:feature => feature)
+          set_model = sets[feature]
 
           pass_count = 0
           total_count = 0
