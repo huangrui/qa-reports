@@ -813,10 +813,10 @@ function toggleRemoveTestCase(id) {
   }
 
   $nftRows = $('.testcase-nft-' + id.toString());
-  if ($nftRows) {
-    $nftRows.toggleClass('removed');
-  } else {
+  if ($nftRows.length == 0) {
     $testCaseRow.toggleClass('removed');
+  } else {
+    $nftRows.toggleClass('removed');
   }
 
   $testCaseRow.find('.testcase_name').toggleClass('removed');
