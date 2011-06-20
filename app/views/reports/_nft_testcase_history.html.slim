@@ -33,19 +33,19 @@
             td
               span.unit min.
               '  
-              = m.min_html
+              = @nft_trends.serial_measurements[feature][testcase.name][m.name]['min']
             td
               span.unit avg.
               '  
-              = m.avg_html
+              = @nft_trends.serial_measurements[feature][testcase.name][m.name]['avg']
             td
               span.unit max.
               '  
-              = m.max_html
+              = @nft_trends.serial_measurements[feature][testcase.name][m.name]['max']
             td
               span.unit med.
               '  
-              = m.med_html
+              = @nft_trends.serial_measurements[feature][testcase.name][m.name]['med']
     - else
       td.testcase_measurement= m.name
       td.testcase_graph

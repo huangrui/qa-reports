@@ -107,9 +107,13 @@ renderSeriesGraphs = function(selector) {
             g.draw();
 
             $canvas.click(function() {
+	        // Render NftTrendGraph, the same that is shown in See latest
+	        // -mode when clickin the measurement value
                 if ($div.hasClass('nft_history')) {
 		    var m_id = id.match("[0-9]{1,}$");
 		    renderNftTrendGraph(m_id);
+                // Open NFT serial measurement graph
+// TODO! Open the NFT Serial History Graph and somehow handle the data
 		} else {
                     renderModalGraph($modal_info);		    
 		}
