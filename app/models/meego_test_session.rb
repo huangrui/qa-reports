@@ -159,6 +159,15 @@ class MeegoTestSession < ActiveRecord::Base
     FileStorage.new(dir="public/reports", baseurl="/reports/").list_report_files(self)
   end
 
+  def self.import(attributes, files, user)
+    attr             = attributes.merge!({:uploaded_files => files})
+    result           = MeegoTestSession.new(attr)
+    result.tested_at = result.tested_at || Time.now
+    result.import_report(user, true)
+    result.save!
+    result
+  end
+
   def self.targets
     TargetLabel.find(:all, :order => "sort_order ASC").map &:label
   end
@@ -348,6 +357,10 @@ class MeegoTestSession < ActiveRecord::Base
 
   def max_feature_cases
     meego_test_sets.map{|item| item.total_cases}.max
+  end
+
+  def non_empty_features
+    meego_test_sets.select{|feature| feature.total_cases > 0}
   end
 
   def small_graph_img_tag(max_cases)

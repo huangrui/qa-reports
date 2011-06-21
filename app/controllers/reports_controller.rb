@@ -40,6 +40,24 @@ module AjaxMixin
     render :json => {:ok => '1'}
   end
 
+  def remove_testcase
+    case_id = params[:id].to_i
+    tc = MeegoTestCase.find(case_id)
+    tc.remove_from_session
+
+    expire_caches_for(tc.meego_test_session)
+    render :json => {:ok => '1'}
+  end
+
+  def restore_testcase
+    case_id         = params[:id].to_i
+    tc = MeegoTestCase.deleted.find(case_id)
+    tc.restore_to_session
+
+    expire_caches_for(tc.meego_test_session)
+    render :json => { :ok => '1' }
+  end
+
   def update_title
     @preview_id   = params[:id].to_i
     @test_session = MeegoTestSession.find(@preview_id)

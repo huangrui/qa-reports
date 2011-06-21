@@ -25,7 +25,7 @@ module Graph
   end
 
   def html_graph(passed, failed, na, max_cases)
-      return '<div class="htmlgraph">&nbsp;</div>' if max_cases == 0
+      return '<div class="htmlgraph">&nbsp;</div>'.html_safe if max_cases == 0
       pw = passed*100/max_cases
       fw = failed*100/max_cases
       nw = na*100/max_cases

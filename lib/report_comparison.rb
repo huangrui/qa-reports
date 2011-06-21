@@ -112,6 +112,7 @@ class ReportComparison
 
       ON (LOWER(latest.name), LOWER(l_ts.feature)) = (LOWER(previous.name), LOWER(p_ts.feature))
       WHERE latest.meego_test_session_id = #{@latest.id} AND previous.meego_test_session_id = #{@previous.id}
+      AND latest.deleted = 0 AND previous.deleted = 0
       GROUP BY previous.result, latest.result;
     END
 
@@ -123,7 +124,7 @@ class ReportComparison
       SELECT tc.result as verdict, COUNT(tc.result) as count
       FROM meego_test_cases as tc
       JOIN meego_test_sets as ts ON ( tc.meego_test_set_id = ts.id )
-      WHERE tc.meego_test_session_id = #{@latest.id}
+      WHERE tc.meego_test_session_id = #{@latest.id} AND tc.deleted = 0
 
       -- Test cases is not in the previous report
       AND (LOWER(feature), LOWER(name)) NOT IN (

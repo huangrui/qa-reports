@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110614094713) do
+ActiveRecord::Schema.define(:version => 20110617075312) do
 
   create_table "meego_measurements", :force => true do |t|
     t.integer "meego_test_case_id"
@@ -43,6 +43,7 @@ ActiveRecord::Schema.define(:version => 20110614094713) do
     t.string  "source_link"
     t.string  "binary_link"
     t.boolean "has_nft",                               :default => false, :null => false
+    t.boolean "deleted",                               :default => false, :null => false
   end
 
   add_index "meego_test_cases", ["meego_test_session_id"], :name => "index_meego_test_cases_on_meego_test_session_id"
