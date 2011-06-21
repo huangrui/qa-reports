@@ -257,11 +257,11 @@ class MeegoTestSession < ActiveRecord::Base
   ###############################################
   def prev_session
     return @prev_session unless @prev_session.nil? and @has_prev.nil?
-    time = tested_at || Time.now
+    tested = tested_at || Time.now
+    created = created_at || Time.now
 
-    # TODO: Works only if there's >= 1s difference between the timestamps
     @prev_session = MeegoTestSession.find(:first, :conditions => [
-        "(tested_at < ? OR tested_at = ? AND created_at < ?) AND target = ? AND testtype = ? AND hardware = ? AND published = ? AND version_label_id = ?", time, time, created_at, target.downcase, testtype.downcase, hardware.downcase, true, version_label_id
+        "(tested_at < ? OR tested_at = ? AND created_at < ?) AND target = ? AND testtype = ? AND hardware = ? AND published = ? AND version_label_id = ?", tested, tested, created, target.downcase, testtype.downcase, hardware.downcase, true, version_label_id
     ],
                           :order => "tested_at DESC, created_at DESC", :include =>
          [{:meego_test_sets => :meego_test_cases}, {:meego_test_cases => :meego_test_set}])
@@ -273,9 +273,11 @@ class MeegoTestSession < ActiveRecord::Base
   def next_session
     return @next_session unless @next_session.nil? and @has_next.nil?
     @next_session = MeegoTestSession.find(:first, :conditions => [
-        "tested_at > ? AND target = ? AND testtype = ? AND hardware = ? AND published = ? AND version_label_id = ?", tested_at, target.downcase, testtype.downcase, hardware.downcase, true, version_label_id
+        "(tested_at > ? OR tested_at = ? AND created_at > ?) AND target = ? AND testtype = ? AND hardware = ? AND published = ? AND version_label_id = ?", tested_at, tested_at, created_at, target.downcase, testtype.downcase, hardware.downcase, true, version_label_id
     ],
-                          :order => "tested_at ASC")
+                          :order => "tested_at ASC, created_at ASC", :include =>
+         [{:meego_test_sets => :meego_test_cases}, {:meego_test_cases => :meego_test_set}])
+
     @has_next = !@next_session.nil?
     @next_session
   end
@@ -582,7 +584,6 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def import_report(user, published = false)
-    generate_defaults!
     user.update_attribute(:default_target, self.target) if self.target.present?
 
     # See if there is a previous report with the same test target and type
@@ -590,13 +591,23 @@ class MeegoTestSession < ActiveRecord::Base
     if prev
       self.objective_txt     = prev.objective_txt if self.objective_txt.empty?
       self.build_txt         = prev.build_txt if self.build_txt.empty?
+      self.environment_txt   = prev.environment_txt if self.environment_txt.empty?
       self.qa_summary_txt    = prev.qa_summary_txt if self.qa_summary_txt.empty?
       self.issue_summary_txt = prev.issue_summary_txt if self.issue_summary_txt.empty?
     end
 
+    generate_defaults!
+
     self.author    = user
     self.editor    = user
     self.published = published
+  end
+
+  def clone_testcase_comments_from_session(target_session)
+    meego_test_cases.where(:comment => '').includes(:meego_test_set).each do |tc| #select {|tc| tc.comment.blank? }.
+      prev_comment = target_session.test_case_by_name(tc.meego_test_set.feature, tc.name).comment
+      tc.update_attribute :comment, prev_comment unless prev_comment.blank?
+    end
   end
 
   def update_report_result(user, resultfiles, published = true)
@@ -659,11 +670,8 @@ class MeegoTestSession < ActiveRecord::Base
       failed = row[4]
       na     = row[5]
       if feature != prev_feature
-        test_set = if sets.has_key? feature
-          sets[feature]
-        else
-          sets[feature] = self.meego_test_sets.build(:feature => feature)
-        end
+        sets[feature] ||= self.meego_test_sets.build(:feature => feature)
+        test_set = sets[feature]
         prev_feature = feature
       end
 
@@ -686,10 +694,12 @@ class MeegoTestSession < ActiveRecord::Base
       if summary == ""
         raise "Missing test case name in CSV"
       end
+      prev_tc = prev_session.test_case_by_name(feature, summary) unless prev_session.nil?
+      prev_comment = prev_tc.comment unless prev_tc.nil?
       test_case = test_set.meego_test_cases.build(
           :name               => summary,
           :result             => result,
-          :comment            => comments || "",
+          :comment            => comments || prev_comment || "",
           :meego_test_session => self
       )
 
@@ -717,11 +727,8 @@ class MeegoTestSession < ActiveRecord::Base
       suite.sets.each do |set|
         ReportParser::parse_features(set.feature).each do |feature|
 
-          set_model = if sets.has_key? feature
-            sets[feature]
-          else
-            sets[feature] = self.meego_test_sets.build(:feature => feature)
-          end
+          sets[feature] ||= self.meego_test_sets.build(:feature => feature)
+          set_model = sets[feature]
 
           pass_count = 0
           total_count = 0
@@ -729,10 +736,12 @@ class MeegoTestSession < ActiveRecord::Base
 
           set.cases.each do |testcase|
             result = MeegoTestSession.map_result(testcase.result)
+            prev_tc = prev_session.test_case_by_name(feature, testcase.name) unless prev_session.nil?
+            prev_comment = prev_tc.comment unless prev_tc.nil?
             tc = set_model.meego_test_cases.build(
                 :name               => testcase.name,
                 :result             => result,
-                :comment            => testcase.comment,
+                :comment            => testcase.comment || prev_comment || "",
                 :meego_test_session => self,
                 :source_link        => testcase.source_url
             )
