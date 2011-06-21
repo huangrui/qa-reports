@@ -3,7 +3,7 @@
 - all = testcase.all_measurements
 
 - all.each do |m|
-  tr class="testcase multiple_rows #{'even' if (nft_testcase_history_counter%2) == 0}" id="#{'testcase-' + testcase.id.to_s if first}"
+  tr class="testcase multiple_rows #{'even' if (nft_testcase_history_counter%2) == 0}" id="#{'nft-history-testcase-' + testcase.id.to_s if first}"
     - if first
       td.testcase_name rowspan=all.size
         = testcase.name
@@ -17,7 +17,7 @@
         = m.name
         br
         small.un2 (Based on medians)
-      td.testcase_graph colspan="4"
+      td.testcase_graph
         .modal_graph style="display:none"
           span.modal_graph_title= testcase.name
           span.modal_graph_data= m.long_json
