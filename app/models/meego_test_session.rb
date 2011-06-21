@@ -88,7 +88,7 @@ class MeegoTestSession < ActiveRecord::Base
   def self.fetch_fully(id)
     find(id, :include =>
          {:meego_test_sets =>
-           {:meego_test_cases => [:measurements, :meego_test_case_attachments, :meego_test_set, :meego_test_session]}
+           {:meego_test_cases => [:measurements, :serial_measurements, :meego_test_case_attachments, :meego_test_set, :meego_test_session]}
          })
   end
 

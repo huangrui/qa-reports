@@ -341,7 +341,7 @@ class ReportsController < ApplicationController
   def delete
     id           = params[:id]
 
-    test_session = MeegoTestSession.find(id)
+    test_session = MeegoTestSession.fetch_fully(id)
 
     expire_caches_for(test_session, true)
     expire_index_for(test_session)
