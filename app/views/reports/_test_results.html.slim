@@ -68,7 +68,7 @@ h2#test_results
           th.th_notes Comments
           th.th_grading Grading
 
-      = render :partial => 'feature_summary', :collection => @test_session.meego_test_sets, :locals => {:max_cases => @test_session.max_feature_cases}
+      = render :partial => 'feature_summary', :collection => @test_session.non_empty_features, :locals => {:max_cases => @test_session.max_feature_cases}
 
 - data = @report.summary_data
 

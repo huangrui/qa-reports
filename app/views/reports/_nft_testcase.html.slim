@@ -7,7 +7,7 @@
     - if first
       td.testcase_name rowspan=all.size
         - if @editing
-          a href="#" onclick="toggleRemoveTestCase(#{testcase.id}); return false;" class="remove_list_item" Remove
+          a.remove_list_item.toggle_testcase href="#" Remove
         = testcase.name
         - if not testcase.source_link.blank?
           a.dl_link href=testcase.source_link src

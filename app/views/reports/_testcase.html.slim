@@ -1,7 +1,7 @@
 tr class="testcase #{result_class(testcase, 'result_')}" id="testcase-#{testcase.id}" style=hide_passing(testcase)
   td.testcase_name
     - if @editing
-      a href="#" onclick="toggleRemoveTestCase(#{testcase.id}); return false;" class="remove_list_item" Remove
+      a.remove_list_item.toggle_testcase href="#" Remove
     p
       = testcase.name
     - if not testcase.source_link.blank?

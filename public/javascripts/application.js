@@ -801,8 +801,9 @@ function removeAttachment(report, fileName, callback) {
     });
 };
 
-function toggleRemoveTestCase(id) {
-  var $testCaseRow = $('#testcase-' + id.toString());
+function toggleRemoveTestCase(eventObject) {
+  var $testCaseRow = $(eventObject.target).closest('.testcase');
+  var id = $testCaseRow.attr('id').split('-').pop();
   if ($testCaseRow.hasClass('removed')) {
     restoreTestCase(id, function(){});
     linkTestCaseButtons($testCaseRow);

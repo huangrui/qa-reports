@@ -357,6 +357,10 @@ class MeegoTestSession < ActiveRecord::Base
     meego_test_sets.map{|item| item.total_cases}.max
   end
 
+  def non_empty_features
+    meego_test_sets.select{|feature| feature.total_cases > 0}
+  end
+
   def small_graph_img_tag(max_cases)
     html_graph(total_passed, total_failed, total_na, max_cases)
   end
