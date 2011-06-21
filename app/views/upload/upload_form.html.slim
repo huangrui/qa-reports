@@ -44,7 +44,7 @@
       = f.error_message_on :uploaded_files
     #wizard_actions
       #wizard_buttons
-        input.big_btn.cancel onclick="location.href='<% @selected_release_version %>'" type="button" value="Cancel"
+        input.big_btn.cancel onclick="location.href='/#{@selected_release_version}'" type="button" value="Cancel"
         = f.submit :id=>"upload_report_submit", :value=>"Next", :class=>"big_btn next", :tabindex => "7"
       p.next_step
         | next step:

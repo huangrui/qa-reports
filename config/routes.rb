@@ -44,7 +44,7 @@ Meegoqa::Application.routes.draw do
   match '/reports/:id/compare/:compare_id' => 'session_comparison#show', :via => "get", :as => :session_comparison
 
   # Constraint to allow a dot (.) in release vesion
-  constraints(:release_version => /[a-zA-Z0-9._-]+/) do
+  constraints(:release_version => /[a-zA-Z0-9._-]+/, :id => /[0-9]+/) do
     match '(/:release_version(/:target(/:testtype(/:hardware))))/upload' => 'upload#upload_form', :via => "get", :as => :upload_form
     match '(/:release_version(/:target(/:testtype(/:hardware))))/hardware' => 'hardwares#index', :via => "get", :as => :hardwares
     match '(/:release_version(/:target(/:testtype(/:hardware))))/testtype' => 'test_types#index', :via => "get", :as => :test_types
