@@ -739,12 +739,11 @@ class MeegoTestSession < ActiveRecord::Base
     TestResults.new(File.open(filename)).suites.each do |suite|
       suite.sets.each do |set|
         ReportParser::parse_features(set.feature).each do |feature|
-          sets[feature] ||= self.meego_test_sets.build(:feature => feature)
+          sets[feature] ||= self.meego_test_sets.build(:feature => feature, :has_ft => false)
           set_model = sets[feature]
 
           pass_count = 0
           total_count = 0
-          set_model.has_ft ||= false
 
           set.cases.each do |testcase|
             result = MeegoTestSession.map_result(testcase.result)
