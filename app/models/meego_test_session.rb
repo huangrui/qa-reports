@@ -603,6 +603,13 @@ class MeegoTestSession < ActiveRecord::Base
     self.published = published
   end
 
+  def clone_testcase_comments_from_session(target_session)
+    meego_test_cases.where(:comment => '').includes(:meego_test_set).each do |tc| #select {|tc| tc.comment.blank? }.
+      prev_comment = target_session.test_case_by_name(tc.meego_test_set.feature, tc.name).comment
+      tc.update_attribute :comment, prev_comment unless prev_comment.blank?
+    end
+  end
+
   def update_report_result(user, resultfiles, published = true)
     @uploaded_files = resultfiles
     save_uploaded_files
@@ -663,11 +670,8 @@ class MeegoTestSession < ActiveRecord::Base
       failed = row[4]
       na     = row[5]
       if feature != prev_feature
-        test_set = if sets.has_key? feature
-          sets[feature]
-        else
-          sets[feature] = self.meego_test_sets.build(:feature => feature)
-        end
+        sets[feature] ||= self.meego_test_sets.build(:feature => feature)
+        test_set = sets[feature]
         prev_feature = feature
       end
 
@@ -690,10 +694,12 @@ class MeegoTestSession < ActiveRecord::Base
       if summary == ""
         raise "Missing test case name in CSV"
       end
+      prev_tc = prev_session.test_case_by_name(feature, summary) unless prev_session.nil?
+      prev_comment = prev_tc.comment unless prev_tc.nil?
       test_case = test_set.meego_test_cases.build(
           :name               => summary,
           :result             => result,
-          :comment            => comments || "",
+          :comment            => comments || prev_comment || "",
           :meego_test_session => self
       )
 
@@ -721,11 +727,8 @@ class MeegoTestSession < ActiveRecord::Base
       suite.sets.each do |set|
         ReportParser::parse_features(set.feature).each do |feature|
 
-          set_model = if sets.has_key? feature
-            sets[feature]
-          else
-            sets[feature] = self.meego_test_sets.build(:feature => feature)
-          end
+          sets[feature] ||= self.meego_test_sets.build(:feature => feature)
+          set_model = sets[feature]
 
           pass_count = 0
           total_count = 0
@@ -733,10 +736,12 @@ class MeegoTestSession < ActiveRecord::Base
 
           set.cases.each do |testcase|
             result = MeegoTestSession.map_result(testcase.result)
+            prev_tc = prev_session.test_case_by_name(feature, testcase.name) unless prev_session.nil?
+            prev_comment = prev_tc.comment unless prev_tc.nil?
             tc = set_model.meego_test_cases.build(
                 :name               => testcase.name,
                 :result             => result,
-                :comment            => testcase.comment,
+                :comment            => testcase.comment || prev_comment || "",
                 :meego_test_session => self,
                 :source_link        => testcase.source_url
             )
