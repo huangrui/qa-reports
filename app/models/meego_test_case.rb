@@ -41,10 +41,6 @@ class MeegoTestCase < ActiveRecord::Base
     (meego_test_set.name + "_" + name).downcase
   end
 
-  def escaped_name
-    name.gsub(/[']/, '\\\\\'')
-  end
-
   def find_matching_case(session)
     session.test_case_by_name(meego_test_set.feature, name) unless session.nil?
   end
