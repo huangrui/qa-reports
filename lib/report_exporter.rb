@@ -19,7 +19,9 @@
 
 module ReportExporter
 
-  EXPORTER_CONFIG = YAML.load_file("#{Rails.root.to_s}/config/qa-dashboard_config.yml")
+  EXPORTER_CONFIG    = YAML.load_file("#{Rails.root.to_s}/config/qa-dashboard_config.yml")
+  POST_TIMEOUT       = 10
+  POST_RETRIES_LIMIT = 4
 
   def self.hashify_test_session(test_session)
     sets = []
@@ -83,14 +85,27 @@ module ReportExporter
   def self.post(data, action)
     post_data = { "token" => EXPORTER_CONFIG['token'], "report" => data }
     uri       = EXPORTER_CONFIG['host'] + EXPORTER_CONFIG['uri'] + action
-    Rails.logger.debug "DEBUG: ReportExporter::post qa_id:#{data['qa_id'].to_s} uri:#{uri}"
+    headers   = { :content_type => :json, :accept => :json }
 
-    begin
-      response = RestClient.post uri, post_data.to_json, :content_type => :json, :accept => :json
-    rescue => e
-      Rails.logger.debug "DEBUG: ReportExporter::post exception: #{e.to_s}"
+    tries = POST_RETRIES_LIMIT
+    while(tries > 0)
+      Rails.logger.debug "DEBUG: ReportExporter::post qa_id:#{data['qa_id'].to_s} uri:#{uri}"
+      begin
+        response = RestClient::Request.execute :method  => :post,
+                                               :url     => uri,
+                                               :timeout => POST_TIMEOUT + 5 * (POST_RETRIES_LIMIT - tries),
+                                               :open_timeout => POST_TIMEOUT + 5 * (POST_RETRIES_LIMIT - tries),
+                                               :payload => post_data.to_json,
+                                               :headers => headers
+      rescue => e
+        tries -= 1
+        Rails.logger.debug "DEBUG: ReportExporter::post exception: #{e.to_s} tries left:#{(tries)}"
+        Rails.logger.debug "DEBUG: ReportExporter::post too many exceptions, giving up... (qa_id:#{data['qa_id'].to_s})" if tries == 0
+      else
+        Rails.logger.debug "DEBUG: ReportExporter::post res: #{response.to_str}" unless response.nil?
+        break
+      end
     end
-    Rails.logger.debug "DEBUG: ReportExporter::post res: #{response.to_str}" unless response.nil? #debug
   end
 
   def self.export_test_session(test_session)

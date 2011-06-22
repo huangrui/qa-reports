@@ -87,15 +87,11 @@ Feature: REST API
 
     Then I should see "To notice regression"
 
-  Scenario: Sending REST import first with user defined test environment and then without
-    Given I have sent a request with optional parameter "environment_txt" with value "Emulator" via the REST API
-    Then the REST result "ok" is "1"
-
+  Scenario: Sending REST import without user defined test environment
     When the client sends file "sim.xml" via the REST API
-
     Then the REST result "ok" is "1"
-    And I should be able to view the latest created report
 
+    And I should be able to view the latest created report
     Then I should see "Hardware: N900"
 
 
