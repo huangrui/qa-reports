@@ -41,8 +41,16 @@ class MeegoTestCase < ActiveRecord::Base
     (feature.name + "_" + name).downcase
   end
 
+  def feature_key
+    feature.name
+  end
+
+  def product_key
+    meego_test_session.product.downcase
+  end
+
   def find_matching_case(session)
-    session.test_case_by_name(feature.name, name) unless session.nil?
+    session.test_case_by_name(feature_key, name) unless session.nil?
   end
 
   def all_measurements

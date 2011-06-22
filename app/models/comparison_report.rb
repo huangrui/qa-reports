@@ -1,4 +1,5 @@
 require 'report_comparison'
+require 'lib/array_nested_hashing'
 
 class ComparisonReport
   attr_reader :test_cases, :products
@@ -87,19 +88,7 @@ class ComparisonReport
       @comparisons[product] = ReportComparison.new(r1, r2)
     end
 
-    # Group by feature
-    @test_cases = @test_cases.group_by { |tc| tc.feature.name }
-
-    @test_cases.each_key do |feature|
-      # Group by test case
-      @test_cases[feature] = @test_cases[feature].group_by(&:name)
-
-      @test_cases[feature].each_key do |test_case|
-        # Group by product
-        @test_cases[feature][test_case] = @test_cases[feature][test_case].group_by {|tc| tc.meego_test_session.product.downcase}
-
-      end
-    end
+    @test_cases = @test_cases.to_nested_hash [:feature_key, :name, :product_key], :unique => false
   end
 
 end
