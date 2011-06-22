@@ -3,9 +3,11 @@
 - all = testcase.all_measurements
 
 - all.each do |m|
-  tr class="testcase multiple_rows #{'even' if (nft_testcase_counter%2) == 0}" id="#{'testcase-' + testcase.id.to_s if first}"
+  tr class="testcase multiple_rows #{'even' if (nft_testcase_counter%2) == 0} testcase-nft-#{testcase.id}" id="#{'testcase-' + testcase.id.to_s if first}"
     - if first
       td.testcase_name rowspan=all.size
+        - if @editing
+          a.remove_list_item.toggle_testcase href="#" Remove
         = testcase.name
         - if not testcase.source_link.blank?
           a.dl_link href=testcase.source_link src

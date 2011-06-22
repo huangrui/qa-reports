@@ -44,8 +44,8 @@ end
 When /I view the report "([^"]*)"$/ do |report_string|
   version, target, test_type, hardware = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {"version_labels.normalized" => version, :target => target, :hardware => hardware, :testtype => test_type}, :include => :version_label
-  )
+   {"version_labels.normalized" => version, :target => target, :hardware => hardware, :testtype => test_type}, :include => :version_label,
+   :order => "tested_at DESC, created_at DESC")
   raise "report not found with parameters #{version}/#{target}/#{hardware}/#{test_type}!" unless report
   visit("/#{version}/#{target}/#{test_type}/#{hardware}/#{report.id}")
 end
@@ -108,6 +108,16 @@ end
 
 When /^(?:|I )click the element "([^"]*)" for the test case "([^"]*)"$/ do |element, test_case|
   find(:xpath, "//tr[contains(.,'#{test_case}')]").find(element).click
+end
+
+When /^(?:|I )should see "([^"]*)" within the test case "([^"]*)"$/ do |text, test_case|
+  within(:xpath, "//tr[contains(.,'#{test_case}')]") do
+    if page.respond_to? :should
+      page.should have_content(text)
+    else
+      assert page.has_content?(text)
+    end
+  end
 end
 
 When /^(?:|I )submit the comment for the test case "([^"]*)"$/ do |test_case|
