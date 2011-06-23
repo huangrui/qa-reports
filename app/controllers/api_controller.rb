@@ -45,7 +45,7 @@ class ApiController < ApplicationController
     data.delete(:hwproduct)
     begin
       @test_session = MeegoTestSession.new(data)
-      @test_session.import_report(current_user, true)
+      @test_session.import_report(current_user, false)
 
     rescue ActiveRecord::UnknownAttributeError => error
       render :json => {:ok => '0', :errors => error.message}
@@ -54,6 +54,7 @@ class ApiController < ApplicationController
 
     begin
       @test_session.save!
+      @test_session.update_attribute(:published, true)
 
       files = FileStorage.new()
       attachments.each { |file|
