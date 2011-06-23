@@ -26,7 +26,9 @@ require 'graph'
 class MeegoTestSet < ActiveRecord::Base
   belongs_to :meego_test_session
 
-  has_many :meego_test_cases, :dependent => :destroy
+  has_many :meego_test_cases, :dependent => :destroy, :autosave => false
+
+  after_save :save_test_cases
 
   include ReportSummary
   include Graph
@@ -67,6 +69,14 @@ class MeegoTestSet < ActiveRecord::Base
 
   def test_set_link
     "#test-set-%i" % id
+  end
+
+  private
+
+  def save_test_cases
+    # TODO: sanitize?
+    meego_test_cases.each {|tc| tc.meego_test_set_id = id; tc.meego_test_session_id = meego_test_session_id}
+    MeegoTestCase.import_from_array meego_test_cases
   end
 
 end
