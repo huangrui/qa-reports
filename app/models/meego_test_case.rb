@@ -31,7 +31,7 @@ class MeegoTestCase < ActiveRecord::Base
 
   has_many :measurements, :dependent => :destroy, :class_name => "::MeegoMeasurement"
   has_many :serial_measurements, :dependent => :destroy
-  has_many :meego_test_case_attachments
+  has_many :meego_test_case_attachments, :dependent => :destroy
 
   PASS = 1
   FAIL = -1
