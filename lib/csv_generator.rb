@@ -55,7 +55,7 @@ module CsvGenerator
       from meego_test_sets as mtset
         join meego_test_cases as mtc on (mtc.meego_test_set_id = mtset.id)
         join meego_test_sessions as mts on (mtc.meego_test_session_id = mts.id)
-      where mts.id = '#{id}'
+      where mts.id = '#{id}' and mtc.deleted = false
       order by mtset.id, mtc.id;
     END
 
