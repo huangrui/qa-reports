@@ -32,7 +32,8 @@ class ApplicationController < ActionController::Base
   end
 
   def get_selected_release_version
-    @selected_release_version = params[:release_version] || VersionLabel.latest.label
+    @selected_release_version = session[:release_version] =
+      params[:release_version] || session[:release_version] || VersionLabel.latest.label
   end
 
   def render_404

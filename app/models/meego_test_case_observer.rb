@@ -22,7 +22,7 @@ require 'report_exporter'
 class MeegoTestCaseObserver < ActiveRecord::Observer
 
   def after_save(test_case)
-    test_session = MeegoTestSession.find(test_case.meego_test_session_id)
+    test_session = test_case.meego_test_session
     return if not test_session.published
     ReportExporter::export_test_session(test_session)
   end 

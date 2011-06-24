@@ -65,6 +65,16 @@ When /^I view the page for "([^"]*)" (?:|testing )of "([^"]*)" hardware with (?:
   visit("/#{version}/#{target}/#{test_type}/#{hardware}")
 end
 
+When /^I click the delete button for case "([^"]*)"/ do |title|
+  page.evaluate_script('window.confirm = function() { return true; }')
+  tc = MeegoTestCase.where(:name => title).first
+  selector = "#testcase-" + tc.id.to_s
+
+  with_scope(selector) do
+    click_link("Remove")
+  end
+end
+
 Then /^(?:|I )should find element "([^"]*)"(?: within "([^"]*)")?$/ do |text, selector|
   with_scope(selector) do
     if page.respond_to? :should

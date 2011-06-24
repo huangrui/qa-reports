@@ -289,4 +289,33 @@ module ReportSummary
     end
   end
 
+  def total_nft
+    if meego_test_cases.loaded?
+      meego_test_cases.to_a.count {|x| x.has_nft}
+    else
+      meego_test_cases.count(:conditions => {:has_nft => true})
+    end
+  end
+
+  def total_non_nft
+    if meego_test_cases.loaded?
+      meego_test_cases.to_a.count {|x| !x.has_nft}
+    else
+      meego_test_cases.count(:conditions => {:has_nft => false})
+    end
+  end
+
+  def update_nft_non_nft
+    update_has_nft
+    update_has_non_nft
+  end
+
+  def update_has_nft
+    update_attribute(:has_nft, total_nft > 0)
+  end
+
+  def update_has_non_nft
+    update_attribute(:has_ft, total_non_nft > 0)
+  end
+
 end
