@@ -14,6 +14,7 @@ module CsvGenerator
 
     conditions = []
     conditions << "mts.published = true"
+    conditions << "mtc.deleted = false"
     conditions << "mts.hardware = '#{hardware}'" if hardware
     conditions << "mts.target = '#{target}'" if target
     conditions << "mts.testtype = '#{testtype}'" if testtype
