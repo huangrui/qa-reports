@@ -28,7 +28,7 @@ class MeegoTestSet < ActiveRecord::Base
 
   has_many :meego_test_cases, :dependent => :destroy, :autosave => false
 
-  after_save :save_test_cases
+  after_create :create_test_cases
 
   include ReportSummary
   include Graph
@@ -73,10 +73,14 @@ class MeegoTestSet < ActiveRecord::Base
 
   private
 
-  def save_test_cases
-    # TODO: sanitize?
+  def create_test_cases
     meego_test_cases.each {|tc| tc.meego_test_set_id = id; tc.meego_test_session_id = meego_test_session_id}
-    MeegoTestCase.import_from_array meego_test_cases
+    if has_nft?
+      meego_test_cases.each { |tc| tc.save! }
+    else
+      # when test cases have no associations to save, much faster bulk insertions can be used
+      MeegoTestCase.import_from_array meego_test_cases
+    end
   end
 
 end
