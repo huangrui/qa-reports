@@ -79,6 +79,10 @@ class MeegoTestCase < ActiveRecord::Base
     attachments.create({:attachment=>attachment}) unless attachment.nil?
   end
 
+  def self.import_from_array(test_cases)
+    import test_cases
+  end
+
   def remove_from_session
     set_deleted_from_session true
   end
