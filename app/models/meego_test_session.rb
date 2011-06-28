@@ -118,31 +118,6 @@ class MeegoTestSession < ActiveRecord::Base
     read_attribute(:target).try(:capitalize)
   end
 
-  def testtype=(testtype)
-    testtype = testtype.try(:downcase)
-    write_attribute(:testtype, testtype)
-  end
-
-  def testtype
-    s = read_attribute(:testtype)
-    s.gsub(/\b\w/) { $&.upcase } if s
-  end
-
-  def self.testtype
-    s = read_attribute(:testtype)
-    s.gsub(/\b\w/) { $&.upcase } if s
-  end
-
-  def hardware=(hardware)
-    hardware = hardware.try(:downcase)
-    write_attribute(:hardware, hardware)
-  end
-
-  def hardware
-    s = read_attribute(:hardware)
-    s.gsub(/\b\w/) { $&.upcase } if s
-  end
-
   def prev_summary
     prev_session
   end
