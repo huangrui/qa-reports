@@ -90,11 +90,13 @@
                     a.see_history_button.sort_btn.active href="#" See history
                   a.see_the_same_build_button.sort_btn href="#"  See the same build
               = build_set_headers(@build)
+              th.th_build_testset * #{@test_session.testtype}
               th style="border-bottom-style: none;"
                 div style="position:relative;"
             tr
               th.first_col
               = build_hw_headers(@build)
+              th.th_build_result * #{@test_session.hardware}
               th
                 div style="position:relative;"
 

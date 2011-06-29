@@ -382,7 +382,7 @@ class ReportsController < ApplicationController
 
   def build(s, cnt)
     unless s.build_id.empty?
-      MeegoTestSession.where("build_id = '#{s.build_id}' AND published = 1").
+      MeegoTestSession.where("build_id = '#{s.build_id}' AND published = 1 AND id != '#{s.id}'").
           order("tested_at DESC, created_at DESC").limit(cnt).
           includes([{:meego_test_sets => :meego_test_cases}, {:meego_test_cases => :meego_test_set}])
     end
