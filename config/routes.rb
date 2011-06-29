@@ -17,7 +17,6 @@ Meegoqa::Application.routes.draw do
   match '/publish' => 'reports#publish', :via => "post"
 
   match '/ajax_update_tested_at' => 'reports#update_tested_at', :via => "post"
-
   match '/ajax_update_txt' => 'reports#update_txt', :via => "post"
   match '/ajax_update_title' => 'reports#update_title', :via => "post"
   match '/ajax_update_comment' => 'meego_test_cases#update_case_comment', :via => "post"
@@ -26,8 +25,10 @@ Meegoqa::Application.routes.draw do
   match '/ajax_update_category' => 'reports#update_category', :via => "post"
   match '/ajax_remove_testcase' => 'reports#remove_testcase', :via => "post"
   match '/ajax_restore_testcase' => 'reports#restore_testcase', :via => "post"
+  match '/ajax_do_dashboard_export' => 'index#do_dashboard_export', :via => "post"
 
   match '/fetch_bugzilla_data' => 'reports#fetch_bugzilla_data', :via => "get"
+  match '/dashboard_export' => 'index#dashboard_export', :via => "get"
 
   # For submit the comments of features
   match '/ajax_update_feature_comment' => 'reports#update_feature_comment', :via => "post"
