@@ -93,20 +93,20 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def self.testtypes
-    published.select("DISTINCT testtype").order("testtype").map { |row| row.testtype.humanize }
+    published.select("DISTINCT testtype").order("testtype").map { |row| row.testtype }
   end
 
   def self.popular_testtypes(limit=3)
-    published.select("testtype").order("COUNT(testtype) DESC").group(:testtype).map { |row| row.testtype.humanize }
+    published.select("testtype").order("COUNT(testtype) DESC").group(:testtype).map { |row| row.testtype }
   end
 
   def self.hardwares
-    published.select("DISTINCT hardware as hardware").order("hardware").map { |row| row.hardware.humanize }
+    published.select("DISTINCT hardware as hardware").order("hardware").map { |row| row.hardware }
   end
 
   def self.popular_hardwares(limit=3)
     published.select("hardware as hardware").order("COUNT(hardware) DESC").
-      group(:hardware).limit(limit).map { |row| row.hardware.humanize }
+      group(:hardware).limit(limit).map { |row| row.hardware }
   end
 
   def target=(target)
@@ -116,6 +116,14 @@ class MeegoTestSession < ActiveRecord::Base
 
   def target
     read_attribute(:target).try(:capitalize)
+  end
+
+  def testtype
+    @testtype ||= find_testtype_label
+  end
+
+  def hardware
+    @hardware ||= find_hardware_label
   end
 
   def prev_summary
@@ -451,6 +459,15 @@ class MeegoTestSession < ActiveRecord::Base
       errors.add :hardware, "Incorrect hardware. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( )"
     end
   end
+
+  def find_testtype_label
+    MeegoTestSession.select('testtype as tt').find(:first, :conditions => {:testtype => read_attribute(:testtype}).tt
+  end
+
+  def find_hardware_label
+    MeegoTestSession.select('hardware as hw').find(:first, :conditions => {:hardware => read_attribute(:hardware}).hw
+  end
+
 
   def generate_defaults!
     time                 = tested_at || Time.now
