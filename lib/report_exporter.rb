@@ -106,6 +106,8 @@ module ReportExporter
         break
       end
     end
+
+    return tries > 0
   end
 
   def self.export_test_session(test_session)
