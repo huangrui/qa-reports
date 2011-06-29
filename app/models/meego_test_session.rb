@@ -63,6 +63,8 @@ class MeegoTestSession < ActiveRecord::Base
   validate :validate_labels
   validate :validate_type_hw
 
+  before_save :force_testtype_hardware_names
+
   after_destroy :remove_uploaded_files
 
   scope :published, where(:published => true)
@@ -93,20 +95,20 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def self.testtypes
-    published.select("DISTINCT testtype").order("testtype").map { |row| row.testtype }
+    published.select("DISTINCT testtype").order("testtype").map(&:testtype)
   end
 
   def self.popular_testtypes(limit=3)
-    published.select("testtype").order("COUNT(testtype) DESC").group(:testtype).map { |row| row.testtype }
+    published.select("testtype").order("COUNT(testtype) DESC").group(:testtype).map(&:testtype)
   end
 
   def self.hardwares
-    published.select("DISTINCT hardware as hardware").order("hardware").map { |row| row.hardware }
+    published.select("DISTINCT hardware as hardware").order("hardware").map(&:hardware)
   end
 
   def self.popular_hardwares(limit=3)
     published.select("hardware as hardware").order("COUNT(hardware) DESC").
-      group(:hardware).limit(limit).map { |row| row.hardware }
+      group(:hardware).limit(limit).map(&:hardware)
   end
 
   def target=(target)
@@ -116,14 +118,6 @@ class MeegoTestSession < ActiveRecord::Base
 
   def target
     read_attribute(:target).try(:capitalize)
-  end
-
-  def testtype
-    @testtype ||= find_testtype_label
-  end
-
-  def hardware
-    @hardware ||= find_hardware_label
   end
 
   def prev_summary
@@ -460,18 +454,30 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 
-  def find_testtype_label
-    MeegoTestSession.select('testtype as tt').find(:first, :conditions => {:testtype => read_attribute(:testtype}).tt
+  def force_testtype_hardware_names
+    write_attribute :testtype, forced_testtype_label
+    write_attribute :hardware, forced_hardware_label
   end
 
-  def find_hardware_label
-    MeegoTestSession.select('hardware as hw').find(:first, :conditions => {:hardware => read_attribute(:hardware}).hw
+  def forced_testtype_label
+    @forced_testtype = self.class.persistent_label_for(:testtype, testtype) if @forced_testtype.nil? or testtype.casecmp(@forced_testtype) != 0
+    @forced_testtype
+  end
+
+  def forced_hardware_label
+    @forced_hardware = self.class.persistent_label_for(:hardware, hardware) if @forced_hardware.nil? or hardware.casecmp(@forced_hardware) != 0
+    @forced_hardware
+  end
+
+  def self.persistent_label_for(attribute, name)
+    session = MeegoTestSession.select(attribute).find(:first, :conditions => {attribute => name})
+    session.present? ? session.send(attribute) : name
   end
 
 
   def generate_defaults!
     time                 = tested_at || Time.now
-    self.title           ||= "%s Test Report: %s %s %s" % [target, hardware, testtype, time.strftime('%Y-%m-%d')]
+    self.title           ||= "%s Test Report: %s %s %s" % [target, forced_hardware_label, forced_testtype_label, time.strftime('%Y-%m-%d')]
     self.environment_txt = "* Hardware: " + hardware if self.environment_txt.empty?
   end
 

@@ -1,5 +1,8 @@
 class RenameHardwareAndTestypeDataCaseSensitively < ActiveRecord::Migration
   def self.up
+    # a little house-keeping while we're at it
+    MeegoTestSession.delete_all "published = false AND created_at < '#{Time.local 2011, 6, 28}'"
+
     hardware_mapping = {
       'ia aava' => 'IA-Aava',
       'ia-russellville' => 'IA-Russellville',
@@ -49,33 +52,38 @@ class RenameHardwareAndTestypeDataCaseSensitively < ActiveRecord::Migration
       'auto' => 'Auto',
     }
 
-    # a little house-keeping while we're at it
-    MeegoTestSession.delete_all "published = false AND created_at < '#{Time.local 2011, 6, 28}'"
+    # map unlisted hardwares as 'hardware name' => 'Hardware Name'
+    unmapped_hardwares = MeegoTestSession.select('distinct hardware').where('hardware NOT IN (?)', hardware_mapping.keys).map &:hardware
+    extra_mappings = Hash[ unmapped_hardwares.map {|hardware| [hardware.downcase, hardware.gsub(/\b\w/) { $&.upcase }] } ]
+    hardware_mapping.merge! extra_mappings
 
-    # process until no new reports were submitted while processing
-    begin_time = Time.at 0
+    # map unlisted testtypes as 'testtype name' => 'Testtype Name'
+    unmapped_testtypes = MeegoTestSession.select('distinct testtype').where('testtype NOT IN (?)', testtype_mapping.keys).map &:testtype
+    extra_mappings = Hash[ unmapped_testtypes.map {|testtype| [testtype.downcase, testtype.gsub(/\b\w/) { $&.upcase }] } ]
+    testtype_mapping.merge! extra_mappings
 
-    while MeegoTestSession.where('created_at >= ?', begin_time).count > 0
-      prev_time = begin_time
-      begin_time = Time.now
-      sessions = MeegoTestSession.where('created_at >= ?', prev_time)
+    # update to db
 
-      sessions.each do |session|
-        hardware = session.hardware
-        session.hardware = hardware_mapping[hardware.downcase] || hardware.gsub(/\b\w/) { $&.upcase }
-        testtype = session.testtype
-        session.testtype = testtype_mapping[testtype.downcase] || testtype.gsub(/\b\w/) { $&.upcase }
-        session.save!
-      end
+    hardware_mapping.each do |old_name, new_name|
+      MeegoTestSession.update_all "hardware = '#{new_name}'", :hardware => old_name
+    end
 
+    testtype_mapping.each do |old_name, new_name|
+      MeegoTestSession.update_all "testtype = '#{new_name}'", :testtype => old_name
     end
   end
 
   def self.down
-    MeegoTestSession.all.each do |session|
-      session.hardware.downcase!
-      session.testtype.downcase!
-      session.save!
+    downcase_all :hardware
+    downcase_all :testtype
+  end
+
+  def self.downcase_all(attribute)
+    current = MeegoTestSession.select("distinct #{attribute}").map &attribute
+    mappings = Hash[ current.map {|item| [item, item.downcase] } ]
+
+    mappings.each do |old_name, new_name|
+      MeegoTestSession.update_all "#{attribute} = '#{new_name}'", attribute => old_name
     end
   end
 end
