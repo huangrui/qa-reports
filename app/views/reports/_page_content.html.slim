@@ -54,6 +54,8 @@
                 a.see_all_button.sort_btn href="#" See all
                 - if @history
                   a.see_history_button.sort_btn href="#" See history
+                - if @build
+                  a.see_the_same_build_button.sort_btn href="#" See the same build
             th#th_result Result
             th#th_notes Notes
 
@@ -68,11 +70,35 @@
                   a.see_only_failed_button.sort_btn href="#" See only failed
                   a.see_all_button.sort_btn href="#" See all
                   a.see_history_button.sort_btn.active href="#" See history
+                  - if @build
+                    a.see_the_same_build_button.sort_btn href="#" See the same build
               = history_headers(@history)
               th.th_result Current
               th
                 div style="position:relative;"
           = render :partial => "feature_history", :collection => @test_session.non_nft_sets
+
+      - if @build
+        table.detailed_results.build style="display:none"
+          thead
+            tr.compare_set
+              th#th_build_test_case
+                span.sort
+                  a.see_only_failed_button.sort_btn href="#" See only failed
+                  a.see_all_button.sort_btn href="#" See all
+                  - if @history
+                    a.see_history_button.sort_btn.active href="#" See history
+                  a.see_the_same_build_button.sort_btn href="#"  See the same build
+              = build_set_headers(@build)
+              th style="border-bottom-style: none;"
+                div style="position:relative;"
+            tr
+              th.first_col
+              = build_hw_headers(@build)
+              th
+                div style="position:relative;"
+
+          = render :partial => "feature_build", :collection => @test_session.non_nft_sets
 
     - if @test_session.has_nft?
       h2#detailed_nft_results

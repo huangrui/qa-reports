@@ -88,6 +88,29 @@ module ReportsHelper
     }.join("\n").html_safe
   end
 
+  def build_set_headers(hist)
+    hist.reverse.map{|s|
+      if s
+        test_set = s.testtype
+        "<th class=\"th_build_testset\">#{test_set}</a></th>"
+      else
+        "<th class=\"th_build_testset\">-</th>"
+      end
+    }.join("\n").html_safe
+  end
+
+  def build_hw_headers(hist)
+    hist.reverse.map{|s|
+      if s
+        hardware = s.hardware
+        url  = report_url(s)
+        "<th class=\"th_build_result\"><a href=\"#{url}\">#{hardware}</a></th>"
+      else
+        "<th class=\"th_build_result\">-</th>"
+      end
+    }.join("\n").html_safe
+  end
+
 private
 
   def bugzilla_title?(title)

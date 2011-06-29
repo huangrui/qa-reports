@@ -1148,6 +1148,12 @@ function filterResults(rowsToHide, typeText) {
 
 
 
+    $(".see_the_same_build_button").click(function(){
+      $("#detailed_functional_test_results").hide();
+      $build.show();
+      $build.find(".see_the_same_build_button").addClass("active");
+      return false;
+    });
     $(".see_history_button").click(function(){
     	//setTableLoaderSize('#detailed_functional_test_results', '#history_loader');
     	//$('#history_loader').show();
@@ -1196,6 +1202,27 @@ function filterResults(rowsToHide, typeText) {
         $history.hide();
         $detail.show();
         $detail.find(".see_only_failed_button").click();
+    });
+    $history.find(".see_the_same_build_button").click(function(){
+        $history.hide();
+        $build.show();
+        $detail.find(".see_the_same_build_button").click();
+    });
+    var $build = $("table.detailed_results.build");
+    $build.find(".see_all_button").click(function(){
+        $build.hide();
+        $detail.show();
+        $detail.find(".see_all_button").click();
+    });
+    $build.find(".see_only_failed_button").click(function(){
+        $build.hide();
+        $detail.show();
+        $detail.find(".see_only_failed_button").click();
+    });
+    $build.find(".see_history_button").click(function(){
+        $build.hide();
+        $history.show();
+        $detail.find(".see_the_history_button").click();
     });
 }
 
