@@ -13,7 +13,7 @@ Feature: RSS Feed
     When I fetch the rss feed for "1.1/Core/Sanity/Aava"
     Then I should see 1 instance of "item"
 
-  Scenario: Fetch RSS feed for test type level filter
+  Scenario: Fetch RSS feed for test set level filter
     When I fetch the rss feed for "1.1/Core/Sanity"
     Then I should see 2 instances of "item"
     And I should see "Aava"
@@ -33,10 +33,10 @@ Feature: RSS Feed
     And I should see "Core"
     And I should see "Handset"
 
-  Scenario: Verify that offered RSS feeds change according to the page 
+  Scenario: Verify that offered RSS feeds change according to the page
     When I view the page for the release version "1.1"
     Then I should see the page header offer RSS feed for "1.1"
-    
+
     When I view the page for the "Handset" profile of release version "1.1"
     Then I should see the page header offer RSS feed for "1.1/Handset"
 
@@ -45,7 +45,7 @@ Feature: RSS Feed
 
     When I view the page for "Sanity" testing of "N900" hardware with profile "Handset" in version "1.1"
     Then I should see the page header offer RSS feed for "1.1/Handset/Sanity/N900"
-      
+
 
 
 

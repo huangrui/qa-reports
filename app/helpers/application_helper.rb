@@ -28,10 +28,10 @@ module ApplicationHelper
       ' odd '
     end
   end
-  
+
   def upload_full_path
-    if @hwproduct
-      url_for :controller => "/upload", :action => :upload_form, :release_version => @selected_release_version, :testtype => @testtype, :target => @target, :hwproduct => @hwproduct
+    if @hardware
+      url_for :controller => "/upload", :action => :upload_form, :release_version => @selected_release_version, :testtype => @testtype, :target => @target, :hardware => @hardware
     elsif @target
       url_for :controller => "/upload", :action => :upload_form,  :release_version => @selected_release_version, :testtype => @testtype, :target => @target
     elsif @testtype
@@ -52,37 +52,18 @@ module ApplicationHelper
   end
 
  def breadcrumbs
-   html = '<div id="breadcrumb"><a href="' + url_for(:controller=>'index', :action=>'index') + '">Home</a>'
-   if @target
-     unless @testtype
-       html += ' &rsaquo; <strong>' + @target + '</strong>'
-     else
-       html += ' &rsaquo; <a href="' +url_for(:controller=>'index', :action=>'filtered_list', :target=>@target, :testtype=>nil) + '">' + @target + '</a>'       
-     end
-   end
-   if @testtype
-     unless @hwproduct
-       html += ' &rsaquo; <strong>' + @testtype + '</strong>'
-     else
-       html += ' &rsaquo; <a href="' +url_for(:controller=>'index', :action=>'filtered_list', :target=>@target, :testtype=>@testtype, :hwproduct=>nil) + '">' + @testtype + '</a>'       
-     end
-   end
-   if @hwproduct
-     unless @test_session
-       html += ' &rsaquo; <strong>' + @hwproduct + '</strong>'
-     else
-       html += ' &rsaquo; <a href="' +url_for(:controller=>'index', :action=>'filtered_list', :target=>@target, :testtype=>@testtype, :hwproduct=>@hwproduct) + '">' + @hwproduct + '</a>'
-     end
-   end
-   if @test_session
-     html += ' &rsaquo; <strong>' + @test_session.title + '</strong>'
-   end
-   html += '</div>'
-   html.html_safe
+  html = '<div id="breadcrumb"><li><a href="' + url_for(:controller=>'index', :action=>'index') + '">Home</a></li>'
+
+  html += ('<li> &rsaquo; ' + link_to_unless_current(@target, profile_report_path(@selected_release_version, @target)) + '</li>') if @target
+  html += ('<li> &rsaquo; ' + link_to_unless_current(@testtype, test_type_report_path(@selected_release_version, @target, @testtype)) + '</li>') if @testtype
+  html += ('<li> &rsaquo; ' + link_to_unless_current(@hardware, hardware_report_path(@selected_release_version, @target, @testtype, @hardware)) + '</li>') if @hardware
+  html += ('<li> &rsaquo; ' + @test_session.title + '</li>') if @test_session
+  html += '</div>'
+  html.html_safe
  end
 
   # FIXME: Cleanup with link_to_unless_current
-  def release_version_navigation(current_version, target='', testtype='', hwproduct='')
+  def release_version_navigation(current_version, target='', testtype='', hardware='')
     html = '<ul class="clearfix">'
     link_text = ''
     @meego_releases.each do |release|
@@ -117,9 +98,9 @@ module ApplicationHelper
 
         if testtype.present?
           path += '/' + testtype
-        
-          if hwproduct.present?
-            path += '/' + hwproduct
+
+          if hardware.present?
+            path += '/' + hardware
           end
         end
       end
@@ -127,13 +108,13 @@ module ApplicationHelper
       html += link_to link_text, root_url + path
       html += '</li>'
     end
-    
+
     html += '</ul>'
     html.html_safe
   end
 
   def report_url(s)
-      url_for :controller=>'reports',:action=>'view', :release_version=>s.release_version, :target=>s.target, :testtype=>s.testtype, :hwproduct=>s.hwproduct, :id=>s.id
+      url_for :controller=>'reports',:action=>'view', :release_version=>s.release_version, :target=>s.target, :testtype=>s.testtype, :hardware=>s.hardware, :id=>s.id
   end
 
   def format_date_to_human_readable(date)

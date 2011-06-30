@@ -1,0 +1,31 @@
+- content_for :page_header do
+  = render :partial => "reports/page_header"
+
+- content_for :breadcrumbs do
+  = breadcrumbs
+
+- content_for :page_content do
+  h1
+    em
+      = comparison_title
+
+  .clearfix
+    = render :partial => "shared/report_comparison_summary", :locals => {:comparison => @comparison}
+
+  table#compare_details.detailed_results
+    thead
+      tr
+        = render :partial => "shared/comparison_result_filter_buttons"
+        th.column_head_1 =@reports[0].formatted_date
+        th.column_head_separate
+        th.column_head_1 =@reports[1].formatted_date
+
+    tbody
+      = render :partial => "feature", :collection => @comparison.features
+
+- content_for :view_specific_js do
+  javascript:
+    $(document).ready(function(){
+    filterResults("tr.testcase:not(.has_changes)", "unchanged tests");
+    fetchBugzillaInfo();
+    });

@@ -23,12 +23,12 @@ When /^the client sends file "([^"]*)" via the REST API with RESTful parameters$
   response.should be_success
 end
 
-When /^the client sends reports "([^"]*)" via the REST API to test type "([^"]*)" and hardware "([^"]*)"$/ do |files, testtype, hardware|
+When /^the client sends reports "([^"]*)" via the REST API to test set "([^"]*)" and hardware "([^"]*)"$/ do |files, testtype, hardware|
   data = @default_api_opts.merge({
     "testtype"        => testtype,
     "hwproduct"       => hardware
   })
-  
+
   files.split(',').each_with_index do |file, index|
     data["report."+(index+1).to_s] = Rack::Test::UploadedFile.new(file, "text/xml")
   end
@@ -66,7 +66,7 @@ end
 
 When /^the client sends a request with extra parameter "([^"]*)" via the REST API$/ do |extra|
   # TODO: this step should be replaced with the step defined below
-  post "/api/import?auth_token=foobar&release_version=1.2&target=Core&testtype=automated&hwproduct=N900&" + extra, {
+  post "/api/import?auth_token=foobar&release_version=1.2&target=Core&testtype=automated&hardware=N900&" + extra, {
       "report.1"        => Rack::Test::UploadedFile.new("features/resources/sim.xml", "text/xml")
   }
   response.should be_success
@@ -84,7 +84,7 @@ end
 
 When /^I view the latest report "([^"]*)"/ do |report_string|
   version, target, test_type, hardware = report_string.downcase.split('/')
-  report = MeegoTestSession.joins(:version_label).where(:version_labels => {:label => version}, :target => target, :hwproduct => hardware, :testtype => test_type).order("created_at DESC").first
+  report = MeegoTestSession.joins(:version_label).where(:version_labels => {:label => version}, :target => target, :hardware => hardware, :testtype => test_type).order("created_at DESC").first
   raise "report not found with parameters #{version}/#{target}/#{hardware}/#{test_type}!" unless report
   visit("/#{version}/#{target}/#{test_type}/#{hardware}/#{report.id}")
 end

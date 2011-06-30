@@ -44,13 +44,16 @@ class MeegoTestSession < ActiveRecord::Base
   has_many :meego_test_sets, :dependent => :destroy
   #has_many :meego_test_cases
   has_many :test_result_files, :dependent => :destroy
+  has_many :passed, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::PASS}"
+  has_many :failed, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::FAIL}"
+  has_many :na, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::NA}"
 
   belongs_to :author, :class_name => "User"
   belongs_to :editor, :class_name => "User"
 
   belongs_to :version_label, :class_name => "VersionLabel", :foreign_key => "version_label_id"
 
-  validates_presence_of :title, :target, :testtype, :hwproduct
+  validates_presence_of :title, :target, :testtype, :hardware
   #validates_presence_of :uploaded_files, :on => :create
 
   validates :tested_at, :date_time => true
@@ -64,20 +67,48 @@ class MeegoTestSession < ActiveRecord::Base
 
   after_destroy :remove_uploaded_files
 
-  scope :published, :conditions => {:published => true}
+  scope :published, where(:published => true)
+  scope :release, lambda { |release| published.joins(:version_label).where(:version_labels => {:normalized => release.downcase}) }
+  scope :profile, lambda { |profile| published.where(:target => profile.downcase) }
+  scope :test_type, lambda { |test_type| published.where(:testtype => test_type.downcase) }
+  scope :hardware, lambda { |hardware| published.where(:hardware => hardware.downcase) }
 
   RESULT_FILES_DIR = "public/reports"
   INVALID_RESULTS_DIR = "public/reports/invalid_files"
 
   include ReportSummary
 
+  def self.latest
+    published.order(:tested_at).last
+  end
+
+  def month
+    @month ||= tested_at.strftime("%B %Y")
+  end
+
 
   def self.fetch_fully(id)
-    find(id, :include => [
-         {:meego_test_sets => [
-           :meego_test_cases, {:meego_test_cases => :measurements}
-          ]
-         }, :meego_test_sets, :meego_test_cases])
+    find(id, :include =>
+         {:meego_test_sets =>
+           {:meego_test_cases => [:measurements, :meego_test_case_attachments, :meego_test_set, :meego_test_session]}
+         })
+  end
+
+  def self.testtypes
+    published.select("DISTINCT testtype").order("testtype").map { |row| row.testtype.humanize }
+  end
+
+  def self.popular_testtypes(limit=3)
+    published.select("testtype").order("COUNT(testtype) DESC").group(:testtype).map { |row| row.testtype.humanize }
+  end
+
+  def self.hardwares
+    published.select("DISTINCT hardware as hardware").order("hardware").map { |row| row.hardware.humanize }
+  end
+
+  def self.popular_hardwares(limit=3)
+    published.select("hardware as hardware").order("COUNT(hardware) DESC").
+      group(:hardware).limit(limit).map { |row| row.hardware.humanize }
   end
 
   def target=(target)
@@ -99,13 +130,18 @@ class MeegoTestSession < ActiveRecord::Base
     s.gsub(/\b\w/) { $&.upcase } if s
   end
 
-  def hwproduct=(hwproduct)
-    hwproduct = hwproduct.try(:downcase)
-    write_attribute(:hwproduct, hwproduct)
+  def self.testtype
+    s = read_attribute(:testtype)
+    s.gsub(/\b\w/) { $&.upcase } if s
   end
 
-  def hwproduct
-    s = read_attribute(:hwproduct)
+  def hardware=(hardware)
+    hardware = hardware.try(:downcase)
+    write_attribute(:hardware, hardware)
+  end
+
+  def hardware
+    s = read_attribute(:hardware)
     s.gsub(/\b\w/) { $&.upcase } if s
   end
 
@@ -127,7 +163,7 @@ class MeegoTestSession < ActiveRecord::Base
 
   def self.targets
     TargetLabel.find(:all, :order => "sort_order ASC").map &:label
-  end  
+  end
 
   def self.release_versions
     VersionLabel.find(:all, :order => "sort_order ASC").map &:label
@@ -137,9 +173,9 @@ class MeegoTestSession < ActiveRecord::Base
     release_versions[0]
   end
 
-  def self.filters_exist?(target, testtype, hwproduct)
-    return true if target.blank? and testtype.blank? and hwproduct.blank?
-    
+  def self.filters_exist?(target, testtype, hardware)
+    return true if target.blank? and testtype.blank? and hardware.blank?
+
     filters_exist = false
 
     if target.present?
@@ -149,8 +185,8 @@ class MeegoTestSession < ActiveRecord::Base
         filters_exist &= find_by_testtype(testtype.downcase).present?
       end
 
-      if testtype.present? && hwproduct.present?
-        filters_exist &= find_by_hwproduct(hwproduct.downcase).present?
+      if testtype.present? && hardware.present?
+        filters_exist &= find_by_hardware(hardware.downcase).present?
       end
     end
 
@@ -165,11 +201,11 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   class << self
-    def by_release_version_target_test_type_product(release_version, target, testtype, hwproduct, order_by = "tested_at DESC, id DESC", limit = nil)
+    def by_release_version_target_test_type_product(release_version, target, testtype, hardware, order_by = "tested_at DESC, id DESC", limit = nil)
       target    = target.downcase
       testtype  = testtype.downcase
-      hwproduct = hwproduct.downcase
-      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testtype => testtype, :hwproduct => hwproduct).joins(:version_label).order(order_by).limit(limit)
+      hardware = hardware.downcase
+      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testtype => testtype, :hardware => hardware).joins(:version_label).order(order_by).limit(limit)
     end
 
     def published_by_release_version_target_test_type(release_version, target, testtype, order_by = "tested_at DESC, id DESC", limit = nil)
@@ -181,7 +217,7 @@ class MeegoTestSession < ActiveRecord::Base
     def published_hwversion_by_release_version_target_test_type(release_version, target, testtype)
       target   = target.downcase
       testtype = testtype.downcase
-      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testtype => testtype).select("DISTINCT hwproduct").joins(:version_label).order("hwproduct")
+      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testtype => testtype).select("DISTINCT hardware").joins(:version_label).order("hardware")
     end
 
     def published_by_release_version_target(release_version, target, order_by = "tested_at DESC, id DESC", limit = nil)
@@ -210,11 +246,11 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def self.list_hardware(release_version)
-    (published.all_lowercase(:select => 'DISTINCT hwproduct', :conditions=>{"version_labels.normalized" => release_version}, :include => :version_label).map { |s| s.hwproduct.gsub(/\b\w/) { $&.upcase } }).uniq
+    (published.all_lowercase(:select => 'DISTINCT hardware', :conditions=>{"version_labels.normalized" => release_version}, :include => :version_label).map { |s| s.hardware.gsub(/\b\w/) { $&.upcase } }).uniq
   end
 
   def self.list_hardware_for(release_version, target, testtype)
-    (published.all_lowercase(:select => 'DISTINCT hwproduct',  :conditions=>{:target => target, :testtype=> testtype,"version_labels.normalized" => release_version}, :include => :version_label).map { |s| s.hwproduct.gsub(/\b\w/) { $&.upcase } }).uniq
+    (published.all_lowercase(:select => 'DISTINCT hardware',  :conditions=>{:target => target, :testtype=> testtype,"version_labels.normalized" => release_version}, :include => :version_label).map { |s| s.hardware.gsub(/\b\w/) { $&.upcase } }).uniq
   end
 
 
@@ -227,10 +263,10 @@ class MeegoTestSession < ActiveRecord::Base
 
     # TODO: Works only if there's >= 1s difference between the timestamps
     @prev_session = MeegoTestSession.find(:first, :conditions => [
-        "tested_at < ? AND target = ? AND testtype = ? AND hwproduct = ? AND published = ? AND version_label_id = ?", time, target.downcase, testtype.downcase, hwproduct.downcase, true, version_label_id
+        "(tested_at < ? OR tested_at = ? AND created_at < ?) AND target = ? AND testtype = ? AND hardware = ? AND published = ? AND version_label_id = ?", time, time, created_at, target.downcase, testtype.downcase, hardware.downcase, true, version_label_id
     ],
-                          :order => "tested_at DESC", :include => [
-         {:meego_test_sets => :meego_test_cases}, :meego_test_sets, :meego_test_cases])
+                          :order => "tested_at DESC, created_at DESC", :include =>
+         [{:meego_test_sets => :meego_test_cases}, {:meego_test_cases => :meego_test_set}])
 
     @has_prev = !@prev_session.nil?
     @prev_session
@@ -239,7 +275,7 @@ class MeegoTestSession < ActiveRecord::Base
   def next_session
     return @next_session unless @next_session.nil? and @has_next.nil?
     @next_session = MeegoTestSession.find(:first, :conditions => [
-        "tested_at > ? AND target = ? AND testtype = ? AND hwproduct = ? AND published = ? AND version_label_id = ?", tested_at, target.downcase, testtype.downcase, hwproduct.downcase, true, version_label_id
+        "tested_at > ? AND target = ? AND testtype = ? AND hardware = ? AND published = ? AND version_label_id = ?", tested_at, target.downcase, testtype.downcase, hardware.downcase, true, version_label_id
     ],
                           :order => "tested_at ASC")
     @has_next = !@next_session.nil?
@@ -259,6 +295,11 @@ class MeegoTestSession < ActiveRecord::Base
 
   def non_nft_sets
     meego_test_sets.select {|set| set.has_non_nft?}
+  end
+
+  def test_case_by_name(feature, name)
+    @test_case_hash ||= make_test_case_hash
+    @test_case_hash[feature][name] unless @test_case_hash[feature].nil?
   end
 
   ###############################################
@@ -296,7 +337,7 @@ class MeegoTestSession < ActiveRecord::Base
       na     << 0
       labels << ""
     end
-    
+
     passed << total_passed
     failed << total_failed
     na     << total_na
@@ -305,6 +346,9 @@ class MeegoTestSession < ActiveRecord::Base
     data
   end
 
+  def max_feature_cases
+    meego_test_sets.map{|item| item.total_cases}.max
+  end
 
   def small_graph_img_tag(max_cases)
     html_graph(total_passed, total_failed, total_na, max_cases)
@@ -401,8 +445,8 @@ class MeegoTestSession < ActiveRecord::Base
     end
 
   end
-  
-  # Validate user entered test type and hw product. If all characters are
+
+  # Validate user entered test set and hw product. If all characters are
   # allowed users may enter characters that break the functionality. Thus,
   # restrict the allowed subset to certainly safe
   def validate_type_hw
@@ -412,22 +456,26 @@ class MeegoTestSession < ActiveRecord::Base
     allowed = /\A[\w\ \-:;,\(\)]+\z/
 
     if not testtype.match(allowed)
-      errors.add :testtype, "Incorrect test type. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( )"
+      errors.add :testtype, "Incorrect test set. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( )"
     end
 
-    if not hwproduct.match(allowed)
-      errors.add :hwproduct, "Incorrect hardware. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( )"
+    if not hardware.match(allowed)
+      errors.add :hardware, "Incorrect hardware. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( )"
     end
   end
 
   def generate_defaults!
     time                 = tested_at || Time.now
-    self.title           ||= "%s Test Report: %s %s %s" % [target, hwproduct, testtype, time.strftime('%Y-%m-%d')]
-    self.environment_txt = "* Hardware: " + hwproduct if self.environment_txt.empty?
+    self.title           ||= "%s Test Report: %s %s %s" % [target, hardware, testtype, time.strftime('%Y-%m-%d')]
+    self.environment_txt = "* Hardware: " + hardware if self.environment_txt.empty?
   end
 
   def format_date
     tested_at.strftime("%d.%m")
+  end
+
+  def format_year
+    tested_at.strftime("%Y")
   end
 
   def self.map_result(result)
@@ -458,16 +506,16 @@ class MeegoTestSession < ActiveRecord::Base
   # For encapsulating the release_version          #
   ###############################################
   def release_version=(release_version)
-    version_label = VersionLabel.where( "normalized = ?", release_version.downcase)  
-    self.version_label = version_label.first  
+    version_label = VersionLabel.where( :normalized => release_version.downcase)
+    self.version_label = version_label.first
   end
 
-  def release_version 
+  def release_version
     if self.version_label
       return self.version_label.label
     else
       return nil
-    end 
+    end
   end
 
   def generate_file_destination_path(original_filename)
@@ -486,33 +534,33 @@ class MeegoTestSession < ActiveRecord::Base
   # File upload handlers                        #
   ###############################################
 
-#  def save_uploaded_files
-#
-#    return unless @uploaded_files
-#
-#    total_cases  = 0
-#    self.has_ft  = false
-#    self.has_nft = false
-#
-#    @uploaded_files.each do |f|
-#
-#      return if not valid_filename_extension?(f.original_filename)
-#      total_cases += parse_result_file(f.path, f.original_filename)
-#
-#      path_to_file = generate_file_destination_path(f.original_filename)
-#      File.open(path_to_file, "wb") { |outf| outf.write(f.read) } #saves the uploaded file in server
-#
-#      self.test_result_files.build(:path => path_to_file) #add the new test result file
-#    end
-#
-#    if @uploaded_files.size > 0 and total_cases == 0
-#      if @uploaded_files.size == 1
-#        errors.add :uploaded_files, "The uploaded file didn't contain any valid test cases"
-#      else
-#        errors.add :uploaded_files, "None of the uploaded files contained any valid test cases"
-#      end
-#    end
-#  end
+  def save_uploaded_files
+
+    return unless @uploaded_files
+
+    total_cases  = 0
+    self.has_ft  = false
+    self.has_nft = false
+
+    @uploaded_files.each do |f|
+
+      return if not valid_filename_extension?(f.original_filename)
+      total_cases += parse_result_file(f.path, f.original_filename)
+
+      path_to_file = generate_file_destination_path(f.original_filename)
+      File.open(path_to_file, "wb") { |outf| outf.write(f.read) } #saves the uploaded file in server
+
+      self.test_result_files.build(:path => path_to_file) #add the new test result file
+    end
+
+    if @uploaded_files.size > 0 and total_cases == 0
+      if @uploaded_files.size == 1
+        errors.add :uploaded_files, "The uploaded file didn't contain any valid test cases"
+      else
+        errors.add :uploaded_files, "None of the uploaded files contained any valid test cases"
+      end
+    end
+  end
 
   def remove_uploaded_files
     # TODO: when report is deleted files should be deleted as well
@@ -524,7 +572,7 @@ class MeegoTestSession < ActiveRecord::Base
         release_version,
         target,
         testtype,
-        hwproduct,
+        hardware,
         title
     ]
 
@@ -593,7 +641,6 @@ class MeegoTestSession < ActiveRecord::Base
     cases
   end
 
-
   def parse_xml_file(filename)
     sets = {}
     file_total = 0
@@ -634,10 +681,10 @@ class MeegoTestSession < ActiveRecord::Base
                   :name       => m.name,
                   :sort_index => nft_index,
                   :short_json => series_json(m.measurements, maxsize=40),
-                  :long_json  => series_json_withx(m, outline.interval_unit, maxsize=200), 
+                  :long_json  => series_json_withx(m, outline.interval_unit, maxsize=200),
                   :unit       => m.unit,
                   :interval_unit => outline.interval_unit,
-                  
+
                   :min_value    => outline.minval,
                   :max_value    => outline.maxval,
                   :avg_value    => outline.avgval,
@@ -710,6 +757,15 @@ class MeegoTestSession < ActiveRecord::Base
   def create_labels
     create_version_label && create_target_label
   end
+
+  def make_test_case_hash
+    test_cases = meego_test_cases.group_by {|tc| tc.meego_test_set.feature }
+    test_cases.each_key do |feature|
+      test_cases[feature] = Hash[test_cases[feature].map {|tc| [tc.name, tc]}]
+    end
+    test_cases
+  end
+
 end
 
 class Counter
@@ -717,11 +773,11 @@ class Counter
     @pass_count = 0
     @total_count   = 0
   end
-  
+
   def add_pass_count()
     @pass_count += 1
   end
-  
+
   def add_total_count()
     @total_count +=1
   end
@@ -733,5 +789,5 @@ class Counter
   def get_total_count()
     @total_count
   end
-end  
+end
 

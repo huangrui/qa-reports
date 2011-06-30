@@ -39,6 +39,10 @@ module Meegoqa
     config.encoding = "utf-8"
 
     # Configure sensitive parameters which will be filtered from the log file.
-    config.filter_parameters += [:password]        
+    config.filter_parameters += [:password]
+
+    # Observers for automatic exports. Needs server definition in config/exporter_config.yml
+    config.active_record.observers = :meego_test_session_observer, :meego_test_case_observer
+
   end
 end

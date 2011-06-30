@@ -28,6 +28,7 @@ class MeegoTestCase < ActiveRecord::Base
 
   has_many :measurements, :dependent => :destroy, :class_name => "::MeegoMeasurement"
   has_many :serial_measurements, :dependent => :destroy
+  has_many :meego_test_case_attachments
 
   PASS = 1
   FAIL = -1
@@ -42,11 +43,7 @@ class MeegoTestCase < ActiveRecord::Base
   end
 
   def find_matching_case(session)
-    return nil unless session
-    session.meego_test_cases.each do |tc|
-      return tc if tc.name == name
-    end
-    nil
+    session.test_case_by_name(meego_test_set.feature, name) unless session.nil?
   end
 
   def all_measurements
@@ -69,5 +66,13 @@ class MeegoTestCase < ActiveRecord::Base
     end
   end
 
+  def attachments
+    meego_test_case_attachments
+  end
+
+  def update_attachment(attachment)
+    attachments.clear
+    attachments.create({:attachment=>attachment}) unless attachment.nil?
+  end
 end
 

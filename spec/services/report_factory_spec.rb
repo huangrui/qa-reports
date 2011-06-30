@@ -14,8 +14,9 @@ describe ReportFactory do
         :release_version => "1.2",
         :target => "Core",
         :testtype => "Sanity",
-        :hwproduct => "N900",
+        :hardware => "N900",
         :tested_at => "2011-12-30 23:45:59",
+        :published => false,
         :uploaded_files => [@result_file1, @result_file2]
       }
 

@@ -7,8 +7,12 @@ tr class="testcase #{result_class(testcase, 'result_')}" id="testcase-#{testcase
       a.dl_link href=(testcase.binary_link)
   td class="testcase_result #{result_class(testcase)} #{'edit' if @editing} #{testcase.find_change_class(@test_session.prev_session)} "
     span.content #{result_html(testcase)}
-  td class="testcase_notes #{'edit' if @editing}"
-    .content #{comment_html(testcase)}
+  / NOTE: if changed, update also _nft_testcase and _testcase_comment. DRY violated because of seriously bad partial rendering performance.
+  td class="testcase_notes #{'edit' if @editing}" rowspan="#{testcase.all_measurements.size if testcase.has_nft }"
+    .content
+      = comment_html(testcase)
+      - if not testcase.attachments.empty?
+        - attachment = testcase.attachments.first
+        a class="note_attachment #{'image_attachment' if attachment.image?}" href="#{attachment.pretty_url}" title=attachment.filename =attachment.pretty_url
     - if @editing
-      .comment_markup style="display:none;"
-      
+      .comment_markup style="display:none;" #{testcase.comment}

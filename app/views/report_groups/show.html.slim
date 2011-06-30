@@ -1,0 +1,142 @@
+#index_page
+  = breadcrumbs
+
+  - content_for :version_navi do
+    #version_navi
+     = release_version_navigation(@selected_release_version, @target, @testtype, @hardware)
+
+  / Template for new month tables
+  table.month_template style="display:none"
+    tr
+      td.index_month_title colspan="3"
+        strong#month Month
+
+  table#infinite_scroll_results style="display:none"
+
+  table#report_filtered_navigation.filtered
+    thead
+      tr
+        th.filtered scope="col"
+         = current_filter_path
+         a.rss href=rss_url title="RSS feed"
+    tr
+      td.filtered
+        - if @group_report.trend_graph_data_abs
+          .chart_actions.stack_chart
+            #canvas_wrapper style="width:700px; height:260px"
+              canvas#trend_graph_abs height="250" width="700"
+            a#abs_button.ui_btn.inactive Absolute values
+            a#rel_button.ui_btn Relative %
+            a#csv_report_link href=url_for(:controller=>'csv_export', :action=>'export', :release_version=>@selected_release_version, :target=>@target, :testtype=>@testtype, :hardware=>@hardware) Download as CSV
+
+        - if @group_report.comparison
+          .index_section
+            a.compare href=compare_latest_to_previous_url See detailed comparison
+            = render :partial => "shared/report_comparison_summary", :locals => {:comparison => @group_report.comparison}
+
+        .index_month
+
+  = javascript_include_tag "jquery-infinite-scroll/jquery.infinitescroll.js"
+  javascript:
+    var resultTableName = 'table#infinite_scroll_results'
+
+    $(window).infinitescroll({
+      url: "#{{report_list_path(@selected_release_version, @target, @testtype, @hardware)}}",
+      appendTo: resultTableName,
+      triggerAt: 800,
+      page: 1
+    });
+
+    var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    var previousYear = -1;
+    var previousMonth = -1;
+    var currentMonthTable;
+    $(resultTableName).bind('infinitescroll.finish', function() {
+      var rows = $(resultTableName + ' tr');
+
+      $.each(rows, function(index, row) {
+        var row = $(this);
+        var year = row.children('.year').first().html();
+        var month = parseInt(row.children('.date').first().html().split('.').pop());
+
+        if (previousYear != year || previousMonth != month) {
+          var monthTable = $('table.month_template').clone();
+          monthTable.removeClass('month_template');
+          monthTable.find('#month').html(monthNames[month - 1] + ' ' + year);
+          monthTable.show();
+          monthTable.appendTo('.index_month');
+          currentMonthTable = monthTable;
+
+          previousYear = year;
+          previousMonth = month;
+        }
+
+        row.appendTo(currentMonthTable);
+      });
+    });
+
+    $(window).trigger('infinitescroll.scrollpage', 1);
+
+  - if @group_report.trend_graph_data_abs
+    javascript:
+      $(window).load(function(){
+        var trend_abs_passed = #{ints2js @group_report.trend_graph_data_abs.passed};
+        var trend_abs_failed = #{ints2js @group_report.trend_graph_data_abs.failed};
+        var trend_abs_na     = #{ints2js @group_report.trend_graph_data_abs.na};
+        var trend_labels     = #{strs2js @group_report.trend_graph_data_abs.labels};
+        var trend_rel_passed = #{ints2js @group_report.trend_graph_data_rel.passed};
+        var trend_rel_failed = #{ints2js @group_report.trend_graph_data_rel.failed};
+        var trend_rel_na     = #{ints2js @group_report.trend_graph_data_rel.na};
+
+        var g;
+        function init_graph() {
+          g = new Bluff.StackedBar('trend_graph_abs', '700x250');
+          g.hide_title = true;
+          g.tooltips = true;
+          g.sort = false;
+          g.bar_spacing = 0.6;
+          g.marker_font_size = 11;
+          g.legend_font_size = 14;
+          g.set_theme({
+          colors: ['#acacac'],
+          marker_color: '#dedede',
+          font_color: '#6f6f6f',
+          background_colors: ['white', 'white']
+          });
+        }
+
+        function draw_abs_graph() {
+          init_graph();
+          g.data('pass', trend_abs_passed, '#bcd483');
+          g.data('fail', trend_abs_failed, '#f36c6c');
+          g.data('n/a',  trend_abs_na,     '#ddd');
+          g.labels = trend_labels;
+
+          g.draw();
+        }
+
+        function draw_rel_graph() {
+          init_graph();
+          g.data('pass', trend_rel_passed, '#bcd483');
+          g.data('fail', trend_rel_failed, '#f36c6c');
+          g.data('n/a',  trend_rel_na,     '#ddd');
+          g.labels = trend_labels;
+
+          g.draw();
+        }
+
+        $("#abs_button").click(function(){
+          $("#abs_button").addClass("inactive");
+          $("#rel_button").removeClass("inactive");
+          draw_abs_graph();
+        });
+
+        $("#rel_button").click(function(){
+          $("#abs_button").removeClass("inactive");
+          $("#rel_button").addClass("inactive");
+          draw_rel_graph();
+        });
+
+        draw_abs_graph();
+      });
+

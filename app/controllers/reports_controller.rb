@@ -54,31 +54,6 @@ module AjaxMixin
     render :text => "OK"
   end
 
-  def update_case_comment
-    case_id  = params[:id]
-    comment  = params[:comment]
-    testcase = MeegoTestCase.find(case_id)
-    testcase.update_attribute(:comment, comment)
-
-    test_session = testcase.meego_test_session
-    test_session.updated_by(current_user)
-    expire_caches_for(test_session)
-
-    render :text => "OK"
-  end
-
-  def update_case_result
-    case_id  = params[:id]
-    result   = params[:result]
-    testcase = MeegoTestCase.find(case_id)
-    testcase.update_attribute(:result, result.to_i)
-
-    test_session = testcase.meego_test_session
-    test_session.updated_by(current_user)
-    expire_caches_for(test_session, true)
-
-    render :text => "OK"
-  end
 
   def update_txt
     @preview_id   = params[:id]
@@ -155,7 +130,7 @@ module AjaxMixin
     grading = params[:grading]
     testset = MeegoTestSet.find(set_id)
     testset.update_attribute(:grading, grading)
- 
+
     test_session = testset.meego_test_session
     test_session.updated_by(current_user)
     expire_caches_for(test_session)
@@ -168,8 +143,8 @@ end
 class ReportsController < ApplicationController
   include AjaxMixin
   include CacheHelper
-  
-  before_filter :authenticate_user!, :except => ["view", "print", "compare", "fetch_bugzilla_data"]
+
+  before_filter :authenticate_user!, :except => ["view", "print", "compare", "fetch_bugzilla_data", "redirect_by_id"]
 
   #caches_page :print
   #caches_page :index, :upload_form, :email, :filtered_list
@@ -189,10 +164,10 @@ class ReportsController < ApplicationController
       @no_upload_link = true
 
       @report         = @test_session
-      @targets = MeegoTestSession.list_targets @selected_release_version
-      @types = MeegoTestSession.list_types @selected_release_version
-      @hardware = MeegoTestSession.list_hardware @selected_release_version
-      @release_versions = MeegoTestSession.release_versions
+      @release_versions = VersionLabel.all.map { |release| release.label }
+      @targets = MeegoTestSession.targets
+      @testtypes = MeegoTestSession.release(@selected_release_version).testtypes
+      @hardware = MeegoTestSession.release(@selected_release_version).popular_hardwares
 
       @raw_result_files = @test_session.raw_result_files
 
@@ -215,7 +190,7 @@ class ReportsController < ApplicationController
                 :release_version => test_session.release_version,
                 :target          => test_session.target,
                 :testtype        => test_session.testtype,
-                :hwproduct       => test_session.hwproduct
+                :hardware       => test_session.hardware
   end
 
   def view
@@ -233,17 +208,22 @@ class ReportsController < ApplicationController
 
       return render_404 unless @selected_release_version.downcase.eql? @test_session.release_version.downcase
 
-      @history = history(@test_session.prev_session)
+      @history = history(@test_session, 5)
 
       @target    = @test_session.target
       @testtype  = @test_session.testtype
-      @hwproduct = @test_session.hwproduct
+      @hardware = @test_session.hardware
 
       @report    = @test_session
       @files = FileStorage.new().list_files(@test_session) or []
       @raw_result_files = @test_session.raw_result_files
       @editing = false
       @wizard  = false
+
+      @nft_trends = nil
+      if @test_session.has_nft?
+        @nft_trends = NftHistory.new(@test_session)
+      end
 
       render :layout => "report"
     else
@@ -261,6 +241,11 @@ class ReportsController < ApplicationController
       @wizard = false
       @email  = true
 
+      @nft_trends = nil
+      if @test_session.has_nft?
+        @nft_trends = NftHistory.new(@test_session)
+      end
+
       render :layout => "report"
     else
       redirect_to :action => :index
@@ -273,11 +258,12 @@ class ReportsController < ApplicationController
 
     if id = params[:id].try(:to_i)
       @test_session   = MeegoTestSession.fetch_fully(id)
+
       @report         = @test_session
-      @targets = MeegoTestSession.list_targets @selected_release_version
-      @types = MeegoTestSession.list_types @selected_release_version
-      @hardware = MeegoTestSession.list_hardware @selected_release_version
-      @release_versions = MeegoTestSession.release_versions
+      @release_versions = VersionLabel.all.map { |release| release.label }
+      @targets = MeegoTestSession.targets
+      @testtypes = MeegoTestSession.release(@selected_release_version).testtypes
+      @hardware = MeegoTestSession.release(@selected_release_version).popular_hardwares
       @no_upload_link = true
       @files = FileStorage.new().list_files(@test_session) or []
       @raw_result_files = @test_session.raw_result_files
@@ -293,13 +279,13 @@ class ReportsController < ApplicationController
     @release_version = params[:release_version]
     @target = params[:target]
     @testtype = params[:testtype]
-    @comparison_testtype = params[:comparetype]    
+    @comparison_testtype = params[:comparetype]
     @compare_cache_key = "compare_page_#{@release_version}_#{@target}_#{@testtype}_#{@comparison_test_type}"
 
     MeegoTestSession.published_hwversion_by_release_version_target_test_type(@release_version, @target, @testtype).each{|hardware|
-        left = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @testtype, hardware.hwproduct).first
-        right = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @comparison_testtype, hardware.hwproduct).first
-        @comparison.add_pair(hardware.hwproduct, left, right)
+        left = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @testtype, hardware.hardware).first
+        right = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @comparison_testtype, hardware.hardware).first
+        @comparison.add_pair(hardware.hardware, left, right)
     }
     @groups = @comparison.groups
     render :layout => "report"
@@ -347,6 +333,16 @@ class ReportsController < ApplicationController
     redirect_to :controller => :index, :action => :index
   end
 
+  def redirect_by_id
+    # Shortcut for accessing the correct report using report ID only
+    begin
+      s = MeegoTestSession.find(params[:id].to_i)
+      redirect_to :controller => 'reports', :action => 'view', :release_version => s.release_version, :target => s.target, :testtype => s.testtype, :hardware => s.hardware, :id => s.id
+    rescue ActiveRecord::RecordNotFound
+      redirect_to :controller => :index, :action => :index
+    end
+  end
+
   protected
 
   def bugzilla_cache_key
@@ -354,16 +350,14 @@ class ReportsController < ApplicationController
     "bugzilla_#{h}"
   end
 
-  def history(s)
-    h = []
-    while h.size < 5 
-      h << s
-      s = s.prev_session if s
-    end
-    return h
+  def history(s, cnt)
+    MeegoTestSession.where("(tested_at < '#{s.tested_at}' OR tested_at = '#{s.tested_at}' AND created_at < '#{s.created_at}') AND target = '#{s.target.downcase}' AND testtype = '#{s.testtype.downcase}' AND hardware = '#{s.hardware.downcase}' AND published = 1 AND version_label_id = #{s.version_label_id}").
+        order("tested_at DESC, created_at DESC").limit(cnt).
+        includes([{:meego_test_sets => :meego_test_cases}, {:meego_test_cases => :meego_test_set}])
   end
 
   def just_published?
     @published
   end
+
 end
