@@ -22,14 +22,11 @@ require 'report_exporter'
 class MeegoTestCaseObserver < ActiveRecord::Observer
 
   def after_save(test_case)
-    begin
-      test_session = MeegoTestSession.find(test_case.meego_test_session_id)
-      return if not test_session.published
+      test_session = test_case.meego_test_session
+      return unless test_session and test_session.published
+
       ReportExporter::export_test_session(test_session)
-    rescue ActiveRecord::RecordNotFound
-      # Do nothing
-    end
-  end 
+  end
 
 end
 

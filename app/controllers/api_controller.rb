@@ -90,12 +90,10 @@ class ApiController < ApplicationController
       original_sets  = []
       begin
         @test_session = MeegoTestSession.find(@report_id)
-        @test_session.meego_test_sets.each do |tset|
-           original_sets << tset
-        end
-        @test_session.meego_test_cases.each do |tcase|
-           original_cases << tcase
-        end
+
+        original_sets = @test_session.meego_test_sets.clone
+        original_cases = @test_session.meego_test_cases.clone
+
         parse_err = @test_session.update_report_result(current_user, data[:uploaded_files], true)
       rescue ActiveRecord::UnknownAttributeError => errors
         render :json => {:ok => '0', :errors => errors.message}
@@ -108,6 +106,9 @@ class ApiController < ApplicationController
       end
 
       if @test_session.valid?
+        MeegoTestSet.delete(original_sets)
+        MeegoTestCase.delete(original_cases)
+
         @test_session.save!
 
         expire_caches_for(@test_session, true)
@@ -118,19 +119,11 @@ class ApiController < ApplicationController
         return
       end
       
-      delete_dirty_data(original_sets)
-      delete_dirty_data(original_cases)
       render :json => {:ok => '1'}
     end
   end
 
   private
-
-  def delete_dirty_data(dirty_array)
-    dirty_array.each do |dirty_item|
-       dirty_item.delete
-    end
-  end
 
   def collect_file(parameters, key, errors)
     file = parameters.delete(key)

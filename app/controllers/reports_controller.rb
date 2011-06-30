@@ -40,6 +40,24 @@ module AjaxMixin
     render :json => {:ok => '1'}
   end
 
+  def remove_testcase
+    case_id = params[:id].to_i
+    tc = MeegoTestCase.find(case_id)
+    tc.remove_from_session
+
+    expire_caches_for(tc.meego_test_session)
+    render :json => {:ok => '1'}
+  end
+
+  def restore_testcase
+    case_id         = params[:id].to_i
+    tc = MeegoTestCase.deleted.find(case_id)
+    tc.restore_to_session
+
+    expire_caches_for(tc.meego_test_session)
+    render :json => { :ok => '1' }
+  end
+
   def update_title
     @preview_id   = params[:id].to_i
     @test_session = MeegoTestSession.find(@preview_id)
@@ -99,7 +117,7 @@ module AjaxMixin
 
       data = params[:meego_test_session]
       data.keys.each do |key|
-        @test_session.update_attribute(key, data[key])
+        @test_session.send(key + "=", data[key]) if data[key].present?
       end
       @test_session.updated_by(current_user)
 
@@ -323,7 +341,7 @@ class ReportsController < ApplicationController
   def delete
     id           = params[:id]
 
-    test_session = MeegoTestSession.find(id)
+    test_session = MeegoTestSession.fetch_fully(id)
 
     expire_caches_for(test_session, true)
     expire_index_for(test_session)
