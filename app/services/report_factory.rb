@@ -1,3 +1,5 @@
+require 'fileutils'
+
 module ReportFactory
 
   def self.create(params)
@@ -23,6 +25,7 @@ module ReportFactory
 
   def self.parse_result_files(params)
     test_cases = {}
+
     params[:uploaded_files].each do |file|
       new_test_cases = ResultFileParser.parse_csv(file)
 
@@ -41,6 +44,27 @@ module ReportFactory
   end
 
   def self.save_result_files(params)
-    #TODO
+    test_result_files = []
+
+    params[:uploaded_files].each do |tmpfile|
+      result_file = generate_file_destination_path(tmpfile.original_filename)
+      FileUtils.move tmpfile, result_file
+      test_result_files << {:path => result_file}
+    end
+
+    params[:test_result_files_attributes] = test_result_files
+  end
+
+  def self.generate_file_destination_path(original_filename)
+    datepart = Time.now.strftime("%Y%m%d")
+    dir      = File.join(MeegoTestSession::RESULT_FILES_DIR, datepart)
+    FileUtils.mkdir_p(dir)
+
+    filename     = ("%06i-" % Time.now.usec) + sanitize_filename(original_filename)
+    path_to_file = File.join(dir, filename)
+  end
+
+  def self.sanitize_filename(filename)
+    filename.gsub(/[^\w\.\_\-]/, '_')
   end
 end

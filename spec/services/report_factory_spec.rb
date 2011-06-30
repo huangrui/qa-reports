@@ -10,13 +10,18 @@ describe ReportFactory do
   describe "a report created with valid attributes" do
     before(:each) do
 
+      @result_file1 = ResultFile.new
+      @result_file2 = ResultFile.new
+
+      @result_file1.stub!(:original_filename).and_return("bluetooth.xml")
+      @result_file2.stub!(:original_filename).and_return("wlan.csv")
+
       @report_attributes = {
         :release_version => "1.2",
         :target => "Core",
         :testtype => "Sanity",
         :hardware => "N900",
         :tested_at => "2011-12-30 23:45:59",
-        :published => false,
         :uploaded_files => [@result_file1, @result_file2]
       }
 
@@ -35,11 +40,11 @@ describe ReportFactory do
       @results1 = { "Feature 1" =>  @test_cases1, "Feature 2" => @test_cases1 }
       @results2 = { "Feature 1" => @test_cases2, "Feature 3" => @test_cases2 }
 
-      @result_file1 = ResultFile.new
-      @result_file2 = ResultFile.new
+
       
       ResultFileParser.stub!(:parse_csv).and_return(@results1, @results2)
 
+      FileUtils.stub!(:move)
       @report = ReportFactory.create(@report_attributes)
     end
 

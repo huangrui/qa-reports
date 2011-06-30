@@ -63,7 +63,7 @@ class MeegoTestSession < ActiveRecord::Base
   validate :validate_labels
   validate :validate_type_hw
 
-  accepts_nested_attributes_for :meego_test_sets, :allow_destroy => true
+  accepts_nested_attributes_for :meego_test_sets, :test_result_files
 
   after_destroy :remove_uploaded_files
 
