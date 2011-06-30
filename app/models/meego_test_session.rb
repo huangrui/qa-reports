@@ -455,18 +455,18 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def force_testtype_hardware_names
-    write_attribute :testtype, forced_testtype_label
-    write_attribute :hardware, forced_hardware_label
+    write_attribute :testtype, testtype_label
+    write_attribute :hardware, hardware_label
   end
 
-  def forced_testtype_label
-    @forced_testtype = self.class.persistent_label_for(:testtype, testtype) if @forced_testtype.nil? or testtype.casecmp(@forced_testtype) != 0
-    @forced_testtype
+  def testtype_label
+    @testtype_label = self.class.persistent_label_for(:testtype, testtype) if @testtype_label.nil? or testtype.casecmp(@testtype_label) != 0
+    @testtype_label
   end
 
-  def forced_hardware_label
-    @forced_hardware = self.class.persistent_label_for(:hardware, hardware) if @forced_hardware.nil? or hardware.casecmp(@forced_hardware) != 0
-    @forced_hardware
+  def hardware_label
+    @hardware_label = self.class.persistent_label_for(:hardware, hardware) if @hardware_label.nil? or hardware.casecmp(@hardware_label) != 0
+    @hardware_label
   end
 
   def self.persistent_label_for(attribute, name)
@@ -477,7 +477,7 @@ class MeegoTestSession < ActiveRecord::Base
 
   def generate_defaults!
     time                 = tested_at || Time.now
-    self.title           ||= "%s Test Report: %s %s %s" % [target, forced_hardware_label, forced_testtype_label, time.strftime('%Y-%m-%d')]
+    self.title           ||= "%s Test Report: %s %s %s" % [target, hardware_label, testtype_label, time.strftime('%Y-%m-%d')]
     self.environment_txt = "* Hardware: " + hardware if self.environment_txt.empty?
   end
 
