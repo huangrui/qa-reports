@@ -169,14 +169,14 @@ prepareCategoryUpdate = function(div) {
 
     var arrow     = $('<div/>').html(" &rsaquo; ").text();
 
-    $testtype.val(toTitlecase($testtype.val()));
-    $hardware.val(toTitlecase($hardware.val()));
+    $testtype.val($testtype.val());
+    $hardware.val($hardware.val());
 
     $save.click(function() {
       var targetval  = $('.field .target:checked').val();
       var versionval = $('.field .version:checked').val();
-      var typeval    = toTitlecase($testtype.val());
-      var hwval      = toTitlecase($hardware.val());
+      var typeval    = $testtype.val();
+      var hwval      = $hardware.val();
       var dateval    = $date.val();
 
       // validate
