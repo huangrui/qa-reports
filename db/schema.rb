@@ -73,6 +73,7 @@ ActiveRecord::Schema.define(:version => 20110617075312) do
     t.boolean  "has_nft",                           :default => false, :null => false
     t.boolean  "has_ft",                            :default => true,  :null => false
     t.integer  "version_label_id",                  :default => 1,     :null => false
+    t.string   "build_id",                          :default => ""
   end
 
   add_index "meego_test_sessions", ["version_label_id", "target", "testtype", "hardware"], :name => "index_meego_test_sessions_key"

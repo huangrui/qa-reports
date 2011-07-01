@@ -143,6 +143,19 @@ class MeegoTestSession < ActiveRecord::Base
     s.gsub(/\b\w/) { $&.upcase } if s
   end
 
+  def build_id_txt=
+    s = write_attribute(:build_id)
+  end
+
+  def build_id_txt
+    s = read_attribute(:build_id)
+  end
+
+  def self.popular_build_ids(limit=3)
+    published.select("build_id as build_id").order("COUNT(build_id) DESC").
+      group(:build_id).limit(limit).map { |row| row.build_id.humanize }
+  end
+
   def prev_summary
     prev_session
   end
@@ -391,6 +404,15 @@ class MeegoTestSession < ActiveRecord::Base
     txt = build_txt
     if txt == ""
       "No build details filled in yet"
+    else
+      MeegoTestReport::format_txt(txt)
+    end
+  end
+
+  def build_id_html
+    txt = build_id_txt
+    if txt == ""
+      "No build id details filled in yet"
     else
       MeegoTestReport::format_txt(txt)
     end

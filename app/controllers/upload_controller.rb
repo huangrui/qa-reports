@@ -46,6 +46,7 @@ class UploadController < ApplicationController
     @targets = MeegoTestSession.targets.map {|target| target.downcase}
     @testtypes = MeegoTestSession.release(@selected_release_version).testtypes
     @hardware = MeegoTestSession.release(@selected_release_version).popular_hardwares
+    @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
 
     @no_upload_link = true
   end
@@ -98,6 +99,7 @@ class UploadController < ApplicationController
       @targets = MeegoTestSession.targets
       @testtypes = MeegoTestSession.release(@selected_release_version).testtypes
       @hardware = MeegoTestSession.release(@selected_release_version).popular_hardwares
+      @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
       render :upload_form
     end
   end
