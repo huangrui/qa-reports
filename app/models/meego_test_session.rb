@@ -120,8 +120,8 @@ class MeegoTestSession < ActiveRecord::Base
     read_attribute(:target).try(:capitalize)
   end
 
-  def build_id_txt=
-    s = write_attribute(:build_id)
+  def build_id_txt=(build_id)
+    write_attribute(:build_id, build_id)
   end
 
   def build_id_txt
