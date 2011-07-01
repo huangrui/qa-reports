@@ -143,8 +143,8 @@ class MeegoTestSession < ActiveRecord::Base
     s.gsub(/\b\w/) { $&.upcase } if s
   end
 
-  def build_id_txt=
-    s = write_attribute(:build_id)
+  def build_id_txt=(build_id)
+    write_attribute(:build_id, build_id)
   end
 
   def build_id_txt

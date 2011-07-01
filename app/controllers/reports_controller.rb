@@ -77,8 +77,11 @@ module AjaxMixin
     @preview_id   = params[:id]
     @test_session = MeegoTestSession.find(@preview_id)
 
+    Rails.logger.info params
     field         = params[:meego_test_session]
+    Rails.logger.info field
     field         = field.keys()[0]
+    Rails.logger.info field
     @test_session.send(field + '=', params[:meego_test_session][field])
     @test_session.updated_by(current_user)
     expire_caches_for(@test_session)
