@@ -1,7 +1,0 @@
-Feature,Test case,Notes (bugs),Pass,Fail,N/A
-Feature 0,Testcase 0,co';mment,0,1,0
-Feature 0,Testcase 1,comment,0,0,1
-Feature 0,Testcase 2,comment,1,0,0
-Feature 0,Testcase 3,comment,1,0,0
-Feature 0,Testcase 4,comment,0,1,0
-
