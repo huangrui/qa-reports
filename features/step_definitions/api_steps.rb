@@ -102,3 +102,24 @@ Then /^the REST result "([^"]*)" is "([^"]*)"$/ do |key, value|
   key.split('|').each { |item| json = json[item] }
   json.should == value
 end
+
+def get_testsessionid(file)
+  TestResultFile.where('path like ?', '%' + file).first.meego_test_session_id
+end
+
+When /^session "([^"]*)" has been modified at "([^"]*)"$/ do |file, date|
+  tid = get_testsessionid(file)
+  d = DateTime.parse(date)
+  ActiveRecord::Base.connection.execute("update meego_test_sessions set updated_at = '#{d}' where id = #{tid}")
+end
+
+When /^I download "([^"]*)"$/ do |file|
+  get file
+end
+
+When /^resulting JSON should match files "([^"]*)" and "([^"]*)"$/ do |file1, file2|
+  json = ActiveSupport::JSON.decode(response.body)
+  json[0]['qa_id'].should == get_testsessionid(file1)
+  json[1]['qa_id'].should == get_testsessionid(file2)
+  json.count.should == 2
+end

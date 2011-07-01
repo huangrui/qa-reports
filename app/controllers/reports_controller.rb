@@ -30,6 +30,7 @@ require 'cache_helper'
 require 'iconv'
 require 'net/http'
 require 'net/https'
+require 'report_exporter'
 
 module AjaxMixin
   def remove_attachment

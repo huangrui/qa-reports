@@ -123,6 +123,18 @@ class ApiController < ApplicationController
     end
   end
 
+  def sessions_by_interval
+    begin
+      begin_time = DateTime.parse params[:begin_time]
+      sessions = MeegoTestSession.published.where('updated_at > ?', begin_time)
+      hashed_sessions = sessions.map { |s| ReportExporter::hashify_test_session(s) }
+      render :json => hashed_sessions
+    rescue ArgumentError => error
+      render :json => {:ok => '0', :errors => error.message}
+      return
+    end
+  end
+
   private
 
   def collect_file(parameters, key, errors)
