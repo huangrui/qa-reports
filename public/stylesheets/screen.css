@@ -543,6 +543,9 @@ input.cancel {
     font-size: 10px;
     color: #515151;}
 
+.help_tag {
+    font-size: 9px;}
+
 .editables {
 	float: left;
 }

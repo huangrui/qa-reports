@@ -51,12 +51,10 @@ When /I view the report "([^"]*)"$/ do |report_string|
 end
 
 Given /^I have created the "([^"]*)" report(?: using "([^"]*)")?$/ do |report_name, report_template|
-
   Given %{I have created the "#{report_name}" report with date "2010-02-02" using "#{report_template}"}
 end
 
 Given /^I have created the "([^"]*)" report with date "([^"]*)"(?: using "([^"]*)")?$/ do |report_name, report_date, report_template|
-#Given /^I have created the "([^"]*)" report$/ do |report_name|
 
   version, target, test_type, hardware = report_name.split('/')
 
@@ -151,6 +149,10 @@ Given /^I select test set "([^"]*)" and hardware "([^"]*)"(?: with date "([^\"]*
   When %{I fill in "report_test_execution_date" with "#{date}"} if date
   When %{I fill in "meego_test_session[testtype]" with "#{test_type}"}
   When %{I fill in "meego_test_session[hardware]" with "#{hardware}"}
+end
+
+Given /^I select build id "([^"]*)"$/ do |build_id|
+  When %{I fill in "meego_test_session[build_id]" with "#{build_id}"}
 end
 
 Then /^I should see the header$/ do
