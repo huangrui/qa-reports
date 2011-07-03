@@ -2,8 +2,8 @@ Feature: Manage reports
 
   Background:
     Given I am a new, authenticated user
-    And I have created the "1.1/Core/Sanity/Aava" report and build id "1.2.0.90.0.20050517.1"
-    And I have created the "1.1/Core/System/Eeepc" report using "sample_new.csv" and build id "1.2.0.90.0.20050517.1"
+    And I have created the "1.1/Core/Sanity/Aava" report and optional build id is "1.2.0.90.0.20050517.1"
+    And I have created the "1.1/Core/System/Eeepc" report using "sample_new.csv" and optional build id is "1.2.0.90.0.20050517.1"
     When I view the report "1.1/Core/Sanity/Aava"
 
   @smoke

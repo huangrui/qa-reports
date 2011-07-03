@@ -50,11 +50,11 @@ When /I view the report "([^"]*)"$/ do |report_string|
   visit("/#{version}/#{target}/#{test_type}/#{hardware}/#{report.id}")
 end
 
-Given /^I have created the "([^"]*)" report(?: using "([^"]*)")?$/ do |report_name, report_template|
-  Given %{I have created the "#{report_name}" report with date "2010-02-02" using "#{report_template}"}
+Given /^I have created the "([^"]*)" report(?: using "([^"]*)")?(?: and optional build id is "([^"]*)")?$/ do |report_name, report_template, build_id|
+  Given %{I have created the "#{report_name}" report with date "2010-02-02" using "#{report_template}" and optional build id is "#{build_id}"}
 end
 
-Given /^I have created the "([^"]*)" report with date "([^"]*)"(?: using "([^"]*)")?$/ do |report_name, report_date, report_template|
+Given /^I have created the "([^"]*)" report with date "([^"]*)"(?: using "([^"]*)")?(?: and optional build id is "([^"]*)")?$/ do |report_name, report_date, report_template, build_id|
 
   version, target, test_type, hardware = report_name.split('/')
 
@@ -67,6 +67,7 @@ Given /^I have created the "([^"]*)" report with date "([^"]*)"(?: using "([^"]*
   And %{I fill in "report_test_execution_date" with "#{report_date}"}
   And %{I choose "#{version}"}
   And %{I select target "#{target}", test set "#{test_type}" and hardware "#{hardware}"}
+  And %{I select build id "#{build_id}"}
   And %{I attach the report "#{report_template}"}
   And %{I submit the form at "upload_report_submit"}
   And %{I submit the form at "upload_report_submit"}
