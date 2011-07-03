@@ -33,6 +33,14 @@ class MeegoTestSet < ActiveRecord::Base
   include ReportSummary
   include Graph
 
+  def find_matching_set(session)
+    return nil unless session
+    session.meego_test_sets.each do |ts|
+      return ts if ts.name == name
+    end
+    nil
+  end
+
   def has_nft?
     has_nft
   end

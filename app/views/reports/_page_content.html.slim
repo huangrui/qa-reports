@@ -50,12 +50,12 @@
           tr
             th#th_test_case
               span.sort
-                a.see_only_failed_button.sort_btn.active href="#" See only failed
-                a.see_all_button.sort_btn href="#" See all
+                a.see_only_failed_button.sort_btn#detailed_case.active href="#" See only failed
+                a.see_all_button.sort_btn#detailed_case href="#" See all
                 - if @history
-                  a.see_history_button.sort_btn href="#" See history
-                - if @build
-                  a.see_the_same_build_button.sort_btn href="#" See the same build
+                  a.see_history_button.sort_btn#detailed_case href="#" See history
+                - if contain_element(@build)
+                  a.see_the_same_build_button.sort_btn#detailed_case href="#" See the same build
             th#th_result Result
             th#th_notes Notes
 
@@ -67,28 +67,28 @@
             tr
               th#th_history_test_case
                 span.sort
-                  a.see_only_failed_button.sort_btn href="#" See only failed
-                  a.see_all_button.sort_btn href="#" See all
-                  a.see_history_button.sort_btn.active href="#" See history
-                  - if @build
-                    a.see_the_same_build_button.sort_btn href="#" See the same build
+                  a.see_only_failed_button.sort_btn#detailed_case href="#" See only failed
+                  a.see_all_button.sort_btn#detailed_case href="#" See all
+                  a.see_history_button.sort_btn#detailed_case.active href="#" See history
+                  - if contain_element(@build)
+                    a.see_the_same_build_button.sort_btn#detailed_case href="#" See the same build
               = history_headers(@history)
               th.th_result Current
               th
                 div style="position:relative;"
           = render :partial => "feature_history", :collection => @test_session.non_nft_sets
 
-      - if @build
+      - if contain_element(@build)
         table.detailed_results.build style="display:none"
           thead
             tr.compare_set
               th#th_build_test_case
                 span.sort
-                  a.see_only_failed_button.sort_btn href="#" See only failed
-                  a.see_all_button.sort_btn href="#" See all
+                  a.see_only_failed_button.sort_btn#detailed_case href="#" See only failed
+                  a.see_all_button.sort_btn#detailed_case href="#" See all
                   - if @history
-                    a.see_history_button.sort_btn.active href="#" See history
-                  a.see_the_same_build_button.sort_btn href="#"  See the same build
+                    a.see_history_button.sort_btn#detailed_case.active href="#" See history
+                  a.see_the_same_build_button.sort_btn#detailed_case href="#"  See the same build
               = build_set_headers(@build)
               th.th_build_testset * #{@test_session.testtype}
               th style="border-bottom-style: none;"

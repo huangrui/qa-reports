@@ -24,6 +24,17 @@ require 'report_parser'
 
 module ReportsHelper
 
+  def contain_element(list)
+    if list
+      list.each do |l|
+        if l
+          return true
+        end
+      end
+    end
+    return false
+  end
+
   def edit_button
     if @editing
       '<a href="" class="edit">Edit</a>'.html_safe
@@ -107,6 +118,18 @@ module ReportsHelper
         "<th class=\"th_build_result\"><a href=\"#{url}\">#{hardware}</a></th>"
       else
         "<th class=\"th_build_result\">-</th>"
+      end
+    }.join("\n").html_safe
+  end
+
+  def build_pass_rate_headers(hist)
+    hist.reverse.map{|s|
+      if s
+        testset_hw = s.testtype + '/' + s.hardware
+        url  = report_url(s)
+        "<th class=\"th_history_result\"><a href=\"#{url}\">#{testset_hw}</a></th>"
+      else
+        "<th class=\"th_history_result\">-</th>"
       end
     }.join("\n").html_safe
   end
