@@ -63,6 +63,8 @@ class MeegoTestSession < ActiveRecord::Base
   validate :validate_labels
   validate :validate_type_hw
 
+  before_save :force_testtype_hardware_names
+
   after_destroy :remove_uploaded_files
 
   scope :published, where(:published => true)
@@ -93,20 +95,20 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def self.testtypes
-    published.select("DISTINCT testtype").order("testtype").map { |row| row.testtype.humanize }
+    published.select("DISTINCT testtype").order("testtype").map(&:testtype)
   end
 
   def self.popular_testtypes(limit=3)
-    published.select("testtype").order("COUNT(testtype) DESC").group(:testtype).map { |row| row.testtype.humanize }
+    published.select("testtype").order("COUNT(testtype) DESC").group(:testtype).map(&:testtype)
   end
 
   def self.hardwares
-    published.select("DISTINCT hardware as hardware").order("hardware").map { |row| row.hardware.humanize }
+    published.select("DISTINCT hardware as hardware").order("hardware").map(&:hardware)
   end
 
   def self.popular_hardwares(limit=3)
     published.select("hardware as hardware").order("COUNT(hardware) DESC").
-      group(:hardware).limit(limit).map { |row| row.hardware.humanize }
+      group(:hardware).limit(limit).map(&:hardware)
   end
 
   def target=(target)
@@ -118,29 +120,17 @@ class MeegoTestSession < ActiveRecord::Base
     read_attribute(:target).try(:capitalize)
   end
 
-  def testtype=(testtype)
-    testtype = testtype.try(:downcase)
-    write_attribute(:testtype, testtype)
+  def build_id_txt=(build_id)
+    write_attribute(:build_id, build_id)
   end
 
-  def testtype
-    s = read_attribute(:testtype)
-    s.gsub(/\b\w/) { $&.upcase } if s
+  def build_id_txt
+    s = read_attribute(:build_id)
   end
 
-  def self.testtype
-    s = read_attribute(:testtype)
-    s.gsub(/\b\w/) { $&.upcase } if s
-  end
-
-  def hardware=(hardware)
-    hardware = hardware.try(:downcase)
-    write_attribute(:hardware, hardware)
-  end
-
-  def hardware
-    s = read_attribute(:hardware)
-    s.gsub(/\b\w/) { $&.upcase } if s
+  def self.popular_build_ids(limit=3)
+    published.select("build_id as build_id").order("COUNT(build_id) DESC").
+      group(:build_id).limit(limit).map { |row| row.build_id.humanize }
   end
 
   def prev_summary
@@ -396,6 +386,15 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 
+  def build_id_html
+    txt = build_id_txt
+    if txt == ""
+      "No build id details filled in yet"
+    else
+      MeegoTestReport::format_txt(txt)
+    end
+  end
+
   def environment_html
     txt = environment_txt
     if txt == ""
@@ -477,9 +476,30 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 
+  def force_testtype_hardware_names
+    write_attribute :testtype, testtype_label
+    write_attribute :hardware, hardware_label
+  end
+
+  def testtype_label
+    @testtype_label = self.class.persistent_label_for(:testtype, testtype) if @testtype_label.nil? or testtype.casecmp(@testtype_label) != 0
+    @testtype_label
+  end
+
+  def hardware_label
+    @hardware_label = self.class.persistent_label_for(:hardware, hardware) if @hardware_label.nil? or hardware.casecmp(@hardware_label) != 0
+    @hardware_label
+  end
+
+  def self.persistent_label_for(attribute, name)
+    session = MeegoTestSession.select(attribute).find(:first, :conditions => {attribute => name})
+    session.present? ? session.send(attribute) : name
+  end
+
+
   def generate_defaults!
     time                 = tested_at || Time.now
-    self.title           ||= "%s Test Report: %s %s %s" % [target, hardware, testtype, time.strftime('%Y-%m-%d')]
+    self.title           ||= "%s Test Report: %s %s %s" % [target, hardware_label, testtype_label, time.strftime('%Y-%m-%d')]
     self.environment_txt = "* Hardware: " + hardware if self.environment_txt.empty?
   end
 

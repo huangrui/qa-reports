@@ -77,9 +77,12 @@ module AjaxMixin
     @preview_id   = params[:id]
     @test_session = MeegoTestSession.find(@preview_id)
 
+    Rails.logger.info params
     field         = params[:meego_test_session]
+    Rails.logger.info field
     field         = field.keys()[0]
-    @test_session.update_attribute(field, params[:meego_test_session][field])
+    Rails.logger.info field
+    @test_session.send(field + '=', params[:meego_test_session][field])
     @test_session.updated_by(current_user)
     expire_caches_for(@test_session)
 
@@ -117,7 +120,7 @@ module AjaxMixin
 
       data = params[:meego_test_session]
       data.keys.each do |key|
-        @test_session.update_attribute(key, data[key])
+        @test_session.send(key + "=", data[key]) if data[key].present?
       end
       @test_session.updated_by(current_user)
 
@@ -186,6 +189,7 @@ class ReportsController < ApplicationController
       @targets = MeegoTestSession.targets
       @testtypes = MeegoTestSession.release(@selected_release_version).testtypes
       @hardware = MeegoTestSession.release(@selected_release_version).popular_hardwares
+      @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
 
       @raw_result_files = @test_session.raw_result_files
 
@@ -282,6 +286,7 @@ class ReportsController < ApplicationController
       @targets = MeegoTestSession.targets
       @testtypes = MeegoTestSession.release(@selected_release_version).testtypes
       @hardware = MeegoTestSession.release(@selected_release_version).popular_hardwares
+      @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
       @no_upload_link = true
       @files = FileStorage.new().list_files(@test_session) or []
       @raw_result_files = @test_session.raw_result_files

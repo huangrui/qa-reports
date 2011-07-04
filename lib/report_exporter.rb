@@ -83,7 +83,7 @@ module ReportExporter
   end
 
   def self.post(data, action)
-    post_data = { "token" => EXPORTER_CONFIG['token'], "report" => data }
+    post_data = { "token" => EXPORTER_CONFIG['token'], "report" => data }.to_json
     uri       = EXPORTER_CONFIG['host'] + EXPORTER_CONFIG['uri'] + action
     headers   = { :content_type => :json, :accept => :json }
 
@@ -95,7 +95,7 @@ module ReportExporter
                                                :url     => uri,
                                                :timeout => POST_TIMEOUT + 5 * (POST_RETRIES_LIMIT - tries),
                                                :open_timeout => POST_TIMEOUT + 5 * (POST_RETRIES_LIMIT - tries),
-                                               :payload => post_data.to_json,
+                                               :payload => post_data,
                                                :headers => headers
       rescue => e
         tries -= 1
@@ -106,6 +106,8 @@ module ReportExporter
         break
       end
     end
+
+    return tries > 0
   end
 
   def self.export_test_session(test_session)

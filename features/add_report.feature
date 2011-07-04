@@ -37,12 +37,14 @@ Feature:
     When I follow "Add report"
 
     And I select target "Handset", test set "Smokey" and hardware "N990" with date "2010-11-22"
+    And I select build id "1.2.0.90.0.20110517.1"
     And I attach the report "<attachment>"
 
     And submit the form at "upload_report_submit"
 
     Then I should see "<expected text>"
     And I should see "<expected link>"
+    And I should see "1.2.0.90.0.20110517.1"
 
     And I should see "Publish"
     And I should see "Handset Test Report: N990 Smokey 2010-11-22"

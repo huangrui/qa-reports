@@ -45,7 +45,7 @@ class ApiController < ApplicationController
     data.delete(:hwproduct)
     begin
       @test_session = MeegoTestSession.new(data)
-      @test_session.import_report(current_user, false)
+      @test_session.import_report(current_user, true)
 
     rescue ActiveRecord::UnknownAttributeError => error
       render :json => {:ok => '0', :errors => error.message}
@@ -54,7 +54,6 @@ class ApiController < ApplicationController
 
     begin
       @test_session.save!
-      @test_session.update_attribute(:published, true)
 
       files = FileStorage.new()
       attachments.each { |file|
@@ -95,7 +94,7 @@ class ApiController < ApplicationController
         original_sets = @test_session.meego_test_sets.clone
         original_cases = @test_session.meego_test_cases.clone
 
-        parse_err = @test_session.update_report_result(current_user, data[:uploaded_files], false)
+        parse_err = @test_session.update_report_result(current_user, data[:uploaded_files], true)
       rescue ActiveRecord::UnknownAttributeError => errors
         render :json => {:ok => '0', :errors => errors.message}
         return
@@ -111,7 +110,6 @@ class ApiController < ApplicationController
         MeegoTestCase.delete(original_cases)
 
         @test_session.save!
-        @test_session.update_attribute(:published, true)
 
         expire_caches_for(@test_session, true)
         expire_index_for(@test_session)
