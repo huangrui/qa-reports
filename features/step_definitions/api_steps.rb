@@ -107,7 +107,7 @@ def get_testsessionid(file)
   TestResultFile.where('path like ?', '%' + file).first.meego_test_session_id
 end
 
-When /^session "([^"]*)" has been modified at "([^"]*)"$/ do |file, date|
+And /^session "([^"]*)" has been modified at "([^"]*)"$/ do |file, date|
   tid = get_testsessionid(file)
   d = DateTime.parse(date)
   ActiveRecord::Base.connection.execute("update meego_test_sessions set updated_at = '#{d}' where id = #{tid}")
@@ -117,7 +117,7 @@ When /^I download "([^"]*)"$/ do |file|
   get file
 end
 
-When /^resulting JSON should match files "([^"]*)" and "([^"]*)"$/ do |file1, file2|
+And /^resulting JSON should match files "([^"]*)" and "([^"]*)"$/ do |file1, file2|
   json = ActiveSupport::JSON.decode(response.body)
   json[0]['qa_id'].should == get_testsessionid(file1)
   json[1]['qa_id'].should == get_testsessionid(file2)
