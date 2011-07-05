@@ -10,10 +10,10 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110705110734) do
+ActiveRecord::Schema.define(:version => 20110705121755) do
 
   create_table "features", :force => true do |t|
-    t.string  "feature",               :default => ""
+    t.string  "name",                  :default => ""
     t.integer "total_cases",           :default => 0,     :null => false
     t.integer "total_pass",            :default => 0,     :null => false
     t.integer "total_fail",            :default => 0,     :null => false
@@ -25,8 +25,8 @@ ActiveRecord::Schema.define(:version => 20110705110734) do
     t.boolean "has_ft",                :default => true,  :null => false
   end
 
-  add_index "features", ["feature"], :name => "index_meego_test_sets_on_feature"
   add_index "features", ["meego_test_session_id"], :name => "index_meego_test_sets_on_meego_test_session_id"
+  add_index "features", ["name"], :name => "index_meego_test_sets_on_feature"
 
   create_table "meego_measurements", :force => true do |t|
     t.integer "meego_test_case_id"

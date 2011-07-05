@@ -137,10 +137,10 @@ module AjaxMixin
   def update_feature_comment
     set_id = params[:id]
     comments = params[:comment]
-    testset = Feature.find(set_id)
-    testset.update_attribute(:comments, comments)
+    feature = Feature.find(set_id)
+    feature.update_attribute(:comments, comments)
 
-    test_session = testset.meego_test_session
+    test_session = feature.meego_test_session
     test_session.updated_by(current_user)
     expire_caches_for(test_session)
 
@@ -150,10 +150,10 @@ module AjaxMixin
   def update_feature_grading
     set_id = params[:id]
     grading = params[:grading]
-    testset = Feature.find(set_id)
-    testset.update_attribute(:grading, grading)
+    feature = Feature.find(set_id)
+    feature.update_attribute(:grading, grading)
 
-    test_session = testset.meego_test_session
+    test_session = feature.meego_test_session
     test_session.updated_by(current_user)
     expire_caches_for(test_session)
 

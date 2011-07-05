@@ -43,7 +43,7 @@ module ReportExporter
 
       data = {
         "qa_id" => set.id,
-        "name" => set.feature,
+        "name" => set.name,
 
         "total_cases" => set.total_cases,
         "total_pass" => set.total_passed,

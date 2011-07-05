@@ -110,7 +110,7 @@ class ReportComparison
       JOIN (meego_test_cases AS previous
       JOIN features AS p_ts ON ( previous.feature_id = p_ts.id ))
 
-      ON (latest.name, l_ts.feature) = (previous.name, p_ts.feature)
+      ON (latest.name, l_ts.name) = (previous.name, p_ts.name)
       WHERE latest.meego_test_session_id = #{@latest.id} AND previous.meego_test_session_id = #{@previous.id}
       AND latest.deleted = 0 AND previous.deleted = 0
       GROUP BY previous.result, latest.result;
@@ -127,8 +127,8 @@ class ReportComparison
       WHERE tc.meego_test_session_id = #{@latest.id} AND tc.deleted = 0
 
       -- Test cases is not in the previous report
-      AND (feature, name) NOT IN (
-        SELECT ts.feature as feature, tc.name as name
+      AND (ts.name, tc.name) NOT IN (
+        SELECT ts.name as feature, tc.name as name
         FROM meego_test_cases as tc
         JOIN features as ts ON ( tc.feature_id = ts.id )
         WHERE tc.meego_test_session_id = #{@previous.id})
@@ -143,8 +143,8 @@ class ReportComparison
     result_pairs = {}
 
     #group by feature
-    previous_cases = @previous.meego_test_cases.group_by { |tc| tc.feature.feature }
-    latest_cases = @latest.meego_test_cases.group_by { |tc| tc.feature.feature }
+    previous_cases = @previous.meego_test_cases.group_by { |tc| tc.feature.name }
+    latest_cases = @latest.meego_test_cases.group_by { |tc| tc.feature.name }
 
     # pair every test case into result
     allfeatures = previous_cases.keys | latest_cases.keys

@@ -87,7 +87,7 @@ class ComparisonReport
     end
 
     # Group by feature
-    @test_cases = @test_cases.group_by { |tc| tc.feature.feature }
+    @test_cases = @test_cases.group_by { |tc| tc.feature.name }
 
     @test_cases.each_key do |feature|
       # Group by test case

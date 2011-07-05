@@ -41,7 +41,7 @@ class NftHistory
   def measurements()
     query = <<-END
     SELECT
-    features.feature AS feature,
+    features.name AS feature,
     meego_test_cases.name AS test_case,
     meego_measurements.name AS measurement,
     meego_measurements.unit AS unit,
@@ -60,7 +60,7 @@ class NftHistory
     meego_test_sessions.tested_at <= ? AND
     meego_test_sessions.published=?
     ORDER BY
-    features.feature ASC, 
+    features.name ASC, 
     meego_test_cases.name ASC,
     meego_measurements.name ASC,
     meego_test_sessions.tested_at ASC

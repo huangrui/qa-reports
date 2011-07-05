@@ -610,7 +610,7 @@ class MeegoTestSession < ActiveRecord::Base
     ]
 
     rows          = meego_test_cases.map do |test_case|
-      test_case.feature.feature # feature
+      test_case.feature.name # feature
       test_case.name # test case name
       test_case.result # result
     end
@@ -638,7 +638,7 @@ class MeegoTestSession < ActiveRecord::Base
 
   def clone_testcase_comments_from_session(target_session)
     meego_test_cases.where(:comment => '').includes(:feature).each do |tc| #select {|tc| tc.comment.blank? }.
-      prev_comment = target_session.test_case_by_name(tc.feature.feature, tc.name).comment
+      prev_comment = target_session.test_case_by_name(tc.feature.name, tc.name).comment
       tc.update_attribute :comment, prev_comment unless prev_comment.blank?
     end
   end
@@ -703,7 +703,7 @@ class MeegoTestSession < ActiveRecord::Base
       failed = row[4]
       na     = row[5]
       if feature != prev_feature
-        sets[feature] ||= self.features.build(:feature => feature)
+        sets[feature] ||= self.features.build(:name => feature)
         test_set = sets[feature]
         prev_feature = feature
       end
@@ -759,7 +759,7 @@ class MeegoTestSession < ActiveRecord::Base
     TestResults.new(File.open(filename)).suites.each do |suite|
       suite.sets.each do |set|
         ReportParser::parse_features(set.feature).each do |feature|
-          sets[feature] ||= self.features.build(:feature => feature, :has_ft => false)
+          sets[feature] ||= self.features.build(:name => feature, :has_ft => false)
           set_model = sets[feature]
 
           pass_count = 0
@@ -868,7 +868,7 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def make_test_case_hash
-    test_cases = meego_test_cases.group_by {|tc| tc.feature.feature }
+    test_cases = meego_test_cases.group_by {|tc| tc.feature.name }
     test_cases.each_key do |feature|
       test_cases[feature] = Hash[test_cases[feature].map {|tc| [tc.name, tc]}]
     end

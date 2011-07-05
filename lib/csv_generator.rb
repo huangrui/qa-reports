@@ -2,7 +2,7 @@ module CsvGenerator
   def self.generate_csv(release_version, target, testtype, hardware)
     sql = <<-END
       select mts.tested_at, vl.label, mts.target, mts.testtype, mts.hardware, mts.title,
-        mtset.feature, mtc.name, if(mtc.result = 1,1,0) as passes, if(mtc.result = -1,1,0) as fails,
+        mtset.name, mtc.name, if(mtc.result = 1,1,0) as passes, if(mtc.result = -1,1,0) as fails,
         if(mtc.result = 0,1,0) as nas, mtc.comment, author.name, editor.name
       from meego_test_sessions mts
         join users as author on (mts.author_id = author.id)
@@ -49,7 +49,7 @@ module CsvGenerator
 
   def self.generate_csv_report(release_version, target, testtype, hardware, id)
     sql = <<-END
-      select mtset.feature, mtc.name, mtc.comment,
+      select mtset.name, mtc.name, mtc.comment,
         if(mtc.result = 1,1,null) as pass,
         if(mtc.result = -1,1,null) as fail,
         if(mtc.result = 0,1,null) as na
