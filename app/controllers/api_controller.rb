@@ -131,7 +131,6 @@ class ApiController < ApplicationController
       render :json => hashed_sessions
     rescue ArgumentError => error
       render :json => {:ok => '0', :errors => error.message}
-      return
     end
   end
 
