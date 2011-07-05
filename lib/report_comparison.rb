@@ -110,7 +110,7 @@ class ReportComparison
       JOIN (meego_test_cases AS previous
       JOIN meego_test_sets AS p_ts ON ( previous.meego_test_set_id = p_ts.id ))
 
-      ON (LOWER(latest.name), LOWER(l_ts.feature)) = (LOWER(previous.name), LOWER(p_ts.feature))
+      ON (latest.name, l_ts.feature) = (previous.name, p_ts.feature)
       WHERE latest.meego_test_session_id = #{@latest.id} AND previous.meego_test_session_id = #{@previous.id}
       AND latest.deleted = 0 AND previous.deleted = 0
       GROUP BY previous.result, latest.result;
@@ -127,8 +127,8 @@ class ReportComparison
       WHERE tc.meego_test_session_id = #{@latest.id} AND tc.deleted = 0
 
       -- Test cases is not in the previous report
-      AND (LOWER(feature), LOWER(name)) NOT IN (
-        SELECT LOWER(ts.feature) as feature, LOWER(tc.name) as name
+      AND (feature, name) NOT IN (
+        SELECT ts.feature as feature, tc.name as name
         FROM meego_test_cases as tc
         JOIN meego_test_sets as ts ON ( tc.meego_test_set_id = ts.id )
         WHERE tc.meego_test_session_id = #{@previous.id})
