@@ -26,9 +26,10 @@ require 'graph'
 class MeegoTestSet < ActiveRecord::Base
   belongs_to :meego_test_session
 
-  has_many :meego_test_cases, :dependent => :destroy, :autosave => false
+  has_many :meego_test_cases, :autosave => false
 
   after_create :create_test_cases
+  before_destroy :delete_test_cases
 
   include ReportSummary
   include Graph
@@ -81,6 +82,10 @@ class MeegoTestSet < ActiveRecord::Base
       # when test cases have no associations to save, much faster bulk insertions can be used
       MeegoTestCase.import_from_array meego_test_cases
     end
+  end
+
+  def delete_test_cases
+    MeegoTestCase.delete_all("meego_test_set_id = #{self.id}")
   end
 
 end

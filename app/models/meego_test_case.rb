@@ -80,7 +80,7 @@ class MeegoTestCase < ActiveRecord::Base
   end
 
   def self.import_from_array(test_cases)
-    import test_cases
+    import test_cases, :validate => false
   end
 
   def remove_from_session
