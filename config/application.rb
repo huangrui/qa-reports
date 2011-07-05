@@ -1,6 +1,8 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
+#TODO remove when updated to Rails 3.1 or greater
+require 'lib/ext-rails/active_record_association_collection' if Rails.version =~ /^3\.0/
 
 # If you have a Gemfile, require the gems listed there, including any gems
 # you've limited to :test, :development, or :production.
