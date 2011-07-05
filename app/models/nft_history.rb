@@ -41,18 +41,18 @@ class NftHistory
   def measurements()
     query = <<-END
     SELECT
-    meego_test_sets.feature AS feature,
+    features.feature AS feature,
     meego_test_cases.name AS test_case,
     meego_measurements.name AS measurement,
     meego_measurements.unit AS unit,
     meego_measurements.value AS value,
     meego_test_sessions.tested_at AS tested_at
     FROM
-    meego_measurements, meego_test_cases, meego_test_sets, meego_test_sessions
+    meego_measurements, meego_test_cases, features, meego_test_sessions
     WHERE
     meego_measurements.meego_test_case_id=meego_test_cases.id AND
-    meego_test_cases.meego_test_set_id=meego_test_sets.id AND
-    meego_test_sets.meego_test_session_id=meego_test_sessions.id AND
+    meego_test_cases.feature_id=features.id AND
+    features.meego_test_session_id=meego_test_sessions.id AND
     meego_test_sessions.version_label_id=? AND
     meego_test_sessions.target=? AND
     meego_test_sessions.testtype=? AND
@@ -60,7 +60,7 @@ class NftHistory
     meego_test_sessions.tested_at <= ? AND
     meego_test_sessions.published=?
     ORDER BY
-    meego_test_sets.feature ASC, 
+    features.feature ASC, 
     meego_test_cases.name ASC,
     meego_measurements.name ASC,
     meego_test_sessions.tested_at ASC

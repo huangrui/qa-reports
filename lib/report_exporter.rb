@@ -25,7 +25,7 @@ module ReportExporter
 
   def self.hashify_test_session(test_session)
     sets = []
-    test_session.meego_test_sets.find(:all, :include => :meego_test_cases).each do |set|
+    test_session.features.find(:all, :include => :meego_test_cases).each do |set|
       cases = []
       set.meego_test_cases.each do |c|
         bugs = c.comment.scan(/\[\[(\d+)\]\]/).map {|m| m[0].to_i}

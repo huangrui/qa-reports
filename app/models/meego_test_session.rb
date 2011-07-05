@@ -41,7 +41,7 @@ class MeegoTestSession < ActiveRecord::Base
 
   attr_accessor :uploaded_files
 
-  has_many :meego_test_sets, :dependent => :destroy
+  has_many :features, :dependent => :destroy
   has_many :meego_test_cases
   has_many :test_result_files, :dependent => :destroy
   has_many :passed, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::PASS}"
@@ -89,8 +89,8 @@ class MeegoTestSession < ActiveRecord::Base
 
   def self.fetch_fully(id)
     find(id, :include =>
-         {:meego_test_sets =>
-           {:meego_test_cases => [:measurements, :serial_measurements, :meego_test_case_attachments, :meego_test_set, :meego_test_session]}
+         {:features =>
+           {:meego_test_cases => [:measurements, :serial_measurements, :meego_test_case_attachments, :feature, :meego_test_session]}
          })
   end
 
@@ -263,7 +263,7 @@ class MeegoTestSession < ActiveRecord::Base
         "(tested_at < ? OR tested_at = ? AND created_at < ?) AND target = ? AND testtype = ? AND hardware = ? AND published = ? AND version_label_id = ?", tested, tested, created, target.downcase, testtype.downcase, hardware.downcase, true, version_label_id
     ],
                           :order => "tested_at DESC, created_at DESC", :include =>
-         [{:meego_test_sets => :meego_test_cases}, {:meego_test_cases => :meego_test_set}])
+         [{:features => :meego_test_cases}, {:meego_test_cases => :feature}])
 
     @has_prev = !@prev_session.nil?
     @prev_session
@@ -275,7 +275,7 @@ class MeegoTestSession < ActiveRecord::Base
         "(tested_at > ? OR tested_at = ? AND created_at > ?) AND target = ? AND testtype = ? AND hardware = ? AND published = ? AND version_label_id = ?", tested_at, tested_at, created_at, target.downcase, testtype.downcase, hardware.downcase, true, version_label_id
     ],
                           :order => "tested_at ASC, created_at ASC", :include =>
-         [{:meego_test_sets => :meego_test_cases}, {:meego_test_cases => :meego_test_set}])
+         [{:features => :meego_test_cases}, {:meego_test_cases => :feature}])
 
     @has_next = !@next_session.nil?
     @next_session
@@ -289,11 +289,11 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def nft_sets
-    meego_test_sets.select {|set| set.has_nft?}
+    features.select {|set| set.has_nft?}
   end
 
   def non_nft_sets
-    meego_test_sets.select {|set| set.has_non_nft?}
+    features.select {|set| set.has_non_nft?}
   end
 
   def test_case_by_name(feature, name)
@@ -346,11 +346,11 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def max_feature_cases
-    meego_test_sets.map{|item| item.total_cases}.max
+    features.map{|item| item.total_cases}.max
   end
 
   def non_empty_features
-    meego_test_sets.select{|feature| feature.total_cases > 0}
+    features.select{|feature| feature.total_cases > 0}
   end
 
   def small_graph_img_tag(max_cases)
@@ -610,7 +610,7 @@ class MeegoTestSession < ActiveRecord::Base
     ]
 
     rows          = meego_test_cases.map do |test_case|
-      test_case.meego_test_set.feature # feature
+      test_case.feature.feature # feature
       test_case.name # test case name
       test_case.result # result
     end
@@ -637,8 +637,8 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def clone_testcase_comments_from_session(target_session)
-    meego_test_cases.where(:comment => '').includes(:meego_test_set).each do |tc| #select {|tc| tc.comment.blank? }.
-      prev_comment = target_session.test_case_by_name(tc.meego_test_set.feature, tc.name).comment
+    meego_test_cases.where(:comment => '').includes(:feature).each do |tc| #select {|tc| tc.comment.blank? }.
+      prev_comment = target_session.test_case_by_name(tc.feature.feature, tc.name).comment
       tc.update_attribute :comment, prev_comment unless prev_comment.blank?
     end
   end
@@ -703,7 +703,7 @@ class MeegoTestSession < ActiveRecord::Base
       failed = row[4]
       na     = row[5]
       if feature != prev_feature
-        sets[feature] ||= self.meego_test_sets.build(:feature => feature)
+        sets[feature] ||= self.features.build(:feature => feature)
         test_set = sets[feature]
         prev_feature = feature
       end
@@ -759,7 +759,7 @@ class MeegoTestSession < ActiveRecord::Base
     TestResults.new(File.open(filename)).suites.each do |suite|
       suite.sets.each do |set|
         ReportParser::parse_features(set.feature).each do |feature|
-          sets[feature] ||= self.meego_test_sets.build(:feature => feature, :has_ft => false)
+          sets[feature] ||= self.features.build(:feature => feature, :has_ft => false)
           set_model = sets[feature]
 
           pass_count = 0
@@ -868,7 +868,7 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def make_test_case_hash
-    test_cases = meego_test_cases.group_by {|tc| tc.meego_test_set.feature }
+    test_cases = meego_test_cases.group_by {|tc| tc.feature.feature }
     test_cases.each_key do |feature|
       test_cases[feature] = Hash[test_cases[feature].map {|tc| [tc.name, tc]}]
     end

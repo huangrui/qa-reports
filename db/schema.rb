@@ -10,7 +10,23 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110628093441) do
+ActiveRecord::Schema.define(:version => 20110705110734) do
+
+  create_table "features", :force => true do |t|
+    t.string  "feature",               :default => ""
+    t.integer "total_cases",           :default => 0,     :null => false
+    t.integer "total_pass",            :default => 0,     :null => false
+    t.integer "total_fail",            :default => 0,     :null => false
+    t.integer "total_na",              :default => 0,     :null => false
+    t.integer "meego_test_session_id", :default => 0,     :null => false
+    t.string  "comments",              :default => ""
+    t.integer "grading"
+    t.boolean "has_nft",               :default => false, :null => false
+    t.boolean "has_ft",                :default => true,  :null => false
+  end
+
+  add_index "features", ["feature"], :name => "index_meego_test_sets_on_feature"
+  add_index "features", ["meego_test_session_id"], :name => "index_meego_test_sets_on_meego_test_session_id"
 
   create_table "meego_measurements", :force => true do |t|
     t.integer "meego_test_case_id"
@@ -35,7 +51,7 @@ ActiveRecord::Schema.define(:version => 20110628093441) do
   end
 
   create_table "meego_test_cases", :force => true do |t|
-    t.integer "meego_test_set_id",                                        :null => false
+    t.integer "feature_id",                                               :null => false
     t.string  "name",                                                     :null => false
     t.integer "result",                                                   :null => false
     t.string  "comment",               :limit => 1000, :default => "",    :null => false
@@ -46,8 +62,8 @@ ActiveRecord::Schema.define(:version => 20110628093441) do
     t.boolean "deleted",                               :default => false, :null => false
   end
 
+  add_index "meego_test_cases", ["feature_id"], :name => "index_meego_test_cases_on_meego_test_set_id"
   add_index "meego_test_cases", ["meego_test_session_id"], :name => "index_meego_test_cases_on_meego_test_session_id"
-  add_index "meego_test_cases", ["meego_test_set_id"], :name => "index_meego_test_cases_on_meego_test_set_id"
 
   create_table "meego_test_sessions", :force => true do |t|
     t.string   "environment",                       :default => ""
@@ -77,22 +93,6 @@ ActiveRecord::Schema.define(:version => 20110628093441) do
   end
 
   add_index "meego_test_sessions", ["version_label_id", "target", "testtype", "hardware"], :name => "index_meego_test_sessions_key"
-
-  create_table "meego_test_sets", :force => true do |t|
-    t.string  "feature",               :default => ""
-    t.integer "total_cases",           :default => 0,     :null => false
-    t.integer "total_pass",            :default => 0,     :null => false
-    t.integer "total_fail",            :default => 0,     :null => false
-    t.integer "total_na",              :default => 0,     :null => false
-    t.integer "meego_test_session_id", :default => 0,     :null => false
-    t.string  "comments",              :default => ""
-    t.integer "grading"
-    t.boolean "has_nft",               :default => false, :null => false
-    t.boolean "has_ft",                :default => true,  :null => false
-  end
-
-  add_index "meego_test_sets", ["feature"], :name => "index_meego_test_sets_on_feature"
-  add_index "meego_test_sets", ["meego_test_session_id"], :name => "index_meego_test_sets_on_meego_test_session_id"
 
   create_table "serial_measurements", :force => true do |t|
     t.integer "meego_test_case_id",                :null => false

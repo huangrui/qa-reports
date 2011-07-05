@@ -8,7 +8,7 @@ module CsvGenerator
         join users as author on (mts.author_id = author.id)
         join users as editor on (mts.editor_id = editor.id)
         join meego_test_cases as mtc on (mtc.meego_test_session_id = mts.id)
-        join meego_test_sets as mtset on (mtc.meego_test_set_id = mtset.id)
+        join features as mtset on (mtc.feature_id = mtset.id)
         join version_labels as vl on (mts.version_label_id = vl.id)
     END
 
@@ -53,8 +53,8 @@ module CsvGenerator
         if(mtc.result = 1,1,null) as pass,
         if(mtc.result = -1,1,null) as fail,
         if(mtc.result = 0,1,null) as na
-      from meego_test_sets as mtset
-        join meego_test_cases as mtc on (mtc.meego_test_set_id = mtset.id)
+      from features as mtset
+        join meego_test_cases as mtc on (mtc.feature_id = mtset.id)
         join meego_test_sessions as mts on (mtc.meego_test_session_id = mts.id)
       where mts.id = '#{id}' and mtc.deleted = false
       order by mtset.id, mtc.id;

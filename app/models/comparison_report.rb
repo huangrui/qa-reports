@@ -75,10 +75,10 @@ class ComparisonReport
     @test_cases = []
     @comparisons = {}
     @hardwares.each do |hardware|
-      r1 = comparison_scope.includes(:meego_test_sets, :meego_test_cases).
+      r1 = comparison_scope.includes(:features, :meego_test_cases).
         test_type(test_type).hardware(hardware).latest
 
-      r2 = comparison_scope.includes(:meego_test_sets, :meego_test_cases => :meego_test_set).
+      r2 = comparison_scope.includes(:features, :meego_test_cases => :feature).
         test_type(comparison_test_type).hardware(hardware).latest
 
       @reports << r1 << r2
@@ -87,7 +87,7 @@ class ComparisonReport
     end
 
     # Group by feature
-    @test_cases = @test_cases.group_by { |tc| tc.meego_test_set.feature }
+    @test_cases = @test_cases.group_by { |tc| tc.feature.feature }
 
     @test_cases.each_key do |feature|
       # Group by test case

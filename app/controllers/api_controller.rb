@@ -91,7 +91,7 @@ class ApiController < ApplicationController
       begin
         @test_session = MeegoTestSession.find(@report_id)
 
-        original_sets = @test_session.meego_test_sets.clone
+        original_sets = @test_session.features.clone
         original_cases = @test_session.meego_test_cases.clone
 
         parse_err = @test_session.update_report_result(current_user, data[:uploaded_files], true)
@@ -106,7 +106,7 @@ class ApiController < ApplicationController
       end
 
       if @test_session.valid?
-        MeegoTestSet.delete(original_sets)
+        Feature.delete(original_sets)
         MeegoTestCase.delete(original_cases)
 
         @test_session.save!
