@@ -147,3 +147,12 @@ Feature: REST API
     And I should see "Improvement:- Notification UX can be shown now (top bug 5518 is fixed), but new IM message failed to show in notification UI;- Be able to transfer files using Chat;"
     And I should see "New Issue(5):6306 System time setting is wrong for Los Angeles; 6235 VKB in browser does not launch in some text fields; 6043 Mismatched sync service icon and text in Sync Details page; 6055 Sync shared credentials not reflected in Sync Settings main page; 6056 Sync UI intermittent crash after log in"
 
+  Scenario: Getting a list of sessions from API
+    When the client sends file "short1.csv" via the REST API
+    When the client sends file "short2.csv" via the REST API
+    When the client sends file "short3.csv" via the REST API
+    And session "short1.csv" has been modified at "2011-01-01 01:01"
+    And session "short2.csv" has been modified at "2011-02-01 01:01"
+    And session "short3.csv" has been modified at "2011-03-01 01:01"
+    When I download "/api/reports/since/2011-01-10%2012:00"
+    Then resulting JSON should match files "short2.csv" and "short3.csv"
