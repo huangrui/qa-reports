@@ -14,6 +14,16 @@ Feature: Manage reports
     And I should see "Fail"
     And I should see "3921"
 
+  @selenium
+  Scenario: Viewing the same build report
+    When I view the report "1.1/Core/System/Eeepc"
+    And want to see build details
+    Then I should see "* System"
+    And I should see "* Eeepc"
+    And I should see "Sanity"
+    And I should see "Aava"
+    And "Check home screen theme and layout" should have results "Fail" and "Pass"
+
   @smoke
   Scenario: Printing a report
 	When I click to print the report
@@ -31,7 +41,7 @@ Feature: Manage reports
     Then I should see "Edit the report information" within ".notification"
     And I should see "Test Objective" within ".editable_text #test_objective"
 
-  Scenario: Deleting a report    
+  Scenario: Deleting a report
     When I view the report "1.2/Core/automated/N900"
     And I click to delete the report
 
