@@ -68,13 +68,13 @@ class TestSuite
   
   def sets
     @node.css('set').map do |set|
-      TestSet.new(set)
+      ParserTestSet.new(set)
     end
   end
   
 end
 
-class TestSet
+class ParserTestSet
   def initialize(node)
     @node = node
   end

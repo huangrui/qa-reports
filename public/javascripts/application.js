@@ -160,7 +160,7 @@ prepareCategoryUpdate = function(div) {
     var $form     = $div.find("form");
     var $save     = $div.find(".dialog-delete");
     var $cancel   = $div.find(".dialog-cancel");
-    var $testtype = $div.find(".field .testtype");
+    var $testset = $div.find(".field .testset");
     var $date     = $div.find(".field .date");
     var $hardware = $div.find(".field .hardware");
     var $catpath  = $("dd.category");
@@ -169,13 +169,13 @@ prepareCategoryUpdate = function(div) {
 
     var arrow     = $('<div/>').html(" &rsaquo; ").text();
 
-    $testtype.val($testtype.val());
+    $testset.val($testset.val());
     $hardware.val($hardware.val());
 
     $save.click(function() {
       var targetval  = $('.field .target:checked').val();
       var versionval = $('.field .version:checked').val();
-      var typeval    = $testtype.val();
+      var typeval    = $testset.val();
       var hwval      = $hardware.val();
       var dateval    = $date.val();
 
@@ -184,7 +184,7 @@ prepareCategoryUpdate = function(div) {
       if (targetval == '') {
         return false;
       } else if (typeval == '') {
-        $('.error.testtype').text("Test set cannot be empty.").show();
+        $('.error.testset').text("Test set cannot be empty.").show();
         return false;
       } else if (versionval == '') {
         return false;

@@ -31,11 +31,11 @@ module ApplicationHelper
 
   def upload_full_path
     if @hardware
-      url_for :controller => "/upload", :action => :upload_form, :release_version => @selected_release_version, :testtype => @testtype, :target => @target, :hardware => @hardware
+      url_for :controller => "/upload", :action => :upload_form, :release_version => @selected_release_version, :testset => @testset, :target => @target, :hardware => @hardware
     elsif @target
-      url_for :controller => "/upload", :action => :upload_form,  :release_version => @selected_release_version, :testtype => @testtype, :target => @target
-    elsif @testtype
-      url_for :controller => "/upload", :action => :upload_form, :release_version => @selected_release_version, :testtype => @testtype
+      url_for :controller => "/upload", :action => :upload_form,  :release_version => @selected_release_version, :testset => @testset, :target => @target
+    elsif @testset
+      url_for :controller => "/upload", :action => :upload_form, :release_version => @selected_release_version, :testset => @testset
     elsif @selected_release_version
       url_for :controller => "/upload", :action => :upload_form, :release_version => @selected_release_version
     else
@@ -43,27 +43,27 @@ module ApplicationHelper
     end
   end
 
-  def compare_for(target, testtype)
-    MeegoTestSession.list_hardware_for(@selected_release_version, target, testtype)
+  def compare_for(target, testset)
+    MeegoTestSession.list_hardware_for(@selected_release_version, target, testset)
   end
 
-  def hardware_for(target, testtype)
-    MeegoTestSession.list_hardware_for(@selected_release_version, target, testtype)
+  def hardware_for(target, testset)
+    MeegoTestSession.list_hardware_for(@selected_release_version, target, testset)
   end
 
  def breadcrumbs
   html = '<div id="breadcrumb"><li><a href="' + url_for(:controller=>'index', :action=>'index') + '">Home</a></li>'
 
   html += ('<li> &rsaquo; ' + link_to_unless_current(@target, profile_report_path(@selected_release_version, @target)) + '</li>') if @target
-  html += ('<li> &rsaquo; ' + link_to_unless_current(@testtype, test_type_report_path(@selected_release_version, @target, @testtype)) + '</li>') if @testtype
-  html += ('<li> &rsaquo; ' + link_to_unless_current(@hardware, hardware_report_path(@selected_release_version, @target, @testtype, @hardware)) + '</li>') if @hardware
+  html += ('<li> &rsaquo; ' + link_to_unless_current(@testset, test_type_report_path(@selected_release_version, @target, @testset)) + '</li>') if @testset
+  html += ('<li> &rsaquo; ' + link_to_unless_current(@hardware, hardware_report_path(@selected_release_version, @target, @testset, @hardware)) + '</li>') if @hardware
   html += ('<li> &rsaquo; ' + @test_session.title + '</li>') if @test_session
   html += '</div>'
   html.html_safe
  end
 
   # FIXME: Cleanup with link_to_unless_current
-  def release_version_navigation(current_version, target='', testtype='', hardware='')
+  def release_version_navigation(current_version, target='', testset='', hardware='')
     html = '<ul class="clearfix">'
     link_text = ''
     @meego_releases.each do |release|
@@ -96,8 +96,8 @@ module ApplicationHelper
       if target.present?
         path += '/' + target
 
-        if testtype.present?
-          path += '/' + testtype
+        if testset.present?
+          path += '/' + testset
 
           if hardware.present?
             path += '/' + hardware
@@ -114,7 +114,7 @@ module ApplicationHelper
   end
 
   def report_url(s)
-      url_for :controller=>'reports',:action=>'view', :release_version=>s.release_version, :target=>s.target, :testtype=>s.testtype, :hardware=>s.hardware, :id=>s.id
+      url_for :controller=>'reports',:action=>'view', :release_version=>s.release_version, :target=>s.target, :testset=>s.testset, :hardware=>s.hardware, :id=>s.id
   end
 
   def format_date_to_human_readable(date)

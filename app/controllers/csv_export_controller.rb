@@ -5,7 +5,7 @@ class CsvExportController < ApplicationController
     csv = CsvGenerator::generate_csv(
             @selected_release_version,
             params[:target],
-            params[:testtype],
+            params[:testset],
             params[:hardware]
     )
 
@@ -16,7 +16,7 @@ class CsvExportController < ApplicationController
     csv = CsvGenerator::generate_csv_report(
             @selected_release_version,
             params[:target],
-            params[:testtype],
+            params[:testset],
             params[:hardware],
             params[:id]
     )

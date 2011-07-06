@@ -10,7 +10,7 @@ class IndexController < ApplicationController
 
     @profiles = TargetLabel.targets
     @target = params[:target]
-    @testtype = params[:testtype]
+    @testset = params[:testset]
     @hardware = params[:hardware]
     @show_rss = true
   end

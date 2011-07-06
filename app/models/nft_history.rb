@@ -55,7 +55,7 @@ class NftHistory
     features.meego_test_session_id=meego_test_sessions.id AND
     meego_test_sessions.version_label_id=? AND
     meego_test_sessions.target=? AND
-    meego_test_sessions.testtype=? AND
+    meego_test_sessions.testset=? AND
     meego_test_sessions.hardware=? AND
     meego_test_sessions.tested_at <= ? AND
     meego_test_sessions.published=?
@@ -69,7 +69,7 @@ class NftHistory
     data = MeegoTestSession.find_by_sql([query,
                                          @session.version_label_id,
                                          @session.read_attribute(:target),
-                                         @session.testtype,
+                                         @session.testset,
                                          @session.hardware,
                                          @session.tested_at,
                                          true])

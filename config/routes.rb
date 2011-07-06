@@ -47,41 +47,34 @@ Meegoqa::Application.routes.draw do
 
   # Constraint to allow a dot (.) in release vesion
   constraints(:release_version => /[a-zA-Z0-9._-]+/, :id => /[0-9]+/) do
-    match '(/:release_version(/:target(/:testtype(/:hardware))))/upload' => 'upload#upload_form', :via => "get", :as => :upload_form
-    match '(/:release_version(/:target(/:testtype(/:hardware))))/hardware' => 'hardwares#index', :via => "get", :as => :hardwares
-    match '(/:release_version(/:target(/:testtype(/:hardware))))/testtype' => 'test_types#index', :via => "get", :as => :test_types
+    match '(/:release_version(/:target(/:testset(/:hardware))))/upload' => 'upload#upload_form', :via => "get", :as => :upload_form
+    match '(/:release_version(/:target(/:testset(/:hardware))))/hardware' => 'hardwares#index', :via => "get", :as => :hardwares
+    match '(/:release_version(/:target(/:testset(/:hardware))))/testset' => 'test_types#index', :via => "get", :as => :test_types
 
-    match '/:release_version/:target/:testtype/:hardware/csv' => 'csv_export#export', :via => "get"
-    match '/:release_version/:target/:testtype/csv' => 'csv_export#export', :via => "get"
+    match '/:release_version/:target/:testset/:hardware/csv' => 'csv_export#export', :via => "get"
+    match '/:release_version/:target/:testset/csv' => 'csv_export#export', :via => "get"
     match '/:release_version/:target/csv' => 'csv_export#export', :via => "get"
 
-    match '/:release_version/:target/:testtype/:hardware/rss' => 'rss#rss', :via => "get"
-    match '/:release_version/:target/:testtype/rss' => 'rss#rss', :via => "get"
+    match '/:release_version/:target/:testset/:hardware/rss' => 'rss#rss', :via => "get"
+    match '/:release_version/:target/:testset/rss' => 'rss#rss', :via => "get"
     match '/:release_version/:target/rss' => 'rss#rss', :via => "get"
     match '/:release_version/rss' => 'rss#rss', :via => "get"
 
-    match '/:release_version/:target/:testtype/compare/:comparetype' => 'comparison_reports#show', :via => "get", :as => :branch_comparison
+    match '/:release_version/:target/:testset/compare/:comparetype' => 'comparison_reports#show', :via => "get", :as => :branch_comparison
 
-    match '/:release_version/:target(/:testtype(/:hardware))/report_list(/:page)' => 'report_groups#report_page', :via => "get", :as => :report_list
+    match '/:release_version/:target(/:testset(/:hardware))/report_list(/:page)' => 'report_groups#report_page', :via => "get", :as => :report_list
 
-    match '/:release_version/:target/:testtype/:hardware/:id' => 'reports#view', :via => "get"
-    match '/:release_version/:target/:testtype/:hardware/:id/edit' => 'reports#edit', :via => "get"
-    match '/:release_version/:target/:testtype/:hardware/:id/download' => 'csv_export#export_report', :via => "get"
-    match '/:release_version/:target/:testtype/:hardware/:id/delete' => 'reports#delete', :via => "post"
-    match '/:release_version/:target/:testtype/:hardware/:id/print' => 'reports#print', :via => "get"
-
-    match '/:release_version/:target/:testtype/:hardware/:id' => 'reports#view', :via => "get"
-    match '/:release_version/:target/:testtype/:hardware/:id/edit' => 'reports#edit', :via => "get"
-    match '/:release_version/:target/:testtype/:hardware/:id/download' => 'csv_export#export_report', :via => "get"
-    match '/:release_version/:target/:testtype/:hardware/:id/delete' => 'reports#delete', :via => "post"
-    match '/:release_version/:target/:testtype/:hardware/:id/print' => 'reports#print', :via => "get"
+    match '/:release_version/:target/:testset/:hardware/:id' => 'reports#view', :via => "get"
+    match '/:release_version/:target/:testset/:hardware/:id/edit' => 'reports#edit', :via => "get"
+    match '/:release_version/:target/:testset/:hardware/:id/download' => 'csv_export#export_report', :via => "get"
+    match '/:release_version/:target/:testset/:hardware/:id/delete' => 'reports#delete', :via => "post"
+    match '/:release_version/:target/:testset/:hardware/:id/print' => 'reports#print', :via => "get"
 
     match '/:release_version' => 'index#index', :via => "get"
 
-
     match '/:release_version/:target' => 'report_groups#show', :via => "get", :as => :profile_report
-    match '/:release_version/:target/:testtype' => 'report_groups#show', :via => "get", :as => :test_type_report
-    match '/:release_version/:target/:testtype/:hardware' => 'report_groups#show', :via => "get", :as => :hardware_report
+    match '/:release_version/:target/:testset' => 'report_groups#show', :via => "get", :as => :test_type_report
+    match '/:release_version/:target/:testset/:hardware' => 'report_groups#show', :via => "get", :as => :hardware_report
   end
 
 

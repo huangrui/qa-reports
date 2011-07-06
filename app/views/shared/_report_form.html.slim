@@ -23,11 +23,11 @@
 
 .field
   label for="report_test_type" Test set:
-  = f.text_field :testtype, :id => "report_test_type", :class => "text testtype", :tabindex => 3
+  = f.text_field :testset, :id => "report_test_type", :class => "text testset", :tabindex => 3
   small.suggestions
-    | e.g. #{render :partial=>'shared/suggestion', :collection => @testtypes[0,3], :spacer_template => 'shared/comma'}
-  = f.error_message_on :testtype
-  = form_ajax_error_msg "testtype"
+    | e.g. #{render :partial=>'shared/suggestion', :collection => @testsets[0,3], :spacer_template => 'shared/comma'}
+  = f.error_message_on :testset
+  = form_ajax_error_msg "testset"
 
 .field
   label for="report_test_hardware" Hardware:

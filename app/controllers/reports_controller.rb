@@ -188,7 +188,7 @@ class ReportsController < ApplicationController
       @report         = @test_session
       @release_versions = VersionLabel.all.map { |release| release.label }
       @targets = MeegoTestSession.targets
-      @testtypes = MeegoTestSession.release(@selected_release_version).testtypes
+      @testsets = MeegoTestSession.release(@selected_release_version).testsets
       @hardware = MeegoTestSession.release(@selected_release_version).popular_hardwares
       @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
 
@@ -212,7 +212,7 @@ class ReportsController < ApplicationController
                 :id              => report_id,
                 :release_version => test_session.release_version,
                 :target          => test_session.target,
-                :testtype        => test_session.testtype,
+                :testset        => test_session.testset,
                 :hardware       => test_session.hardware
   end
 
@@ -234,7 +234,7 @@ class ReportsController < ApplicationController
       @history = history(@test_session, 5)
 
       @target    = @test_session.target
-      @testtype  = @test_session.testtype
+      @testset  = @test_session.testset
       @hardware = @test_session.hardware
 
       @report    = @test_session
@@ -285,7 +285,7 @@ class ReportsController < ApplicationController
       @report         = @test_session
       @release_versions = VersionLabel.all.map { |release| release.label }
       @targets = MeegoTestSession.targets
-      @testtypes = MeegoTestSession.release(@selected_release_version).testtypes
+      @testsets = MeegoTestSession.release(@selected_release_version).testsets
       @hardware = MeegoTestSession.release(@selected_release_version).popular_hardwares
       @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
       @no_upload_link = true
@@ -302,13 +302,13 @@ class ReportsController < ApplicationController
     @comparison = ReportComparison.new()
     @release_version = params[:release_version]
     @target = params[:target]
-    @testtype = params[:testtype]
-    @comparison_testtype = params[:comparetype]
-    @compare_cache_key = "compare_page_#{@release_version}_#{@target}_#{@testtype}_#{@comparison_test_type}"
+    @testset = params[:testset]
+    @comparison_testset = params[:comparetype]
+    @compare_cache_key = "compare_page_#{@release_version}_#{@target}_#{@testset}_#{@comparison_test_type}"
 
-    MeegoTestSession.published_hwversion_by_release_version_target_test_type(@release_version, @target, @testtype).each{|hardware|
-        left = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @testtype, hardware.hardware).first
-        right = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @comparison_testtype, hardware.hardware).first
+    MeegoTestSession.published_hwversion_by_release_version_target_test_type(@release_version, @target, @testset).each{|hardware|
+        left = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @testset, hardware.hardware).first
+        right = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @comparison_testset, hardware.hardware).first
         @comparison.add_pair(hardware.hardware, left, right)
     }
     @groups = @comparison.groups
@@ -361,7 +361,7 @@ class ReportsController < ApplicationController
     # Shortcut for accessing the correct report using report ID only
     begin
       s = MeegoTestSession.find(params[:id].to_i)
-      redirect_to :controller => 'reports', :action => 'view', :release_version => s.release_version, :target => s.target, :testtype => s.testtype, :hardware => s.hardware, :id => s.id
+      redirect_to :controller => 'reports', :action => 'view', :release_version => s.release_version, :target => s.target, :testset => s.testset, :hardware => s.hardware, :id => s.id
     rescue ActiveRecord::RecordNotFound
       redirect_to :controller => :index, :action => :index
     end
@@ -375,7 +375,7 @@ class ReportsController < ApplicationController
   end
 
   def history(s, cnt)
-    MeegoTestSession.where("(tested_at < '#{s.tested_at}' OR tested_at = '#{s.tested_at}' AND created_at < '#{s.created_at}') AND target = '#{s.target.downcase}' AND testtype = '#{s.testtype.downcase}' AND hardware = '#{s.hardware.downcase}' AND published = 1 AND version_label_id = #{s.version_label_id}").
+    MeegoTestSession.where("(tested_at < '#{s.tested_at}' OR tested_at = '#{s.tested_at}' AND created_at < '#{s.created_at}') AND target = '#{s.target.downcase}' AND testset = '#{s.testset.downcase}' AND hardware = '#{s.hardware.downcase}' AND published = 1 AND version_label_id = #{s.version_label_id}").
         order("tested_at DESC, created_at DESC").limit(cnt).
         includes([{:features => :meego_test_cases}, {:meego_test_cases => :feature}])
   end

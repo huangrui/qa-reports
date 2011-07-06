@@ -26,49 +26,49 @@ describe MeegoTestSession do
     before(:each) do
       @session = mock_model(MeegoTestSession)
       MeegoTestSession.stub!(:find_by_target).and_return(@session)
-      MeegoTestSession.stub!(:find_by_testtype).and_return(@session)
+      MeegoTestSession.stub!(:find_by_testset).and_return(@session)
       MeegoTestSession.stub!(:find_by_hardware).and_return(@session)
       @target = nil
-      @testtype = nil
+      @testset = nil
       @hardware = nil
     end
 
     it "should succeed when all filters exist" do
       @target = 'SomeTarget'
-      @testtype = 'SomeTestType'
+      @testset = 'SomeTestSet'
       @hardware = 'Somehardware'
-      MeegoTestSession.filters_exist?(@target, @testtype, @hardware).should be_true
+      MeegoTestSession.filters_exist?(@target, @testset, @hardware).should be_true
     end
 
-    it "should succeed when target and testtype exist" do
+    it "should succeed when target and testset exist" do
       @target = 'SomeTarget'
-      @testtype = 'SomeTestType'
+      @testset = 'SomeTestSet'
       MeegoTestSession.stub!(:find_by_hardware).and_return(nil)
-      MeegoTestSession.filters_exist?(@target, @testtype, @hardware).should be_true
+      MeegoTestSession.filters_exist?(@target, @testset, @hardware).should be_true
     end
 
     it "should succeed when target exists" do
       @target = 'SomeTarget'
-      MeegoTestSession.stub!(:find_by_testtype).and_return(nil)
+      MeegoTestSession.stub!(:find_by_testset).and_return(nil)
       MeegoTestSession.stub!(:find_by_hardware).and_return(nil)
-      MeegoTestSession.filters_exist?(@target, @testtype, @hardware).should be_true
+      MeegoTestSession.filters_exist?(@target, @testset, @hardware).should be_true
     end
 
 
     it "should fail if target is not found" do
-      @testtype = 'SomeTestType'
+      @testset = 'SomeTestSet'
       @hardware = 'Somehardware'
       MeegoTestSession.stub!(:find_by_target).and_return(nil)      
-      MeegoTestSession.filters_exist?(@target, @testtype, @hardware).should be_false
+      MeegoTestSession.filters_exist?(@target, @testset, @hardware).should be_false
     end
 
 
-    it "should fail if testtype is not found and target and hardware exist" do
-      @testtype = 'InvalidType'
+    it "should fail if testset is not found and target and hardware exist" do
+      @testset = 'InvalidType'
       @target = 'SomeTarget'
       @hardware = 'Somehardware'
-      MeegoTestSession.stub!(:find_by_testtype).and_return(nil)
-      MeegoTestSession.filters_exist?(@target, @testtype, @hardware).should be_false
+      MeegoTestSession.stub!(:find_by_testset).and_return(nil)
+      MeegoTestSession.filters_exist?(@target, @testset, @hardware).should be_false
     end
   end
 end

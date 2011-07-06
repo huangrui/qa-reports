@@ -64,7 +64,7 @@ module ReportExporter
 
       "hardware" => test_session.hardware,
       "profile" => test_session.target,
-      "testtype" => test_session.testtype,
+      "testset" => test_session.testset,
       "release" => test_session.release_version,
 
       "created_at" => test_session.created_at.utc,

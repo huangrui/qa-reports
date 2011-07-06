@@ -44,7 +44,7 @@ end
 When /I view the report "([^"]*)"$/ do |report_string|
   version, target, test_type, hardware = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {"version_labels.normalized" => version, :target => target, :hardware => hardware, :testtype => test_type}, :include => :version_label,
+   {"version_labels.normalized" => version, :target => target, :hardware => hardware, :testset => test_type}, :include => :version_label,
    :order => "tested_at DESC, created_at DESC")
   raise "report not found with parameters #{version}/#{target}/#{hardware}/#{test_type}!" unless report
   visit("/#{version}/#{target}/#{test_type}/#{hardware}/#{report.id}")
@@ -84,7 +84,7 @@ Given /^there exists a report for "([^"]*)"$/ do |report_name|
     :password_confirmation => "password")
 
   session = MeegoTestSession.new(:target => target, :hardware => hardware,
-    :testtype => test_type, :uploaded_files => [testfile],
+    :testset => test_type, :uploaded_files => [testfile],
     :tested_at => Time.now, :author => user, :editor => user, :release_version => version
   )
   session.generate_defaults! # Is this necessary, or could we just say create! above?
@@ -147,7 +147,7 @@ end
 
 Given /^I select test set "([^"]*)" and hardware "([^"]*)"(?: with date "([^\"]*)")?$/ do |test_type, hardware, date|
   When %{I fill in "report_test_execution_date" with "#{date}"} if date
-  When %{I fill in "meego_test_session[testtype]" with "#{test_type}"}
+  When %{I fill in "meego_test_session[testset]" with "#{test_type}"}
   When %{I fill in "meego_test_session[hardware]" with "#{hardware}"}
 end
 

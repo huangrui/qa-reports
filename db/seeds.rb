@@ -40,7 +40,7 @@ if Rails.env == "staging" and MeegoTestSession.count < 10000 # ensure there's al
       "build_txt" => "",
       "qa_summary_txt" => "",
       "uploaded_files" => [tmpfile_path],
-      "testtype" => "Acceptance",
+      "testset" => "Acceptance",
       "hardware" => "N900",
       "environment_txt" => "",
       "issue_summary_txt" => "",
