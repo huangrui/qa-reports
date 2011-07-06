@@ -37,6 +37,19 @@ When /^the client sends reports "([^"]*)" via the REST API to test set "([^"]*)"
   response.should be_success
 end
 
+When /^the client sends reports "([^"]*)" via the new REST API to test set "([^"]*)" and hardware "([^"]*)"$/ do |files, testset, hardware|
+  data = @default_api_opts.merge({
+    "testset"        => testset,
+    "hardware"       => hardware
+  })
+
+  files.split(',').each_with_index do |file, index|
+    data["report."+(index+1).to_s] = Rack::Test::UploadedFile.new(file, "text/xml")
+  end
+
+  api_import data
+  response.should be_success
+end
 
 When /^the client sends file with attachments via the REST API$/ do
   api_import @default_api_opts.merge({

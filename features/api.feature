@@ -36,6 +36,13 @@ Feature: REST API
     Then I should see "N/A" within ".feature_name"
     And I should see "8" within "td.total"
 
+  Scenario: Adding a report with tests that do not belong to any feature vie the new API
+    When the client sends reports "spec/fixtures/no_features.xml" via the new REST API to test set "Automated" and hardware "N900"
+    And I should be able to view the created report
+
+    Then I should see "N/A" within ".feature_name"
+    And I should see "8" within "td.total"
+
   Scenario: Sending REST import with string values instead of files
     When the client sends a request with string value instead of a files via the REST API
 
