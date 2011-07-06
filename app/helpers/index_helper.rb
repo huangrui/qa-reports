@@ -21,12 +21,12 @@ module IndexHelper
   def current_filter_path
     path = @target
     path += " / #{@testset}" if @testset.present?
-    path += " / #{@hardware}" if @hardware.present?
+    path += " / #{@product}" if @product.present?
     path
   end
 
-  def filtered_index_url(target, testset=nil, hardware=nil)
-    url_for(:controller=>'ReportGroupsController', :action=>'show', :release_version=>@selected_release_version, :target=>target, :testset=>testset, :hardware=>hardware)
+  def filtered_index_url(target, testset=nil, product=nil)
+    url_for(:controller=>'ReportGroupsController', :action=>'show', :release_version=>@selected_release_version, :target=>target, :testset=>testset, :product=>product)
   end
 
 end

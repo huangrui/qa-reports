@@ -17,8 +17,8 @@ When /^I should see the sign in link without ability to add report$/ do
 end
 
 When /I view the group report "([^"]*)"$/ do |report_string|
-  version, target, test_type, hardware = report_string.downcase.split('/')
-  visit("/#{version}/#{target}/#{test_type}/#{hardware}")
+  version, target, test_type, product = report_string.downcase.split('/')
+  visit("/#{version}/#{target}/#{test_type}/#{product}")
 end
 
 Then /I should see the imported data from "([^"]*)" and "([^"]*)" in the exported CSV.$/ do |file1, file2|
@@ -42,12 +42,12 @@ Then /I should see the imported test cases from "([^"]*)" in the exported CSV.$/
 end
 
 When /I view the report "([^"]*)"$/ do |report_string|
-  version, target, test_type, hardware = report_string.downcase.split('/')
+  version, target, test_type, product = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {"version_labels.normalized" => version, :target => target, :hardware => hardware, :testset => test_type}, :include => :version_label,
+   {"version_labels.normalized" => version, :target => target, :product => product, :testset => test_type}, :include => :version_label,
    :order => "tested_at DESC, created_at DESC")
-  raise "report not found with parameters #{version}/#{target}/#{hardware}/#{test_type}!" unless report
-  visit("/#{version}/#{target}/#{test_type}/#{hardware}/#{report.id}")
+  raise "report not found with parameters #{version}/#{target}/#{product}/#{test_type}!" unless report
+  visit("/#{version}/#{target}/#{test_type}/#{product}/#{report.id}")
 end
 
 Given /^I have created the "([^"]*)" report(?: using "([^"]*)")?$/ do |report_name, report_template|
@@ -56,7 +56,7 @@ end
 
 Given /^I have created the "([^"]*)" report with date "([^"]*)"(?: using "([^"]*)")?$/ do |report_name, report_date, report_template|
 
-  version, target, test_type, hardware = report_name.split('/')
+  version, target, test_type, product = report_name.split('/')
 
   if not report_template.present?
     report_template = "sample.csv"
@@ -66,14 +66,14 @@ Given /^I have created the "([^"]*)" report with date "([^"]*)"(?: using "([^"]*
   When %{I follow "Add report"}
   And %{I fill in "report_test_execution_date" with "#{report_date}"}
   And %{I choose "#{version}"}
-  And %{I select target "#{target}", test set "#{test_type}" and hardware "#{hardware}"}
+  And %{I select target "#{target}", test set "#{test_type}" and product "#{product}"}
   And %{I attach the report "#{report_template}"}
   And %{I submit the form at "upload_report_submit"}
   And %{I submit the form at "upload_report_submit"}
 end
 
 Given /^there exists a report for "([^"]*)"$/ do |report_name|
-  version, target, test_type, hardware = report_name.split('/')
+  version, target, test_type, product = report_name.split('/')
 
   fpath    = File.join(Rails.root, "features", "resources", "sample.csv")
   testfile = DragnDropUploadedFile.new(fpath)
@@ -83,7 +83,7 @@ Given /^there exists a report for "([^"]*)"$/ do |report_name|
     :password => "password",
     :password_confirmation => "password")
 
-  session = MeegoTestSession.new(:target => target, :hardware => hardware,
+  session = MeegoTestSession.new(:target => target, :product => product,
     :testset => test_type, :uploaded_files => [testfile],
     :tested_at => Time.now, :author => user, :editor => user, :release_version => version
   )
@@ -139,16 +139,16 @@ When /^I attach the report "([^"]*)"$/ do |file|
   And "attach the file \"#{Dir.getwd}/features/resources/#{file}\" to \"meego_test_session[uploaded_files][]\""
 end
 
-Given /^I select target "([^"]*)", test set "([^"]*)" and hardware "([^"]*)"(?: with date "([^\"]*)")?/ do |target, test_type, hardware, date|
+Given /^I select target "([^"]*)", test set "([^"]*)" and product "([^"]*)"(?: with date "([^\"]*)")?/ do |target, test_type, product, date|
   When %{I fill in "report_test_execution_date" with "#{date}"} if date
   When %{I choose "#{target}"}
-  And %{I select test set "#{test_type}" and hardware "#{hardware}"}
+  And %{I select test set "#{test_type}" and product "#{product}"}
 end
 
-Given /^I select test set "([^"]*)" and hardware "([^"]*)"(?: with date "([^\"]*)")?$/ do |test_type, hardware, date|
+Given /^I select test set "([^"]*)" and product "([^"]*)"(?: with date "([^\"]*)")?$/ do |test_type, product, date|
   When %{I fill in "report_test_execution_date" with "#{date}"} if date
   When %{I fill in "meego_test_session[testset]" with "#{test_type}"}
-  When %{I fill in "meego_test_session[hardware]" with "#{hardware}"}
+  When %{I fill in "meego_test_session[product]" with "#{product}"}
 end
 
 Given /^I select build id "([^"]*)"$/ do |build_id|

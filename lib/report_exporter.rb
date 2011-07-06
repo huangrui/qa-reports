@@ -62,7 +62,7 @@ module ReportExporter
 
       "title" => test_session.title,
 
-      "hardware" => test_session.hardware,
+      "product" => test_session.product,
       "profile" => test_session.target,
       "testset" => test_session.testset,
       "release" => test_session.release_version,

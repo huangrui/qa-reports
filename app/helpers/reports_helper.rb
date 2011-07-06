@@ -70,7 +70,7 @@ module ReportsHelper
     href = "/#{@selected_release_version}"
     href += "/#{@target}" if @target
     href += "/#{@testset}" if @testset
-    href += "/#{@hardware}" if @hardware
+    href += "/#{@product}" if @product
     href += "/rss"
     href
   end

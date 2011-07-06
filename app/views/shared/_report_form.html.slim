@@ -30,12 +30,12 @@
   = form_ajax_error_msg "testset"
 
 .field
-  label for="report_test_hardware" Hardware:
-  = f.text_field :hardware, :id => "report_test_hardware", :class => "text hardware", :tabindex => 5
+  label for="report_test_product" Product:
+  = f.text_field :product, :id => "report_test_product", :class => "text product", :tabindex => 5
   small.suggestions
-    | e.g. #{render :partial=>'shared/suggestion', :collection => @hardware[0,3], :spacer_template => 'shared/comma'}
-  = f.error_message_on :hardware
-  = form_ajax_error_msg "hardware"
+    | e.g. #{render :partial=>'shared/suggestion', :collection => @product[0,3], :spacer_template => 'shared/comma'}
+  = f.error_message_on :product
+  = form_ajax_error_msg "product"
 
 .field
   label for="report_test_build_id" 

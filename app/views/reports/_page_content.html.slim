@@ -40,7 +40,7 @@
       h2#detailed_results
         | Detailed Test Results 
         small
-          a href=url_for(:controller=>'csv_export', :action=>'export_report', :release_version=>@test_session.release_version, :target=>@test_session.target, :testset=>@test_session.testset, :hardware=>@test_session.hardware, :id=>@test_session.id) Download as CSV
+          a href=url_for(:controller=>'csv_export', :action=>'export_report', :release_version=>@test_session.release_version, :target=>@test_session.target, :testset=>@test_session.testset, :product=>@test_session.product, :id=>@test_session.id) Download as CSV
         span.heading_actions= back_to_top
 
       table#detailed_functional_test_results.detailed_results

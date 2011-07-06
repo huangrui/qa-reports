@@ -1,7 +1,7 @@
 module CsvGenerator
-  def self.generate_csv(release_version, target, testset, hardware)
+  def self.generate_csv(release_version, target, testset, product)
     sql = <<-END
-      select mts.tested_at, vl.label, mts.target, mts.testset, mts.hardware, mts.title,
+      select mts.tested_at, vl.label, mts.target, mts.testset, mts.product, mts.title,
         mtset.name, mtc.name, if(mtc.result = 1,1,0) as passes, if(mtc.result = -1,1,0) as fails,
         if(mtc.result = 0,1,0) as nas, mtc.comment, author.name, editor.name
       from meego_test_sessions mts
@@ -15,7 +15,7 @@ module CsvGenerator
     conditions = []
     conditions << "mts.published = true"
     conditions << "mtc.deleted = false"
-    conditions << "mts.hardware = '#{hardware}'" if hardware
+    conditions << "mts.product = '#{product}'" if product
     conditions << "mts.target = '#{target}'" if target
     conditions << "mts.testset = '#{testset}'" if testset
     conditions << "vl.normalized = '#{release_version.downcase}'" if release_version
@@ -47,7 +47,7 @@ module CsvGenerator
     end
   end
 
-  def self.generate_csv_report(release_version, target, testset, hardware, id)
+  def self.generate_csv_report(release_version, target, testset, product, id)
     sql = <<-END
       select mtset.name, mtc.name, mtc.comment,
         if(mtc.result = 1,1,null) as pass,

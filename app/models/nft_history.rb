@@ -56,7 +56,7 @@ class NftHistory
     meego_test_sessions.version_label_id=? AND
     meego_test_sessions.target=? AND
     meego_test_sessions.testset=? AND
-    meego_test_sessions.hardware=? AND
+    meego_test_sessions.product=? AND
     meego_test_sessions.tested_at <= ? AND
     meego_test_sessions.published=?
     ORDER BY
@@ -70,7 +70,7 @@ class NftHistory
                                          @session.version_label_id,
                                          @session.read_attribute(:target),
                                          @session.testset,
-                                         @session.hardware,
+                                         @session.product,
                                          @session.tested_at,
                                          true])
 

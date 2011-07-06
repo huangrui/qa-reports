@@ -1,6 +1,6 @@
 td
-  - if @hardwares[profile.downcase]
-    - @hardwares[profile.downcase].each do |testset, hardwares|
+  - if @products[profile.downcase]
+    - @products[profile.downcase].each do |testset, products|
 
       - testset_base = testset.split(":")[0]
       - comparetype = testset_base + ":Testing"
@@ -11,6 +11,6 @@ td
       - if compare then
         a.compare href=branch_comparison_path(@selected_release_version, profile, testset_base, comparetype) compare
       ul
-        - hardwares.each do |hw|
+        - products.each do |hw|
           li
-            = link_to hw, hardware_report_path(@selected_release_version, profile, testset, hw)
+            = link_to hw, product_report_path(@selected_release_version, profile, testset, hw)

@@ -32,7 +32,7 @@ class UploadController < ApplicationController
   
   def upload_form
     new_report = {}
-    [:release_version, :target, :testset, :hardware].each do |key| 
+    [:release_version, :target, :testset, :product].each do |key| 
       new_report[key] = params[key] if params[key]
     end
 
@@ -45,7 +45,7 @@ class UploadController < ApplicationController
     @release_versions = VersionLabel.in_sort_order.map { |release| release.label }
     @targets = MeegoTestSession.targets.map {|target| target.downcase}
     @testsets = MeegoTestSession.release(@selected_release_version).testsets
-    @hardware = MeegoTestSession.release(@selected_release_version).popular_hardwares
+    @product = MeegoTestSession.release(@selected_release_version).popular_products
     @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
 
     @no_upload_link = true
@@ -98,7 +98,7 @@ class UploadController < ApplicationController
       @release_versions = VersionLabel.all.map { |release| release.label }
       @targets = MeegoTestSession.targets
       @testsets = MeegoTestSession.release(@selected_release_version).testsets
-      @hardware = MeegoTestSession.release(@selected_release_version).popular_hardwares
+      @product = MeegoTestSession.release(@selected_release_version).popular_products
       @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
       render :upload_form
     end

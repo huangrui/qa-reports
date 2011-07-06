@@ -42,9 +42,12 @@ class ApiController < ApplicationController
 
     data[:tested_at] ||= Time.now
     data[:hardware] ||= data[:hwproduct]
+    data[:product] ||= data[:hardware]
     data[:testset] ||= data[:testtype]
     data.delete(:hwproduct)
     data.delete(:testtype)
+    data.delete(:hardware)
+
     begin
       @test_session = MeegoTestSession.new(data)
       @test_session.import_report(current_user, true)
@@ -61,7 +64,7 @@ class ApiController < ApplicationController
       attachments.each { |file|
         files.add_file(@test_session, file, file.original_filename)
       }
-      report_url = url_for :controller => 'reports', :action => 'view', :release_version => data[:release_version], :target => data[:target], :testset => data[:testset], :hardware => data[:hardware], :id => @test_session.id
+      report_url = url_for :controller => 'reports', :action => 'view', :release_version => data[:release_version], :target => data[:target], :testset => data[:testset], :product => data[:product], :id => @test_session.id
       render :json => {:ok => '1', :url => report_url}
     rescue ActiveRecord::RecordInvalid => invalid
       error_messages = {}

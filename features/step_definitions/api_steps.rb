@@ -23,7 +23,7 @@ When /^the client sends file "([^"]*)" via the REST API with RESTful parameters$
   response.should be_success
 end
 
-When /^the client sends reports "([^"]*)" via the REST API to test set "([^"]*)" and hardware "([^"]*)"$/ do |files, testset, hardware|
+When /^the client sends reports "([^"]*)" via the REST API to test set "([^"]*)" and product "([^"]*)"$/ do |files, testset, hardware|
   data = @default_api_opts.merge({
     "testtype"        => testset,
     "hwproduct"       => hardware
@@ -37,7 +37,7 @@ When /^the client sends reports "([^"]*)" via the REST API to test set "([^"]*)"
   response.should be_success
 end
 
-When /^the client sends reports "([^"]*)" via the new REST API to test set "([^"]*)" and hardware "([^"]*)"$/ do |files, testset, hardware|
+When /^the client sends reports "([^"]*)" via the new REST API to test set "([^"]*)" and product "([^"]*)"$/ do |files, testset, hardware|
   data = @default_api_opts.merge({
     "testset"        => testset,
     "hardware"       => hardware
@@ -96,10 +96,10 @@ When /^the client sends a request with optional parameter "([^"]*)" with value "
 end
 
 When /^I view the latest report "([^"]*)"/ do |report_string|
-  version, target, test_type, hardware = report_string.downcase.split('/')
-  report = MeegoTestSession.joins(:version_label).where(:version_labels => {:label => version}, :target => target, :hardware => hardware, :testset => test_type).order("created_at DESC").first
-  raise "report not found with parameters #{version}/#{target}/#{hardware}/#{test_type}!" unless report
-  visit("/#{version}/#{target}/#{test_type}/#{hardware}/#{report.id}")
+  version, target, test_type, product = report_string.downcase.split('/')
+  report = MeegoTestSession.joins(:version_label).where(:version_labels => {:label => version}, :target => target, :product => product, :testset => test_type).order("created_at DESC").first
+  raise "report not found with parameters #{version}/#{target}/#{product}/#{test_type}!" unless report
+  visit("/#{version}/#{target}/#{test_type}/#{product}/#{report.id}")
 end
 
 Then /^I should be able to view the latest created report$/ do

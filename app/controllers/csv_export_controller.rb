@@ -6,7 +6,7 @@ class CsvExportController < ApplicationController
             @selected_release_version,
             params[:target],
             params[:testset],
-            params[:hardware]
+            params[:product]
     )
 
     send_data csv, :type => "text/plain", :filename=>"entries.csv", :disposition => 'attachment'
@@ -17,7 +17,7 @@ class CsvExportController < ApplicationController
             @selected_release_version,
             params[:target],
             params[:testset],
-            params[:hardware],
+            params[:product],
             params[:id]
     )
 
