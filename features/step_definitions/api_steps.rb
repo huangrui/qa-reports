@@ -25,7 +25,7 @@ end
 
 When /^the client sends reports "([^"]*)" via the REST API to test set "([^"]*)" and hardware "([^"]*)"$/ do |files, testset, hardware|
   data = @default_api_opts.merge({
-    "testset"        => testset,
+    "testtype"        => testset,
     "hwproduct"       => hardware
   })
 

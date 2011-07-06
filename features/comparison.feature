@@ -24,7 +24,7 @@ Feature: Consolidated reports
     And I should see "1" within "#new_failing"
     And I should see "0" within "#new_na"
 
-    And I should see values "N900,N910,N900,N910" in columns of "tr.compare_testtype th"
+    And I should see values "N900,N910,N900,N910" in columns of "tr.compare_testset th"
 
     And I should see "SMOKE-SIM-Disable_PIN_query" within "#test_case_14 .testcase_name"
     And I should see values "Fail,Fail,Fail,Pass" in columns of "#test_case_14 td"
@@ -44,7 +44,7 @@ Feature: Consolidated reports
 #    And I should see "+1" within "#changed_to_pass"
 #    Then I should see "-2" within "#changed_to_fail"
 
-#    And I should see values "N900,N910,N900,N910" in columns of "tr.compare_testtype th"
+#    And I should see values "N900,N910,N900,N910" in columns of "tr.compare_testset th"
 
 #    And I should see "SMOKE-SIM-Update_ADN_phonebook_entry" within "#row_0 .testcase_name"
 #    And I should see values "Pass,Pass,N/A,Pass" in columns of "#row_0 td"

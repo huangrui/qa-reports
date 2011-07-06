@@ -60,7 +60,7 @@ Meegoqa::Application.routes.draw do
     match '/:release_version/:target/rss' => 'rss#rss', :via => "get"
     match '/:release_version/rss' => 'rss#rss', :via => "get"
 
-    match '/:release_version/:target/:testset/compare/:comparetype' => 'comparison_reports#show', :via => "get", :as => :branch_comparison
+    match '/:release_version/:target/:testset/compare/:comparetestset' => 'comparison_reports#show', :via => "get", :as => :branch_comparison
 
     match '/:release_version/:target(/:testset(/:hardware))/report_list(/:page)' => 'report_groups#report_page', :via => "get", :as => :report_list
 

@@ -63,12 +63,12 @@ class ComparisonReport
     @comparisons.map{|k, v| v.new_na}.reduce(:+)
   end
 
-  def initialize(release, profile, test_type, comparison_test_type)
+  def initialize(release, profile, test_set, comparison_test_set)
     comparison_scope = MeegoTestSession.release(release).profile(profile)
     hw_scope = comparison_scope.select("DISTINCT(hardware) as hardware")
 
     @hardwares = (
-      hw_scope.test_type(test_type).merge(hw_scope.test_type(comparison_test_type))
+      hw_scope.test_set(test_set).merge(hw_scope.test_set(comparison_test_set))
       ).map{ |row| row.hardware }
 
     @reports = []
@@ -76,10 +76,10 @@ class ComparisonReport
     @comparisons = {}
     @hardwares.each do |hardware|
       r1 = comparison_scope.includes(:features, :meego_test_cases).
-        test_type(test_type).hardware(hardware).latest
+        test_set(test_set).hardware(hardware).latest
 
       r2 = comparison_scope.includes(:features, :meego_test_cases => :feature).
-        test_type(comparison_test_type).hardware(hardware).latest
+        test_set(comparison_test_set).hardware(hardware).latest
 
       @reports << r1 << r2
       @test_cases += r1.meego_test_cases + r2.meego_test_cases
