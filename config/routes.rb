@@ -70,14 +70,7 @@ Meegoqa::Application.routes.draw do
     match '/:release_version/:target/:testtype/:hardware/:id/delete' => 'reports#delete', :via => "post"
     match '/:release_version/:target/:testtype/:hardware/:id/print' => 'reports#print', :via => "get"
 
-    match '/:release_version/:target/:testtype/:hardware/:id' => 'reports#view', :via => "get"
-    match '/:release_version/:target/:testtype/:hardware/:id/edit' => 'reports#edit', :via => "get"
-    match '/:release_version/:target/:testtype/:hardware/:id/download' => 'csv_export#export_report', :via => "get"
-    match '/:release_version/:target/:testtype/:hardware/:id/delete' => 'reports#delete', :via => "post"
-    match '/:release_version/:target/:testtype/:hardware/:id/print' => 'reports#print', :via => "get"
-
     match '/:release_version' => 'index#index', :via => "get"
-
 
     match '/:release_version/:target' => 'report_groups#show', :via => "get", :as => :profile_report
     match '/:release_version/:target/:testtype' => 'report_groups#show', :via => "get", :as => :test_type_report
