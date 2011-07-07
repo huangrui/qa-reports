@@ -135,9 +135,9 @@ module AjaxMixin
   end
 
   def update_feature_comment
-    set_id = params[:id]
+    feature_id = params[:id]
     comments = params[:comment]
-    feature = Feature.find(set_id)
+    feature = Feature.find(feature_id)
     feature.update_attribute(:comments, comments)
 
     test_session = feature.meego_test_session
@@ -148,9 +148,9 @@ module AjaxMixin
   end
 
   def update_feature_grading
-    set_id = params[:id]
+    feature_id = params[:id]
     grading = params[:grading]
-    feature = Feature.find(set_id)
+    feature = Feature.find(feature_id)
     feature.update_attribute(:grading, grading)
 
     test_session = feature.meego_test_session
@@ -304,11 +304,11 @@ class ReportsController < ApplicationController
     @target = params[:target]
     @testset = params[:testset]
     @comparison_testset = params[:comparetype]
-    @compare_cache_key = "compare_page_#{@release_version}_#{@target}_#{@testset}_#{@comparison_test_type}"
+    @compare_cache_key = "compare_page_#{@release_version}_#{@target}_#{@testset}_#{@comparison_testset}"
 
-    MeegoTestSession.published_hwversion_by_release_version_target_test_type(@release_version, @target, @testset).each{|product|
-        left = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @testset, product.product).first
-        right = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @comparison_testset, product.product).first
+    MeegoTestSession.published_hwversion_by_release_version_target_testset(@release_version, @target, @testset).each{|product|
+        left = MeegoTestSession.by_release_version_target_testset_product(@release_version, @target, @testset, product.product).first
+        right = MeegoTestSession.by_release_version_target_testset_product(@release_version, @target, @comparison_testset, product.product).first
         @comparison.add_pair(product.product, left, right)
     }
     @groups = @comparison.groups

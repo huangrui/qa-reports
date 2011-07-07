@@ -2,7 +2,7 @@ class Product
 
   def self.by_profile_by_test_type(release)
     selection = <<-END
-      DISTINCT target as profile, testset, product as product
+      DISTINCT target as profile, testset, product
     END
 
     @products = MeegoTestSession.published.select(selection).joins(:version_label).

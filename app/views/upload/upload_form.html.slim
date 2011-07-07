@@ -73,15 +73,15 @@ coffee:
       $("#report_test_product").autocomplete(source: productSuggestions)
       activateSuggestionLinks("div.field")
 
-    updateTestTypeSuggestions = (data) ->
+    updateTestSetSuggestions = (data) ->
       testSetSuggestions = data
       $("#report_test_type").autocomplete(source: testSetSuggestions)
       activateSuggestionLinks("div.field")
 
     product_url = window.location.pathname.replace("upload","product")
     testtype_url = window.location.pathname.replace("upload","testset")
-    $.get(product_url, updateProductSuggestions )
-    $.get(testtype_url, updateTestTypeSuggestions )
+    $.get(product_url, updateProductSuggestions)
+    $.get(testtype_url, updateTestSetSuggestions)
 
     $(".date").datepicker(
       showOn: "both",

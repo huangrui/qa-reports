@@ -81,7 +81,7 @@ class Feature < ActiveRecord::Base
   end
 
   def delete_test_cases
-    MeegoTestCase.delete_all("meego_test_set_id = #{self.id}")
+    MeegoTestCase.delete_all("feature_id = #{self.id}")
   end
 
 end

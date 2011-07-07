@@ -637,7 +637,7 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def clone_testcase_comments_from_session(target_session)
-    meego_test_cases.where(:comment => '').includes(:feature).each do |tc| #select {|tc| tc.comment.blank? }.
+    meego_test_cases.where(:comment => '').includes(:feature).each do |tc|
       prev_comment = target_session.test_case_by_name(tc.feature.name, tc.name).comment
       tc.update_attribute :comment, prev_comment unless prev_comment.blank?
     end

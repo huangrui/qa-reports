@@ -55,7 +55,7 @@ module ApplicationHelper
   html = '<div id="breadcrumb"><li><a href="' + url_for(:controller=>'index', :action=>'index') + '">Home</a></li>'
 
   html += ('<li> &rsaquo; ' + link_to_unless_current(@target, profile_report_path(@selected_release_version, @target)) + '</li>') if @target
-  html += ('<li> &rsaquo; ' + link_to_unless_current(@testset, test_type_report_path(@selected_release_version, @target, @testset)) + '</li>') if @testset
+  html += ('<li> &rsaquo; ' + link_to_unless_current(@testset, testset_report_path(@selected_release_version, @target, @testset)) + '</li>') if @testset
   html += ('<li> &rsaquo; ' + link_to_unless_current(@product, product_report_path(@selected_release_version, @target, @testset, @product)) + '</li>') if @product
   html += ('<li> &rsaquo; ' + @test_session.title + '</li>') if @test_session
   html += '</div>'
