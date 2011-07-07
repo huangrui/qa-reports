@@ -65,7 +65,7 @@ module AjaxMixin
 
     field         = params[:meego_test_session]
     field         = field.keys()[0]
-    @test_session.update_attribute(field, params[:meego_test_session][field])
+    @test_session.send(field + '=', params[:meego_test_session][field])
     @test_session.updated_by(current_user)
     expire_caches_for(@test_session)
     expire_index_for(@test_session)
@@ -101,7 +101,7 @@ module AjaxMixin
 
       field         = params[:meego_test_session].keys.first
       logger.warn("Updating #{field} with #{params[:meego_test_session][field]}")
-      @test_session.update_attribute(field, params[:meego_test_session][field])
+      @test_session.send(field + "=", params[:meego_test_session][field])
       @test_session.updated_by(current_user)
 
       expire_caches_for(@test_session)

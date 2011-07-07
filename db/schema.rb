@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110706112341) do
+ActiveRecord::Schema.define(:version => 20110707073302) do
 
   create_table "features", :force => true do |t|
     t.string  "name",                  :default => ""
@@ -63,6 +63,7 @@ ActiveRecord::Schema.define(:version => 20110706112341) do
   end
 
   add_index "meego_test_cases", ["feature_id"], :name => "index_meego_test_cases_on_meego_test_set_id"
+  add_index "meego_test_cases", ["meego_test_session_id", "name"], :name => "index_meego_test_cases_on_meego_test_session_id_and_name"
   add_index "meego_test_cases", ["meego_test_session_id"], :name => "index_meego_test_cases_on_meego_test_session_id"
 
   create_table "meego_test_sessions", :force => true do |t|

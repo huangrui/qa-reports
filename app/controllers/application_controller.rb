@@ -33,11 +33,24 @@ class ApplicationController < ActionController::Base
 
   def get_selected_release_version
     @selected_release_version = session[:release_version] =
-      params[:release_version] || session[:release_version] || VersionLabel.latest.label
+      valid_version_label(params[:release_version]) || session[:release_version] || VersionLabel.latest.label
   end
 
   def render_404
     render :file => "#{Rails.root}/public/404.html", :status => :not_found, :layout => false
+  end
+
+  private
+  
+  def valid_version_label release_version
+    return unless release_version.present?
+
+    if VersionLabel.all.map(&:normalized).include? release_version.downcase
+      release_version
+    else
+      Rails.logger.info ["Info:  Invalid release version: ", release_version]
+      return nil
+    end
   end
 
 end

@@ -143,8 +143,8 @@ class ReportComparison
     result_pairs = {}
 
     #group by feature
-    previous_cases = @previous.meego_test_cases.group_by { |tc| tc.feature.name }
-    latest_cases = @latest.meego_test_cases.group_by { |tc| tc.feature.name }
+    previous_cases = @previous.meego_test_cases.sort_by(&:id).group_by { |tc| tc.feature.name }
+    latest_cases = @latest.meego_test_cases.sort_by(&:id).group_by { |tc| tc.feature.name }
 
     # pair every test case into result
     allfeatures = previous_cases.keys | latest_cases.keys

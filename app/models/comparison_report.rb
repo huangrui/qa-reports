@@ -83,7 +83,7 @@ class ComparisonReport
         testset(comparison_test_set).product_is(product).latest
 
       @reports << r1 << r2
-      @test_cases += r1.meego_test_cases + r2.meego_test_cases
+      @test_cases += r1.meego_test_cases.sort_by(&:id) + r2.meego_test_cases.sort_by(&:id)
       @comparisons[product] = ReportComparison.new(r1, r2)
     end
 
