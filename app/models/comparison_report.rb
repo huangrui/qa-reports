@@ -82,7 +82,7 @@ class ComparisonReport
         test_type(comparison_test_type).hardware(hardware).latest
 
       @reports << r1 << r2
-      @test_cases += r1.meego_test_cases + r2.meego_test_cases
+      @test_cases += r1.meego_test_cases.sort_by(&:id) + r2.meego_test_cases.sort_by(&:id)
       @comparisons[hardware] = ReportComparison.new(r1, r2)
     end
 
