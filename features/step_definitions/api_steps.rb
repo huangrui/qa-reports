@@ -38,7 +38,7 @@ When /^the client sends reports "([^"]*)" via the REST API to test set "([^"]*)"
 end
 
 When /^the client sends reports "([^"]*)" via the new REST API to test set "([^"]*)" and product "([^"]*)"$/ do |files, testset, hardware|
-  data = @default_api_opts.merge({
+  data = @default_new_api_opts.merge({
     "testset"        => testset,
     "hardware"       => hardware
   })

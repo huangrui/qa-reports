@@ -162,7 +162,7 @@ prepareCategoryUpdate = function(div) {
     var $cancel   = $div.find(".dialog-cancel");
     var $testset = $div.find(".field .testset");
     var $date     = $div.find(".field .date");
-    var $hardware = $div.find(".field .hardware");
+    var $product = $div.find(".field .product");
     var $catpath  = $("dd.category");
     var $datespan = $("span.date");
     var $donebtn  = $('#wizard_buttons a');
@@ -170,13 +170,13 @@ prepareCategoryUpdate = function(div) {
     var arrow     = $('<div/>').html(" &rsaquo; ").text();
 
     $testset.val($testset.val());
-    $hardware.val($hardware.val());
+    $product.val($product.val());
 
     $save.click(function() {
       var targetval  = $('.field .target:checked').val();
       var versionval = $('.field .version:checked').val();
       var typeval    = $testset.val();
-      var hwval      = $hardware.val();
+      var hwval      = $product.val();
       var dateval    = $date.val();
 
       // validate
@@ -192,7 +192,7 @@ prepareCategoryUpdate = function(div) {
         $('.error.tested_at').text("Test date cannot be empty.").show();
         return false;
       } else if (hwval == '') {
-        $('.error.hardware').text("Hardware cannot be empty.").show();
+        $('.error.product').text("product cannot be empty.").show();
         return false;
       }
 

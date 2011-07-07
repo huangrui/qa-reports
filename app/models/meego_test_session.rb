@@ -70,8 +70,8 @@ class MeegoTestSession < ActiveRecord::Base
   scope :published, where(:published => true)
   scope :release, lambda { |release| published.joins(:version_label).where(:version_labels => {:normalized => release.downcase}) }
   scope :profile, lambda { |profile| published.where(:target => profile.downcase) }
-  scope :test_set, lambda { |test_set| published.where(:testset => test_set.downcase) }
-  scope :product, lambda { |product| published.where(:product => product.downcase) }
+  scope :testset, lambda { |testset| published.where(:testset => testset.downcase) }
+  scope :product_is, lambda { |product| published.where(:product => product.downcase) }
 
   RESULT_FILES_DIR = "public/reports"
   INVALID_RESULTS_DIR = "public/reports/invalid_files"

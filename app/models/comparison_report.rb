@@ -68,18 +68,19 @@ class ComparisonReport
     hw_scope = comparison_scope.select("DISTINCT(product) as product")
 
     @products = (
-      hw_scope.test_set(test_set).merge(hw_scope.test_set(comparison_test_set))
+      hw_scope.testset(test_set).merge(hw_scope.testset(comparison_test_set))
       ).map{ |row| row.product }
 
     @reports = []
     @test_cases = []
     @comparisons = {}
+
     @products.each do |product|
       r1 = comparison_scope.includes(:features, :meego_test_cases).
-        test_set(test_set).product(product).latest
+        testset(test_set).product_is(product).latest
 
       r2 = comparison_scope.includes(:features, :meego_test_cases => :feature).
-        test_set(comparison_test_set).product(product).latest
+        testset(comparison_test_set).product_is(product).latest
 
       @reports << r1 << r2
       @test_cases += r1.meego_test_cases + r2.meego_test_cases
