@@ -10,7 +10,6 @@ Feature: Consolidated reports
     And report files "spec/fixtures/sim2.xml,features/resources/bluetooth.xml" are uploaded to branch "Sanity:Testing" for product "N910"
 
     When I am on the front page
-    #Then show me the page
     And I follow "compare"
 
     Then I should see "1" within "#changed_to_pass"

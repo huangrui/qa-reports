@@ -49,7 +49,7 @@ Meegoqa::Application.routes.draw do
   constraints(:release_version => /[a-zA-Z0-9._-]+/, :id => /[0-9]+/) do
     match '(/:release_version(/:target(/:testset(/:product))))/upload' => 'upload#upload_form', :via => "get", :as => :upload_form
     match '(/:release_version(/:target(/:testset(/:product))))/product' => 'products#index', :via => "get", :as => :products
-    match '(/:release_version(/:target(/:testset(/:product))))/testset' => 'test_types#index', :via => "get", :as => :test_types
+    match '(/:release_version(/:target(/:testset(/:product))))/testset' => 'test_sets#index', :via => "get", :as => :test_types
 
     match '/:release_version/:target/:testset/:product/csv' => 'csv_export#export', :via => "get"
     match '/:release_version/:target/:testset/csv' => 'csv_export#export', :via => "get"

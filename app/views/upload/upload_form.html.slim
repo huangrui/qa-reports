@@ -79,7 +79,7 @@ coffee:
       activateSuggestionLinks("div.field")
 
     product_url = window.location.pathname.replace("upload","product")
-    testtype_url = window.location.pathname.replace("upload","testtype")
+    testtype_url = window.location.pathname.replace("upload","testset")
     $.get(product_url, updateProductSuggestions )
     $.get(testtype_url, updateTestTypeSuggestions )
 
