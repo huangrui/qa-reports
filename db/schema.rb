@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110628093441) do
+ActiveRecord::Schema.define(:version => 20110707073302) do
 
   create_table "meego_measurements", :force => true do |t|
     t.integer "meego_test_case_id"
@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(:version => 20110628093441) do
     t.boolean "deleted",                               :default => false, :null => false
   end
 
+  add_index "meego_test_cases", ["meego_test_session_id", "name"], :name => "index_meego_test_cases_on_meego_test_session_id_and_name"
   add_index "meego_test_cases", ["meego_test_session_id"], :name => "index_meego_test_cases_on_meego_test_session_id"
   add_index "meego_test_cases", ["meego_test_set_id"], :name => "index_meego_test_cases_on_meego_test_set_id"
 
