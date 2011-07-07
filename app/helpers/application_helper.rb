@@ -43,14 +43,6 @@ module ApplicationHelper
     end
   end
 
-  def compare_for(target, testset)
-    MeegoTestSession.list_product_for(@selected_release_version, target, testset)
-  end
-
-  def product_for(target, testset)
-    MeegoTestSession.list_product_for(@selected_release_version, target, testset)
-  end
-
  def breadcrumbs
   html = '<div id="breadcrumb"><li><a href="' + url_for(:controller=>'index', :action=>'index') + '">Home</a></li>'
 

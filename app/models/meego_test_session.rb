@@ -234,22 +234,6 @@ class MeegoTestSession < ActiveRecord::Base
     (published.all_lowercase(:select => 'DISTINCT target', :conditions=>{"version_labels.normalized" => release_version}, :include => :version_label).map { |s| s.target.gsub(/\b\w/) { $&.upcase } }).uniq
   end
 
-  def self.list_types(release_version)
-    (published.all_lowercase(:select => 'DISTINCT testset', :conditions=>{"version_labels.normalized" => release_version}, :include => :version_label).map { |s| s.testset.gsub(/\b\w/) { $&.upcase } }).uniq
-  end
-
-  def self.list_types_for(release_version, target)
-    (published.all_lowercase(:select => 'DISTINCT testset', :conditions=>{:target => target, "version_labels.normalized" => release_version}, :include => :version_label).map { |s| s.testset.gsub(/\b\w/) { $&.upcase } }).uniq
-  end
-
-  def self.list_product(release_version)
-    (published.all_lowercase(:select => 'DISTINCT product', :conditions=>{"version_labels.normalized" => release_version}, :include => :version_label).map { |s| s.product.gsub(/\b\w/) { $&.upcase } }).uniq
-  end
-
-  def self.list_product_for(release_version, target, testset)
-    (published.all_lowercase(:select => 'DISTINCT product',  :conditions=>{:target => target, :testset=> testset,"version_labels.normalized" => release_version}, :include => :version_label).map { |s| s.product.gsub(/\b\w/) { $&.upcase } }).uniq
-  end
-
 
   ###############################################
   # Test session navigation                     #
