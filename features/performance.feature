@@ -3,6 +3,12 @@ Feature: Loading times
   I want every request to complete in a reasonable time
 
   Background:
+
+    #Note: This measurement assumes that the loading time of the front page
+    #      when the database is empty does not change.
+    #      Should the front page change a lot, the measurement should be
+    #      adjusted.
+
     Given I measure the speed of the test hardware
 
   Scenario: Upload a big report via web form and view it

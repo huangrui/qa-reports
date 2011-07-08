@@ -1,6 +1,6 @@
 Given /^I measure the speed of the test hardware$/ do
   t = Time.now
-  1500.times { get '/404.html' }
+  40.times { get '/' }
   @slowness_factor = Time.now - t
   puts "Measured slowness factor of #{@slowness_factor} for this test machine."
 end
