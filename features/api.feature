@@ -30,7 +30,14 @@ Feature: REST API
     And I should see "icon_alert.gif" within "#file_attachment_list"
 
   Scenario: Adding a report with tests that do not belong to any feature
-    When the client sends reports "spec/fixtures/no_features.xml" via the REST API to test set "Automated" and hardware "N900"
+    When the client sends reports "spec/fixtures/no_features.xml" via the REST API to test set "Automated" and product "N900"
+    And I should be able to view the created report
+
+    Then I should see "N/A" within ".feature_name"
+    And I should see "8" within "td.total"
+
+  Scenario: Adding a report with tests that do not belong to any feature vie the new API
+    When the client sends reports "spec/fixtures/no_features.xml" via the new REST API to test set "Automated" and product "N900"
     And I should be able to view the created report
 
     Then I should see "N/A" within ".feature_name"
@@ -92,7 +99,7 @@ Feature: REST API
     Then the REST result "ok" is "1"
 
     And I should be able to view the latest created report
-    Then I should see "Hardware: N900"
+    Then I should see "Product: N900"
 
 
   # For the optional parameters, title, build_txt/Build (image), objective_txt (Test Objective), qa_summary_txt/(Quality Summary), issue_summary_txt

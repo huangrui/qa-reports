@@ -26,7 +26,7 @@ describe ReportGroupViewModel do
     @previous_tc_count = @previous_report.passed + @previous_report.failed + @previous_report.na
     @oldest_tc_count = @oldest_report.passed + @oldest_report.failed + @oldest_report.na
 
-    @rgvm = ReportGroupViewModel.new("release", "target", "testtype", "hwproduct")
+    @rgvm = ReportGroupViewModel.new("release", "target", "testset", "hwproduct")
   end
 
   describe "Group with multiple reports" do

@@ -69,8 +69,8 @@ module ReportsHelper
   def rss_url
     href = "/#{@selected_release_version}"
     href += "/#{@target}" if @target
-    href += "/#{@testtype}" if @testtype
-    href += "/#{@hardware}" if @hardware
+    href += "/#{@testset}" if @testset
+    href += "/#{@product}" if @product
     href += "/rss"
     href
   end

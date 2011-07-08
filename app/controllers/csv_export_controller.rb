@@ -5,8 +5,8 @@ class CsvExportController < ApplicationController
     csv = CsvGenerator::generate_csv(
             @selected_release_version,
             params[:target],
-            params[:testtype],
-            params[:hardware]
+            params[:testset],
+            params[:product]
     )
 
     send_data csv, :type => "text/plain", :filename=>"entries.csv", :disposition => 'attachment'
@@ -16,8 +16,8 @@ class CsvExportController < ApplicationController
     csv = CsvGenerator::generate_csv_report(
             @selected_release_version,
             params[:target],
-            params[:testtype],
-            params[:hardware],
+            params[:testset],
+            params[:product],
             params[:id]
     )
 

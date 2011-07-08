@@ -105,12 +105,12 @@ class ReportComparison
       SELECT previous.result AS previous_result, latest.result AS latest_result, count(*) AS count
 
       FROM meego_test_cases AS latest
-      JOIN meego_test_sets AS l_ts ON ( latest.meego_test_set_id = l_ts.id )
+      JOIN features AS l_ts ON ( latest.feature_id = l_ts.id )
 
       JOIN (meego_test_cases AS previous
-      JOIN meego_test_sets AS p_ts ON ( previous.meego_test_set_id = p_ts.id ))
+      JOIN features AS p_ts ON ( previous.feature_id = p_ts.id ))
 
-      ON (latest.name, l_ts.feature) = (previous.name, p_ts.feature)
+      ON (latest.name, l_ts.name) = (previous.name, p_ts.name)
       WHERE latest.meego_test_session_id = #{@latest.id} AND previous.meego_test_session_id = #{@previous.id}
       AND latest.deleted = 0 AND previous.deleted = 0
       GROUP BY previous.result, latest.result;
@@ -123,14 +123,14 @@ class ReportComparison
     find_new_test_cases_query = <<-END
       SELECT tc.result as verdict, COUNT(tc.result) as count
       FROM meego_test_cases as tc
-      JOIN meego_test_sets as ts ON ( tc.meego_test_set_id = ts.id )
+      JOIN features as ts ON ( tc.feature_id = ts.id )
       WHERE tc.meego_test_session_id = #{@latest.id} AND tc.deleted = 0
 
       -- Test cases is not in the previous report
-      AND (feature, name) NOT IN (
-        SELECT ts.feature as feature, tc.name as name
+      AND (ts.name, tc.name) NOT IN (
+        SELECT ts.name as feature, tc.name as name
         FROM meego_test_cases as tc
-        JOIN meego_test_sets as ts ON ( tc.meego_test_set_id = ts.id )
+        JOIN features as ts ON ( tc.feature_id = ts.id )
         WHERE tc.meego_test_session_id = #{@previous.id})
       GROUP BY result
       ORDER BY verdict DESC;
@@ -143,8 +143,8 @@ class ReportComparison
     result_pairs = {}
 
     #group by feature
-    previous_cases = @previous.meego_test_cases.sort_by(&:id).group_by { |tc| tc.meego_test_set.feature }
-    latest_cases = @latest.meego_test_cases.sort_by(&:id).group_by { |tc| tc.meego_test_set.feature }
+    previous_cases = @previous.meego_test_cases.sort_by(&:id).group_by { |tc| tc.feature.name }
+    latest_cases = @latest.meego_test_cases.sort_by(&:id).group_by { |tc| tc.feature.name }
 
     # pair every test case into result
     allfeatures = previous_cases.keys | latest_cases.keys

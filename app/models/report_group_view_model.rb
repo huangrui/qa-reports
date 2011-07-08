@@ -4,12 +4,12 @@ require 'graph'
 class ReportGroupViewModel
   include Graph
 
-  def initialize(release, target, testtype, hardware)
+  def initialize(release, target, testset, product)
     @params = {
       :version_label_id => VersionLabel.find_by_label(release),
       :target => target,
-      :testtype => testtype,
-      :hardware => hardware
+      :testset => testset,
+      :product => product
     }.delete_if { |key, value| value.nil? }
   end
 
