@@ -94,6 +94,10 @@ class MeegoTestSession < ActiveRecord::Base
          })
   end
 
+  def self.fetch_for_comparison(id)
+    find(id, :include => {:meego_test_cases => [:feature, :meego_test_session]})
+  end
+
   def self.testsets
     published.select("DISTINCT testset").order("testset").map(&:testset)
   end
