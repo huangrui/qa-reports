@@ -114,6 +114,22 @@ module ReportSummary
     end
   end
 
+  def total_cases=(num)
+    @total_cases = num
+  end
+
+  def total_passed=(num)
+    @total_passed = num
+  end
+
+  def total_failed=(num)
+    @total_failed = num
+  end
+
+  def total_na=(num)
+    @total_na = num
+  end
+
   def total_executed
     total_passed + total_failed
   end

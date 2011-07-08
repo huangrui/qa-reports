@@ -68,7 +68,7 @@ class ReportGroupViewModel
 
   def find_all_reports
     MeegoTestSession.published.
-      includes(:version_label, :meego_test_cases).
+      includes(:version_label).
       where(@params).order("tested_at DESC, created_at DESC")
   end
 
@@ -80,9 +80,25 @@ class ReportGroupViewModel
   end
 
   def find_report_range(range)
-    MeegoTestSession.published.includes(:version_label, :meego_test_cases).
+    find_case_counts_for_reports MeegoTestSession.published.includes(:version_label).
       where(@params).
       limit(range.count).offset(range.begin).
       order("tested_at DESC, created_at DESC")
+  end
+
+  def find_case_counts_for_reports(reports)
+    passes = MeegoTestCase.select([:meego_test_session_id, :count]).
+      where(:meego_test_session_id => reports, :result => MeegoTestCase::PASS).group(:meego_test_session_id).count()
+    fails = MeegoTestCase.select([:meego_test_session_id, :count]).
+      where(:meego_test_session_id => reports, :result => MeegoTestCase::FAIL).group(:meego_test_session_id).count()
+    nas = MeegoTestCase.select([:meego_test_session_id, :count]).
+      where(:meego_test_session_id => reports, :result => MeegoTestCase::NA).group(:meego_test_session_id).count()
+    reports.map! do |report|
+      report.total_passed = passes[report.id]
+      report.total_failed = fails[report.id]
+      report.total_na = nas[report.id]
+      report.total_cases = report.total_passed + report.total_failed + report.total_na
+      report
+    end
   end
 end
