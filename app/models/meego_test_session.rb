@@ -170,6 +170,19 @@ class MeegoTestSession < ActiveRecord::Base
     VersionLabel.find(:all, :order => "sort_order ASC").map &:label
   end
 
+  def self.load_case_counts_for_reports!(reports)
+    result_counts = MeegoTestCase.select([:meego_test_session_id, :result, :count]).
+      where(:meego_test_session_id => reports).group(:meego_test_session_id, :result).count(:result)
+    
+    reports.map! do |report|
+      report.total_passed = result_counts[[report.id, MeegoTestCase::PASS]]
+      report.total_failed = result_counts[[report.id, MeegoTestCase::FAIL]]
+      report.total_na     = result_counts[[report.id, MeegoTestCase::NA]]
+      report.total_cases  = report.total_passed + report.total_failed + report.total_na
+      report
+    end
+  end
+
   def self.latest_release_version
     release_versions[0]
   end
