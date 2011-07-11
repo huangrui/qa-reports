@@ -26,7 +26,19 @@ module ReportFactory
     test_cases = {}
 
     params[:uploaded_files].each do |file|
-      new_test_cases = ResultFileParser.parse_csv(file.open)
+      begin
+        if file.path =~ /.csv$/i
+          new_test_cases = ResultFileParser.parse_csv(file.open)
+        else
+          new_test_cases = ResultFileParser.parse_xml(file.open)
+        end
+      rescue => e
+        Rails.logger.error "ERROR in file parsing"
+        Rails.logger.error file.name
+        Rails.logger.error e
+        Rails.logger.error e.backtrace
+        #TODO: Raise error and catch at controller
+      end
 
       new_test_cases.each do |feature, tcs|
         test_cases[feature] ||= {}
@@ -42,6 +54,7 @@ module ReportFactory
     params[:meego_test_sets_attributes] = test_sets
   end
 
+  # TODO: This should be handled with paperclip
   def self.save_result_files(params)
     test_result_files = []
 

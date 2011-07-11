@@ -48,8 +48,8 @@ describe ReportFactory do
       @results2 = { "Feature 1" => @test_cases2, "Feature 3" => @test_cases2 }
 
 
-      
-      ResultFileParser.stub!(:parse_csv).and_return(@results1, @results2)
+      ResultFileParser.stub!(:parse_xml).and_return(@results1)
+      ResultFileParser.stub!(:parse_csv).and_return(@results2)
 
       FileUtils.stub!(:move)
       @report = ReportFactory.create(@report_attributes)

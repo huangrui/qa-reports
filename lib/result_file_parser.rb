@@ -1,8 +1,12 @@
 module ResultFileParser
 
+  def self.parse_xml(io)
+
+  end
+
   def self.parse_csv(io)
     # Skip the title row
-    Rails.logger.info io.gets
+    io.gets
 
     test_cases = {}
     FasterCSV.parse(io, {:col_sep => ','}) do |row|
