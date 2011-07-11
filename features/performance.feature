@@ -1,3 +1,4 @@
+@performance
 Feature: Loading times
   As a service or real user
   I want every request to complete in a reasonable time
