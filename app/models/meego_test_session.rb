@@ -195,13 +195,6 @@ class MeegoTestSession < ActiveRecord::Base
     return filters_exist
   end
 
-  def self.all_lowercase(options = {})
-    options[:conditions].each do |key, value|
-      options[:conditions][key] = value.downcase if value.kind_of? String
-    end
-    all(options)
-  end
-
   class << self
     def by_release_version_target_testset_product(release_version, target, testset, product, order_by = "tested_at DESC, id DESC", limit = nil)
       target    = target.downcase
@@ -231,14 +224,6 @@ class MeegoTestSession < ActiveRecord::Base
       published.where("version_labels.normalized" => release_version.downcase).joins(:version_label).order(order_by).limit(limit)
     end
   end
-
-  ###############################################
-  # List feature tags                           #
-  ###############################################
-  def self.list_targets(release_version)
-    (published.all_lowercase(:select => 'DISTINCT target', :conditions=>{"version_labels.normalized" => release_version}, :include => :version_label).map { |s| s.target.gsub(/\b\w/) { $&.upcase } }).uniq
-  end
-
 
   ###############################################
   # Test session navigation                     #
