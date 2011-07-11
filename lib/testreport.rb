@@ -334,4 +334,19 @@ module ReportSummary
     update_attribute(:has_ft, total_non_nft > 0)
   end
 
+  def calculate_grading
+    if total_cases > 0
+      pass_rate = total_passed * 100 / total_cases
+      if pass_rate < 40
+        1
+      elsif pass_rate < 90
+        2
+      else
+        3
+      end
+    else
+      0
+    end
+  end
+
 end

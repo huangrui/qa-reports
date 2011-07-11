@@ -42,6 +42,10 @@ class Feature < ActiveRecord::Base
     has_ft
   end
 
+  def grading
+    read_attribute(:grading) || calculate_grading
+  end
+
   def nft_cases
     meego_test_cases.select {|tc| tc.has_nft}
   end

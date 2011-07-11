@@ -688,7 +688,6 @@ class MeegoTestSession < ActiveRecord::Base
   def parse_csv_file(filename)
     prev_feature = nil
     test_set     = nil
-    set_counts = {}
     sets       = {}
     total = 0
 
@@ -709,21 +708,13 @@ class MeegoTestSession < ActiveRecord::Base
         prev_feature = feature
       end
 
-      set_counter = if set_counts.has_key? feature
-        set_counts[feature]
-      else
-        set_counts[feature] = Counter.new()
-      end
-
       if passed == "1"
         result = 1
-        set_counter.add_pass_count()
       elsif failed == "1"
         result = -1
       else
         result = 0
       end
-      set_counter.add_total_count()
 
       if summary == ""
         raise "Missing test case name in CSV"
@@ -744,13 +735,6 @@ class MeegoTestSession < ActiveRecord::Base
     #  raise "File didn't contain any test cases"
     #end
 
-    sets.each do |feature, set_model|
-      feature_counter = set_counts[feature]
-      set_model.grading = calculate_grading(
-                  feature_counter.get_pass_count(),
-                  feature_counter.get_total_count()
-      )
-    end
     total
   end
 
@@ -763,9 +747,6 @@ class MeegoTestSession < ActiveRecord::Base
           sets[feature] ||= self.features.build(:name => feature, :has_ft => false)
           set_model = sets[feature]
 
-          pass_count = 0
-          total_count = 0
-
           set.cases.each do |testcase|
             result = MeegoTestSession.map_result(testcase.result)
             prev_tc = prev_session.test_case_by_name(feature, testcase.name) unless prev_session.nil?
@@ -777,8 +758,6 @@ class MeegoTestSession < ActiveRecord::Base
                 :meego_test_session => self,
                 :source_link        => testcase.source_url
             )
-            pass_count += 1 if result == 1
-            total_count += 1
             file_total += 1
             nft_index = 0
             testcase.measurements.each do |m|
@@ -817,7 +796,6 @@ class MeegoTestSession < ActiveRecord::Base
               self.has_ft = true
             end
           end
-          set_model.grading = calculate_grading(pass_count, total_count)
         end
       end
     end
@@ -825,21 +803,6 @@ class MeegoTestSession < ActiveRecord::Base
     #  raise "The XML file didn't contain any test cases"
     #end
     file_total
-  end
-
-  def calculate_grading(pass_count, total_count)
-    if total_count > 0
-      pass_rate = pass_count * 100 / total_count
-      if pass_rate < 40
-        1
-      elsif pass_rate < 90
-        2
-      else
-        3
-      end
-    else
-      0
-    end
   end
 
   def create_version_label
@@ -877,27 +840,3 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
 end
-
-class Counter
-  def initialize()
-    @pass_count = 0
-    @total_count   = 0
-  end
-
-  def add_pass_count()
-    @pass_count += 1
-  end
-
-  def add_total_count()
-    @total_count +=1
-  end
-
-  def get_pass_count()
-    @pass_count
-  end
-
-  def get_total_count()
-    @total_count
-  end
-end
-
