@@ -7,7 +7,7 @@ tr.feature_name
 
 tbody
   - reset_cycle()
-  - @comparison_report.test_cases[feature].each_with_index do |(test_case, test_cases), test_case_index|
+  - @comparison_report.test_cases[feature].sort.each_with_index do |(test_case, test_cases), test_case_index|
     tr id="test_case_#{test_case_index}" class="testcase #{'has_changes' if @comparison_report.result_changed?(feature, test_case)} #{cycle('odd','even')}" style="#{'display:none;' if !@comparison_report.result_changed?(feature, test_case)}"
 
       td.testcase_name= test_case
