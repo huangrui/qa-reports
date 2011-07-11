@@ -50,7 +50,7 @@ class Feature < ActiveRecord::Base
     return @prev_summary unless @prev_summary.nil?
     prevs = meego_test_session.prev_session
     if prevs
-      @prev_summary = prevs.features.find(:first, :conditions => {:feature => feature})
+      @prev_summary = prevs.features.find(:first, :conditions => {:name => name})
     else
       nil
     end
