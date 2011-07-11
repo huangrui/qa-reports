@@ -162,14 +162,6 @@ class MeegoTestSession < ActiveRecord::Base
     result
   end
 
-  def self.targets
-    TargetLabel.find(:all, :order => "sort_order ASC").map &:label
-  end
-
-  def self.release_versions
-    VersionLabel.find(:all, :order => "sort_order ASC").map &:label
-  end
-
   def self.load_case_counts_for_reports!(reports)
     result_counts = MeegoTestCase.select([:meego_test_session_id, :result, :count]).
       where(:meego_test_session_id => reports).group(:meego_test_session_id, :result).count(:result)
@@ -181,10 +173,6 @@ class MeegoTestSession < ActiveRecord::Base
       report.total_cases  = report.total_passed + report.total_failed + report.total_na
       report
     end
-  end
-
-  def self.latest_release_version
-    release_versions[0]
   end
 
   def self.filters_exist?(target, testset, product)
@@ -452,7 +440,7 @@ class MeegoTestSession < ActiveRecord::Base
     else
       label = VersionLabel.find(:first, :conditions => {:normalized => release_version.downcase})
       if not label
-        valid_versions = VersionLabel.versions.join(",")
+        valid_versions = VersionLabel.release_versions.join(",")
         errors.add :release_version, "Incorrect release version '#{release_version}'. Valid ones are #{valid_versions}."
       end
     end

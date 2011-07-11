@@ -187,7 +187,7 @@ class ReportsController < ApplicationController
 
       @report         = @test_session
       @release_versions = VersionLabel.all.map { |release| release.label }
-      @targets = MeegoTestSession.targets
+      @targets = TargetLabel.targets
       @testsets = MeegoTestSession.release(@selected_release_version).testsets
       @product = MeegoTestSession.release(@selected_release_version).popular_products
       @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
@@ -284,7 +284,7 @@ class ReportsController < ApplicationController
 
       @report         = @test_session
       @release_versions = VersionLabel.all.map { |release| release.label }
-      @targets = MeegoTestSession.targets
+      @targets = TargetLabel.targets
       @testsets = MeegoTestSession.release(@selected_release_version).testsets
       @product = MeegoTestSession.release(@selected_release_version).popular_products
       @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids

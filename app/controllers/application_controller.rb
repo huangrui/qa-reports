@@ -28,7 +28,7 @@ class ApplicationController < ActionController::Base
   #protect_from_forgery
 
   def get_meego_versions
-    @meego_releases = MeegoTestSession.release_versions
+    @meego_releases = VersionLabel.release_versions
   end
 
   def get_selected_release_version
