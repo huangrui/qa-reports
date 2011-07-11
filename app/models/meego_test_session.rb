@@ -600,23 +600,6 @@ class MeegoTestSession < ActiveRecord::Base
     # TODO: when report is deleted files should be deleted as well
   end
 
-  def to_csv
-    common_fields = [
-        tested_at.to_date.to_s,
-        release_version,
-        target,
-        testset,
-        product,
-        title
-    ]
-
-    rows          = meego_test_cases.map do |test_case|
-      test_case.feature.name # feature
-      test_case.name # test case name
-      test_case.result # result
-    end
-  end
-
   def import_report(user, published = false)
     user.update_attribute(:default_target, self.target) if self.target.present?
 
