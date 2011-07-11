@@ -9,7 +9,6 @@ td
       strong
         = link_to testset, testset_report_path(@selected_release_version, profile, testset)
       - if compare then
-        - Rails.logger.info('compare = true')
         a.compare href=branch_comparison_path(@selected_release_version, profile, testset_base, comparetype) compare
       ul
         - products.each do |hw|
