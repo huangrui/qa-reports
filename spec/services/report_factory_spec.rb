@@ -1,10 +1,14 @@
 require 'spec_helper'
 require 'report_factory'
-require 'result_file_parser'
 
 describe ReportFactory do
 
   class ResultFile
+
+    # .open calls Kernel.sleep, which makes it a bit painful to stub with rspec
+    def open
+      StringIO.new("foobar")
+    end
   end
 
   describe "a report created with valid attributes" do
@@ -15,6 +19,9 @@ describe ReportFactory do
 
       @result_file1.stub!(:original_filename).and_return("bluetooth.xml")
       @result_file2.stub!(:original_filename).and_return("wlan.csv")
+
+      @result_file1.stub!(:path).and_return("/var/tmp/bluetooth.xml")
+      @result_file2.stub!(:path).and_return("/var/tmp/wlan.csv")
 
       @report_attributes = {
         :release_version => "1.2",
@@ -46,6 +53,8 @@ describe ReportFactory do
 
       FileUtils.stub!(:move)
       @report = ReportFactory.create(@report_attributes)
+      @report.author = stub_model(User)
+      @report.editor = stub_model(User)
     end
 
     it "should be a valid report" do

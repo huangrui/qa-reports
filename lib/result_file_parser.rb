@@ -2,13 +2,13 @@ module ResultFileParser
 
   def self.parse_csv(io)
     # Skip the title row
-    io.gets
+    Rails.logger.info io.gets
 
     test_cases = {}
     FasterCSV.parse(io, {:col_sep => ','}) do |row|
       feature = row[0].toutf8.strip
       name    = row[1].toutf8.strip
-      comment = row[2].toutf8.strip
+      comment = row[2] ? row[2].toutf8.strip : ""
       result  = parse_test_case_result(row[3], row[4], row[5])
 
       test_cases[feature] ||= {}

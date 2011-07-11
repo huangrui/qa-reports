@@ -42,7 +42,7 @@ class MeegoTestSession < ActiveRecord::Base
   attr_accessor :uploaded_files
 
   has_many :meego_test_sets, :dependent => :destroy
-  #has_many :meego_test_cases
+  has_many :meego_test_cases
   has_many :test_result_files, :dependent => :destroy
   has_many :passed, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::PASS}"
   has_many :failed, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::FAIL}"
@@ -55,6 +55,7 @@ class MeegoTestSession < ActiveRecord::Base
 
   validates_presence_of :title, :target, :testtype, :hardware
   #validates_presence_of :uploaded_files, :on => :create
+  #validates_presence_of :author
 
   validates :tested_at, :date_time => true
 
