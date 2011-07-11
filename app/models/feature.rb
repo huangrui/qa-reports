@@ -34,14 +34,6 @@ class Feature < ActiveRecord::Base
   include ReportSummary
   include Graph
 
-  def has_nft?
-    has_nft
-  end
-
-  def has_non_nft?
-    has_ft
-  end
-
   def grading
     read_attribute(:grading) || calculate_grading
   end

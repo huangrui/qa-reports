@@ -141,14 +141,6 @@ class MeegoTestSession < ActiveRecord::Base
     prev_session
   end
 
-  def has_nft?
-    return has_nft
-  end
-
-  def has_non_nft?
-    return has_ft
-  end
-
   def raw_result_files
     FileStorage.new(dir="public/reports", baseurl="/reports/").list_report_files(self)
   end

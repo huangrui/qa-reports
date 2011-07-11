@@ -321,6 +321,14 @@ module ReportSummary
     end
   end
 
+  def has_nft?
+    return has_nft
+  end
+
+  def has_non_nft?
+    return has_ft
+  end
+
   def update_nft_non_nft
     update_has_nft
     update_has_non_nft
