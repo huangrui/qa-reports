@@ -65,23 +65,23 @@ script name="attachment" type="text/x-handlebars-template"
 
 coffee:
   $(document).ready ->
-    testTypeSuggestions = []
-    hardwareSuggestions = []
+    testSetSuggestions = []
+    productSuggestions = []
 
-    updateHardwareSuggestions = (data) ->
-      hardwareSuggestions = data
-      $("#report_test_hardware").autocomplete(source: hardwareSuggestions)
+    updateProductSuggestions = (data) ->
+      productSuggestions = data
+      $("#report_test_product").autocomplete(source: productSuggestions)
       activateSuggestionLinks("div.field")
 
-    updateTestTypeSuggestions = (data) ->
-      testTypeSuggestions = data
-      $("#report_test_type").autocomplete(source: testTypeSuggestions)
+    updateTestSetSuggestions = (data) ->
+      testSetSuggestions = data
+      $("#report_test_type").autocomplete(source: testSetSuggestions)
       activateSuggestionLinks("div.field")
 
-    hardware_url = window.location.pathname.replace("upload","hardware")
-    testtype_url = window.location.pathname.replace("upload","testtype")
-    $.get(hardware_url, updateHardwareSuggestions )
-    $.get(testtype_url, updateTestTypeSuggestions )
+    product_url = window.location.pathname.replace("upload","product")
+    testtype_url = window.location.pathname.replace("upload","testset")
+    $.get(product_url, updateProductSuggestions)
+    $.get(testtype_url, updateTestSetSuggestions)
 
     $(".date").datepicker(
       showOn: "both",

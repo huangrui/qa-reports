@@ -114,6 +114,22 @@ module ReportSummary
     end
   end
 
+  def total_cases=(num)
+    @total_cases = num
+  end
+
+  def total_passed=(num)
+    @total_passed = num
+  end
+
+  def total_failed=(num)
+    @total_failed = num
+  end
+
+  def total_na=(num)
+    @total_na = num
+  end
+
   def total_executed
     total_passed + total_failed
   end
@@ -305,6 +321,14 @@ module ReportSummary
     end
   end
 
+  def has_nft?
+    return has_nft
+  end
+
+  def has_non_nft?
+    return has_ft
+  end
+
   def update_nft_non_nft
     update_has_nft
     update_has_non_nft
@@ -316,6 +340,21 @@ module ReportSummary
 
   def update_has_non_nft
     update_attribute(:has_ft, total_non_nft > 0)
+  end
+
+  def calculate_grading
+    if total_cases > 0
+      pass_rate = total_passed * 100 / total_cases
+      if pass_rate < 40
+        1
+      elsif pass_rate < 90
+        2
+      else
+        3
+      end
+    else
+      0
+    end
   end
 
 end

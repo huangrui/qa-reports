@@ -30,7 +30,14 @@ Feature: REST API
     And I should see "icon_alert.gif" within "#file_attachment_list"
 
   Scenario: Adding a report with tests that do not belong to any feature
-    When the client sends reports "spec/fixtures/no_features.xml" via the REST API to test set "Automated" and hardware "N900"
+    When the client sends reports "spec/fixtures/no_features.xml" via the REST API to test set "Automated" and product "N900"
+    And I should be able to view the created report
+
+    Then I should see "N/A" within ".feature_name"
+    And I should see "8" within "td.total"
+
+  Scenario: Adding a report with tests that do not belong to any feature vie the new API
+    When the client sends reports "spec/fixtures/no_features.xml" via the new REST API to test set "Automated" and product "N900"
     And I should be able to view the created report
 
     Then I should see "N/A" within ".feature_name"
@@ -92,7 +99,7 @@ Feature: REST API
     Then the REST result "ok" is "1"
 
     And I should be able to view the latest created report
-    Then I should see "Hardware: N900"
+    Then I should see "Product: N900"
 
 
   # For the optional parameters, title, build_txt/Build (image), objective_txt (Test Objective), qa_summary_txt/(Quality Summary), issue_summary_txt
@@ -147,3 +154,12 @@ Feature: REST API
     And I should see "Improvement:- Notification UX can be shown now (top bug 5518 is fixed), but new IM message failed to show in notification UI;- Be able to transfer files using Chat;"
     And I should see "New Issue(5):6306 System time setting is wrong for Los Angeles; 6235 VKB in browser does not launch in some text fields; 6043 Mismatched sync service icon and text in Sync Details page; 6055 Sync shared credentials not reflected in Sync Settings main page; 6056 Sync UI intermittent crash after log in"
 
+  Scenario: Getting a list of sessions from API
+    When the client sends file "short1.csv" via the REST API
+    When the client sends file "short2.csv" via the REST API
+    When the client sends file "short3.csv" via the REST API
+    And session "short1.csv" has been modified at "2011-01-01 01:01"
+    And session "short2.csv" has been modified at "2011-02-01 01:01"
+    And session "short3.csv" has been modified at "2011-03-01 01:01"
+    When I download "/api/reports/since/2011-01-10%2012:00"
+    Then resulting JSON should match files "short2.csv" and "short3.csv"

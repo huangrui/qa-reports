@@ -7,9 +7,9 @@
 - content_for :page_content do
   h1
     em
-      = @testtype
+      = @testset
       |  vs.
-      = @comparison_testtype
+      = @comparison_testset
       | :
     = @target
 
@@ -21,17 +21,17 @@
     thead
       tr
         = render :partial => "shared/comparison_result_filter_buttons"
-        th.column_head_1 colspan=@comparison_report.hardwares.length #{@testtype}
+        th.column_head_1 colspan=@comparison_report.products.length #{@testset}
         th.column_head_separate
-        th.column_head_1 colspan=@comparison_report.hardwares.length #{@comparison_testtype}
-      tr.compare_testtype
+        th.column_head_1 colspan=@comparison_report.products.length #{@comparison_testset}
+      tr.compare_testset
         th.first_col
-        - @comparison_report.hardwares.each_with_index do |name, index|
-          th class="column_#{index} column_head_2" #{name.humanize}
+        - @comparison_report.products.each_with_index do |name, index|
+          th class="column_#{index} column_head_2" #{name}
 
         th.column_head_separate_2
-        - @comparison_report.hardwares.each_with_index do |name, index|
-          th class="column_#{index + @comparison_report.hardwares.length} column_head_2" #{name.humanize}
+        - @comparison_report.products.each_with_index do |name, index|
+          th class="column_#{index + @comparison_report.products.length} column_head_2" #{name}
 
     tbody
       = render :partial => "feature", :collection => @comparison_report.features

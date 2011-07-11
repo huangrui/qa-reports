@@ -42,7 +42,12 @@ class ApiController < ApplicationController
 
     data[:tested_at] ||= Time.now
     data[:hardware] ||= data[:hwproduct]
+    data[:product] ||= data[:hardware]
+    data[:testset] ||= data[:testtype]
     data.delete(:hwproduct)
+    data.delete(:testtype)
+    data.delete(:hardware)
+
     begin
       @test_session = MeegoTestSession.new(data)
       @test_session.import_report(current_user, true)
@@ -59,7 +64,7 @@ class ApiController < ApplicationController
       attachments.each { |file|
         files.add_file(@test_session, file, file.original_filename)
       }
-      report_url = url_for :controller => 'reports', :action => 'view', :release_version => data[:release_version], :target => data[:target], :testtype => data[:testtype], :hardware => data[:hardware], :id => @test_session.id
+      report_url = url_for :controller => 'reports', :action => 'view', :release_version => data[:release_version], :target => data[:target], :testset => data[:testset], :product => data[:product], :id => @test_session.id
       render :json => {:ok => '1', :url => report_url}
     rescue ActiveRecord::RecordInvalid => invalid
       error_messages = {}
@@ -91,7 +96,7 @@ class ApiController < ApplicationController
       begin
         @test_session = MeegoTestSession.find(@report_id)
 
-        original_sets = @test_session.meego_test_sets.clone
+        original_sets = @test_session.features.clone
         original_cases = @test_session.meego_test_cases.clone
 
         parse_err = @test_session.update_report_result(current_user, data[:uploaded_files], true)
@@ -106,7 +111,7 @@ class ApiController < ApplicationController
       end
 
       if @test_session.valid?
-        MeegoTestSet.delete(original_sets)
+        Feature.delete(original_sets)
         MeegoTestCase.delete(original_cases)
 
         @test_session.save!
@@ -120,6 +125,17 @@ class ApiController < ApplicationController
       end
       
       render :json => {:ok => '1'}
+    end
+  end
+
+  def sessions_by_interval
+    begin
+      begin_time = DateTime.parse params[:begin_time]
+      sessions = MeegoTestSession.published.where('updated_at > ?', begin_time)
+      hashed_sessions = sessions.map { |s| ReportExporter::hashify_test_session(s) }
+      render :json => hashed_sessions
+    rescue ArgumentError => error
+      render :json => {:ok => '0', :errors => error.message}
     end
   end
 

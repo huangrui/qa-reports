@@ -5,7 +5,7 @@ describe ReportFactory do
 
   class ResultFile
 
-    # .open calls Kernel.sleep, which makes it a bit painful to stub with rspec
+    # .'open' calls Kernel.sleep, which makes it a bit painful to stub with rspec
     def open
       StringIO.new("foobar")
     end
@@ -26,8 +26,8 @@ describe ReportFactory do
       @report_attributes = {
         :release_version => "1.2",
         :target => "Core",
-        :testtype => "Sanity",
-        :hardware => "N900",
+        :testset => "Sanity",
+        :product => "N900",
         :tested_at => "2011-12-30 23:45:59",
         :uploaded_files => [@result_file1, @result_file2]
       }
@@ -74,24 +74,24 @@ describe ReportFactory do
         @report.environment_txt == "* Hardware: N900"
       end
 
-      it "should have three test sets" do
-        @report.meego_test_sets.count.should == 3
+      it "should have three features" do
+        @report.features.count.should == 3
       end
 
       it "should have features 'Feature 1', 'Feature 2', 'Feature 3'" do
-        ["Feature 1", "Feature 2", "Feature 3"].each do |feature|
-          @report.meego_test_sets.map {|set| set.feature }.include?(feature).should == true
+        ["Feature 1", "Feature 2", "Feature 3"].each do |feature_name|
+          @report.features.map {|feature| feature.name }.include?(feature_name).should == true
         end
       end
 
       it "should have five, three and three test cases within Features 1, 2 and 3" do
         {"Feature 1" => 5, "Feature 2" => 3, "Feature 3" => 3}.each do |feature, tc_count|
-          @report.meego_test_sets.by_feature(feature).meego_test_cases.count.should == tc_count
+          @report.features.by_feature(feature).meego_test_cases.count.should == tc_count
         end
       end
 
       it "should have test cases 1-5 within Feature 1" do
-        test_cases = @report.meego_test_sets.by_feature("Feature 1").meego_test_cases
+        test_cases = @report.features.by_feature("Feature 1").meego_test_cases
 
         ["Test Case 1","Test Case 2", "Test Case 3", "Test Case 4", "Test Case 5"].each do |tc_name|
           test_cases.map{|tc| tc.name }.include?(tc_name).should == true
@@ -99,7 +99,7 @@ describe ReportFactory do
       end
 
       it "should have test cases 1-3 within Feature 2" do
-        test_cases = @report.meego_test_sets.by_feature("Feature 2").meego_test_cases
+        test_cases = @report.features.by_feature("Feature 2").meego_test_cases
 
         ["Test Case 1","Test Case 2", "Test Case 3"].each do |tc_name|
           test_cases.map{|tc| tc.name }.include?(tc_name).should == true
@@ -107,7 +107,7 @@ describe ReportFactory do
       end
 
       it "should have test cases 1,4 and 5 within Feature 3" do
-        test_cases = @report.meego_test_sets.by_feature("Feature 3").meego_test_cases
+        test_cases = @report.features.by_feature("Feature 3").meego_test_cases
 
         ["Test Case 1","Test Case 4", "Test Case 5"].each do |tc_name|
           test_cases.map{|tc| tc.name }.include?(tc_name).should == true
@@ -116,7 +116,7 @@ describe ReportFactory do
 
       describe "merged test set 'Feature 1'" do
         it "should contain the result from the latest result file" do
-          test_case = @report.meego_test_sets.by_feature("Feature 1").
+          test_case = @report.features.by_feature("Feature 1").
             meego_test_cases.by_name("Test Case 1")
 
           test_case.result.should == MeegoTestCase::FAIL

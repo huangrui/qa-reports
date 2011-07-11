@@ -30,6 +30,7 @@ require 'cache_helper'
 require 'iconv'
 require 'net/http'
 require 'net/https'
+require 'report_exporter'
 
 module AjaxMixin
   def remove_attachment
@@ -64,7 +65,7 @@ module AjaxMixin
 
     field         = params[:meego_test_session]
     field         = field.keys()[0]
-    @test_session.update_attribute(field, params[:meego_test_session][field])
+    @test_session.send(field + '=', params[:meego_test_session][field])
     @test_session.updated_by(current_user)
     expire_caches_for(@test_session)
     expire_index_for(@test_session)
@@ -79,7 +80,7 @@ module AjaxMixin
 
     field         = params[:meego_test_session]
     field         = field.keys()[0]
-    @test_session.update_attribute(field, params[:meego_test_session][field])
+    @test_session.send(field + '=', params[:meego_test_session][field])
     @test_session.updated_by(current_user)
     expire_caches_for(@test_session)
 
@@ -97,7 +98,7 @@ module AjaxMixin
 
       field         = params[:meego_test_session].keys.first
       logger.warn("Updating #{field} with #{params[:meego_test_session][field]}")
-      @test_session.update_attribute(field, params[:meego_test_session][field])
+      @test_session.send(field + "=", params[:meego_test_session][field])
       @test_session.updated_by(current_user)
 
       expire_caches_for(@test_session)
@@ -131,12 +132,12 @@ module AjaxMixin
   end
 
   def update_feature_comment
-    set_id = params[:id]
+    feature_id = params[:id]
     comments = params[:comment]
-    testset = MeegoTestSet.find(set_id)
-    testset.update_attribute(:comments, comments)
+    feature = Feature.find(feature_id)
+    feature.update_attribute(:comments, comments)
 
-    test_session = testset.meego_test_session
+    test_session = feature.meego_test_session
     test_session.updated_by(current_user)
     expire_caches_for(test_session)
 
@@ -144,12 +145,12 @@ module AjaxMixin
   end
 
   def update_feature_grading
-    set_id = params[:id]
+    feature_id = params[:id]
     grading = params[:grading]
-    testset = MeegoTestSet.find(set_id)
-    testset.update_attribute(:grading, grading)
+    feature = Feature.find(feature_id)
+    feature.update_attribute(:grading, grading)
 
-    test_session = testset.meego_test_session
+    test_session = feature.meego_test_session
     test_session.updated_by(current_user)
     expire_caches_for(test_session)
 
@@ -183,9 +184,10 @@ class ReportsController < ApplicationController
 
       @report         = @test_session
       @release_versions = VersionLabel.all.map { |release| release.label }
-      @targets = MeegoTestSession.targets
-      @testtypes = MeegoTestSession.release(@selected_release_version).testtypes
-      @hardware = MeegoTestSession.release(@selected_release_version).popular_hardwares
+      @targets = TargetLabel.targets
+      @testsets = MeegoTestSession.release(@selected_release_version).testsets
+      @product = MeegoTestSession.release(@selected_release_version).popular_products
+      @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
 
       @raw_result_files = @test_session.raw_result_files
 
@@ -207,8 +209,8 @@ class ReportsController < ApplicationController
                 :id              => report_id,
                 :release_version => test_session.release_version,
                 :target          => test_session.target,
-                :testtype        => test_session.testtype,
-                :hardware       => test_session.hardware
+                :testset        => test_session.testset,
+                :product       => test_session.product
   end
 
   def view
@@ -229,8 +231,8 @@ class ReportsController < ApplicationController
       @history = history(@test_session, 5)
 
       @target    = @test_session.target
-      @testtype  = @test_session.testtype
-      @hardware = @test_session.hardware
+      @testset  = @test_session.testset
+      @product = @test_session.product
 
       @report    = @test_session
       @files = FileStorage.new().list_files(@test_session) or []
@@ -279,9 +281,10 @@ class ReportsController < ApplicationController
 
       @report         = @test_session
       @release_versions = VersionLabel.all.map { |release| release.label }
-      @targets = MeegoTestSession.targets
-      @testtypes = MeegoTestSession.release(@selected_release_version).testtypes
-      @hardware = MeegoTestSession.release(@selected_release_version).popular_hardwares
+      @targets = TargetLabel.targets
+      @testsets = MeegoTestSession.release(@selected_release_version).testsets
+      @product = MeegoTestSession.release(@selected_release_version).popular_products
+      @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
       @no_upload_link = true
       @files = FileStorage.new().list_files(@test_session) or []
       @raw_result_files = @test_session.raw_result_files
@@ -296,14 +299,14 @@ class ReportsController < ApplicationController
     @comparison = ReportComparison.new()
     @release_version = params[:release_version]
     @target = params[:target]
-    @testtype = params[:testtype]
-    @comparison_testtype = params[:comparetype]
-    @compare_cache_key = "compare_page_#{@release_version}_#{@target}_#{@testtype}_#{@comparison_test_type}"
+    @testset = params[:testset]
+    @comparison_testset = params[:comparetype]
+    @compare_cache_key = "compare_page_#{@release_version}_#{@target}_#{@testset}_#{@comparison_testset}"
 
-    MeegoTestSession.published_hwversion_by_release_version_target_test_type(@release_version, @target, @testtype).each{|hardware|
-        left = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @testtype, hardware.hardware).first
-        right = MeegoTestSession.by_release_version_target_test_type_product(@release_version, @target, @comparison_testtype, hardware.hardware).first
-        @comparison.add_pair(hardware.hardware, left, right)
+    MeegoTestSession.published_hwversion_by_release_version_target_testset(@release_version, @target, @testset).each{|product|
+        left = MeegoTestSession.by_release_version_target_testset_product(@release_version, @target, @testset, product.product).first
+        right = MeegoTestSession.by_release_version_target_testset_product(@release_version, @target, @comparison_testset, product.product).first
+        @comparison.add_pair(product.product, left, right)
     }
     @groups = @comparison.groups
     render :layout => "report"
@@ -355,7 +358,7 @@ class ReportsController < ApplicationController
     # Shortcut for accessing the correct report using report ID only
     begin
       s = MeegoTestSession.find(params[:id].to_i)
-      redirect_to :controller => 'reports', :action => 'view', :release_version => s.release_version, :target => s.target, :testtype => s.testtype, :hardware => s.hardware, :id => s.id
+      redirect_to :controller => 'reports', :action => 'view', :release_version => s.release_version, :target => s.target, :testset => s.testset, :product => s.product, :id => s.id
     rescue ActiveRecord::RecordNotFound
       redirect_to :controller => :index, :action => :index
     end
@@ -369,9 +372,9 @@ class ReportsController < ApplicationController
   end
 
   def history(s, cnt)
-    MeegoTestSession.where("(tested_at < '#{s.tested_at}' OR tested_at = '#{s.tested_at}' AND created_at < '#{s.created_at}') AND target = '#{s.target.downcase}' AND testtype = '#{s.testtype.downcase}' AND hardware = '#{s.hardware.downcase}' AND published = 1 AND version_label_id = #{s.version_label_id}").
+    MeegoTestSession.where("(tested_at < '#{s.tested_at}' OR tested_at = '#{s.tested_at}' AND created_at < '#{s.created_at}') AND target = '#{s.target.downcase}' AND testset = '#{s.testset.downcase}' AND product = '#{s.product.downcase}' AND published = 1 AND version_label_id = #{s.version_label_id}").
         order("tested_at DESC, created_at DESC").limit(cnt).
-        includes([{:meego_test_sets => :meego_test_cases}, {:meego_test_cases => :meego_test_set}])
+        includes([{:features => :meego_test_cases}, {:meego_test_cases => :feature}])
   end
 
   def just_published?

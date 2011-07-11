@@ -18,7 +18,7 @@ module ReportFactory
 
   def self.generate_title(params)
     tested_at = DateTime.parse(params[:tested_at]).strftime('%Y-%m-%d')
-    title_values = [params[:target], params[:hardware], params[:testtype], tested_at]
+    title_values = [params[:target], params[:product], params[:testset], tested_at]
     params[:title] ||= "%s Test Report: %s %s %s" % title_values
   end
 
@@ -46,12 +46,12 @@ module ReportFactory
       end
     end
 
-    test_sets = []
+    features = []
     test_cases.each do |feature, test_cases|
-      test_sets << {:feature => feature, :meego_test_cases_attributes => test_cases}
+      features << {:name => feature, :meego_test_cases_attributes => test_cases}
     end
 
-    params[:meego_test_sets_attributes] = test_sets
+    params[:features_attributes] = features
   end
 
   # TODO: This should be handled with paperclip

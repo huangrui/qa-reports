@@ -32,20 +32,21 @@ class UploadController < ApplicationController
   
   def upload_form
     new_report = {}
-    [:release_version, :target, :testtype, :hardware].each do |key| 
+    [:release_version, :target, :testset, :product].each do |key| 
       new_report[key] = params[key] if params[key]
     end
 
     new_report[:release] = new_report[:release].downcase if new_report[:release]
     new_report[:target] ||= new_report[:target].downcase if new_report[:target]
-    new_report[:target] ||= MeegoTestSession.targets.first.downcase
+    new_report[:target] ||= TargetLabel.targets.first.downcase
     @test_session = MeegoTestSession.new(new_report)
     @test_session.version_label = VersionLabel.find_by_label(new_report[:release_version]) || VersionLabel.latest
 
     @release_versions = VersionLabel.in_sort_order.map { |release| release.label }
-    @targets = MeegoTestSession.targets.map {|target| target.downcase}
-    @testtypes = MeegoTestSession.release(@selected_release_version).testtypes
-    @hardware = MeegoTestSession.release(@selected_release_version).popular_hardwares
+    @targets = TargetLabel.targets.map {|target| target.downcase}
+    @testsets = MeegoTestSession.release(@selected_release_version).testsets
+    @product = MeegoTestSession.release(@selected_release_version).popular_products
+    @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
 
     @no_upload_link = true
   end
@@ -96,9 +97,10 @@ class UploadController < ApplicationController
       redirect_to :controller => 'reports', :action => 'preview'
     else
       @release_versions = VersionLabel.all.map { |release| release.label }
-      @targets = MeegoTestSession.targets
-      @testtypes = MeegoTestSession.release(@selected_release_version).testtypes
-      @hardware = MeegoTestSession.release(@selected_release_version).popular_hardwares
+      @targets = TargetLabel.targets
+      @testsets = MeegoTestSession.release(@selected_release_version).testsets
+      @product = MeegoTestSession.release(@selected_release_version).popular_products
+      @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
       render :upload_form
     end
   end
