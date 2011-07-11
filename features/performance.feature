@@ -11,6 +11,7 @@ Feature: Loading times
 
     Given I measure the speed of the test hardware
 
+  @performance
   Scenario: Upload a big report via web form and view it
     Given I am a new, authenticated user
     And I am on the front page
@@ -28,7 +29,7 @@ Feature: Loading times
     And I view the report "1.2/Core/Performance/N990"
     Then the time spent for the "view report" step should be less than 4 seconds
   
-  
+  @performance
   Scenario: Upload bigger reports via API and compare them and load history
     Given I am an user with a REST authentication token
 
