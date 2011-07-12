@@ -28,7 +28,7 @@
               'params': params,
               'onSubmit': function(id, fileName) {
                 $fal = $("#file_attachment_list");
-                $fal.append($('<li id="file_upload'+id+'"><a class="remove_list_item">Remove</a      '+fileName+'  <img src="/images/progress.gif" /> <span id="file_upload' + id + 'ProgressBar"></span></li>'));
+                $fal.append($('<li id="file_upload'+id+'"><a class="remove_list_item">Remove</a>'+fileName+'<img src="/images/progress.gif" /> <span id="file_upload' + id + 'ProgressBar"></span></li>'));
                 $this_element = $fal.children().last();
                 $this_element.click(function() {
                     uploader._handler.cancel(id);
