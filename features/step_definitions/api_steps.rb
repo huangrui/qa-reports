@@ -126,13 +126,12 @@ And /^session "([^"]*)" has been modified at "([^"]*)"$/ do |file, date|
   ActiveRecord::Base.connection.execute("update meego_test_sessions set updated_at = '#{d}' where id = #{tid}")
 end
 
-When /^I download "([^"]*)"$/ do |file|
-  get file
+When /^I download "([^"]*)" with limit "([^"]*)"$/ do |file, limit|
+  get file + '/' + limit
 end
 
-And /^resulting JSON should match files "([^"]*)" and "([^"]*)"$/ do |file1, file2|
+And /^resulting JSON should match file "([^"]*)"$/ do |file1|
   json = ActiveSupport::JSON.decode(response.body)
   json[0]['qa_id'].should == get_testsessionid(file1)
-  json[1]['qa_id'].should == get_testsessionid(file2)
-  json.count.should == 2
+  json.count.should == 1
 end

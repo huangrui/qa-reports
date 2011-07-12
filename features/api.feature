@@ -161,5 +161,5 @@ Feature: REST API
     And session "short1.csv" has been modified at "2011-01-01 01:01"
     And session "short2.csv" has been modified at "2011-02-01 01:01"
     And session "short3.csv" has been modified at "2011-03-01 01:01"
-    When I download "/api/reports/since/2011-01-10%2012:00"
-    Then resulting JSON should match files "short2.csv" and "short3.csv"
+    When I download "/api/reports/since/2011-01-10%2012:00" with limit "1"
+    Then resulting JSON should match file "short2.csv"
