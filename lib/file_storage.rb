@@ -27,7 +27,11 @@ class FileStorage
   def add_file(model, file, name)
     dir = get_directory(model, true)
     target = get_file_path(dir, name)
-    FileUtils.copy(file.path, target)
+    if file.respond_to? :path
+      FileUtils.copy(file.path, target)
+    else
+      File.open(target, 'wb') {|f| f.write( file ) }
+    end
     FileUtils.chmod(0755, target)
   end
 
