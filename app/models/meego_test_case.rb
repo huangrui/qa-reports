@@ -84,20 +84,12 @@ class MeegoTestCase < ActiveRecord::Base
   end
 
   def remove_from_session
-    set_deleted_from_session true
+    update_attribute :deleted, true
   end
 
   def restore_to_session
-    set_deleted_from_session false
+    update_attribute :deleted, false
   end
 
-  private
-
-  def set_deleted_from_session(deleted)
-    update_attribute :deleted, deleted
-
-    meego_test_session.update_nft_non_nft
-    feature.update_nft_non_nft
-  end
 end
 

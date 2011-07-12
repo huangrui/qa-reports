@@ -10,19 +10,13 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110708105356) do
+ActiveRecord::Schema.define(:version => 20110712092001) do
 
   create_table "features", :force => true do |t|
     t.string  "name",                  :default => ""
-    t.integer "total_cases",           :default => 0,     :null => false
-    t.integer "total_pass",            :default => 0,     :null => false
-    t.integer "total_fail",            :default => 0,     :null => false
-    t.integer "total_na",              :default => 0,     :null => false
-    t.integer "meego_test_session_id", :default => 0,     :null => false
+    t.integer "meego_test_session_id", :default => 0,  :null => false
     t.string  "comments",              :default => ""
     t.integer "grading"
-    t.boolean "has_nft",               :default => false, :null => false
-    t.boolean "has_ft",                :default => true,  :null => false
   end
 
   add_index "features", ["meego_test_session_id"], :name => "index_meego_test_sets_on_meego_test_session_id"
@@ -84,12 +78,6 @@ ActiveRecord::Schema.define(:version => 20110708105356) do
     t.datetime "tested_at",                                            :null => false
     t.integer  "author_id",                         :default => 0,     :null => false
     t.integer  "editor_id",                         :default => 0,     :null => false
-    t.integer  "total_cases",                       :default => 0,     :null => false
-    t.integer  "total_pass",                        :default => 0,     :null => false
-    t.integer  "total_fail",                        :default => 0,     :null => false
-    t.integer  "total_na",                          :default => 0,     :null => false
-    t.boolean  "has_nft",                           :default => false, :null => false
-    t.boolean  "has_ft",                            :default => true,  :null => false
     t.integer  "version_label_id",                  :default => 1,     :null => false
     t.string   "build_id",                          :default => ""
   end
