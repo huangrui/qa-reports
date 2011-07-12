@@ -85,13 +85,13 @@ class UploadController < ApplicationController
     # Harmonize file handling between drag'n drop and form upload
     params[:drag_n_drop_attachments].each do |name|
       params[:meego_test_session][:uploaded_files].push( DragnDropUploadedFile.new("public" + name, "rb") )
-    end 
+    end
 
-    @test_session = ReportFactory.create(params[:meego_test_session])
+    @test_session = ReportFactory.new.create(params[:meego_test_session])
     @test_session.author = current_user
     @test_session.editor = current_user
     
-    if @test_session.save
+    if @test_session.errors.empty? and @test_session.save
       session[:preview_id] = @test_session.id
 
       redirect_to :controller => 'reports', :action => 'preview'

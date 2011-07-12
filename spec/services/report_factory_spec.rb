@@ -52,7 +52,7 @@ describe ReportFactory do
       ResultFileParser.stub!(:parse_csv).and_return(@results2)
 
       FileUtils.stub!(:move)
-      @report = ReportFactory.create(@report_attributes)
+      @report = ReportFactory.new.create(@report_attributes)
       @report.author = stub_model(User)
       @report.editor = stub_model(User)
     end

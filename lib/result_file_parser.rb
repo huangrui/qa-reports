@@ -44,13 +44,12 @@ module ResultFileParser
 
   def self.parse_xml_test_case_result(result)
     result_mapping = { 
-      "PASS" => MeegoTestCase::PASS,
-      "FAIL" => MeegoTestCase::FAIL,
-      "NA"   => MeegoTestCase::NA,
-      nil     => MeegoTestCase::NA
+      "pass" => MeegoTestCase::PASS,
+      "fail" => MeegoTestCase::FAIL,
+      "na"   => MeegoTestCase::NA
     }
 
-    result_mapping[result]
+    result_mapping[result.downcase] || MeegoTestCase::NA
   end
 
   def self.parse_csv_test_case_result(pass, fail, na)

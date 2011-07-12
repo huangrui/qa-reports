@@ -1,43 +1,56 @@
 require 'fileutils'
 require 'result_file_parser'
 
-module ReportFactory
+class ReportFactory
 
-  def self.create(params)
-    generate_title(params)
-    parse_result_files(params)
-    save_result_files(params)
+  def create(params)
+    @errors = {}
 
-    test_session = MeegoTestSession.new(params)
-    copy_template_values(test_session)
-    #generate_environment_txt
+    begin
+      generate_title(params)
+      parse_result_files(params)
+      save_result_files(params)
+
+      test_session = MeegoTestSession.new(params)
+      copy_template_values(test_session)
+      #generate_environment_txt
+    rescue
+      test_session = MeegoTestSession.new(params)
+
+      test_session.errors.add(:uploaded_files, "You can only upload files with the extension .xml or .csv")
+      @errors.each do |attribute, message|
+        test_session.errors.add(attribute, message)
+      end
+    end
+
     test_session
   end
 
   private
 
-  def self.generate_title(params)
+  def generate_title(params)
+    params[:tested_at] ||= Time.now
     tested_at = DateTime.parse(params[:tested_at]).strftime('%Y-%m-%d')
     title_values = [params[:target], params[:product], params[:testset], tested_at]
     params[:title] ||= "%s Test Report: %s %s %s" % title_values
   end
 
-  def self.parse_result_files(params)
+  def parse_result_files(params)
     test_cases = {}
+    #raise "No result files" unless params[:uploaded_files]
 
     params[:uploaded_files].each do |file|
-      begin
-        if file.path =~ /.csv$/i
-          new_test_cases = ResultFileParser.parse_csv(file.open)
-        else
-          new_test_cases = ResultFileParser.parse_xml(file.open)
-        end
-      rescue => e
+      if file.original_filename =~ /.csv$/i
+        new_test_cases = ResultFileParser.parse_csv(file.open)
+      elsif file.original_filename =~ /.xml$/i
+        new_test_cases = ResultFileParser.parse_xml(file.open)
+      else
         Rails.logger.error "ERROR in file parsing"
-        Rails.logger.error file.name
+        Rails.logger.error file.original_filename
         Rails.logger.error e
         Rails.logger.error e.backtrace
-        #TODO: Raise error and catch at controller
+        @errors[:uploaded_files] = "You can only upload files with the extension .xml or .csv"
+        raise "You can only upload files with the extension .xml or .csv"
       end
 
       new_test_cases.each do |feature, tcs|
@@ -55,7 +68,7 @@ module ReportFactory
   end
 
   # TODO: This should be handled with paperclip
-  def self.save_result_files(params)
+  def save_result_files(params)
     test_result_files = []
 
     params[:uploaded_files].each do |tmpfile|
@@ -67,7 +80,7 @@ module ReportFactory
     params[:test_result_files_attributes] = test_result_files
   end
 
-  def self.generate_file_destination_path(original_filename)
+  def generate_file_destination_path(original_filename)
     datepart = Time.now.strftime("%Y%m%d")
     dir      = File.join(MeegoTestSession::RESULT_FILES_DIR, datepart)
     FileUtils.mkdir_p(dir)
@@ -76,11 +89,11 @@ module ReportFactory
     path_to_file = File.join(dir, filename)
   end
 
-  def self.sanitize_filename(filename)
+  def sanitize_filename(filename)
     filename.gsub(/[^\w\.\_\-]/, '_')
   end
 
-  def self.copy_template_values(test_session)
+  def copy_template_values(test_session)
     # See if there is a previous report with the same test target and type
     prev = test_session.prev_session
     if prev
@@ -94,7 +107,7 @@ module ReportFactory
     test_session.generate_defaults!
   end
 
-  def self.generate_environment_txt(params)
+  def generate_environment_txt(params)
     params[:environment_txt] ||= "* Hardware: " + params[:hardware]
   end
 end
