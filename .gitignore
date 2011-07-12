@@ -20,3 +20,4 @@ cucumber
 rerun.txt
 .DS_Store
 *~
+*.sublime-project
