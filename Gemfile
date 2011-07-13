@@ -30,7 +30,7 @@ group :development, :test do
   gem 'rspec'
   gem 'rspec-rails'
   gem 'capybara', :git => "https://github.com/jnicklas/capybara.git"
-  gem 'cucumber'
+  gem 'cucumber', '~>0.10.0'
   gem 'rcov', :require => false
   gem 'cucumber-rails'
   gem 'metric_fu', :git => "https://github.com/pyykkis/metric_fu.git"
