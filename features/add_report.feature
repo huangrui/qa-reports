@@ -159,7 +159,7 @@ Feature:
   #    Then I should see "Hardware_32" within ".index_month .odd .report_name"
 
   @selenium
-  Scenario: Add new report with default test case comment
+  Scenario: Add new report with template test case comment
     When I follow "Add report"
     And I select target "Handset", test set "Smokey" and product "n990" with date "2010-02-12"
     And I attach the report "sample.csv"

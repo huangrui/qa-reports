@@ -26,7 +26,7 @@ require 'graph'
 class Feature < ActiveRecord::Base
   belongs_to :meego_test_session
 
-  has_many :meego_test_cases, :autosave => false
+  has_many :meego_test_cases #, :autosave => false
 
   accepts_nested_attributes_for :meego_test_cases
   #after_create :create_test_cases
