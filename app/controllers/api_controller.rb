@@ -130,8 +130,11 @@ class ApiController < ApplicationController
 
   def sessions_by_interval
     begin
-      begin_time = DateTime.parse params[:begin_time]
-      sessions = MeegoTestSession.published.where('updated_at > ?', begin_time).order("updated_at asc").limit(params[:limit_amount])
+      sessions = MeegoTestSession.published.order("updated_at asc").limit(params[:limit_amount])
+      if params.has_key? :begin_time
+        begin_time = DateTime.parse params[:begin_time]
+        sessions = sessions.where('updated_at > ?', begin_time)
+      end
       hashed_sessions = sessions.map { |s| ReportExporter::hashify_test_session(s) }
       render :json => hashed_sessions
     rescue ArgumentError => error

@@ -126,8 +126,8 @@ And /^session "([^"]*)" has been modified at "([^"]*)"$/ do |file, date|
   ActiveRecord::Base.connection.execute("update meego_test_sessions set updated_at = '#{d}' where id = #{tid}")
 end
 
-When /^I download "([^"]*)" with limit "([^"]*)"$/ do |file, limit|
-  get file + '/' + limit
+When /^I download "([^"]*)"$/ do |file|
+  get file
 end
 
 And /^resulting JSON should match file "([^"]*)"$/ do |file1|
