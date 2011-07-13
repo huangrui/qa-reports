@@ -538,20 +538,17 @@ class MeegoTestSession < ActiveRecord::Base
 
     return unless @uploaded_files
 
-    total_cases  = 0
-    self.has_ft  = false
-    self.has_nft = false
-
     @uploaded_files.each do |f|
 
       return if not valid_filename_extension?(f.original_filename)
-      total_cases += parse_result_file(f.path, f.original_filename)
+      self.total_cases += parse_result_file(f.path, f.original_filename)
 
       path_to_file = generate_file_destination_path(f.original_filename)
       File.open(path_to_file, "wb") { |outf| outf.write(f.read) } #saves the uploaded file in server
 
       self.test_result_files.build(:path => path_to_file) #add the new test result file
     end
+
 
     if @uploaded_files.size > 0 and total_cases == 0
       if @uploaded_files.size == 1
@@ -639,7 +636,7 @@ class MeegoTestSession < ActiveRecord::Base
     TestResults.new(File.open(filename)).suites.each do |suite|
       suite.sets.each do |set|
         ReportParser::parse_features(set.feature).each do |feature|
-          sets[feature] ||= self.features.build(:name => feature, :has_ft => false)
+          sets[feature] ||= self.features.build(:name => feature)
           set_model = sets[feature]
 
           set.cases.each do |testcase|
@@ -657,8 +654,6 @@ class MeegoTestSession < ActiveRecord::Base
             nft_index = 0
             testcase.measurements.each do |m|
               tc.has_nft = true
-              set_model.has_nft = true
-              self.has_nft = true
               if m.is_series?
                 outline = self.calculate_outline(m.measurements,m.interval)
                 tc.serial_measurements.build(
@@ -685,10 +680,6 @@ class MeegoTestSession < ActiveRecord::Base
                 )
               end
               nft_index += 1
-            end
-            if nft_index == 0
-              set_model.has_ft = true
-              self.has_ft = true
             end
           end
         end

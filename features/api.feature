@@ -161,5 +161,15 @@ Feature: REST API
     And session "short1.csv" has been modified at "2011-01-01 01:01"
     And session "short2.csv" has been modified at "2011-02-01 01:01"
     And session "short3.csv" has been modified at "2011-03-01 01:01"
-    When I download "/api/reports/since/2011-01-10%2012:00"
-    Then resulting JSON should match files "short2.csv" and "short3.csv"
+    When I download "/api/reports?limit_amount=1&begin_time=2011-01-10%2012:00"
+    Then resulting JSON should match file "short2.csv"
+
+  Scenario: Getting a list of sessions from API without date
+    When the client sends file "short1.csv" via the REST API
+    When the client sends file "short2.csv" via the REST API
+    When the client sends file "short3.csv" via the REST API
+    And session "short1.csv" has been modified at "2011-01-01 01:01"
+    And session "short2.csv" has been modified at "2011-02-01 01:01"
+    And session "short3.csv" has been modified at "2011-03-01 01:01"
+    When I download "/api/reports?limit_amount=1"
+    Then resulting JSON should match file "short1.csv"
