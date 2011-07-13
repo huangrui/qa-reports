@@ -12,7 +12,7 @@ class ReportFactory
       save_result_files(params)
 
       test_session = MeegoTestSession.new(params)
-      build_test_case_association(test_session)
+      build_test_case_associations(test_session)
       copy_template_values(test_session)
       #generate_environment_txt
     rescue ParseError => e
@@ -95,8 +95,8 @@ class ReportFactory
     filename.gsub(/[^\w\.\_\-]/, '_')
   end
 
-  def build_test_case_association(test_session)
-    #TODO: This association could be thrown away
+  def build_test_case_associations(test_session)
+    #TODO: This association could be thrown away and navigated through features
     test_session.features.each do |feature|
       feature.meego_test_cases.each { |tc| tc.meego_test_session = test_session }
     end
