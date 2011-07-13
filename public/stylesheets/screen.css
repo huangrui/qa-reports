@@ -669,7 +669,8 @@ input#report_test_data.file {
 
 .big_btn:hover,
 .small_btn:hover,
-.dialog-delete:hover {
+.dialog-delete:hover,
+#upload_button.draghover {
     background-color: #57257b;
     color: #fff; }
 
