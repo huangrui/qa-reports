@@ -17,9 +17,8 @@ class ReportFactory
     rescue
       test_session = MeegoTestSession.new(params)
 
-      @errors.each do |attribute, message|
-        test_session.errors.add(attribute, message)
-      end
+      #test_session.errors.add(:uploaded_files, "You can only upload files with the extension .xml or .csv")
+      @errors.each { |attribute, message| test_session.errors.add(attribute, message) }
     end
 
     test_session
@@ -44,10 +43,7 @@ class ReportFactory
       elsif file.original_filename =~ /.xml$/i
         new_test_cases = ResultFileParser.parse_xml(file.open)
       else
-        Rails.logger.error "ERROR in file parsing"
-        Rails.logger.error file.original_filename
-        Rails.logger.error e
-        Rails.logger.error e.backtrace
+        Rails.logger.error "ERROR in file parsing: " + file.original_filename
         @errors[:uploaded_files] = "You can only upload files with the extension .xml or .csv"
         raise "You can only upload files with the extension .xml or .csv"
       end
