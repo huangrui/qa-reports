@@ -34,10 +34,8 @@ require 'report_exporter'
 
 module AjaxMixin
   def remove_attachment
-    @preview_id   = params[:id].to_i
-    @test_session = MeegoTestSession.find(@preview_id)
-    files         = FileStorage.new()
-    files.remove_file(@test_session, params[:name])
+    @attachment_id   = params[:id].to_i
+    ReportAttachment.destroy(@attachment_id)
     render :json => {:ok => '1'}
   end
 
@@ -235,7 +233,7 @@ class ReportsController < ApplicationController
       @product = @test_session.product
 
       @report    = @test_session
-      @files = FileStorage.new().list_files(@test_session) or []
+      @files = @test_session.report_attachments
       @raw_result_files = @test_session.raw_result_files
       @editing = false
       @wizard  = false
@@ -257,7 +255,7 @@ class ReportsController < ApplicationController
 
       @report       = @test_session
       @editing      = false
-      @files = FileStorage.new().list_files(@test_session) or []
+      @files = @test_session.report_attachments
       @wizard = false
       @email  = true
 
@@ -286,7 +284,7 @@ class ReportsController < ApplicationController
       @product = MeegoTestSession.release(@selected_release_version).popular_products
       @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
       @no_upload_link = true
-      @files = FileStorage.new().list_files(@test_session) or []
+      @files = @test_session.report_attachments
       @raw_result_files = @test_session.raw_result_files
 
       render :layout => "report"

@@ -54,32 +54,33 @@ class UploadController < ApplicationController
   def upload_report
     raw_filename = env['HTTP_X_FILE_NAME']
     extension = File.extname(raw_filename)
-    fileid = env['HTTP_X_FILE_ID']
-    raw_filename_wo_extension = File.basename(env['HTTP_X_FILE_NAME'], extension)
+    raw_filename_wo_extension = File.basename(raw_filename, extension)
 
     # TODO: Temp files needs to be deleted periodically
     url      = "/reports/tmp/#{raw_filename_wo_extension.parameterize}#{extension}"
     filename = "#{Rails.root}/public#{url}"
 
-    value = env['rack.input'].read()
-    File.open(filename, 'wb') {|f| f.write( value ) }
+    filedata = env['rack.input'].read()
+    File.open(filename, 'wb') {|f| f.write( filedata ) }
+
     render :json => { :ok => '1', :fileid => fileid, :url => url }
   end
 
   def upload_attachment
-    files = FileStorage.new()
-    session = MeegoTestSession.find(params[:id]);
-    value = env['rack.input'].read()
-    files.add_file(session, value, request['qqfile'])
+    file = env['rack.input']
+    file.original_filename = request['qqfile']
+
+    session = MeegoTestSession.find(params[:id])
+    session.report_attachments.create(:attachment => file)
     @editing = true
 
     expire_caches_for(session)
     # full file name of template has to be given because flash uploader can pass header HTTP_ACCEPT: text/*
     # file is not found because render :formats=>[:"text/*"]
-    html_content = render_to_string :partial => 'reports/file_attachment_list.html.slim', :locals => {:report => session, :files => files.list_files(session)}
+    html_content = render_to_string :partial => 'reports/file_attachment_list.html.slim', :locals => {:report => session, :files => session.report_attachments}
     render :json => { :ok => '1', :html_content => html_content}
   end
-  
+
   def upload
     params[:meego_test_session][:uploaded_files] ||= []
     params[:drag_n_drop_attachments] ||= []

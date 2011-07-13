@@ -790,10 +790,9 @@ function handleEditButton() {
     return false;
 }
 
-function removeAttachment(report, fileName, callback) {
+function removeAttachment(attachment, callback) {
     $.post("/ajax_remove_attachment", {
-        id: report,
-        name: fileName
+        id: attachment,
     }, function(data, status){
         if(data.ok==1 && callback!=null) {
             callback.call(this);

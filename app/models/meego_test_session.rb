@@ -44,6 +44,7 @@ class MeegoTestSession < ActiveRecord::Base
   has_many :features, :dependent => :destroy
   has_many :meego_test_cases
   has_many :test_result_files, :dependent => :destroy
+  has_many :report_attachments, :dependent => :destroy
   has_many :passed, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::PASS}"
   has_many :failed, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::FAIL}"
   has_many :na, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::NA}"
