@@ -48,7 +48,7 @@ class CSVResultFileParser
                         :header_converters => :symbol,
                         :skip_blanks => true) do |row|
 
-      [0, 1].each { |field| raise ParseError.new, "Incorrect file format" unless row[field] }
+      [0, 1].each { |field| raise ParseError.new("unknown"), "Incorrect file format" unless row[field] }
 
       feature = row[0].toutf8.strip
       name    = row[1].toutf8.strip

@@ -83,7 +83,7 @@ Feature:
 
     When I follow "Add report"
 
-    And I select target "Core", test set "Smokey" and product "n990"
+    And I select target "Core", test set "Smokey" and product "n990" with date "2010-11-22"
     And I attach the report "empty.csv"
 
     And submit the form at "upload_report_submit"
