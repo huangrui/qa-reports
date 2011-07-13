@@ -17,7 +17,6 @@ class ReportFactory
     rescue
       test_session = MeegoTestSession.new(params)
 
-      test_session.errors.add(:uploaded_files, "You can only upload files with the extension .xml or .csv")
       @errors.each do |attribute, message|
         test_session.errors.add(attribute, message)
       end
