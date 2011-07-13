@@ -1260,7 +1260,7 @@ jQuery(function($) {
             var file_extension = file.name.split('.').pop().toLowerCase();
             var allowed_extensions = ['xml','csv'];
 
-            if (file.fileSize < 1048576 &&
+            if (file.fileSize < 1073741824 &&
                     jQuery.inArray(file_extension, allowed_extensions) != -1) {
 
                 // First succesful drag'n drop, remove template text
