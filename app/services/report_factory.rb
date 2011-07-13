@@ -12,13 +12,12 @@ class ReportFactory
       save_result_files(params)
 
       test_session = MeegoTestSession.new(params)
+      build_test_case_association(test_session)
       copy_template_values(test_session)
       #generate_environment_txt
-    rescue
+    rescue ParseError => e
       test_session = MeegoTestSession.new(params)
-
-      #test_session.errors.add(:uploaded_files, "You can only upload files with the extension .xml or .csv")
-      @errors.each { |attribute, message| test_session.errors.add(attribute, message) }
+      test_session.errors.add(:uploaded_files, e.message)
     end
 
     test_session
@@ -39,13 +38,12 @@ class ReportFactory
 
     params[:uploaded_files].each do |file|
       if file.original_filename =~ /.csv$/i
-        new_test_cases = ResultFileParser.parse_csv(file.open)
+        new_test_cases = CSVResultFileParser.new.parse(file.open)
       elsif file.original_filename =~ /.xml$/i
-        new_test_cases = ResultFileParser.parse_xml(file.open)
+        new_test_cases = XMLResultFileParser.new.parse(file.open)
       else
         Rails.logger.error "ERROR in file parsing: " + file.original_filename
-        @errors[:uploaded_files] = "You can only upload files with the extension .xml or .csv"
-        raise "You can only upload files with the extension .xml or .csv"
+        raise ParseError.new, "You can only upload files with the extension .xml or .csv"
       end
 
       new_test_cases.each do |feature, tcs|
@@ -86,6 +84,12 @@ class ReportFactory
 
   def sanitize_filename(filename)
     filename.gsub(/[^\w\.\_\-]/, '_')
+  end
+
+  def build_test_case_association(test_session)
+    test_session.features.each do |feature|
+      feature.meego_test_cases.each { |tc| tc.meego_test_session = test_session }
+    end
   end
 
   def copy_template_values(test_session)

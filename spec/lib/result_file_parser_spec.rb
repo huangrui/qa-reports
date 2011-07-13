@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'result_file_parser'
 
-describe ResultFileParser do
+describe "ResultFileParsers" do
 
   ###############################
   # XML PARSER
@@ -161,7 +161,7 @@ END
       # }
 
       # Usage: @test_cases["Feature"]["Testcase"][:field]
-      @test_cases = ResultFileParser.parse_xml(StringIO.new(@xml_result_file))
+      @test_cases = XMLResultFileParser.new.parse(StringIO.new(@xml_result_file))
     end
 
     it "should have two features" do
@@ -333,7 +333,7 @@ END
       # }
 
       # Usage: @test_cases["Feature"]["Testcase"][:field]
-      @test_cases = ResultFileParser.parse_csv(StringIO.new(@csv_result_file))
+      @test_cases = CSVResultFileParser.new.parse(StringIO.new(@csv_result_file))
     end
 
     it "should have two features" do
