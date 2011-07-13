@@ -5,7 +5,7 @@ gem 'mysql2'
 gem 'nokogiri'
 gem 'devise', '1.1.9'
 gem 'fastercsv'
-gem 'rack', :git => "https://github.com/rack/rack.git" # Use next release when available
+#gem 'rack', :git => "https://github.com/rack/rack.git" # Use next release when available
 gem "will_paginate"
 gem 'slim'
 gem 'paperclip'
