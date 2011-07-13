@@ -22,7 +22,7 @@
         params[sessionkey] = encodeURIComponent(encodeURIComponent('#{u cookies[session_key]}'));
 
         $(document).ready(function() {
-            uploader = new qq.FileUploaderBasic({
+            var uploader = new qq.FileUploaderBasic({
                 'button': $('#upload_button')[0],
                 'element': $('#drag_drop_area')[0],
                 'action': '/upload_attachment/',
@@ -47,12 +47,12 @@
                     $("#file_attachment_list_ready").html(response.html_content)
                 }
             });
-            dragenter = function (event) {
+            var dragenter = function (event) {
               $('#upload_button').addClass('draghover');
               $('#drag_drop_area').addClass('draghover');
               return false;
             };
-            dragleave = function (event) {
+            var dragleave = function (event) {
               $('#upload_button').removeClass('draghover');
               $('#drag_drop_area').removeClass('draghover');
               return false;
