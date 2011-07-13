@@ -23,15 +23,20 @@ module ResultFileParser
   end
 
   def self.parse_csv(io)
-    # Skip the title row
-    io.gets
+    #TODO: Field names should be harmonized with result.xml
 
     test_cases = {}
-    FasterCSV.parse(io, {:col_sep => ','}) do |row|
-      feature = row[0].toutf8.strip
-      name    = row[1].toutf8.strip
-      comment = row[2] ? row[2].toutf8.strip : ""
-      result  = parse_csv_test_case_result(row[3], row[4], row[5])
+
+    FasterCSV.parse(io, :col_sep => ',',
+                        :headers           => true,
+                        :header_converters => :symbol) do |row|
+
+      [:category, :check_points].each { |field| raise "Incorrect file format" unless row[field] }
+
+      feature = row[:category].toutf8.strip
+      name    = row[:check_points].toutf8.strip
+      comment = row[:notes_bugs] ? row[:notes_bugs].toutf8.strip : ""
+      result  = parse_csv_test_case_result(row[:pass], row[:fail], row[:na])
 
       test_cases[feature] ||= {}
       test_cases[feature][name] = {:name => name, :result => result, :comment => comment}

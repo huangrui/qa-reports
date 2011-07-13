@@ -10,15 +10,6 @@ describe ResultFileParser do
 
     before(:each) do
 
-      @csv_result_file = <<-END
-        Feature,Test case,Notes (bugs),Pass,Fail,N/A
-        Feature 1,Test Case 1,comment 1: OK,1,0,0
-        Feature 1,Test Case 2,comment 2: FAIL,0,1,0
-        Feature 2,Test Case 3,comment 3: NA,,,1
-        Feature 2,Test Case 4,comment 4: FAIL,0,1,0
-        Feature 1,Test Case 5,comment 5: FAIL,0,1,0
-      END
-
       @xml_result_file = <<-END
 <?xml version="1.0" encoding="UTF-8"?>
   <testresults version="1.0" environment="hardware" hwproduct="RX-71" hwbuild="0720">
@@ -320,13 +311,13 @@ END
 
     before(:each) do
       @csv_result_file = <<-END
-        Feature,Test case,Notes (bugs),Pass,Fail,N/A
-        Feature 1,Test Case 1,comment 1: OK,1,0,0
-        Feature 1,Test Case 2,comment 2: FAIL,0,1,0
-        Feature 2,Test Case 3,comment 3: NA,,,1
-        Feature 2,Test Case 4,comment 4: FAIL,0,1,0
-        Feature 1,Test Case 5,comment 5: FAIL,0,1,0
-      END
+Category,Check points,Notes (bugs),Pass,Fail,N/A
+Feature 1,Test Case 1,comment 1: OK,1,0,0
+Feature 1,Test Case 2,comment 2: FAIL,0,1,0
+Feature 2,Test Case 3,comment 3: NA,,,1
+Feature 2,Test Case 4,comment 4: FAIL,0,1,0
+Feature 1,Test Case 5,comment 5: FAIL,0,1,0
+END
 
       # Result format is
       # { "Feature 1" => {
