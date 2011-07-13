@@ -54,7 +54,7 @@ class MeegoTestSession < ActiveRecord::Base
   belongs_to :version_label, :class_name => "VersionLabel", :foreign_key => "version_label_id"
 
   validates_presence_of :title, :target, :testset, :product
-  #validates_presence_of :uploaded_files, :on => :create
+  validates_presence_of :uploaded_files #, :on => :create
   validates_presence_of :author
 
   validates :tested_at, :date_time => true

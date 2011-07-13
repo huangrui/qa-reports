@@ -43,7 +43,11 @@ class ReportFactory
       if file.original_filename =~ /.csv$/i
         new_test_cases = CSVResultFileParser.new.parse(file.open)
       elsif file.original_filename =~ /.xml$/i
-        new_test_cases = XMLResultFileParser.new.parse(file.open)
+        begin
+          new_test_cases = XMLResultFileParser.new.parse(file.open)
+        rescue Nokogiri::XML::SyntaxError => e
+          raise ParseError.new(file.original_filename), file.original_filename + ": " + e.message
+        end
       else
         raise ParseError.new(file.original_filename), "You can only upload files with the extension .xml or .csv"
       end

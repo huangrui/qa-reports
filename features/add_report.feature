@@ -111,7 +111,7 @@ Feature:
 
     And submit the form at "upload_report_submit"
 
-    Then I should see "Incorrect file format"
+    Then I should see "invalid.xml: Opening and ending tag mismatch: site line 3 and suite"
 
   Scenario: Try to submit without uploading a file
 
