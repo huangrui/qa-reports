@@ -1,58 +1,71 @@
 - if (@files != nil && @files.length > 0) || @editing
-  h2#attachments Attachments
+ div#drag_drop_area
+    h2#attachments Attachments
 
-  ul#file_attachment_list class="item_list attachment #{'editing' if @editing}"
-    span#file_attachment_list_ready
-        = render :partial => "reports/file_attachment_list", :locals => {:report => @report, :files => @files || []}
+    ul#file_attachment_list class="item_list attachment #{'editing' if @editing}"
+      span#file_attachment_list_ready
+          = render :partial => "reports/file_attachment_list", :locals => {:report => @report, :files => @files || []}
 
-  - if @editing
-    span#drag_drop_area
-      a#upload_button.small_btn + Add attachment (or drag here)
-      br
+    - if @editing
+        a#upload_button.small_btn + Add attachment (or drag here)
+        br style="clear: both;"
 
-  - session_key = Rails.application.config.session_options[:key]
+    - session_key = Rails.application.config.session_options[:key]
 
-  javascript:
-      var csrf_token = encodeURIComponent(encodeURIComponent($('meta[name=csrf-token]').attr('content')));
-      var csrf_param = $('meta[name=csrf-param]').attr('content');
-      var sessionkey = '#{session_key}';
-      var params = {}
-      params['id'] = '#{@test_session.id}';
-      params[csrf_token] = csrf_param;
-      params[sessionkey] = encodeURIComponent(encodeURIComponent('#{u cookies[session_key]}'));
+    javascript:
+        var csrf_token = encodeURIComponent(encodeURIComponent($('meta[name=csrf-token]').attr('content')));
+        var csrf_param = $('meta[name=csrf-param]').attr('content');
+        var sessionkey = '#{session_key}';
+        var params = {}
+        params['id'] = '#{@test_session.id}';
+        params[csrf_token] = csrf_param;
+        params[sessionkey] = encodeURIComponent(encodeURIComponent('#{u cookies[session_key]}'));
 
-      $(document).ready(function() {
-          uploader = new qq.FileUploaderBasic({
-              'button': $('#upload_button')[0],
-              'element': $('#drag_drop_area')[0],
-              'action': '/upload_attachment/',
-              'debug': false,
-              'params': params,
-              'onSubmit': function(id, fileName) {
-                $('#upload_button').removeClass('draghover');
-                $fal = $("#file_attachment_list");
-                $fal.append($('<li id="file_upload'+id+'"><a class="remove_list_item">Remove</a>'+fileName+'<img src="/images/progress.gif" /> <span id="file_upload' + id + 'ProgressBar"></span></li>'));
-                $this_element = $fal.children().last();
-                $this_element.click(function() {
-                    uploader._handler.cancel(id);
-                    $this_element.remove();
-                });
-              },
-              'onProgress' : function(id, fileName, loaded, total) {
-                  $('#file_upload' + id + 'ProgressBar').text((loaded/total*100).toFixed(0) + "%");
-              },
-              'onComplete': function(id, fileName, response) {
-                  $('#file_upload' + id).remove();
-                  $("#file_attachment_list_ready").html(response.html_content)
-              }
-          });
-          dragenter = function () {
-            $('#upload_button').addClass('draghover');
-          };
-          dragleave = function () {
-            $('#upload_button').removeClass('draghover');
-          };
-          $('#drag_drop_area').bind('dragenter', dragenter)
-                              .bind('dragover', dragenter)
-                              .bind('dragleave', dragleave);
-      });
+        $(document).ready(function() {
+            uploader = new qq.FileUploaderBasic({
+                'button': $('#upload_button')[0],
+                'element': $('#drag_drop_area')[0],
+                'action': '/upload_attachment/',
+                'debug': false,
+                'params': params,
+                'onSubmit': function(id, fileName) {
+                  $('#upload_button').removeClass('draghover');
+                  $('#drag_drop_area').removeClass('draghover');
+                  $fal = $("#file_attachment_list");
+                  $fal.append($('<li id="file_upload'+id+'"><a class="remove_list_item">Remove</a>'+fileName+'<img src="/images/progress.gif" /> <span id="file_upload' + id + 'ProgressBar"></span></li>'));
+                  $this_element = $fal.children().last();
+                  $this_element.click(function() {
+                      uploader._handler.cancel(id);
+                      $this_element.remove();
+                  });
+                },
+                'onProgress' : function(id, fileName, loaded, total) {
+                    $('#file_upload' + id + 'ProgressBar').text((loaded/total*100).toFixed(0) + "%");
+                },
+                'onComplete': function(id, fileName, response) {
+                    $('#file_upload' + id).remove();
+                    $("#file_attachment_list_ready").html(response.html_content)
+                }
+            });
+            dragenter = function (event) {
+              $('#upload_button').addClass('draghover');
+              $('#drag_drop_area').addClass('draghover');
+              return false;
+            };
+            dragleave = function (event) {
+              $('#upload_button').removeClass('draghover');
+              $('#drag_drop_area').removeClass('draghover');
+              return false;
+            };
+            $('#drag_drop_area').bind('dragenter', dragenter)
+                                .bind('dragover', dragenter)
+                                .bind('dragleave', dragleave)
+                                .bind('drop', function (event) {
+                                  console.log(event);
+                                  if(event.preventDefault) {
+                                    event.preventDefault();
+                                  }
+                                  uploader._uploadFileList(event.originalEvent.dataTransfer.files);
+                                  return false;
+                                });
+        });
