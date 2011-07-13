@@ -13,6 +13,7 @@ gem 'coffee-script'
 gem 'therubyracer', '0.9.0beta3', :require => false
 gem 'rest-client', :require => 'rest_client'
 gem 'activerecord-import'
+gem "rake", "0.8.7"
 
 group :production do
   gem 'newrelic_rpm'
@@ -25,7 +26,7 @@ group :development do
   gem 'watchr'
 end
 
-group :development, :test do 
+group :development, :test do
   gem 'launchy'
   gem 'rspec'
   gem 'rspec-rails'
