@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 
 gem 'rails', '~>3.0.9'
-gem 'mysql2'
+gem 'mysql2', '~>0.2.11' # 0.3 branch only works with rails 3.1
 gem 'nokogiri'
 gem 'devise', '1.1.9'
 gem 'fastercsv'
@@ -29,10 +29,10 @@ group :development, :test do
   gem 'launchy'
   gem 'rspec'
   gem 'rspec-rails'
-  gem 'capybara', :git => "https://github.com/jnicklas/capybara.git"
+  gem 'capybara', '0.4.1.2'
   gem 'cucumber', '~>0.10.0'
   gem 'rcov', :require => false
-  gem 'cucumber-rails'
+  gem 'cucumber-rails', '~> 0.3.2' #newer ones fail
   gem 'metric_fu', :git => "https://github.com/pyykkis/metric_fu.git"
   gem 'database_cleaner'
 end
