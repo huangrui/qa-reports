@@ -3,7 +3,7 @@ require 'result_file_parser'
 
 class ReportFactory
 
-  def create(params)
+  def build(params)
     @errors = {}
 
     begin

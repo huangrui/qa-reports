@@ -89,7 +89,7 @@ class UploadController < ApplicationController
       params[:meego_test_session][:uploaded_files].push( DragnDropUploadedFile.new("public" + name, "rb") )
     end
 
-    @test_session = ReportFactory.new.create(params[:meego_test_session])
+    @test_session = ReportFactory.new.build(params[:meego_test_session])
     @test_session.author = current_user
     @test_session.editor = current_user
     

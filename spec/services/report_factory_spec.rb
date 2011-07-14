@@ -11,7 +11,7 @@ describe ReportFactory do
     end
   end
 
-  describe "a report created with valid attributes" do
+  describe "a report build with valid attributes" do
     before(:each) do
 
       @result_file1 = ResultFile.new
@@ -58,7 +58,7 @@ describe ReportFactory do
       @csv_parser.stub!(:parse).and_return(@results2)
 
       FileUtils.stub!(:move)
-      @report = ReportFactory.new.create(@report_attributes)
+      @report = ReportFactory.new.build(@report_attributes)
       @report.author = stub_model(User)
       @report.editor = stub_model(User)
     end
@@ -67,7 +67,7 @@ describe ReportFactory do
       @report.should be_valid
     end
 
-    describe "the created report" do
+    describe "the report" do
       before(:each) do
         @report.save!
       end
