@@ -41,7 +41,7 @@ Then /I should see the imported test cases from "([^"]*)" in the exported CSV.$/
   (input - mapped_result).should be_empty
 end
 
-When /I view the report "([^"]*)"$/ do |report_string|
+When /^(?:|I )(?:|return to )view the report "([^"]*)"$/ do |report_string|
   version, target, test_type, product = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
    {"version_labels.normalized" => version, :target => target, :product => product, :testset => test_type}, :include => :version_label,
@@ -104,8 +104,8 @@ When /^I click to delete the report$/ do
   When "I follow \"delete-button\" within \"#edit_report\""
 end
 
-When /^(?:|I )click the element "([^"]*)" for the test case "([^"]*)"$/ do |element, test_case|
-  find(:xpath, "//tr[contains(.,'#{test_case}')]").find(element).click
+And /there should not be a test case "([^"]*)"$/ do |testcase|
+  And %{I should not see "#{testcase}" within ".detailed_results"}
 end
 
 When /^(?:|I )should see "([^"]*)" within the test case "([^"]*)"$/ do |text, test_case|
