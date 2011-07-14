@@ -669,9 +669,14 @@ input#report_test_data.file {
 
 .big_btn:hover,
 .small_btn:hover,
-.dialog-delete:hover {
+.dialog-delete:hover,
+#upload_button.draghover {
     background-color: #57257b;
     color: #fff; }
+
+.draghover {
+    background-color: #bce9ae;
+}
 
 .big_btn:active,
 .small_btn:active,
@@ -2120,4 +2125,9 @@ div.uploadify_button_wrapper a.hover {
 div.uploadify_object_wrapper {
     position:relative;
     z-index:10;
+}
+
+div#drag_drop_area {
+    padding-bottom: 20px;
+    margin-bottom: -20px;
 }

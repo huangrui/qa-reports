@@ -1,11 +1,11 @@
 source 'http://rubygems.org'
 
-gem 'rails'
+gem 'rails', '3.0.7'
 gem 'mysql2'
 gem 'nokogiri'
 gem 'devise', '1.1.9'
 gem 'fastercsv'
-gem 'rack', :git => "https://github.com/rack/rack.git" # Use next release when available
+#gem 'rack', :git => "https://github.com/rack/rack.git" # Use next release when available
 gem "will_paginate"
 gem 'slim'
 gem 'paperclip'
@@ -13,6 +13,7 @@ gem 'coffee-script'
 gem 'therubyracer', '0.9.0beta3', :require => false
 gem 'rest-client', :require => 'rest_client'
 gem 'activerecord-import'
+gem "rake", "0.8.7"
 
 group :production do
   gem 'newrelic_rpm'
@@ -24,12 +25,12 @@ group :development do
   gem 'capistrano-ext'
 end
 
-group :development, :test do 
+group :development, :test do
   gem 'launchy'
   gem 'rspec'
   gem 'rspec-rails'
   gem 'capybara', :git => "https://github.com/jnicklas/capybara.git"
-  gem 'cucumber'
+  gem 'cucumber', '~>0.10.0'
   gem 'rcov', :require => false
   gem 'cucumber-rails'
   gem 'metric_fu', :git => "https://github.com/pyykkis/metric_fu.git"

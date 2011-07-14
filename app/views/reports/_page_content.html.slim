@@ -33,12 +33,12 @@
     = render :partial => 'editable_text', :locals => {:anchor => 'environment', :title => "Test Environment", :field => 'environment'}
     = render :partial => 'editable_text', :locals => {:anchor => 'qa_summary', :title => "Quality Summary", :field => 'qa_summary'}
     = render :partial => 'reports/test_results'
-    
+
     = yield :result_edit_notification
-    
+
     - if @test_session.has_non_nft?
       h2#detailed_results
-        | Detailed Test Results 
+        | Detailed Test Results
         small
           a href=url_for(:controller=>'csv_export', :action=>'export_report', :release_version=>@test_session.release_version, :target=>@test_session.target, :testset=>@test_session.testset, :product=>@test_session.product, :id=>@test_session.id) Download as CSV
         span.heading_actions= back_to_top

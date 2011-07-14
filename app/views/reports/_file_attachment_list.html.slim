@@ -1,5 +1,5 @@
 - files.each_with_index do |file, index|
   li id="attachment_#{index}"
     - if @editing
-      a.remove_list_item href="#" onclick="if(confirm('Do you really want to remove \'#{file.attachment_file_name}\'?'))removeAttachment(#{file.id}, function(){ $('#attachment_#{index}').hide();}); return false;" Remove
+      a.remove_list_item href="#" onclick="removeAttachment(#{file.id}, function(){ $('#attachment_#{index}').hide();}); return false;" Remove
     a href=file.pretty_url target="_blank" =file.attachment_file_name
