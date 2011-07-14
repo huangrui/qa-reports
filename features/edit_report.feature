@@ -98,7 +98,7 @@ Feature: Edit Report
     And I follow "See all"
     And I click the delete button for case "SMOKE-SIM-Get_IMSI"
     And I click the delete button for case "SMOKE-SIM-Query_SIM_card_status"
-    And I click the delete button for case "SMOKE-SIM-Query_Service_Provider_name"	
+    And I click the delete button for case "SMOKE-SIM-Query_Service_Provider_name"
     And I click the delete button for case "SMOKE-SIM-Read_HPLMN"
     And I click the delete button for case "SMOKE-SIM-Get_Languages"
     And I click the delete button for case "SMOKE-SIM-Get_PIN_state"
