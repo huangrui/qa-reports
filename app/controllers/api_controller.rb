@@ -59,6 +59,7 @@ class ApiController < ApplicationController
 
     begin
       @test_session.save!
+      @test_session.update_attribute(:published, true)
 
       #TODO: Use PaperClip
       files = FileStorage.new()
