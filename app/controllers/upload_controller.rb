@@ -52,6 +52,7 @@ class UploadController < ApplicationController
   end
 
   def upload_report
+    fileid = env['HTTP_X_FILE_ID']
     raw_filename = env['HTTP_X_FILE_NAME']
     extension = File.extname(raw_filename)
     raw_filename_wo_extension = File.basename(raw_filename, extension)
