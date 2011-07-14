@@ -40,7 +40,6 @@ class ApiController < ApplicationController
       return
     end
 
-    data[:tested_at] ||= Time.now
     data[:hardware] ||= data[:hwproduct]
     data[:product] ||= data[:hardware]
     data[:testset] ||= data[:testtype]
@@ -49,8 +48,9 @@ class ApiController < ApplicationController
     data.delete(:hardware)
 
     begin
-      @test_session = MeegoTestSession.new(data)
-      @test_session.import_report(current_user, true)
+      @test_session = ReportFactory.new.build(data)
+      @test_session.author = current_user
+      @test_session.editor = current_user
 
     rescue ActiveRecord::UnknownAttributeError => error
       render :json => {:ok => '0', :errors => error.message}
@@ -60,6 +60,7 @@ class ApiController < ApplicationController
     begin
       @test_session.save!
 
+      #TODO: Use PaperClip
       files = FileStorage.new()
       attachments.each { |file|
         files.add_file(@test_session, file, file.original_filename)
