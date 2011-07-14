@@ -51,19 +51,18 @@ class ApiController < ApplicationController
     begin
       @test_session = MeegoTestSession.new(data)
       @test_session.import_report(current_user, true)
-
     rescue ActiveRecord::UnknownAttributeError => error
       render :json => {:ok => '0', :errors => error.message}
       return
     end
 
+    attachments.each do |file|
+      @test_session.report_attachments.build(:attachment => file)
+    end
+
     begin
       @test_session.save!
 
-      files = FileStorage.new()
-      attachments.each { |file|
-        files.add_file(@test_session, file, file.original_filename)
-      }
       report_url = url_for :controller => 'reports', :action => 'view', :release_version => data[:release_version], :target => data[:target], :testset => data[:testset], :product => data[:product], :id => @test_session.id
       render :json => {:ok => '1', :url => report_url}
     rescue ActiveRecord::RecordInvalid => invalid
