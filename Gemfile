@@ -29,6 +29,7 @@ group :development, :test do
   gem 'launchy'
   gem 'rspec'
   gem 'rspec-rails'
+  gem 'rspec_junit_formatter', "~> 0.1.0"
   gem 'capybara', '0.4.1.2'
   gem 'cucumber', '~>0.10.0'
   gem 'rcov', :require => false
