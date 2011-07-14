@@ -9,7 +9,7 @@ class XMLResultFileParser
     sets = doc.css('set')
 
     sets.each do | set |
-      feature = set['feature'] || ""
+      feature = set['feature'] || "N/A"
 
       set.css('case').each do |test_case|
         name    = test_case['name'] || ""
@@ -50,7 +50,7 @@ class CSVResultFileParser
 
       [0, 1].each { |field| raise ParseError.new("unknown"), "Incorrect file format" unless row[field] }
 
-      feature = row[0].toutf8.strip
+      feature = row[0] ? row[0].toutf8.strip : "N/A"
       name    = row[1].toutf8.strip
       comment = row[2] ? row[2].toutf8.strip : ""
       result  = parse_test_case_result(row[:pass], row[:fail], row[:na])
