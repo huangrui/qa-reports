@@ -1,13 +1,12 @@
 Feature: Edit Report
 
   Background:
-    Given I am a new, authenticated user
-    And I have created the "1.1/Core/Sanity/Aava" report using "short-sim.csv"
+    Given the report for "short-sim.csv" exists on the service
+    And I am a new, authenticated user
 
   @selenium
   Scenario: Add and view a test case attachment for existing report
-    When I view the report "1.1/Core/Sanity/Aava"
-    And I click to edit the report
+    When I edit the report "1.2/Core/automated/N900"
 
     When I click the element ".testcase_notes" for the test case "SMOKE-SIM-Get_IMSI"
     And I attach the file "attachment.txt" to test case "SMOKE-SIM-Get_IMSI"
@@ -20,8 +19,7 @@ Feature: Edit Report
 
   @selenium
   Scenario: Add and remove a test case attachment from existing report
-    When I view the report "1.1/Core/Sanity/Aava"
-    And I click to edit the report
+    When I edit the report "1.2/Core/automated/N900"
 
     When I click the element ".testcase_notes" for the test case "SMOKE-SIM-Get_IMSI"
     And I attach the file "short1.csv" to test case "SMOKE-SIM-Get_IMSI"
@@ -38,8 +36,7 @@ Feature: Edit Report
 
   @selenium
   Scenario: Edit title
-    When I view the report "1.1/Core/Sanity/Aava"
-    And I click to edit the report
+    When I edit the report "1.2/Core/automated/N900"
     And I click the element "h1"
     And fill in "meego_test_session[title]" with "Test title" within "h1"
     And I press "Save"
@@ -50,7 +47,7 @@ Feature: Edit Report
 #  XXX: Temporarily commented out. For some reason doesn't work via Selenium, but works when tested manually
 #  @selenium
 #  Scenario: Edit test execution date
-#    When I view the report "1.1/Core/Sanity/Aava"
+#    When I view the report "1.2/Core/automated/N900"
 #    And I click to edit the report
 #    And I click the element ".editable_date"
 #    And fill in "meego_test_session[tested_at]" with "2011-1-1" within "#upload_report"
@@ -60,8 +57,7 @@ Feature: Edit Report
 
   @selenium
   Scenario: Edit test objective
-    When I view the report "1.1/Core/Sanity/Aava"
-    And I click to edit the report
+    When I edit the report "1.2/Core/automated/N900"
     And I click the element "#test_objective"
     And fill in "meego_test_session[objective_txt]" within ".editable_area" with:
       """
@@ -76,8 +72,7 @@ Feature: Edit Report
 
   @selenium
   Scenario: Create a dynamic link to bugzilla
-    When I view the report "1.1/Core/Sanity/Aava"
-    And I click to edit the report
+    When I edit the report "1.2/Core/automated/N900"
     And I click the element "#test_objective"
     And fill in "meego_test_session[objective_txt]" with "* [[9353]]" within ".editable_area"
     And I press "Save"
@@ -87,16 +82,16 @@ Feature: Edit Report
 
   @selenium
   Scenario: I delete a test case
-    When I edit the report "1.1/Core/Sanity/Aava"
+    When I edit the report "1.2/Core/automated/N900"
     And I delete the test case "SMOKE-SIM-Get_IMSI"
     
-    Then I return to view the report "1.1/Core/Sanity/Aava"
+    Then I return to view the report "1.2/Core/automated/N900"
     And there should not be a test case "SMOKE-SIM-Get_IMSI"
 
   @selenium
    Scenario: I delete all test cases
-     When I edit the report "1.1/Core/Sanity/Aava"
+     When I edit the report "1.2/Core/automated/N900"
      And delete all test cases
 
-     Then I return to view the report "1.1/Core/Sanity/Aava"
+     Then I return to view the report "1.2/Core/automated/N900"
      Then the report should not contain a detailed test results section

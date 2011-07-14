@@ -1,9 +1,9 @@
 Feature: Manage reports
 
   Background:
-    Given I am a new, authenticated user
-    And I have created the "1.1/Core/Sanity/Aava" report
-    When I view the report "1.1/Core/Sanity/Aava"
+    Given the report for "sample.csv" exists on the service
+    And I am a new, authenticated user
+    When I view the report "1.2/Core/automated/N900"
 
   @smoke
   Scenario: Viewing a report
@@ -32,7 +32,7 @@ Feature: Manage reports
     And I should see "Test Objective" within ".editable_text #test_objective"
 
   Scenario: Deleting a report    
-    When I view the report "1.1/Core/Sanity/Aava"
+    When I view the report "1.2/Core/automated/N900"
     And I click to delete the report
 
     Then I should see "Are you sure you want to delete"
@@ -41,4 +41,4 @@ Feature: Manage reports
     When I click to print the report
 
     Then I should see "Click here to view this message in your browser or handheld device" within ".report-backlink"
-    And the link "Click here" within ".report-backlink" should point to the report "1.1/Core/Sanity/Aava"
+    And the link "Click here" within ".report-backlink" should point to the report "1.2/Core/automated/N900"
