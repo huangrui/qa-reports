@@ -160,31 +160,10 @@ Feature:
 
   @selenium
   Scenario: Add new report with default test case comment
-    When I follow "Add report"
-    And I select target "Handset", test set "Smokey" and product "n990" with date "2010-02-12"
-    And I attach the report "sample.csv"
-    And submit the form at "upload_report_submit"
+    Given the report for "short1.csv" exists on the service
+    And I upload the report "short1_changed_comments.csv" with different comments
 
-    When I click the element ".testcase_notes" for the test case "Check if volume could be adjusted"
-    And I fill in "comment" with "a bug comment"
-    And I submit the comment for the test case "Check if volume could be adjusted"
-    And I wait until all Ajax requests are complete
-    Then I should see "a bug comment" within the test case "Check if volume could be adjusted"
+    When I follow "See all"
+    Then the testcase "Description One" should have the new comment
+    And the testcase "Description Two" should have the comment from the previous report
 
-    When I click the element ".testcase_notes" for the test case "Image boot from SD card"
-    And I fill in "comment" with "another bug comment"
-    And I submit the comment for the test case "Image boot from SD card"
-    And I wait until all Ajax requests are complete
-
-    And submit the form at "upload_report_submit"
-
-    When I follow "Add report"
-    And I select target "Handset", test set "Smokey" and product "n990" with date "2010-02-12"
-    And I attach the report "sample.csv"
-    And submit the form at "upload_report_submit"
-
-    # Testcases with no comment should default to previous report's comment
-    Then I should see "a bug comment" within the test case "Check if volume could be adjusted"
-
-    # Testcases with a comment should not be overridden by previous report's comment
-    Then I should see "5705- [REG] Unable to display home screen automatically unless tapping the screen" within the test case "Image boot from SD card"

@@ -661,10 +661,11 @@ class MeegoTestSession < ActiveRecord::Base
       end
       prev_tc = prev_session.test_case_by_name(feature, summary) unless prev_session.nil?
       prev_comment = prev_tc.comment unless prev_tc.nil?
+      comment = if comments.present? then comments else prev_comment || "" end
       test_case = test_set.meego_test_cases.build(
           :name               => summary,
           :result             => result,
-          :comment            => comments || prev_comment || "",
+          :comment            => comment,
           :meego_test_session => self
       )
 
@@ -691,10 +692,11 @@ class MeegoTestSession < ActiveRecord::Base
             result = MeegoTestSession.map_result(testcase.result)
             prev_tc = prev_session.test_case_by_name(feature, testcase.name) unless prev_session.nil?
             prev_comment = prev_tc.comment unless prev_tc.nil?
+            comment = if testcase.comment.present? then testcase.comment else prev_comment || "" end
             tc = set_model.meego_test_cases.build(
                 :name               => testcase.name,
                 :result             => result,
-                :comment            => testcase.comment || prev_comment || "",
+                :comment            => comment,
                 :meego_test_session => self,
                 :source_link        => testcase.source_url
             )
