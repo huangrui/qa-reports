@@ -29,7 +29,7 @@ Feature: Loading times
 
     And I view the report "1.2/Core/Performance/N990"
     Then the time spent for the "view report" step should be less than 4 seconds
-  
+
   @performance
   Scenario: Upload bigger reports via API and compare them and load history
     Given I am an user with a REST authentication token
@@ -44,7 +44,7 @@ Feature: Loading times
     Then the time spent for the "view short group report" step should be less than 2 seconds
 
     When I follow "See detailed comparison"
-    Then the time spent for the "compare two bigger reports" step should be less than 6 seconds
+    Then the time spent for the "compare two bigger reports" step should be less than 9 seconds
 
     And the client sends file "2000_cases.csv" via the REST API
     And the client sends file "2000_cases.csv" via the REST API
@@ -56,6 +56,6 @@ Feature: Loading times
     Then the time spent for the "view longer group report" step should be less than 2 seconds
 
     When I view the report "1.2/Core/automated/N900"
-    Then the time spent for the "view big report with full history" step should be less than 18 seconds
+    Then the time spent for the "view big report with full history" step should be less than 25 seconds
 
 
