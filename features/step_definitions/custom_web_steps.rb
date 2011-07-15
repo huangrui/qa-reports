@@ -23,13 +23,13 @@ Then /^the link "([^"]*)" within "([^"]*)" should point to the report "([^"]*)"/
   with_scope(selector) do
     field = find_link(link)
 
-    version, target, test_type, product = expected_report.downcase.split('/')
+    version, target, testset, product = expected_report.split('/')
     report = MeegoTestSession.first(:conditions =>
-     {"version_labels.normalized" => version, :target => target, :product => product, :testset => test_type}, :include => :version_label
+     {"version_labels.normalized" => version, :target => target, :product => product, :testset => testset}, :include => :version_label
     )
-    raise "report not found with parameters #{version}/#{target}/#{hardware}/#{test_type}!" unless report
+    raise "report not found with parameters #{version}/#{target}/#{hardware}/#{testset}!" unless report
 
-    field[:href].should == "/#{version.capitalize}/#{target.capitalize}/#{test_type.capitalize}/#{product.capitalize}/#{report.id}"
+    field[:href].should == "/#{version}/#{target}/#{testset}/#{product}/#{report.id}"
   end
 end
 
