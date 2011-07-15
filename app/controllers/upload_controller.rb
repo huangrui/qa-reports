@@ -68,7 +68,7 @@ class UploadController < ApplicationController
   end
 
   def upload_attachment
-    file = env['rack.input']
+    file = StringIO.new(env['rack.input'].read())
     file.original_filename = request['qqfile']
 
     session = MeegoTestSession.find(params[:id])
