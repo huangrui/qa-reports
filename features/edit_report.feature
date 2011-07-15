@@ -44,16 +44,15 @@ Feature: Edit Report
 
     Then I should see "Test title" within "h1"
 
-#  XXX: Temporarily commented out. For some reason doesn't work via Selenium, but works when tested manually
-#  @selenium
-#  Scenario: Edit test execution date
-#    When I view the report "1.2/Core/automated/N900"
-#    And I click to edit the report
-#    And I click the element ".editable_date"
-#    And fill in "meego_test_session[tested_at]" with "2011-1-1" within "#upload_report"
-#    And I press "Save"
-#
-#    Then I should see "01 January 2011" within "#test_category .date"
+  @selenium
+  Scenario: Edit test execution date
+    When I view the report "1.2/Core/automated/N900"
+    And I click to edit the report
+    And I click the element ".editable_date"
+    And fill in "meego_test_session[tested_at]" with "2011-1-1" within "#upload_report"
+    And I press "Save"
+
+    Then I should see "01 January 2011" within "#test_category .date"
 
   @selenium
   Scenario: Edit test objective
@@ -84,7 +83,7 @@ Feature: Edit Report
   Scenario: I delete a test case
     When I edit the report "1.2/Core/automated/N900"
     And I delete the test case "SMOKE-SIM-Get_IMSI"
-    
+
     Then I return to view the report "1.2/Core/automated/N900"
     And there should not be a test case "SMOKE-SIM-Get_IMSI"
 
