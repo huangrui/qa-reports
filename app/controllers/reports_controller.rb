@@ -231,7 +231,7 @@ class ReportsController < ApplicationController
       return render_404 unless @selected_release_version.downcase.eql? @test_session.release_version.downcase
 
       @history = history(@test_session, 5)
-      @build = build(@test_session, 5)
+      @build_diff = build_diff(@test_session, 4)
 
       @target    = @test_session.target
       @testtype  = @test_session.testtype
@@ -380,12 +380,23 @@ class ReportsController < ApplicationController
         includes([{:meego_test_sets => :meego_test_cases}, {:meego_test_cases => :meego_test_set}])
   end
 
-  def build(s, cnt)
+  def build_diff(s, cnt)
     unless s.build_id.empty?
-      MeegoTestSession.where("build_id = '#{s.build_id}' AND published = 1 AND id != '#{s.id}'").
-          order("tested_at DESC, created_at DESC").limit(cnt).
+      build_list = MeegoTestSession.where("target = '#{s.target.downcase}' AND testtype = '#{s.testtype.downcase}' AND hardware = '#{s.hardware.downcase}' AND published = 1 AND version_label_id = #{s.version_label_id} AND build_id < '#{s.build_id}'").
+          order("build_id DESC, tested_at DESC, created_at DESC").limit(cnt).
           includes([{:meego_test_sets => :meego_test_cases}, {:meego_test_cases => :meego_test_set}])
+      session_id_list = []
+      session_build_id = s.build_id
+      build_list.each do |session|
+        if session_build_id == session.build_id
+          session_id_list << session.id
+        else
+          session_build_id = session.build_id
+        end
+      end
+      build_list.delete_if {|session| session_id_list.include? session.id}
     end
+    return build_list
   end
 
   def just_published?

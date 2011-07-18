@@ -12,7 +12,7 @@ tr class="feature_record #{row_class(feature_pass_rate_build_summary_counter)}" 
     td.pass=feature_summary.total_passed
     td.fail=feature_summary.total_failed
     td.na=feature_summary.total_na
-    - @build.reverse_each do |b|
+    - @build_diff.reverse_each do |b|
       - tset = feature_summary.find_matching_set(b)
       - if tset
         td.test_feature_pass_rate.feature_build_result = tset.total_pass_rate

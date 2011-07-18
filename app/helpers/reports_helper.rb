@@ -110,12 +110,12 @@ module ReportsHelper
     }.join("\n").html_safe
   end
 
-  def build_hw_headers(hist)
+  def build_id_headers(hist)
     hist.reverse.map{|s|
       if s
-        hardware = s.hardware
+        session_build_id = s.build_id
         url  = report_url(s)
-        "<th class=\"th_build_result\"><a href=\"#{url}\">#{hardware}</a></th>"
+        "<th class=\"th_build_result\"><a href=\"#{url}\">#{session_build_id}</a></th>"
       else
         "<th class=\"th_build_result\">-</th>"
       end
@@ -125,9 +125,9 @@ module ReportsHelper
   def build_pass_rate_headers(hist)
     hist.reverse.map{|s|
       if s
-        testset_hw = s.testtype + '/' + s.hardware
+        session_build_id = s.build_id
         url  = report_url(s)
-        "<th class=\"th_history_result\"><a href=\"#{url}\">#{testset_hw}</a></th>"
+        "<th class=\"th_history_result\"><a href=\"#{url}\">#{session_build_id}</a></th>"
       else
         "<th class=\"th_history_result\">-</th>"
       end

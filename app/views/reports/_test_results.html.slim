@@ -56,10 +56,10 @@ h2#test_results
 
     h3#test_features Test Results by Feature
 
-    - if contain_element(@build)
+    - if contain_element(@build_diff)
       span.sort
         a.see_feature_comment_button.sort_btn#detailed_feature.active href="#" See comment and grading
-        a.see_feature_build_button.sort_btn#detailed_feature href="#" See the same build
+        a.see_feature_build_button.sort_btn#detailed_feature href="#" See build
 
     table.feature_detailed_results#test_results_by_feature
       thead.even
@@ -76,7 +76,7 @@ h2#test_results
 
       = render :partial => 'feature_summary', :collection => @test_session.non_empty_features, :locals => {:max_cases => @test_session.max_feature_cases}
 
-    - if contain_element(@build)
+    - if contain_element(@build_diff)
       table.feature_detailed_results_with_build_id#test_feature_build_results style="display:none"
         thead.even
           tr
@@ -85,8 +85,8 @@ h2#test_results
             th.th_passed Passed
             th.th_failed Failed
             th.th_not_testable N/A
-            = build_pass_rate_headers(@build)
-            th.th_result.current_feature_build_result *#{@test_session.testtype}/#{@test_session.hardware}
+            = build_pass_rate_headers(@build_diff)
+            th.th_result.current_feature_build_result *#{@test_session.build_id}
             th style="border-bottom-style: none;"
               div style="position:relative;"
 
