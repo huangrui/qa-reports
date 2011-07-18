@@ -2,8 +2,7 @@ Feature: Manage reports
 
   Background:
     Given I am a new, authenticated user
-    And I have created the "1.1/Core/Sanity/Aava" report and optional build id is "1.2.0.90.0.20050517.1"
-    And I have created the "1.1/Core/System/Eeepc" report using "sample_new.csv" and optional build id is "1.2.0.90.0.20050517.1"
+    And I have created the "1.1/Core/Sanity/Aava" report
     When I view the report "1.1/Core/Sanity/Aava"
 
   @smoke
@@ -14,18 +13,6 @@ Feature: Manage reports
     And I should see "Check home screen"
     And I should see "Fail"
     And I should see "3921"
-
-  @smoke
-  Scenario: Viewing the same build report
-    When I view the report "1.1/Core/System/Eeepc"
-    And I follow "See the same build"
-    Then I should see "* System"
-    And I should see "* Eeepc"
-    And I should see "Sanity"
-    And I should see "Aava"
-    And I should see "Check home screen"
-    And I should see "Fail"
-    And I should see "Pass"
 
   @smoke
   Scenario: Printing a report
