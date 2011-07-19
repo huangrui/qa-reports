@@ -2131,3 +2131,8 @@ div#drag_drop_area {
     padding-bottom: 20px;
     margin-bottom: -20px;
 }
+
+div.field.last {
+    padding-bottom: 30px;
+    margin-bottom: -30px;
+}

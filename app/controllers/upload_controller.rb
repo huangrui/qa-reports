@@ -52,7 +52,6 @@ class UploadController < ApplicationController
   end
 
   def upload_report
-    fileid = env['HTTP_X_FILE_ID']
     raw_filename = env['HTTP_X_FILE_NAME']
     extension = File.extname(raw_filename)
     raw_filename_wo_extension = File.basename(raw_filename, extension)
@@ -64,7 +63,7 @@ class UploadController < ApplicationController
     filedata = env['rack.input'].read()
     File.open(filename, 'wb') {|f| f.write( filedata ) }
 
-    render :json => { :ok => '1', :fileid => fileid, :url => url }
+    render :json => { :ok => '1', :url => url }
   end
 
   def upload_attachment
