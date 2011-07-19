@@ -15,8 +15,8 @@
     .field.last
       label for="report_test_data" Test data:
 
-      #drag_drop_area
-        ul#uploaded_list
+      #drag_drop_area.indented
+        ul#uploaded_list class="item_list"
         ul#file_attachment_list
         a#upload_button.small_btn + Add report (or drag here)
 
@@ -28,7 +28,10 @@
           |  and
           a href="http://meego.gitorious.org/meego-quality-assurance/test-definition/blobs/master/src/data/testdefinition-results.xsd"  dataset specification
           | for reference
-      = f.error_message_on :uploaded_files
+        = f.error_message_on :uploaded_files
+        - if Rails.env.test?
+          = f.file_field :uploaded_files, :id => "report_test_data", :class => "file", :tabindex => 6, :multiple => "true"
+
     #wizard_actions
       #wizard_buttons
         input.big_btn.cancel onclick="location.href='/#{@selected_release_version}'" type="button" value="Cancel"
@@ -110,6 +113,7 @@ coffee:
     dragDrop = (event) ->
       if event.preventDefault
         event.preventDefault()
+      console.log event.originalEvent.dataTransfer.files
       uploader._uploadFileList(event.originalEvent.dataTransfer.files)
       false
 

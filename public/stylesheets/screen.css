@@ -2132,6 +2132,20 @@ div#drag_drop_area {
     margin-bottom: -20px;
 }
 
+div#drag_drop_area.indented {
+    float: left;
+}
+
+div#drag_drop_area.indented ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+div#drag_drop_area.indented ul input[type=checkbox] {
+    margin-right: 5px;
+}
+
 div.field.last {
     padding-bottom: 30px;
     margin-bottom: -30px;
