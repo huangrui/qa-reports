@@ -14,33 +14,20 @@
 
     .field.last
       label for="report_test_data" Test data:
-      #dragndrop_and_browse style="display:none"
-        #dropbox
-          | Drop xml and csv result files here
+
+      #drag_drop_area
+        ul#uploaded_list
+        ul#file_attachment_list
+        a#upload_button.small_btn + Add report (or drag here)
+
         small
-          | See example 
+          | See example
           a href="/example.xml" xml
-          | , 
+          | ,
           a href="/example.csv" csv
-          |  and 
-          a href="http://meego.gitorious.org/meego-quality-assurance/test-definition/blobs/master/src/data/testdefinition-results.xsd"  dataset specification 
+          |  and
+          a href="http://meego.gitorious.org/meego-quality-assurance/test-definition/blobs/master/src/data/testdefinition-results.xsd"  dataset specification
           | for reference
-        #browse
-          div
-            | or browse
-            br/
-          = f.file_field :uploaded_files, :id => "report_test_data", :class => "file", :tabindex => 6, :multiple => "true"
-      /! Fallback, if Drag'n Drop and File API is not supported, e.g. IE8
-      #only_browse
-        #browse
-          = f.file_field( :uploaded_files, :id => "report_test_data", :class => "file", :tabindex => 6, :multiple => "true")
-        small
-          | See example 
-          a href="/example.xml" xml
-          | , 
-          a href="/example.csv" csv
-          |  and 
-          a href="http://gitorious.org/qa-tools/test-definition/blobs/master/data/testdefinition-results.xsd" dataset specification 
       = f.error_message_on :uploaded_files
     #wizard_actions
       #wizard_buttons
@@ -51,17 +38,7 @@
         br/
         strong Finalize
 
-= javascript_include_tag 'handlebars'
-script name="attachment" type="text/x-handlebars-template"
-  | <div id="{{fileid}}">
-    <span style="float: left; margin-right: 20px;"><input
-    type="checkbox"
-    name="drag_n_drop_attachments[]"
-    value="1"
-    checked="true"/>
-    {{filename}}</span>
-    <img style="float: left;  margin-left: -10px; margin-top: 5px;" src="/images/progress.gif" />
-    </div>
+= javascript_include_tag 'fileuploader'
 
 coffee:
   $(document).ready ->
@@ -95,3 +72,46 @@ coffee:
     myDate = new Date()
     prettyDate = myDate.getUTCFullYear() + '-' + (myDate.getUTCMonth()+1) + '-' + myDate.getUTCDate()
     $(".date").val(prettyDate)
+
+    uploader = new qq.FileUploaderBasic
+      button: $('#upload_button')[0]
+      element: $('#drag_drop_area')[0]
+      action: '/upload_report/'
+      debug: true
+      onSubmit: (id, fileName) ->
+        $('#upload_button').removeClass('draghover')
+        $('.field.last').removeClass('draghover')
+        $fal = $("#file_attachment_list")
+        $fal.append($('<li id="file_upload'+id+'"><a class="remove_list_item">Remove</a>'+fileName+'<img src="/images/progress.gif" /> <span id="file_upload' + id + 'ProgressBar"></span></li>'))
+        $this_element = $fal.children().last()
+        $this_element.click ->
+          uploader._handler.cancel(id);
+          $this_element.remove();
+
+      onProgress: (id, fileName, loaded, total) ->
+        $('#file_upload' + id + 'ProgressBar').text((loaded/total*100).toFixed(0) + "%")
+      onComplete: (id, fileName, response) ->
+        $('#file_upload' + id).remove()
+        $("#uploaded_list").append('<li><input type="checkbox" name="drag_n_drop_attachments[]" value="' + response.url + '" checked="true">' + fileName + '</li>')
+
+    dragenter = (event) ->
+      $('#upload_button').addClass('draghover')
+      $('.field.last').addClass('draghover')
+      false
+
+    dragleave = (event) ->
+      $('#upload_button').removeClass('draghover')
+      $('.field.last').removeClass('draghover')
+      false
+
+    dragDrop = (event) ->
+      if event.preventDefault
+        event.preventDefault()
+      uploader._uploadFileList(event.originalEvent.dataTransfer.files)
+      false
+
+    $('.field.last').bind('dragenter', dragenter)
+                    .bind('dragover', dragenter)
+                    .bind('dragleave', dragleave)
+                    .bind('drop', dragDrop)
+

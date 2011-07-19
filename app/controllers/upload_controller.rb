@@ -26,13 +26,13 @@ require 'cache_helper'
 
 class UploadController < ApplicationController
   include CacheHelper
-  
+
   cache_sweeper :meego_test_session_sweeper, :only => [:upload]
   before_filter :authenticate_user!
-  
+
   def upload_form
     new_report = {}
-    [:release_version, :target, :testset, :product].each do |key| 
+    [:release_version, :target, :testset, :product].each do |key|
       new_report[key] = params[key] if params[key]
     end
 
@@ -85,15 +85,15 @@ class UploadController < ApplicationController
   def upload
     params[:meego_test_session][:uploaded_files] ||= []
     params[:drag_n_drop_attachments] ||= []
-    
+
     # Harmonize file handling between drag'n drop and form upload
     params[:drag_n_drop_attachments].each do |name|
       params[:meego_test_session][:uploaded_files].push( DragnDropUploadedFile.new("public" + name, "rb") )
-    end 
+    end
 
     @test_session = MeegoTestSession.new(params[:meego_test_session])
     @test_session.import_report(current_user)
-    
+
     if @test_session.save
       session[:preview_id] = @test_session.id
 
