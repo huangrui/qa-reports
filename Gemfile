@@ -11,6 +11,7 @@ gem 'slim'
 gem 'paperclip'
 gem 'coffee-script'
 gem 'therubyracer', '~>0.9.0', :require => false
+gem 'barista', '>= 0.5.0'
 gem 'rest-client', :require => 'rest_client'
 gem 'activerecord-import'
 gem "rake"
