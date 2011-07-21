@@ -53,6 +53,7 @@ class UploadController < ApplicationController
 
   def upload_report
     raw_filename = env['HTTP_X_FILE_NAME']
+    raw_filename ||= request['qqfile'].original_filename if request['qqfile'].respond_to? 'original_filename'
     raw_filename ||= request['qqfile']
     extension = File.extname(raw_filename)
     raw_filename_wo_extension = File.basename(raw_filename, extension)
