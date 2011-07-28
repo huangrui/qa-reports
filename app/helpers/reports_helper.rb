@@ -24,6 +24,17 @@ require 'report_parser'
 
 module ReportsHelper
 
+  def contain_element(list)
+    if list
+      list.each do |l|
+        if l
+          return true
+        end
+      end
+    end
+    return false
+  end
+
   def edit_button
     if @editing
       '<a href="" class="edit">Edit</a>'.html_safe
@@ -82,6 +93,41 @@ module ReportsHelper
         date = s.tested_at.strftime("%d/%m")
         url  = report_url(s)
         "<th class=\"th_history_result\"><a href=\"#{url}\">#{date}</a></th>"
+      else
+        "<th class=\"th_history_result\">-</th>"
+      end
+    }.join("\n").html_safe
+  end
+
+  def build_set_headers(hist)
+    hist.reverse.map{|s|
+      if s
+        test_set = s.testtype
+        "<th class=\"th_build_testset\">#{test_set}</a></th>"
+      else
+        "<th class=\"th_build_testset\">-</th>"
+      end
+    }.join("\n").html_safe
+  end
+
+  def build_id_headers(hist)
+    hist.reverse.map{|s|
+      if s
+        session_build_id = s.build_id
+        url  = report_url(s)
+        "<th class=\"th_build_result\"><a href=\"#{url}\">#{session_build_id}</a></th>"
+      else
+        "<th class=\"th_build_result\">-</th>"
+      end
+    }.join("\n").html_safe
+  end
+
+  def build_pass_rate_headers(hist)
+    hist.reverse.map{|s|
+      if s
+        session_build_id = s.build_id
+        url  = report_url(s)
+        "<th class=\"th_history_result\"><a href=\"#{url}\">#{session_build_id}</a></th>"
       else
         "<th class=\"th_history_result\">-</th>"
       end
