@@ -52,25 +52,22 @@ class UploadController < ApplicationController
   end
 
   def upload_report
-    raw_filename = env['HTTP_X_FILE_NAME']
-    raw_filename ||= request['qqfile'].original_filename if request['qqfile'].respond_to? 'original_filename'
-    raw_filename ||= request['qqfile']
-    extension = File.extname(raw_filename)
-    raw_filename_wo_extension = File.basename(raw_filename, extension)
+    file = filestream_from_qq_param
+
+    extension = File.extname(file.original_filename)
+    raw_filename_wo_extension = File.basename(file.original_filename, extension)
 
     # TODO: Temp files needs to be deleted periodically
     url      = "/reports/tmp/#{raw_filename_wo_extension.parameterize}#{extension}"
     filename = "#{Rails.root}/public#{url}"
 
-    filedata = env['rack.input'].read()
-    File.open(filename, 'wb') {|f| f.write( filedata ) }
+    File.open(filename, 'wb') {|f| f.write( file.read() ) }
 
     render :json => { :ok => '1', :url => url }
   end
 
   def upload_attachment
-    file = StringIO.new(env['rack.input'].read())
-    file.original_filename = request['qqfile']
+    file = filestream_from_qq_param
 
     session = MeegoTestSession.find(params[:id])
     session.report_attachments.create(:attachment => file)
@@ -106,6 +103,18 @@ class UploadController < ApplicationController
       @product = MeegoTestSession.release(@selected_release_version).popular_products
       @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
       render :upload_form
+    end
+  end
+
+  private
+  
+  def filestream_from_qq_param
+    if request['qqfile'].respond_to? 'original_filename'
+      return request['qqfile']
+    else
+      f = StringIO.new(env['rack.input'].read())
+      f.original_filename = request['qqfile']
+      return f
     end
   end
 end
