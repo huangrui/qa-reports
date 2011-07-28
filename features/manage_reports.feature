@@ -14,16 +14,6 @@ Feature: Manage reports
     And I should see "Fail"
     And I should see "3921"
 
-  @selenium
-  Scenario: Viewing the same build report
-    When I view the report "1.1/Core/System/Eeepc"
-    And want to see build details
-    Then I should see "* System"
-    And I should see "* Eeepc"
-    And I should see "Sanity"
-    And I should see "Aava"
-    And "Check home screen theme and layout" should have results "Fail" and "Pass"
-
   @smoke
   Scenario: Printing a report
 	When I click to print the report

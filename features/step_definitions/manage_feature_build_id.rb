@@ -2,7 +2,7 @@
  	find(:xpath, "//a[@id='detailed_case' and @class = 'see_the_same_build_button sort_btn']").click
  end
 
- And /^"([^"]*)" should have results "([^"]*)" and "([^"]*)"$/ do |name, result1, result2|
+ Then /^"([^"]*)" should have results "([^"]*)" and "([^"]*)"$/ do |name, result1, result2|
  	namerow = all(:xpath, "//table[@class='detailed_results build']//tr[@class='testcase' and .//td[@class='testcase_name' and .='#{name}']]")
  	namerow.count.should == 1
  	results = namerow[0].all("td.testcase_result")
