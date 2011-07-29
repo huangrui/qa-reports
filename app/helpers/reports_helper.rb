@@ -88,17 +88,6 @@ module ReportsHelper
     }.join("\n").html_safe
   end
 
-  def build_set_headers(hist)
-    hist.reverse.map{|s|
-      if s
-        test_set = s.testtype
-        "<th class=\"th_build_testset\">#{test_set}</a></th>"
-      else
-        "<th class=\"th_build_testset\">-</th>"
-      end
-    }.join("\n").html_safe
-  end
-
   def build_id_headers(hist)
     hist.reverse.map{|s|
       if s
