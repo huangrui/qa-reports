@@ -174,6 +174,7 @@ class ReportsController < ApplicationController
     @preview_id = session[:preview_id] || params[:id]
     @editing    = true
     @wizard     = true
+    @build_diff = []
 
     if @preview_id
       @test_session   = MeegoTestSession.fetch_fully(@preview_id)
@@ -259,6 +260,7 @@ class ReportsController < ApplicationController
       @files = @test_session.report_attachments
       @wizard = false
       @email  = true
+      @build_diff = []
 
       @nft_trends = nil
       if @test_session.has_nft?
@@ -274,6 +276,7 @@ class ReportsController < ApplicationController
   def edit
     @editing = true
     @wizard  = false
+    @build_diff = []
 
     if id = params[:id].try(:to_i)
       @test_session   = MeegoTestSession.fetch_fully(id)
@@ -377,6 +380,7 @@ class ReportsController < ApplicationController
   end
 
   def build_diff(s, cnt)
+    build_list = []
     unless s.build_id.empty?
       build_list = MeegoTestSession.where("target = '#{s.target.downcase}' AND testset = '#{s.testset.downcase}' AND product = '#{s.product.downcase}' AND published = 1 AND version_label_id = #{s.version_label_id} AND build_id < '#{s.build_id}'").
           order("build_id DESC, tested_at DESC, created_at DESC").limit(cnt).

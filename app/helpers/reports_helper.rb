@@ -24,17 +24,6 @@ require 'report_parser'
 
 module ReportsHelper
 
-  def contain_element(list)
-    if list
-      list.each do |l|
-        if l
-          return true
-        end
-      end
-    end
-    return false
-  end
-
   def edit_button
     if @editing
       '<a href="" class="edit">Edit</a>'.html_safe

@@ -56,7 +56,7 @@ h2#test_results
 
     h3#test_features Test Results by Feature
 
-    - if contain_element(@build_diff)
+    - unless @build_diff.empty?
       span.sort
         a.see_feature_comment_button.sort_btn#detailed_feature.active href="#" See comment and grading
         a.see_feature_build_button.sort_btn#detailed_feature href="#" See build pass%
@@ -76,7 +76,7 @@ h2#test_results
 
       = render :partial => 'feature_summary', :collection => @test_session.non_empty_features, :locals => {:max_cases => @test_session.max_feature_cases}
 
-    - if contain_element(@build_diff)
+    - unless @build_diff.empty?
       table.feature_detailed_results_with_build_id#test_feature_build_results style="display:none"
         thead.even
           tr

@@ -54,7 +54,7 @@
                 a.see_all_button.sort_btn#detailed_case href="#" See all
                 - if @history
                   a.see_history_button.sort_btn#detailed_case href="#" See history
-                - if contain_element(@build_diff)
+                - unless @build_diff.empty?
                   a.see_the_same_build_button.sort_btn#detailed_case href="#" See build
             th#th_result Result
             th#th_notes Notes
@@ -70,7 +70,7 @@
                   a.see_only_failed_button.sort_btn#detailed_case href="#" See only failed
                   a.see_all_button.sort_btn#detailed_case href="#" See all
                   a.see_history_button.sort_btn#detailed_case.active href="#" See history
-                  - if contain_element(@build_diff)
+                  - unless @build_diff.empty?
                     a.see_the_same_build_button.sort_btn#detailed_case href="#" See build
               = history_headers(@history)
               th.th_result Current
@@ -78,7 +78,7 @@
                 div style="position:relative;"
           = render :partial => "feature_history", :collection => @test_session.non_nft_sets
 
-      - if contain_element(@build_diff)
+      - unless @build_diff.empty?
         table.detailed_results.build style="display:none"
           thead
             tr.compare_set
