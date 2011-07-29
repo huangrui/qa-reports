@@ -174,6 +174,7 @@ class ReportsController < ApplicationController
     @preview_id = session[:preview_id] || params[:id]
     @editing    = true
     @wizard     = true
+    @build_diff = []
 
     if @preview_id
       @test_session   = MeegoTestSession.fetch_fully(@preview_id)
@@ -227,6 +228,7 @@ class ReportsController < ApplicationController
       return render_404 unless @selected_release_version.downcase.eql? @test_session.release_version.downcase
 
       @history = history(@test_session, 5)
+      @build_diff = build_diff(@test_session, 4)
 
       @target    = @test_session.target
       @testset  = @test_session.testset
@@ -258,6 +260,7 @@ class ReportsController < ApplicationController
       @files = @test_session.report_attachments
       @wizard = false
       @email  = true
+      @build_diff = []
 
       @nft_trends = nil
       if @test_session.has_nft?
@@ -273,6 +276,7 @@ class ReportsController < ApplicationController
   def edit
     @editing = true
     @wizard  = false
+    @build_diff = []
 
     if id = params[:id].try(:to_i)
       @test_session   = MeegoTestSession.fetch_fully(id)
@@ -373,6 +377,26 @@ class ReportsController < ApplicationController
     MeegoTestSession.where("(tested_at < '#{s.tested_at}' OR tested_at = '#{s.tested_at}' AND created_at < '#{s.created_at}') AND target = '#{s.target.downcase}' AND testset = '#{s.testset.downcase}' AND product = '#{s.product.downcase}' AND published = 1 AND version_label_id = #{s.version_label_id}").
         order("tested_at DESC, created_at DESC").limit(cnt).
         includes([{:features => :meego_test_cases}, {:meego_test_cases => :feature}])
+  end
+
+  def build_diff(s, cnt)
+    build_list = []
+    unless s.build_id.empty?
+      build_list = MeegoTestSession.where("target = '#{s.target.downcase}' AND testset = '#{s.testset.downcase}' AND product = '#{s.product.downcase}' AND published = 1 AND version_label_id = #{s.version_label_id} AND build_id < '#{s.build_id}'").
+          order("build_id DESC, tested_at DESC, created_at DESC").limit(cnt).
+          includes([{:features => :meego_test_cases}, {:meego_test_cases => :feature}])
+      session_id_list = []
+      session_build_id = s.build_id
+      build_list.each do |session|
+        if session_build_id == session.build_id
+          session_id_list << session.id
+        else
+          session_build_id = session.build_id
+        end
+      end
+      build_list.delete_if {|session| session_id_list.include? session.id}
+    end
+    return build_list
   end
 
   def just_published?

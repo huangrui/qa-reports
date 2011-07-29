@@ -34,6 +34,14 @@ class Feature < ActiveRecord::Base
   include ReportSummary
   include Graph
 
+  def find_matching_feature(session)
+    return nil unless session
+    session.features.each do |f|
+      return f if f.name == name
+    end
+    nil
+  end
+
   def grading
     read_attribute(:grading) || calculate_grading
   end
