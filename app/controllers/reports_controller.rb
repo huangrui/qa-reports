@@ -339,7 +339,8 @@ class ReportsController < ApplicationController
     # XXX: bugzilla seems to encode its exported csv to utf-8 twice
     # so we convert from utf-8 to iso-8859-1, which is then interpreted
     # as utf-8
-     render :text => Iconv.iconv("iso-8859-1", "utf-8", content), :content_type => "text/csv"
+    data = Iconv.iconv("iso-8859-1", "utf-8", content)
+    render :json => FasterCSV.parse(data.join '\n')
 
   end
 
