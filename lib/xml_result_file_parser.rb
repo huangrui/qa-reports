@@ -74,7 +74,7 @@ class XMLResultFileParser
     outline = calculate_outline(measurement_series.element_children, measurement_series['interval'])
     {
       :name          => measurement_series['name'],
-      #:short_json    => series_json(measurement_series.measurements, maxsize=40),
+      :short_json    => series_json(measurement_series.element_children, maxsize=40),
       #:long_json     => series_json_withx(measurement_series, outline.interval_unit, maxsize=200),
       #:unit          => measurement_series['.unit'],
       #:interval_unit => outline.interval_unit,

@@ -131,9 +131,9 @@ module MeasurementUtils
   end
 
   def shorten_value(v)
-    s = v.value.to_s
+    s = v['value']
     s = s[0..-3] if s.end_with? ".0"
-    s2 = sprintf("%.1e", v.value)
+    s2 = sprintf("%.1e", v['value'])
     if s2.length < s.length
       s2
     else
