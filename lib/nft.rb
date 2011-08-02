@@ -115,19 +115,19 @@ module MeasurementUtils
   end
 
   def series_json_withx(m, interval_unit, maxsize=200)
-    s = m.measurements
+    s = m.element_children
     indices = shortened_indices(s.size, maxsize)
 
     factor = XAXIS_FACTORS[interval_unit]
-    if m.interval
+    if m['interval']
       # Dividing since interval is currently always in milliseconds and
       # the factors are for seconds
-      xaxis = (0..s.size-1).map {|i| i*m.interval*factor/1000}
+      xaxis = (0..s.size-1).map {|i| i * m['interval'].to_f * factor / 1000}
     else
-      xaxis = (0..s.size-1).map {|i| ((s[i].timestamp-s[0].timestamp)*factor).to_i}
+      xaxis = (0..s.size-1).map {|i| ((Time.parse(s[i]['timestamp'])-Time.parse(s[0]['timestamp']))*factor).to_i}
     end
 
-    "[" + indices.map{|i| "[#{xaxis[i]},#{s[i].value}]"}.join(",") + "]"
+    "[" + indices.map{|i| "[#{xaxis[i]},#{s[i]['value']}]"}.join(",") + "]"
   end
 
   def shorten_value(v)

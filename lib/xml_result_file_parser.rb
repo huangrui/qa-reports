@@ -76,8 +76,8 @@ class XMLResultFileParser
       :name          => measurement_series['name'],
       :short_json    => series_json(measurement_series.element_children, maxsize=40),
       :long_json     => series_json_withx(measurement_series, outline.interval_unit, maxsize=200),
-      #:unit          => measurement_series['.unit'],
-      #:interval_unit => outline.interval_unit,
+      :unit          => measurement_series['unit'],
+      :interval_unit => outline.interval_unit,
 
       :min_value    => outline.minval,
       :max_value    => outline.maxval,
