@@ -33,6 +33,8 @@ class MeegoTestCase < ActiveRecord::Base
   has_many :serial_measurements, :dependent => :destroy
   has_many :meego_test_case_attachments, :dependent => :destroy
 
+  accepts_nested_attributes_for :measurements, :serial_measurements
+
   PASS = 1
   FAIL = -1
   NA = 0

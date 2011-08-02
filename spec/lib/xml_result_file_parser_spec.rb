@@ -249,8 +249,7 @@ END
      <return_code>0</return_code>
      <start>2011-03-04 15:58:47</start>
      <end>2011-03-04 15:58:47</end>
-     <stdout>foo
-</stdout>
+     <stdout>foo</stdout>
      <stderr></stderr>
     </step>
     <measurement name="temperature" value="21.000000" unit="C"/>

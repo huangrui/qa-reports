@@ -1,6 +1,7 @@
 require 'nft'
 
 class XMLResultFileParser
+  include MeasurementUtils
 
   def initialize
     @test_cases = {}
@@ -44,13 +45,14 @@ class XMLResultFileParser
     test_case.element_children.each do |element|
 
       if element.name == 'measurement'
+        #TODO: Get rid of 'has_nft' field
         @test_cases[feature][test_case['name']][:has_nft] = true
         @test_cases[feature][test_case['name']][:measurements_attributes] ||= []
         @test_cases[feature][test_case['name']][:measurements_attributes] << parse_measurement(element)
-      # elsif element.name == 'series'
-      #   @test_cases[feature][test_case['name']][:has_nft] = true
-      #   @test_cases[feature][test_case['name']][:serial_measurements_attributes] ||= []
-      #   @test_cases[feature][test_case['name']][:serial_measurements_attributes] << parse_measurement_series(element)
+      elsif element.name == 'series'
+        @test_cases[feature][test_case['name']][:has_nft] = true
+        @test_cases[feature][test_case['name']][:serial_measurements_attributes] ||= []
+        @test_cases[feature][test_case['name']][:serial_measurements_attributes] << parse_measurement_series(element)
       end
     end
   end
@@ -63,26 +65,28 @@ class XMLResultFileParser
       :target     => measurement['target'].try(:to_f),
       :failure    => measurement['failure'].try(:to_f),
 
-      #TODO: Drop this
+      #TODO: Thrown away and order by id
       :sort_index => 0
     }
   end
 
   def parse_measurement_series(measurement_series)
-    # outline = MeasurementUtils.calculate_outline(m.measurements,m.interval)
-    # {
-    #   :name       => m.name,
-    #   :sort_index => nft_index,
-    #   :short_json => series_json(m.measurements, maxsize=40),
-    #   :long_json  => series_json_withx(m, outline.interval_unit, maxsize=200),
-    #   :unit       => m.unit,
-    #   :interval_unit => outline.interval_unit,
+    outline = calculate_outline(measurement_series.element_children, measurement_series['interval'])
+    {
+      :name          => measurement_series['name'],
+      #:short_json    => series_json(measurement_series.measurements, maxsize=40),
+      #:long_json     => series_json_withx(measurement_series, outline.interval_unit, maxsize=200),
+      #:unit          => measurement_series['.unit'],
+      #:interval_unit => outline.interval_unit,
 
-    #   :min_value    => outline.minval,
-    #   :max_value    => outline.maxval,
-    #   :avg_value    => outline.avgval,
-    #   :median_value => outline.median
-    # }
+      :min_value    => outline.minval,
+      :max_value    => outline.maxval,
+      :avg_value    => outline.avgval,
+      :median_value => outline.median,
+
+      #TODO: Throw away and order by id
+      :sort_index   => 0
+    }
   end
 end
 

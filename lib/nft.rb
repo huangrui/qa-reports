@@ -25,7 +25,7 @@ module MeasurementUtils
     total = 0
     values = []
     s.each do |v|
-      val = v.value
+      val = v['value'].try(:to_f)
       o.minval = unless o.minval.nil? then [o.minval, val].min else val end 
       o.maxval = unless o.maxval.nil? then [o.maxval, val].max else val end
       total += val
@@ -42,10 +42,12 @@ module MeasurementUtils
     
     if interval
       # Time span from intervals (only ms used, thus dividing to get seconds)
-      timespan = (s.length-1) * interval / 1000
+      timespan = (s.length-1) * interval.to_f / 1000
     else
       # Time span of measurement series in seconds
-      timespan = (s[s.length-1].timestamp - s[0].timestamp)
+      last = Time.parse(s[s.length-1]['timestamp'])
+      first = Time.parse(s[0]['timestamp'])
+      timespan = last - first
     end
 
     if timespan < 10

@@ -1,5 +1,7 @@
 require 'fileutils'
-require 'result_file_parser'
+require 'xml_result_file_parser'
+require 'csv_result_file_parser'
+require 'parse_error'
 
 class ReportFactory
 
