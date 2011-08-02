@@ -26,7 +26,6 @@ Feature: Consolidated reports
 
     And I should see values "N900,N910,N900,N910" in columns of "tr.compare_testset th"
 
-    Then show me the page
     And I should see "SMOKE-SIM-Disable_PIN_query" within "#test_case_12 .testcase_name"
     And I should see values "Fail,Fail,Fail,Pass" in columns of "#test_case_12 td"
 
