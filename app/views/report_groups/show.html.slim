@@ -56,8 +56,9 @@
 
       $.each(rows, function(index, row) {
         var row = $(this);
-        var year = row.children('.year').first().html();
-        var month = parseInt(row.children('.date').first().html().split('.').pop());
+        var year = row.children('.year').first().text();
+        var month = parseInt(row.children('.date').first().text().split('.').pop(), 10);
+
 
         if (previousYear != year || previousMonth != month) {
           var monthTable = $('table.month_template').clone();
