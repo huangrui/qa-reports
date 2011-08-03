@@ -543,6 +543,9 @@ input.cancel {
     font-size: 10px;
     color: #515151;}
 
+.help_tag {
+    font-size: 9px;}
+
 .editables {
 	float: left;
 }
@@ -666,9 +669,14 @@ input#report_test_data.file {
 
 .big_btn:hover,
 .small_btn:hover,
-.dialog-delete:hover {
+.dialog-delete:hover,
+#upload_button.draghover {
     background-color: #57257b;
     color: #fff; }
+
+.draghover {
+    background-color: #bce9ae;
+}
 
 .big_btn:active,
 .small_btn:active,
@@ -950,16 +958,30 @@ div.formError, #error, form .error {
     visibility: hidden;}
 
 .remove_list_item {
-    display: inline-block;
+    display: block;
+    float: left;
     text-indent: -9999px;
     background: transparent url(../images/remove_list_item.png) no-repeat;
     width: 14px;
     height: 1.3em;
-    vertical-align: bottom;
-    padding-right: 0.5em;}
+    padding-right: 0.5em;
+    margin-top: 2px;}
 
 .remove_list_item:hover {
     background-image:url(../images/remove_list_item_hover.png);}
+
+.undo_remove_list_item{
+    display: block;
+    float: left;
+    text-indent: -9999px;
+    background: transparent url(../images/undo_remove_list_item_hover.png) no-repeat;
+    width: 14px;
+    height: 1.3em;
+    padding-right: 0.5em;
+    margin-top: 2px;}
+
+.undo_remove_list_item:hover {
+    background-image:url(../images/undo_remove_list_item_hover.png);}
 
 .item_list {
     list-style-type: none;
@@ -1507,6 +1529,23 @@ td.dec em{
 .th_limit {
 	width:7%;}
 
+.th_build_testset {
+        font-size: 12px;
+        text-shadow: #fff 1px 1px 1px;
+        background-color: #e0dfdf;
+        table-layout:fixed;
+        width: 10%;
+        text-align: center;}
+
+.th_build_result {
+        font-size: 10px;
+        table-layout:fixed;
+        width: 10%;
+        text-align: center;}
+
+tr.compare_set {
+        border-bottom-style: none;}
+
 .th_history_result {
 	text-align: center;}
 
@@ -1520,6 +1559,9 @@ td.dec em{
 #th_test_case,
 #th_history_test_case {
     width: 50%; }
+
+#th_build_test_case {
+    border-bottom-style: none;}
 
 #th_nft_test_case {
     width: 40%; }
@@ -1540,6 +1582,7 @@ table.detailed_results  {
 
 .detailed_results th {
 /*    text-align: left;*/
+    vertical-align: top;
     border-left: 1px solid #ddd;
     padding-top: 0.8em;
     padding-bottom: 0.8em; }
@@ -1634,9 +1677,42 @@ select.grading_select {
 .testcase td:first-child {
     border-left: 1px none #ddd;}
 
+.testcase.removed td {
+    background-color: #f8f8f8 !important;
+    text-decoration: line-through;
+}
+
+.testcase.removed.even td {
+    background-color: #ececec !important;}
+
+.testcase.removed td * {
+    filter: alpha(opacity=30);
+    -moz-opacity:0.3;
+    -khtml-opacity:0.3;
+    opacity: 0.3;
+}
+
+.testcase.removed td * * {
+    filter: alpha(opacity=100);
+    -moz-opacity:1.0;
+    -khtml-opacity:1.0;
+    opacity: 1.0;
+}
+
+.testcase.removed .undo_remove_list_item {
+    filter: alpha(opacity=100);
+    -moz-opacity:1.0;
+    -khtml-opacity:1.0;
+    opacity: 1.0;
+}
+
 td.testcase_name {
     padding-left: 20px;
     padding-right: 20px; }
+
+td.testcase_name p {
+    margin-left: 21px;
+}
 
 .testcase_value,
 .testcase_limit,
@@ -2070,4 +2146,28 @@ div.uploadify_button_wrapper a.hover {
 div.uploadify_object_wrapper {
     position:relative;
     z-index:10;
+}
+
+div#drag_drop_area {
+    padding-bottom: 20px;
+    margin-bottom: -20px;
+}
+
+div#drag_drop_area.indented {
+    float: left;
+}
+
+div#drag_drop_area.indented ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+div#drag_drop_area.indented ul input[type=checkbox] {
+    margin-right: 5px;
+}
+
+div.field.last {
+    padding-bottom: 30px;
+    margin-bottom: -30px;
 }

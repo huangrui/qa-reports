@@ -131,7 +131,7 @@ end
 #          :author => user,
 #          :title => "Test1",
 #          :target => "Core",
-#          :testtype => "Sanity",
+#          :testset => "Sanity",
 #          :hwproduct => "N900",
 #          :release_version => "1.2"
 #      }, [@file1], user)
@@ -140,7 +140,7 @@ end
 #          :author => user,
 #          :title => "Test1",
 #          :target => "Core",
-#          :testtype => "Sanity Testing",
+#          :testset => "Sanity Testing",
 #          :hwproduct => "N900",
 #          :release_version => "1.2"
 #      }, [@file2], user)

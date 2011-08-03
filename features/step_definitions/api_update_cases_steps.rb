@@ -11,7 +11,7 @@ And /^I have sent the file "([^\"]*)" via the REST API$/ do |file|
       "report"          => Rack::Test::UploadedFile.new("features/resources/#{file}", "text/xml"),
       "release_version" => "1.2",
       "target"          => "Netbook",
-      "testtype"        => "automated",
+      "testset"         => "automated",
       "hardware"        => "N900"
   }
 end

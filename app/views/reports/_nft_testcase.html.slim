@@ -7,7 +7,7 @@
     - if first
       td.testcase_name rowspan=all.size
         - if @editing
-          a href="#" onclick="if(confirm('Do you really want to remove \'#{testcase.escaped_name}\'?'))removeTestCase(#{testcase.id}, function(){ $('#testcase-#{testcase.id}').hide();}); return false;" class="remove_list_item" Remove
+          a.remove_list_item.toggle_testcase href="#" Remove
         = testcase.name
         - if not testcase.source_link.blank?
           a.dl_link href=testcase.source_link src
@@ -73,11 +73,11 @@
       / NOTE: The following is identical in _nft_testcase and _testcase_comment.
       / Partial not used here because of seriously bad performance.
       td class="testcase_notes #{'edit' if @editing}" rowspan="#{testcase.all_measurements.size if testcase.has_nft }"
-      .content
-        = comment_html(testcase)
-        - if not testcase.attachments.empty?
-          - attachment = testcase.attachments.first
-          a class="note_attachment #{'image_attachment' if attachment.image?}" href="#{attachment.pretty_url}" title=attachment.filename =attachment.pretty_url
-      - if @editing
-        .comment_markup style="display:none;" #{testcase.comment}
+        .content
+          = comment_html(testcase)
+          - if not testcase.attachments.empty?
+            - attachment = testcase.attachments.first
+            a class="note_attachment #{'image_attachment' if attachment.image?}" href="#{attachment.pretty_url}" title=attachment.filename =attachment.pretty_url
+        - if @editing
+          .comment_markup style="display:none;" #{testcase.comment}
     - first = false

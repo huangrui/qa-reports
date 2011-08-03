@@ -19,11 +19,13 @@
 
 module ReportExporter
 
-  EXPORTER_CONFIG = YAML.load_file("#{Rails.root.to_s}/config/qa-dashboard_config.yml")
+  EXPORTER_CONFIG    = YAML.load_file("#{Rails.root.to_s}/config/qa-dashboard_config.yml")
+  POST_TIMEOUT       = 10
+  POST_RETRIES_LIMIT = 4
 
   def self.hashify_test_session(test_session)
     sets = []
-    test_session.meego_test_sets.find(:all, :include => :meego_test_cases).each do |set|
+    test_session.features.find(:all, :include => :meego_test_cases).each do |set|
       cases = []
       set.meego_test_cases.each do |c|
         bugs = c.comment.scan(/\[\[(\d+)\]\]/).map {|m| m[0].to_i}
@@ -41,7 +43,7 @@ module ReportExporter
 
       data = {
         "qa_id" => set.id,
-        "name" => set.feature,
+        "name" => set.name,
 
         "total_cases" => set.total_cases,
         "total_pass" => set.total_passed,
@@ -60,9 +62,9 @@ module ReportExporter
 
       "title" => test_session.title,
 
-      "hardware" => test_session.hardware,
+      "hardware" => test_session.product,
       "profile" => test_session.target,
-      "testtype" => test_session.testtype,
+      "testtype" => test_session.testset,
       "release" => test_session.release_version,
 
       "created_at" => test_session.created_at.utc,
@@ -81,16 +83,31 @@ module ReportExporter
   end
 
   def self.post(data, action)
-    post_data = { "token" => EXPORTER_CONFIG['token'], "report" => data }
+    post_data = { "token" => EXPORTER_CONFIG['token'], "report" => data }.to_json
     uri       = EXPORTER_CONFIG['host'] + EXPORTER_CONFIG['uri'] + action
-    Rails.logger.debug "DEBUG: ReportExporter::post qa_id:#{data['qa_id'].to_s} uri:#{uri}"
+    headers   = { :content_type => :json, :accept => :json }
 
-    begin
-      response = RestClient.post uri, post_data.to_json, :content_type => :json, :accept => :json
-    rescue => e
-      Rails.logger.debug "DEBUG: ReportExporter::post exception: #{e.to_s}"
+    tries = POST_RETRIES_LIMIT
+    while(tries > 0)
+      Rails.logger.debug "DEBUG: ReportExporter::post qa_id:#{data['qa_id'].to_s} uri:#{uri}"
+      begin
+        response = RestClient::Request.execute :method  => :post,
+                                               :url     => uri,
+                                               :timeout => POST_TIMEOUT + 5 * (POST_RETRIES_LIMIT - tries),
+                                               :open_timeout => POST_TIMEOUT + 5 * (POST_RETRIES_LIMIT - tries),
+                                               :payload => post_data,
+                                               :headers => headers
+      rescue => e
+        tries -= 1
+        Rails.logger.debug "DEBUG: ReportExporter::post exception: #{e.to_s} tries left:#{(tries)}"
+        Rails.logger.debug "DEBUG: ReportExporter::post too many exceptions, giving up... (qa_id:#{data['qa_id'].to_s})" if tries == 0
+      else
+        Rails.logger.debug "DEBUG: ReportExporter::post res: #{response.to_str}" unless response.nil?
+        break
+      end
     end
-    Rails.logger.debug "DEBUG: ReportExporter::post res: #{response.to_str}" unless response.nil? #debug
+
+    return tries > 0
   end
 
   def self.export_test_session(test_session)

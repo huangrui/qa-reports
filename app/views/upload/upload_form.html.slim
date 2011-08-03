@@ -14,9 +14,12 @@
 
     .field.last
       label for="report_test_data" Test data:
-      #dragndrop_and_browse style="display:none"
-        #dropbox
-          | Drop xml and csv result files here
+
+      #drag_drop_area.indented
+        ul#uploaded_list class="item_list"
+        ul#file_attachment_list
+        a#upload_button.small_btn + Add report (or drag here)
+
         small
           | See example 
           a href="/example.xml" xml
@@ -25,73 +28,17 @@
           |  and 
           a href="http://meego.gitorious.org/meego-quality-assurance/test-definition/blobs/master/src/data/testdefinition-results.xsd"  dataset specification 
           | for reference
-        #browse
-          div
-            | or browse
-            br/
+        = f.error_message_on :uploaded_files
+        - if Rails.env.test?
           = f.file_field :uploaded_files, :id => "report_test_data", :class => "file", :tabindex => 6, :multiple => "true"
-      /! Fallback, if Drag'n Drop and File API is not supported, e.g. IE8
-      #only_browse
-        #browse
-          = f.file_field( :uploaded_files, :id => "report_test_data", :class => "file", :tabindex => 6, :multiple => "true")
-        small
-          | See example 
-          a href="/example.xml" xml
-          | , 
-          a href="/example.csv" csv
-          |  and 
-          a href="http://gitorious.org/qa-tools/test-definition/blobs/master/data/testdefinition-results.xsd" dataset specification 
-      = f.error_message_on :uploaded_files
+
     #wizard_actions
       #wizard_buttons
-        input.big_btn.cancel onclick="location.href='<% @selected_release_version %>'" type="button" value="Cancel"
+        input.big_btn.cancel onclick="location.href='/#{@selected_release_version}'" type="button" value="Cancel"
         = f.submit :id=>"upload_report_submit", :value=>"Next", :class=>"big_btn next", :tabindex => "7"
       p.next_step
         | next step:
         br/
         strong Finalize
 
-= javascript_include_tag 'handlebars'
-script name="attachment" type="text/x-handlebars-template"
-  | <div id="{{fileid}}">
-    <span style="float: left; margin-right: 20px;"><input
-    type="checkbox"
-    name="drag_n_drop_attachments[]"
-    value="1"
-    checked="true"/>
-    {{filename}}</span>
-    <img style="float: left;  margin-left: -10px; margin-top: 5px;" src="/images/progress.gif" />
-    </div>
-
-coffee:
-  $(document).ready ->
-    testTypeSuggestions = []
-    hardwareSuggestions = []
-
-    updateHardwareSuggestions = (data) ->
-      hardwareSuggestions = data
-      $("#report_test_hardware").autocomplete(source: hardwareSuggestions)
-      activateSuggestionLinks("div.field")
-
-    updateTestTypeSuggestions = (data) ->
-      testTypeSuggestions = data
-      $("#report_test_type").autocomplete(source: testTypeSuggestions)
-      activateSuggestionLinks("div.field")
-
-    hardware_url = window.location.pathname.replace("upload","hardware")
-    testtype_url = window.location.pathname.replace("upload","testtype")
-    $.get(hardware_url, updateHardwareSuggestions )
-    $.get(testtype_url, updateTestTypeSuggestions )
-
-    $(".date").datepicker(
-      showOn: "both",
-      buttonImage: "/images/calendar_icon.png",
-      buttonImageOnly: true,
-      firstDay: 1,
-      selectOtherMonths: true,
-      dateFormat: "yy-mm-dd"
-    )
-
-    myDate = new Date()
-    prettyDate = myDate.getUTCFullYear() + '-' + (myDate.getUTCMonth()+1) + '-' + myDate.getUTCDate()
-    $(".date").val(prettyDate)
+= javascript_include_tag 'fileuploader', 'uploadForm'

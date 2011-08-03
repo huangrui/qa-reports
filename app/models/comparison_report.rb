@@ -1,7 +1,7 @@
 require 'report_comparison'
 
 class ComparisonReport
-  attr_reader :test_cases, :hardwares
+  attr_reader :test_cases, :products
 
   def features
     @test_cases.keys
@@ -63,39 +63,40 @@ class ComparisonReport
     @comparisons.map{|k, v| v.new_na}.reduce(:+)
   end
 
-  def initialize(release, profile, test_type, comparison_test_type)
+  def initialize(release, profile, test_set, comparison_test_set)
     comparison_scope = MeegoTestSession.release(release).profile(profile)
-    hw_scope = comparison_scope.select("DISTINCT(hardware) as hardware")
+    hw_scope = comparison_scope.select("DISTINCT(product) as product")
 
-    @hardwares = (
-      hw_scope.test_type(test_type).merge(hw_scope.test_type(comparison_test_type))
-      ).map{ |row| row.hardware }
+    @products = (
+      hw_scope.testset(test_set).merge(hw_scope.testset(comparison_test_set))
+      ).map{ |row| row.product }
 
     @reports = []
     @test_cases = []
     @comparisons = {}
-    @hardwares.each do |hardware|
-      r1 = comparison_scope.includes(:meego_test_sets, :meego_test_cases).
-        test_type(test_type).hardware(hardware).latest
 
-      r2 = comparison_scope.includes(:meego_test_sets, :meego_test_cases => :meego_test_set).
-        test_type(comparison_test_type).hardware(hardware).latest
+    @products.each do |product|
+      r1 = comparison_scope.includes(:features, :meego_test_cases).
+        testset(test_set).product_is(product).latest
+
+      r2 = comparison_scope.includes(:features, :meego_test_cases => :feature).
+        testset(comparison_test_set).product_is(product).latest
 
       @reports << r1 << r2
-      @test_cases += r1.meego_test_cases + r2.meego_test_cases
-      @comparisons[hardware] = ReportComparison.new(r1, r2)
+      @test_cases += r1.meego_test_cases.sort_by(&:id) + r2.meego_test_cases.sort_by(&:id)
+      @comparisons[product] = ReportComparison.new(r1, r2)
     end
 
     # Group by feature
-    @test_cases = @test_cases.group_by { |tc| tc.meego_test_set.feature }
+    @test_cases = @test_cases.group_by { |tc| tc.feature.name }
 
     @test_cases.each_key do |feature|
       # Group by test case
       @test_cases[feature] = @test_cases[feature].group_by(&:name)
 
       @test_cases[feature].each_key do |test_case|
-        # Group by hardware
-        @test_cases[feature][test_case] = @test_cases[feature][test_case].group_by {|tc| tc.meego_test_session.hardware.downcase}
+        # Group by product
+        @test_cases[feature][test_case] = @test_cases[feature][test_case].group_by {|tc| tc.meego_test_session.product.downcase}
 
       end
     end

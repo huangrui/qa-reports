@@ -23,13 +23,13 @@ Then /^the link "([^"]*)" within "([^"]*)" should point to the report "([^"]*)"/
   with_scope(selector) do
     field = find_link(link)
 
-    version, target, test_type, hardware = expected_report.downcase.split('/')
+    version, target, testset, product = expected_report.split('/')
     report = MeegoTestSession.first(:conditions =>
-     {"version_labels.normalized" => version, :target => target, :hardware => hardware, :testtype => test_type}, :include => :version_label
+     {"version_labels.normalized" => version, :target => target, :product => product, :testset => testset}, :include => :version_label
     )
-    raise "report not found with parameters #{version}/#{target}/#{hardware}/#{test_type}!" unless report
+    raise "report not found with parameters #{version}/#{target}/#{hardware}/#{testset}!" unless report
 
-    field[:href].should == "/#{version.capitalize}/#{target.capitalize}/#{test_type.capitalize}/#{hardware.capitalize}/#{report.id}"
+    field[:href].should == "/#{version}/#{target}/#{testset}/#{product}/#{report.id}"
   end
 end
 
@@ -63,16 +63,6 @@ end
 
 When /^I view the page for "([^"]*)" (?:|testing )of "([^"]*)" hardware with (?:target|profile) "([^"]*)" in version "([^"]*)"$/ do |test_type, hardware, target, version|
   visit("/#{version}/#{target}/#{test_type}/#{hardware}")
-end
-
-When /^I click the delete button for case "([^"]*)"/ do |title|
-  page.evaluate_script('window.confirm = function() { return true; }')
-  tc = MeegoTestCase.where(:name => title).first
-  selector = "#testcase-" + tc.id.to_s
-
-  with_scope(selector) do
-    click_link("Remove")
-  end
 end
 
 Then /^(?:|I )should find element "([^"]*)"(?: within "([^"]*)")?$/ do |text, selector|

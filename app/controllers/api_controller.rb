@@ -24,7 +24,7 @@ class ApiController < ApplicationController
   include CacheHelper
 
   cache_sweeper :meego_test_session_sweeper, :only => [:import_data]
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, :except => :reports_by_limit_and_time
 
   def import_data
     data = request.query_parameters.merge(request.request_parameters)
@@ -42,24 +42,28 @@ class ApiController < ApplicationController
 
     data[:tested_at] ||= Time.now
     data[:hardware] ||= data[:hwproduct]
+    data[:product] ||= data[:hardware]
+    data[:testset] ||= data[:testtype]
     data.delete(:hwproduct)
+    data.delete(:testtype)
+    data.delete(:hardware)
+
     begin
       @test_session = MeegoTestSession.new(data)
       @test_session.import_report(current_user, true)
-
     rescue ActiveRecord::UnknownAttributeError => error
       render :json => {:ok => '0', :errors => error.message}
       return
     end
 
+    attachments.each do |file|
+      @test_session.report_attachments.build(:attachment => file)
+    end
+
     begin
       @test_session.save!
 
-      files = FileStorage.new()
-      attachments.each { |file|
-        files.add_file(@test_session, file, file.original_filename)
-      }
-      report_url = url_for :controller => 'reports', :action => 'view', :release_version => data[:release_version], :target => data[:target], :testtype => data[:testtype], :hardware => data[:hardware], :id => @test_session.id
+      report_url = url_for :controller => 'reports', :action => 'view', :release_version => data[:release_version], :target => data[:target], :testset => data[:testset], :product => data[:product], :id => @test_session.id
       render :json => {:ok => '1', :url => report_url}
     rescue ActiveRecord::RecordInvalid => invalid
       error_messages = {}
@@ -90,12 +94,10 @@ class ApiController < ApplicationController
       original_sets  = []
       begin
         @test_session = MeegoTestSession.find(@report_id)
-        @test_session.meego_test_sets.each do |tset|
-           original_sets << tset
-        end
-        @test_session.meego_test_cases.each do |tcase|
-           original_cases << tcase
-        end
+
+        original_sets = @test_session.features.clone
+        original_cases = @test_session.meego_test_cases.clone
+
         parse_err = @test_session.update_report_result(current_user, data[:uploaded_files], true)
       rescue ActiveRecord::UnknownAttributeError => errors
         render :json => {:ok => '0', :errors => errors.message}
@@ -108,6 +110,9 @@ class ApiController < ApplicationController
       end
 
       if @test_session.valid?
+        Feature.delete(original_sets)
+        MeegoTestCase.delete(original_cases)
+
         @test_session.save!
 
         expire_caches_for(@test_session, true)
@@ -117,20 +122,27 @@ class ApiController < ApplicationController
         render :json => {:ok => '0', :errors => invalid.record.errors}
         return
       end
-      
-      delete_dirty_data(original_sets)
-      delete_dirty_data(original_cases)
+
       render :json => {:ok => '1'}
     end
   end
 
-  private
-
-  def delete_dirty_data(dirty_array)
-    dirty_array.each do |dirty_item|
-       dirty_item.delete
+  def reports_by_limit_and_time
+    begin
+      raise ArgumentError, "Limit not defined" if not params.has_key? :limit_amount
+      sessions = MeegoTestSession.published.order("updated_at asc").limit(params[:limit_amount])
+      if params.has_key? :begin_time
+        begin_time = DateTime.parse params[:begin_time]
+        sessions = sessions.where('updated_at > ?', begin_time)
+      end
+      hashed_sessions = sessions.map { |s| ReportExporter::hashify_test_session(s) }
+      render :json => hashed_sessions
+    rescue ArgumentError => error
+      render :json => {:ok => '0', :errors => error.message}
     end
   end
+
+  private
 
   def collect_file(parameters, key, errors)
     file = parameters.delete(key)
