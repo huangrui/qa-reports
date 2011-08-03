@@ -97,15 +97,9 @@ class ApiController < ApplicationController
     parse_err = nil
 
     if @report_id = params[:id].try(:to_i)
-      original_cases = []
-      original_sets  = []
       begin
         @test_session = MeegoTestSession.find(@report_id)
-
-        original_sets = @test_session.features.clone
-        original_cases = @test_session.meego_test_cases.clone
-
-        parse_err = @test_session.update_report_result(current_user, data[:uploaded_files], true)
+        parse_err = @test_session.update_report_result(current_user, data, true)
       rescue ActiveRecord::UnknownAttributeError => errors
         render :json => {:ok => '0', :errors => errors.message}
         return
@@ -116,15 +110,9 @@ class ApiController < ApplicationController
         return
       end
 
-      if @test_session.valid?
-        Feature.delete(original_sets)
-        MeegoTestCase.delete(original_cases)
-
-        @test_session.save!
-
+      if @test_session.save
         expire_caches_for(@test_session, true)
         expire_index_for(@test_session)
-
       else
         render :json => {:ok => '0', :errors => invalid.record.errors}
         return

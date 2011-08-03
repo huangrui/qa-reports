@@ -20,7 +20,6 @@
 # 02110-1301 USA
 #
 
-require 'resultparser'
 require 'testreport'
 require 'csv'
 require 'trimmer'
@@ -390,15 +389,6 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 
-
-  ###############################################
-  # Small utility functions                     #
-  ###############################################
-  def updated_by(user)
-    self.editor = user
-    self.save
-  end
-
   # Check that the target and release_version given as parameters
   # exist in label tables. Test session tables allow anything, but
   # if using other than what's in the label tables, the results
@@ -530,71 +520,13 @@ class MeegoTestSession < ActiveRecord::Base
     path_to_file = File.join(dir, filename)
   end
 
-
-  ###############################################
-  # File upload handlers                        #
-  ###############################################
-
-  def save_uploaded_files
-
-    return unless @uploaded_files
-
-    @uploaded_files.each do |f|
-
-      return if not valid_filename_extension?(f.original_filename)
-      self.total_cases += parse_result_file(f.path, f.original_filename)
-
-      path_to_file = generate_file_destination_path(f.original_filename)
-      File.open(path_to_file, "wb") { |outf| outf.write(f.read) } #saves the uploaded file in server
-
-      self.test_result_files.build(:path => path_to_file) #add the new test result file
-    end
-
-
-    if @uploaded_files.size > 0 and total_cases == 0
-      if @uploaded_files.size == 1
-        errors.add :uploaded_files, "The uploaded file didn't contain any valid test cases"
-      else
-        errors.add :uploaded_files, "None of the uploaded files contained any valid test cases"
-      end
-    end
-  end
-
   def remove_uploaded_files
     # TODO: when report is deleted files should be deleted as well
   end
 
-  def import_report(user, published = false)
-    user.update_attribute(:default_target, self.target) if self.target.present?
-
-    # See if there is a previous report with the same test target and type
-    prev = self.prev_session
-    if prev
-      self.objective_txt     = prev.objective_txt if self.objective_txt.empty?
-      self.build_txt         = prev.build_txt if self.build_txt.empty?
-      self.environment_txt   = prev.environment_txt if self.environment_txt.empty?
-      self.qa_summary_txt    = prev.qa_summary_txt if self.qa_summary_txt.empty?
-      self.issue_summary_txt = prev.issue_summary_txt if self.issue_summary_txt.empty?
-    end
-
-    generate_defaults!
-
-    self.author    = user
-    self.editor    = user
-    self.published = published
-  end
-
-  def clone_testcase_comments_from_session(target_session)
-    meego_test_cases.where(:comment => '').includes(:feature).each do |tc|
-      prev_comment = target_session.test_case_by_name(tc.feature.name, tc.name).comment
-      tc.update_attribute :comment, prev_comment unless prev_comment.blank?
-    end
-  end
-
-  def update_report_result(user, resultfiles, published = true)
-    @uploaded_files = resultfiles
-    save_uploaded_files
-    parsing_errors = errors[:uploaded_files]
+  def update_report_result(user, params, published = true)
+    tmp = ReportFactory.new.build(params)
+    parsing_errors = tmp.errors[:uploaded_files]
 
     user.update_attribute(:default_target, self.target) if self.target.present?
     self.editor    = user
@@ -603,95 +535,19 @@ class MeegoTestSession < ActiveRecord::Base
     if !parsing_errors.empty?
       return parsing_errors.join(',')
     else
+      @uploaded_files = tmp.uploaded_files
+      self.features.clear
+      self.meego_test_cases.clear
+      tmp.features.each do |feature|
+        feature.meego_test_cases.each { |tc| tc.meego_test_session = self }
+      end
+      self.features = tmp.features
+      self.meego_test_cases = tmp.meego_test_cases
       return nil
     end
   end
 
   private
-
-  ###############################################
-  # Uploaded data parsing                       #
-  ###############################################
-
-  def parse_result_file(fpath,origfn)
-    cases = 0
-    begin
-      if origfn =~ /.csv$/i
-        cases = parse_csv_file(fpath)
-      else
-        cases = parse_xml_file(fpath)
-      end
-    rescue => e
-      logger.error "ERROR in file parsing"
-      logger.error origfn
-      logger.error e
-      logger.error e.backtrace
-      errors.add :uploaded_files, "Incorrect file format for #{origfn}" + (": #{e}" if origfn =~ /.xml$/i).to_s
-    end
-    cases
-  end
-
-  def parse_xml_file(filename)
-    sets = {}
-    file_total = 0
-    TestResults.new(File.open(filename)).suites.each do |suite|
-      suite.sets.each do |set|
-        ReportParser::parse_features(set.feature).each do |feature|
-          sets[feature] ||= self.features.build(:name => feature)
-          set_model = sets[feature]
-
-          set.cases.each do |testcase|
-            result = MeegoTestSession.map_result(testcase.result)
-            prev_tc = prev_session.test_case_by_name(feature, testcase.name) unless prev_session.nil?
-            prev_comment = prev_tc.comment unless prev_tc.nil?
-            comment = if testcase.comment.present? then testcase.comment else prev_comment || "" end
-            tc = set_model.meego_test_cases.build(
-                :name               => testcase.name,
-                :result             => result,
-                :comment            => comment,
-                :meego_test_session => self,
-                :source_link        => testcase.source_url
-            )
-            file_total += 1
-            nft_index = 0
-            testcase.measurements.each do |m|
-              tc.has_nft = true
-              if m.is_series?
-                outline = self.calculate_outline(m.measurements,m.interval)
-                tc.serial_measurements.build(
-                  :name       => m.name,
-                  :sort_index => nft_index,
-                  :short_json => series_json(m.measurements, maxsize=40),
-                  :long_json  => series_json_withx(m, outline.interval_unit, maxsize=200),
-                  :unit       => m.unit,
-                  :interval_unit => outline.interval_unit,
-
-                  :min_value    => outline.minval,
-                  :max_value    => outline.maxval,
-                  :avg_value    => outline.avgval,
-                  :median_value => outline.median
-                )
-              else
-                tc.measurements.build(
-                  :name       => m.name,
-                  :sort_index => nft_index,
-                  :value      => m.value,
-                  :unit       => m.unit,
-                  :target     => m.target,
-                  :failure    => m.failure
-                )
-              end
-              nft_index += 1
-            end
-          end
-        end
-      end
-    end
-    #if file_total == 0
-    #  raise "The XML file didn't contain any test cases"
-    #end
-    file_total
-  end
 
   def create_version_label
     verlabel = VersionLabel.find(:first, :conditions => {:normalized => release_version.downcase})
