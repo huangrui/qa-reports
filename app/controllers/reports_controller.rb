@@ -34,10 +34,8 @@ require 'report_exporter'
 
 module AjaxMixin
   def remove_attachment
-    @preview_id   = params[:id].to_i
-    @test_session = MeegoTestSession.find(@preview_id)
-    files         = FileStorage.new()
-    files.remove_file(@test_session, params[:name])
+    @attachment_id   = params[:id].to_i
+    ReportAttachment.destroy(@attachment_id)
     render :json => {:ok => '1'}
   end
 
@@ -176,6 +174,7 @@ class ReportsController < ApplicationController
     @preview_id = session[:preview_id] || params[:id]
     @editing    = true
     @wizard     = true
+    @build_diff = []
 
     if @preview_id
       @test_session   = MeegoTestSession.fetch_fully(@preview_id)
@@ -229,13 +228,14 @@ class ReportsController < ApplicationController
       return render_404 unless @selected_release_version.downcase.eql? @test_session.release_version.downcase
 
       @history = history(@test_session, 5)
+      @build_diff = build_diff(@test_session, 4)
 
       @target    = @test_session.target
       @testset  = @test_session.testset
       @product = @test_session.product
 
       @report    = @test_session
-      @files = FileStorage.new().list_files(@test_session) or []
+      @files = @test_session.report_attachments
       @raw_result_files = @test_session.raw_result_files
       @editing = false
       @wizard  = false
@@ -257,9 +257,10 @@ class ReportsController < ApplicationController
 
       @report       = @test_session
       @editing      = false
-      @files = FileStorage.new().list_files(@test_session) or []
+      @files = @test_session.report_attachments
       @wizard = false
       @email  = true
+      @build_diff = []
 
       @nft_trends = nil
       if @test_session.has_nft?
@@ -275,6 +276,7 @@ class ReportsController < ApplicationController
   def edit
     @editing = true
     @wizard  = false
+    @build_diff = []
 
     if id = params[:id].try(:to_i)
       @test_session   = MeegoTestSession.fetch_fully(id)
@@ -286,7 +288,7 @@ class ReportsController < ApplicationController
       @product = MeegoTestSession.release(@selected_release_version).popular_products
       @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
       @no_upload_link = true
-      @files = FileStorage.new().list_files(@test_session) or []
+      @files = @test_session.report_attachments
       @raw_result_files = @test_session.raw_result_files
 
       render :layout => "report"
@@ -337,7 +339,8 @@ class ReportsController < ApplicationController
     # XXX: bugzilla seems to encode its exported csv to utf-8 twice
     # so we convert from utf-8 to iso-8859-1, which is then interpreted
     # as utf-8
-     render :text => Iconv.iconv("iso-8859-1", "utf-8", content), :content_type => "text/csv"
+    data = Iconv.iconv("iso-8859-1", "utf-8", content)
+    render :json => FasterCSV.parse(data.join '\n')
 
   end
 
@@ -374,6 +377,21 @@ class ReportsController < ApplicationController
   def history(s, cnt)
     MeegoTestSession.where("(tested_at < '#{s.tested_at}' OR tested_at = '#{s.tested_at}' AND created_at < '#{s.created_at}') AND target = '#{s.target.downcase}' AND testset = '#{s.testset.downcase}' AND product = '#{s.product.downcase}' AND published = 1 AND version_label_id = #{s.version_label_id}").
         order("tested_at DESC, created_at DESC").limit(cnt).
+        includes([{:features => :meego_test_cases}, {:meego_test_cases => :feature}])
+  end
+
+  def build_diff(s, cnt)
+    sessions = MeegoTestSession.published.profile(s.target).testset(s.testset).product_is(s.product).
+        where("version_label_id = #{s.version_label_id} AND build_id < '#{s.build_id}' AND build_id != ''").
+        order("build_id DESC, tested_at DESC, created_at DESC")
+
+    latest = []
+    sessions.each do |session|
+      latest << session if (latest.empty? or session.build_id != latest.last.build_id)
+    end
+    
+    diff = MeegoTestSession.where(:id => latest).
+        order("build_id DESC, tested_at DESC, created_at DESC").limit(cnt).
         includes([{:features => :meego_test_cases}, {:meego_test_cases => :feature}])
   end
 

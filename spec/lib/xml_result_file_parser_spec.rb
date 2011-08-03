@@ -212,12 +212,12 @@ END
 
     before(:each) do
 
-      @xml_result_file = <<-END
+      xml_nft_result_file = <<-END
 <?xml version="1.0" encoding="UTF-8"?>
 <testresults environment="hardware" hwproduct="N900" hwbuild="unknown" version="0.1">
  <suite name="nft-suite" timeout="90" manual="false" insignificant="false">
   <set name="nft-set" feature="nft" description="Example test definition" timeout="90" manual="false" insignificant="false" environment="hardware">
-   <case name="series" timeout="90" manual="false" insignificant="false" result="PASS">
+   <case name="case 1" timeout="90" manual="false" insignificant="false" result="PASS">
     <step manual="false" command="sleep 2" result="PASS">
      <expected_result>0</expected_result>
      <return_code>0</return_code>
@@ -231,7 +231,7 @@ END
      <measurement value="478.400000"/>
     </series>
    </case>
-   <case name="measurements" timeout="90" manual="false" insignificant="false" result="PASS">
+   <case name="case 2" timeout="90" manual="false" insignificant="false" result="PASS">
     <step manual="false" command="sleep 1" result="PASS">
      <expected_result>0</expected_result>
      <return_code>0</return_code>
@@ -243,7 +243,7 @@ END
     <measurement name="temperature" value="21.000000" unit="C"/>
     <measurement name="bandwidth" value="100.000000" unit="Mb/s"/>
    </case>
-   <case name="both" timeout="90" manual="false" insignificant="false" result="PASS">
+   <case name="case 3" timeout="90" manual="false" insignificant="false" result="PASS">
     <step manual="false" command="echo foo" result="PASS">
      <expected_result>0</expected_result>
      <return_code>0</return_code>
@@ -270,23 +270,23 @@ END
 END
 
       # Usage: @test_cases["Feature"]["Testcase"][:field]
-      @test_cases = XMLResultFileParser.new.parse(StringIO.new(@xml_result_file))
+      @test_cases2 = XMLResultFileParser.new.parse(StringIO.new(xml_nft_result_file))
     end
 
     it "should have 'nft' feature" do
-      @test_cases.keys.first.should == 'nft'
+      @test_cases2.keys.first.should == 'nft'
     end
 
     it "should have three test cases" do
-     @test_cases['nft'].keys.should == ["both", "measurements", "series"]
+     @test_cases2['nft'].keys.should == ["case 1", "case 2", "case 3"]
     end
 
     it "should have correct measurements" do
-      @test_cases['nft']['measurements'][:measurements_attributes][0].should == {
+      @test_cases2['nft']['case 2'][:measurements_attributes][0].should == {
         :name => "temperature", :value => 21.0, :unit => "C", :target => nil, :failure => nil, :sort_index => 0
       }
 
-      @test_cases['nft']['measurements'][:measurements_attributes][1].should == {
+      @test_cases2['nft']['case 2'][:measurements_attributes][1].should == {
         :name => "bandwidth", :value => 100.0, :unit => "Mb/s", :target => nil, :failure => nil, :sort_index => 0
       }
     end

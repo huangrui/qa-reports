@@ -4,6 +4,9 @@ require 'rails/all'
 #TODO remove when updated to Rails 3.1 or greater
 require 'lib/ext-rails/active_record_association_collection' if Rails.version =~ /^3\.0/
 
+#TODO remove once slim or rails is updated
+require 'lib/ext-rails/actionview_cachehelper'
+
 # If you have a Gemfile, require the gems listed there, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(:default, Rails.env) if defined?(Bundler)

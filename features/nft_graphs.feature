@@ -14,6 +14,7 @@ Feature: Check NFT graphs from the web page
 
   Scenario: Should see CSV data in view mode
     When I view the report "1.2/Handset/NFT/N900"
+    Then show me the page
     Then I should see "Date,kg"
 
   Scenario: Should not see CSV data in edit mode

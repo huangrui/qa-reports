@@ -33,12 +33,12 @@
     = render :partial => 'editable_text', :locals => {:anchor => 'environment', :title => "Test Environment", :field => 'environment'}
     = render :partial => 'editable_text', :locals => {:anchor => 'qa_summary', :title => "Quality Summary", :field => 'qa_summary'}
     = render :partial => 'reports/test_results'
-    
+
     = yield :result_edit_notification
-    
+
     - if @test_session.has_non_nft?
       h2#detailed_results
-        | Detailed Test Results 
+        | Detailed Test Results
         small
           a href=url_for(:controller=>'csv_export', :action=>'export_report', :release_version=>@test_session.release_version, :target=>@test_session.target, :testset=>@test_session.testset, :product=>@test_session.product, :id=>@test_session.id) Download as CSV
         span.heading_actions= back_to_top
@@ -50,10 +50,12 @@
           tr
             th#th_test_case
               span.sort
-                a.see_only_failed_button.sort_btn.active href="#" See only failed
-                a.see_all_button.sort_btn href="#" See all
+                a.see_only_failed_button.sort_btn#detailed_case.active href="#" See only failed
+                a.see_all_button.sort_btn#detailed_case href="#" See all
                 - if @history
-                  a.see_history_button.sort_btn href="#" See history
+                  a.see_history_button.sort_btn#detailed_case href="#" See history
+                - unless @build_diff.empty?
+                  a.see_the_same_build_button.sort_btn#detailed_case href="#" See build
             th#th_result Result
             th#th_notes Notes
 
@@ -65,14 +67,34 @@
             tr
               th#th_history_test_case
                 span.sort
-                  a.see_only_failed_button.sort_btn href="#" See only failed
-                  a.see_all_button.sort_btn href="#" See all
-                  a.see_history_button.sort_btn.active href="#" See history
+                  a.see_only_failed_button.sort_btn#detailed_case href="#" See only failed
+                  a.see_all_button.sort_btn#detailed_case href="#" See all
+                  a.see_history_button.sort_btn#detailed_case.active href="#" See history
+                  - unless @build_diff.empty?
+                    a.see_the_same_build_button.sort_btn#detailed_case href="#" See build
               = history_headers(@history)
               th.th_result Current
               th
                 div style="position:relative;"
           = render :partial => "feature_history", :collection => @test_session.non_nft_sets
+
+      - unless @build_diff.empty?
+        table.detailed_results.build style="display:none"
+          thead
+            tr.compare_set
+              th#th_build_test_case
+                span.sort
+                  a.see_only_failed_button.sort_btn#detailed_case href="#" See only failed
+                  a.see_all_button.sort_btn#detailed_case href="#" See all
+                  - if @history
+                    a.see_history_button.sort_btn#detailed_case.active href="#" See history
+                  a.see_the_same_build_button.sort_btn#detailed_case href="#"  See build
+              = build_id_headers(@build_diff)
+              th.th_build_result *#{@test_session.build_id}
+              th
+                div style="position:relative;"
+
+          = render :partial => "feature_build", :collection => @test_session.non_nft_sets
 
     - if @test_session.has_nft?
       h2#detailed_nft_results

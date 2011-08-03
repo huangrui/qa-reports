@@ -114,11 +114,14 @@ class ReportFactory
       test_session.qa_summary_txt    = prev.qa_summary_txt    if test_session.qa_summary_txt.empty?
       test_session.issue_summary_txt = prev.issue_summary_txt if test_session.issue_summary_txt.empty?
 
-      # Copy test case comments from previous test report in case the test case result hasn't changed
+      #Copy test case comments from previous test report in case the test case result hasn't changed
       test_session.features.each do |feature|
         feature.meego_test_cases.each do |tc|
           prev_tc = prev.test_case_by_name(feature.name, tc.name)
-          tc.comment = prev_tc.comment if tc.comment.blank? and tc.result == prev_tc.result
+
+          if prev_tc and tc.result == prev_tc.result and tc.comment.blank?
+            tc.comment = prev_tc.comment
+          end
         end
       end
     end

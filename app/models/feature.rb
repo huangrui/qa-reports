@@ -35,8 +35,17 @@ class Feature < ActiveRecord::Base
   include ReportSummary
   include Graph
 
+
   def self.by_feature(feature)
     where(:name => feature).first
+  end
+
+  def find_matching_feature(session)
+    return nil unless session
+    session.features.each do |f|
+      return f if f.name == name
+    end
+    nil
   end
 
   def grading

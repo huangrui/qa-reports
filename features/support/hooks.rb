@@ -5,6 +5,7 @@ Before do
     "target"          => "Core",
     "testtype"        => "automated",
     "hwproduct"       => "N900",
+    "tested_at"       => "2010-1-1",
     "report.1"        => Rack::Test::UploadedFile.new("features/resources/sim.xml", "text/xml")
   }
 

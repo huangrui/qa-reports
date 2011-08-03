@@ -24,7 +24,7 @@ class ApiController < ApplicationController
   include CacheHelper
 
   cache_sweeper :meego_test_session_sweeper, :only => [:import_data]
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, :except => :reports_by_limit_and_time
 
   def import_data
     data = request.query_parameters.merge(request.request_parameters)
@@ -51,10 +51,13 @@ class ApiController < ApplicationController
       @test_session = ReportFactory.new.build(data)
       @test_session.author = current_user
       @test_session.editor = current_user
-
     rescue ActiveRecord::UnknownAttributeError => error
       render :json => {:ok => '0', :errors => error.message}
       return
+    end
+
+    attachments.each do |file|
+      @test_session.report_attachments.build(:attachment => file)
     end
 
     begin
@@ -66,6 +69,7 @@ class ApiController < ApplicationController
       attachments.each { |file|
         files.add_file(@test_session, file, file.original_filename)
       }
+
       report_url = url_for :controller => 'reports', :action => 'view', :release_version => data[:release_version], :target => data[:target], :testset => data[:testset], :product => data[:product], :id => @test_session.id
       render :json => {:ok => '1', :url => report_url}
     rescue ActiveRecord::RecordInvalid => invalid
@@ -125,7 +129,7 @@ class ApiController < ApplicationController
         render :json => {:ok => '0', :errors => invalid.record.errors}
         return
       end
-      
+
       render :json => {:ok => '1'}
     end
   end

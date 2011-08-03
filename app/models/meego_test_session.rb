@@ -44,6 +44,7 @@ class MeegoTestSession < ActiveRecord::Base
   has_many :features, :dependent => :destroy
   has_many :meego_test_cases
   has_many :test_result_files, :dependent => :destroy
+  has_many :report_attachments, :dependent => :destroy
   has_many :passed, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::PASS}"
   has_many :failed, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::FAIL}"
   has_many :na, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::NA}"
@@ -643,10 +644,11 @@ class MeegoTestSession < ActiveRecord::Base
             result = MeegoTestSession.map_result(testcase.result)
             prev_tc = prev_session.test_case_by_name(feature, testcase.name) unless prev_session.nil?
             prev_comment = prev_tc.comment unless prev_tc.nil?
+            comment = if testcase.comment.present? then testcase.comment else prev_comment || "" end
             tc = set_model.meego_test_cases.build(
                 :name               => testcase.name,
                 :result             => result,
-                :comment            => testcase.comment || prev_comment || "",
+                :comment            => comment,
                 :meego_test_session => self,
                 :source_link        => testcase.source_url
             )
