@@ -43,7 +43,7 @@ class XMLResultFileParser
   end
 
   def parse_measurements(test_case)
-    test_case.css('case > measurement').map do |measurement| 
+    test_case.xpath('./measurement').map do |measurement| 
       {
         :name       => measurement['name'],
         :value      => measurement['value'].try(:to_f),
