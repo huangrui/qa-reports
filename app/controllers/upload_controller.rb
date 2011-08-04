@@ -95,7 +95,7 @@ class UploadController < ApplicationController
     @test_session = ReportFactory.new.build(params[:meego_test_session])
     @test_session.author = current_user
     @test_session.editor = current_user
-    
+
     if @test_session.errors.empty? and @test_session.save
       session[:preview_id] = @test_session.id
 

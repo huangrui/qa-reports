@@ -60,7 +60,7 @@ class ReportFactory
     end
 
     params[:features_attributes] = features.map do |feature, test_cases|
-      { :name => feature, :meego_test_cases_attributes => test_cases.values 
+      { :name => feature, :meego_test_cases_attributes => test_cases.values
       }
     end
   end

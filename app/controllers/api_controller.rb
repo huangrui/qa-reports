@@ -51,6 +51,7 @@ class ApiController < ApplicationController
       @test_session = ReportFactory.new.build(data)
       @test_session.author = current_user
       @test_session.editor = current_user
+      @test_session.published = true
     rescue ActiveRecord::UnknownAttributeError => error
       render :json => {:ok => '0', :errors => error.message}
       return
@@ -62,7 +63,6 @@ class ApiController < ApplicationController
 
     begin
       @test_session.save!
-      @test_session.update_attribute(:published, true)
 
       #TODO: Use PaperClip
       files = FileStorage.new()
