@@ -20,7 +20,8 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 # 02110-1301 USA
 #
-
+require 'tempfile'
+require 'fileutils'
 require 'cache_helper'
 
 class UploadController < ApplicationController
@@ -84,11 +85,7 @@ class UploadController < ApplicationController
 
   def upload
     params[:meego_test_session][:uploaded_files] ||= []
-    params[:drag_n_drop_attachments] ||= []
-
-    params[:drag_n_drop_attachments].each do |name|
-      params[:meego_test_session][:uploaded_files].push( UploadedFile.new("public" + name, "rb") )
-    end
+    params[:meego_test_session][:uploaded_files] += handle_ajax_uploads(params[:drag_n_drop_attachments])
 
     @test_session = ReportFactory.new.build(params[:meego_test_session])
     @test_session.author = current_user
@@ -106,5 +103,23 @@ class UploadController < ApplicationController
       @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
       render :upload_form
     end
+  end
+
+  private
+
+  def handle_ajax_uploads(ajax_uploads)
+    uploaded_files = []
+
+    ajax_uploads ||= []
+    ajax_uploads.each do |name|
+      file = File.new("public" + name)
+      tmp = Tempfile.new("result_file")
+      tmp.write file.read
+      tmp.rewind
+      uploaded_files << ActionDispatch::Http::UploadedFile.new(:filename => File.basename(file.path), :tempfile => tmp)
+      rm file.path
+    end
+
+    uploaded_files
   end
 end
