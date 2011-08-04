@@ -26,7 +26,6 @@ Meegoqa::Application.routes.draw do
   match '/ajax_update_category' => 'reports#update_category', :via => "post"
   match '/ajax_remove_testcase' => 'reports#remove_testcase', :via => "post"
   match '/ajax_restore_testcase' => 'reports#restore_testcase', :via => "post"
-  match '/ajax_do_dashboard_export' => 'index#do_dashboard_export', :via => "post"
 
   match '/fetch_bugzilla_data' => 'reports#fetch_bugzilla_data', :via => "get"
   match '/dashboard_export' => 'index#dashboard_export', :via => "get"
