@@ -9,4 +9,6 @@ Feature: Filter visible test cases when viewing a report
 
   @selenium
   Scenario: As a default, passed test cases are hidden
-    Then I should not see "Test Two"
+    Then I should really see "Test One" within "table.detailed_results"
+    And I should really see "Test Three" within "table.detailed_results"
+    And I really should not see "Test Two" within "table.detailed_results"
