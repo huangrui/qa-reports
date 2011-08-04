@@ -33,10 +33,4 @@
       input.dialog-delete type="submit" value="Delete"
 
 - content_for :view_specific_js do
-  = javascript_include_tag 'jqModal.js'
-  javascript:
-    $(document).ready(function(){
-    filterResults("tr.result_pass", "passing tests");
-    fetchBugzillaInfo();
-    $('#delete-dialog').jqm({modal:true}).jqmAddTrigger('#delete-button');
-    });
+  = javascript_include_tag 'jqModal.js', 'reports_view'
