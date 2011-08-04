@@ -55,14 +55,18 @@ class ReportFactory
 
       raise ParseError.new(file.original_filename), file.original_filename + " didn't contain any valid test cases" if new_features.empty?
 
-      new_features.each do |feature, tcs|
-        features[feature] ||= {}
-        features[feature].merge!(tcs)
-      end
+      merge_results(features, new_features)
     end
 
     params[:features_attributes] = features.map do |feature, test_cases|
       { :name => feature, :meego_test_cases_attributes => test_cases.values }
+    end
+  end
+
+  def merge_results(features, new_features)
+    new_features.each do |feature, tcs|
+      features[feature] ||= {}
+      features[feature].merge!(tcs)
     end
   end
 
@@ -106,21 +110,24 @@ class ReportFactory
       test_session.objective_txt     = prev.objective_txt     if test_session.objective_txt.empty?
       test_session.build_txt         = prev.build_txt         if test_session.build_txt.empty?
       test_session.environment_txt   = prev.environment_txt   if test_session.environment_txt.empty?
-      test_session.qa_summary_txt    = prev.qa_summary_txt    if test_session.qa_summary_txt.empty?
+      test_session.qa_summary_txt    = prev.qa_sumdmary_txt   if test_session.qa_summary_txt.empty?
       test_session.issue_summary_txt = prev.issue_summary_txt if test_session.issue_summary_txt.empty?
 
-      #Copy test case comments from previous test report in case the test case result hasn't changed
-      test_session.features.each do |feature|
-        feature.meego_test_cases.each do |tc|
-          prev_tc = prev.test_case_by_name(feature.name, tc.name)
-
-          if prev_tc and tc.result == prev_tc.result and tc.comment.blank?
-            tc.comment = prev_tc.comment
-          end
-        end
-      end
+      copy_previous_test_case_comments(test_session, prev)
     end
 
     test_session.generate_defaults!
+  end
+
+  def copy_previous_test_case_comments(test_session, prev)
+    test_session.features.each do |feature|
+      feature.meego_test_cases.each do |tc|
+        prev_tc = prev.test_case_by_name(feature.name, tc.name)
+
+        if prev_tc and tc.result == prev_tc.result and tc.comment.blank?
+          tc.comment = prev_tc.comment
+        end
+      end
+    end
   end
 end
