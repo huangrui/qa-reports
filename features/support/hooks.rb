@@ -15,4 +15,6 @@ Before do
   })
   @default_new_api_opts.delete("testtype")
   @default_new_api_opts.delete("hwproduct")
+
+  @dummy_report = MeegoTestSession.new
 end
