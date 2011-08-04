@@ -76,12 +76,12 @@ class Feature < ActiveRecord::Base
   end
 
   def meego_test_cases_attributes=(attributes)
-    attributes.each { |test_case_attributes| meego_test_cases << MeegoTestCase.new(test_case_attributes) }
+    attributes.each { |test_case_attributes| meego_test_cases.build(test_case_attributes) }
   end
 
   def save_test_cases
     test_cases = []
-    meego_test_cases.each do |test_case| 
+    meego_test_cases.each do |test_case|
       test_case.feature_id = id
       test_case.meego_test_session_id = meego_test_session_id
       if !test_case.measurements.empty? or !test_case.serial_measurements.empty?
@@ -91,7 +91,7 @@ class Feature < ActiveRecord::Base
       end
     end
 
-    MeegoTestCase.import test_cases
+    MeegoTestCase.import test_cases, :validate => false
   end
 
 end
