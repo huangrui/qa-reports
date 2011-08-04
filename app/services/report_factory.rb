@@ -16,7 +16,7 @@ class ReportFactory
       test_session = MeegoTestSession.new(params)
       build_test_case_associations(test_session)
       copy_template_values(test_session)
-      #generate_environment_txt
+
     rescue ParseError => e
       Rails.logger.error "ERROR IN FILE PARSING: " + e.filename
       Rails.logger.error "ERROR MESSAGE: " + e.message
@@ -38,15 +38,14 @@ class ReportFactory
   end
 
   def parse_result_files(params)
-    test_cases = {}
-    #raise "No result files" unless params[:uploaded_files]
+    features = {}
 
     params[:uploaded_files].each do |file|
       if file.original_filename =~ /.csv$/i
-        new_test_cases = CSVResultFileParser.new.parse(file.open)
+        new_features = CSVResultFileParser.new.parse(file.open)
       elsif file.original_filename =~ /.xml$/i
         begin
-          new_test_cases = XMLResultFileParser.new.parse(file.open)
+          new_features = XMLResultFileParser.new.parse(file.open)
         rescue Nokogiri::XML::SyntaxError => e
           raise ParseError.new(file.original_filename), file.original_filename + ": " + e.message
         end
@@ -54,21 +53,17 @@ class ReportFactory
         raise ParseError.new(file.original_filename), "You can only upload files with the extension .xml or .csv"
       end
 
-      raise ParseError.new(file.original_filename), file.original_filename + " didn't contain any valid test cases" if new_test_cases.empty?
+      raise ParseError.new(file.original_filename), file.original_filename + " didn't contain any valid test cases" if new_features.empty?
 
-      new_test_cases.each do |feature, tcs|
-        test_cases[feature] ||= {}
-        test_cases[feature].merge!(tcs)
+      new_features.each do |feature, tcs|
+        features[feature] ||= {}
+        features[feature].merge!(tcs)
       end
     end
 
-    # Merge results from the new file with the existing results
-    features = []
-    test_cases.each do |feature, test_cases|
-      features << {:name => feature, :meego_test_cases_attributes => test_cases}
+    params[:features_attributes] = features.map do |feature, test_cases|
+      {:name => feature, :meego_test_cases_attributes => test_cases}
     end
-
-    params[:features_attributes] = features
   end
 
   # TODO: This should be handled with paperclip
@@ -127,9 +122,5 @@ class ReportFactory
     end
 
     test_session.generate_defaults!
-  end
-
-  def generate_environment_txt(params)
-    params[:environment_txt] ||= "* Hardware: " + params[:hardware]
   end
 end

@@ -2,47 +2,40 @@
 class CSVResultFileParser
 
   def initialize
-    @test_cases = {}
+    @features = {}
     @FCSV_settings = {
-      :col_sep => ',',
+      :col_sep           => ',',
       :headers           => true,
       :header_converters => :symbol,
-      :skip_blanks => true
+      :skip_blanks       => true
     }
   end
 
   def parse(io)
     FasterCSV.parse(io, @FCSV_settings) {|row| parse_row(row) }
-    @test_cases
+    @features
   end
 
   private
+
+  RESULT_MAPPING = [
+    MeegoTestCase::PASS,
+    MeegoTestCase::FAIL,
+    MeegoTestCase::NA 
+  ]
 
   def parse_row(row)
     #TODO: Field names should be harmonized with result.xml
     [0, 1].each { |field| raise ParseError.new("unknown"), "Incorrect file format" unless row[field] }
 
-    feature = row[0].toutf8.strip
-    name    = row[1].toutf8.strip
-    comment = row[2] ? row[2].toutf8.strip : ""
-    result  = parse_test_case_result(row[:pass], row[:fail], row[:na])
+    feature   = row[0].toutf8.strip
+    test_case = row[1].toutf8.strip
+    comment   = row[2] ? row[2].toutf8.strip : ""
+    
+    raise "Invalid test case result" if row.fields(:pass, :fail, :na).count("1") != 1
+    result    = RESULT_MAPPING[row.fields(:pass, :fail, :na).index("1")]
 
-    @test_cases[feature] ||= {}
-    @test_cases[feature][name] = {:name => name, :result => result, :comment => comment}
-  end
-
-  def parse_test_case_result(pass, fail, na)
-    #TODO: I guess there's a cleaner way to write this
-    if pass == "1" && fail != "1" && na !="1"
-      result = MeegoTestCase::PASS
-    elsif pass != "1" && fail == "1" && na !="1"
-      result = MeegoTestCase::FAIL
-    elsif pass != "1" && fail != "1" && na =="1"
-      result = MeegoTestCase::NA
-    else
-      raise "Invalid test case result"
-    end
-
-    result
+    @features[feature] ||= {}
+    @features[feature][test_case] = {:name => test_case, :result => result, :comment => comment}
   end
 end

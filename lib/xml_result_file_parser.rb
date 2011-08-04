@@ -4,18 +4,18 @@ class XMLResultFileParser
   include MeasurementUtils
 
   def parse(io)
-    test_cases = {}
+    features = {}
 
     doc = Nokogiri::XML(io) { |config| config.strict }
     doc.css('set').each do | set |
       feature = set['feature'] || "N/A"
-      test_cases[feature] ||= {}
+      features[feature] ||= {}
 
-      set.css('case').each { |test_case| tc = parse_test_case(test_case); test_cases[feature][tc[:name]] = tc }
-      test_cases.delete(feature) if test_cases[feature].empty?
+      set.css('case').each { |test_case| tc = parse_test_case(test_case); features[feature][tc[:name]] = tc }
+      features.delete(feature) if features[feature].empty?
     end
 
-    test_cases
+    features
   end
 
   private
@@ -32,14 +32,9 @@ class XMLResultFileParser
       :result                             => RESULT_MAPPING[test_case['result'].downcase] || MeegoTestCase::NA,
       :comment                            => test_case['comment'] || "",
       :source_link                        => test_case['vcsurl']  || "",
-      :has_nft                            => parse_has_nft(test_case),
       :measurements_attributes            => parse_measurements(test_case),
       :serial_measurements_attributes     => parse_serial_measurements(test_case)
     }
-  end
-
-  def parse_has_nft(test_case)
-    !test_case.css('measurement').empty? or !test_case.css('series').empty?
   end
 
   def parse_measurements(test_case)
