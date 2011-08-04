@@ -8,7 +8,7 @@ Given /^I have sent a request with optional parameter "([^"]*)" with value "([^"
   sleep 1
 end
 
-Given /^(\d+) reports exist from "([^"]*)" under "([^"]*)"$/ do |num, date, report_path|
+Given /^there are (\d+) reports from "([^"]*)" under "([^"]*)"$/ do |num, date, report_path|
   release, profile, testset, product = report_path.split '/'
   year, month = date.split '/'
 
@@ -33,4 +33,8 @@ Then /^reports from "([^"]*)" should be in the report list under "([^"]*)" do |d
 
   sessions_in_month = MeegoTestSession.where("tested_at >= '#{year}-#{month}-1' AND tested_at < '#{year}-#{next_month}-1'").count
   find(:xpath, "//table[contains(.,'#{month}')]").all('tr').count.should == sessions_in_month + 1
+end
+
+Then /^reports for "([^"]*)" should not be visible on the page$/ do |month_name|
+  Then %{I should not see "#{month_name}" within '.index_month'}
 end

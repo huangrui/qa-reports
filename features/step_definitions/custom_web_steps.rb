@@ -37,6 +37,10 @@ When /^I click the element "([^"]*)"$/ do |selector|
   find(selector).click
 end
 
+When /^I scroll down the page$/
+  visit '#footer'
+end
+
 When /^I click the element "([^"]*)" within "([^"]*)"$/ do |element, selector|
   with_scope(selector) do
     find(element).click
