@@ -21,7 +21,6 @@
 # 02110-1301 USA
 #
 
-require 'drag_n_drop_uploaded_file'
 require 'cache_helper'
 
 class UploadController < ApplicationController
@@ -87,9 +86,8 @@ class UploadController < ApplicationController
     params[:meego_test_session][:uploaded_files] ||= []
     params[:drag_n_drop_attachments] ||= []
 
-    # Harmonize file handling between drag'n drop and form upload
     params[:drag_n_drop_attachments].each do |name|
-      params[:meego_test_session][:uploaded_files].push( DragnDropUploadedFile.new("public" + name, "rb") )
+      params[:meego_test_session][:uploaded_files].push( UploadedFile.new("public" + name, "rb") )
     end
 
     @test_session = ReportFactory.new.build(params[:meego_test_session])

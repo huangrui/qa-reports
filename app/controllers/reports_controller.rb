@@ -23,7 +23,6 @@
 
 require 'digest/sha1'
 require 'open-uri'
-require 'drag_n_drop_uploaded_file'
 require 'file_storage'
 require 'report_comparison'
 require 'cache_helper'
