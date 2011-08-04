@@ -12,9 +12,7 @@ class ReportFactory
       generate_title(params)
       parse_result_files(params)
       save_result_files(params)
-
       test_session = MeegoTestSession.new(params)
-      build_test_case_associations(test_session)
       copy_template_values(test_session)
 
     rescue ParseError => e
@@ -62,7 +60,8 @@ class ReportFactory
     end
 
     params[:features_attributes] = features.map do |feature, test_cases|
-      {:name => feature, :meego_test_cases_attributes => test_cases}
+      { :name => feature, :meego_test_cases_attributes => test_cases.values 
+      }
     end
   end
 
@@ -90,13 +89,6 @@ class ReportFactory
 
   def sanitize_filename(filename)
     filename.gsub(/[^\w\.\_\-]/, '_')
-  end
-
-  def build_test_case_associations(test_session)
-    #TODO: This association could be thrown away and navigated through features
-    test_session.features.each do |feature|
-      feature.meego_test_cases.each { |tc| tc.meego_test_session = test_session }
-    end
   end
 
   def copy_template_values(test_session)

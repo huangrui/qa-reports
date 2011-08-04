@@ -25,12 +25,9 @@ require 'graph'
 
 class Feature < ActiveRecord::Base
   belongs_to :meego_test_session
+  has_many :meego_test_cases, :autosave => false, :dependent => :destroy
 
-  has_many :meego_test_cases #, :autosave => false
-
-  accepts_nested_attributes_for :meego_test_cases
-  #after_create :create_test_cases
-  before_destroy :delete_test_cases
+  after_save :save_test_cases
 
   include ReportSummary
   include Graph
@@ -78,20 +75,23 @@ class Feature < ActiveRecord::Base
     "#test-set-%i" % id
   end
 
-  private
-
-  def create_test_cases
-    meego_test_cases.each {|tc| tc.feature_id = id; tc.meego_test_session_id = meego_test_session_id}
-    if has_nft?
-      meego_test_cases.each { |tc| tc.save! }
-    else
-      # when test cases have no associations to save, much faster bulk insertions can be used
-      MeegoTestCase.import_from_array meego_test_cases
-    end
+  def meego_test_cases_attributes=(attributes)
+    attributes.each { |test_case_attributes| meego_test_cases << MeegoTestCase.new(test_case_attributes) }
   end
 
-  def delete_test_cases
-    MeegoTestCase.delete_all("feature_id = #{self.id}")
+  def save_test_cases
+    test_cases = []
+    meego_test_cases.each do |test_case| 
+      test_case.feature_id = id
+      test_case.meego_test_session_id = meego_test_session_id
+      if !test_case.measurements.empty? or !test_case.serial_measurements.empty?
+        test_case.save!
+      else
+        test_cases << test_case
+      end
+    end
+
+    MeegoTestCase.import test_cases
   end
 
 end

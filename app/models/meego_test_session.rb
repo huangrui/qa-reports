@@ -41,7 +41,7 @@ class MeegoTestSession < ActiveRecord::Base
   attr_accessor :uploaded_files
 
   has_many :features, :dependent => :destroy
-  has_many :meego_test_cases
+  has_many :meego_test_cases, :autosave => false
   has_many :test_result_files, :dependent => :destroy
   has_many :report_attachments, :dependent => :destroy
   has_many :passed, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::PASS}"
