@@ -56,10 +56,13 @@ h2#test_results
 
     h3#test_features Test Results by Feature
 
-    - unless @build_diff.empty?
+    - if contain_history(@history) or contain_history(@build_diff)
       span.sort
         a.see_feature_comment_button.sort_btn#detailed_feature.active href="#" See comment and grading
-        a.see_feature_build_button.sort_btn#detailed_feature href="#" See build pass%
+        - if contain_history(@history)
+          a.see_feature_history_button.sort_btn#detailed_feature href="#" See history pass%
+        - unless @build_diff.empty?
+          a.see_feature_build_button.sort_btn#detailed_feature href="#" See build pass%
 
     table.feature_detailed_results#test_results_by_feature
       thead.even
@@ -75,6 +78,19 @@ h2#test_results
           th.th_grading Grading
 
       = render :partial => 'feature_summary', :collection => @test_session.non_empty_features, :locals => {:max_cases => @test_session.max_feature_cases}
+
+    - if contain_history(@history)
+        table.feature_detailed_results_with_passrate_history#test_feature_history_results style="display:none"
+          thead.even
+            tr
+              th.th_feature Feature
+              th.th_total Total
+              th.th_passed Passed
+              th.th_failed Failed
+              th.th_not_testable N/A
+              = history_headers(@history)
+              th.th_result.current_feature_history_result Current
+          = render :partial => 'feature_pass_rate_history_summary', :collection => @test_session.features
 
     - unless @build_diff.empty?
       table.feature_detailed_results_with_build_id#test_feature_build_results style="display:none"
