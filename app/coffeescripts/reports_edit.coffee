@@ -110,6 +110,89 @@ handleTitleEditSubmit = () ->
     return false
 
 ###
+ * Handle the feature grading edit
+###
+handleFeatureGradingEdit = () ->
+    $node = $(this)
+    $span = $node.find('span')
+    return false if $span.is ":hidden"
+
+    $feature = $node.closest '.feature_record'
+    id = $feature.attr('id').substring(8)
+    $form = $('#feature_grading_edit_form form').clone()
+    $form.find('.id_field').val id
+    $select = $form.find 'select'
+
+    $div = $feature.find '.feature_record_grading_content'
+
+    grading = $div.text()
+    code = switch grading
+        when 'Red'    then "1"
+        when 'Yellow' then "2"
+        when 'Green'  then "3"
+        else "0"
+
+    $select.find('option[selected="selected"]').removeAttr "selected"
+    $select.find('option[value="' + code + '"]').attr "selected", "selected"
+
+    $node.unbind 'click'
+    $node.removeClass 'edit'
+
+    $form.submit handleFeatureGradingSubmit
+    $select.change () ->
+        $select.unbind 'blur'
+        if $select.val() == code
+            $form.detach()
+            $span.show()
+            $node.addClass 'edit'
+            $node.click handleFeatureGradingEdit
+        else
+            $form.submit()
+
+    $select.blur () ->
+        $form.detach()
+        $span.show()
+        $node.addClass 'edit'
+        $node.click handleFeatureGradingEdit
+
+    $span.hide()
+    $form.insertAfter $div
+    $select.focus()
+    return false
+
+###
+ * Submit feature's grading Ajax requirement
+###
+handleFeatureGradingSubmit = () ->
+    $form = $(this)
+    data = $form.serialize()
+    url = $form.attr 'action'
+
+    $node = $form.closest 'td'
+    $node.addClass('edit').click handleFeatureGradingEdit
+
+    $span = $node.find 'span'
+    $feature = $form.closest '.feature_record_grading'
+    $div =  $feature.find '.feature_record_grading_content'
+
+    $span.removeClass 'grading_white grading_red grading_yellow grading_green'
+    result = $form.find('select').val()
+
+    [cls,txt] = switch result
+        when "1" then ['grading_red', 'Red']
+        when "2" then ['grading_yellow', 'Yellow']
+        when "3" then ['grading_green', 'Green']
+        else ['grading_white', 'N/A']
+
+    $span.addClass cls
+    $div.text txt
+
+    $form.detach()
+    $span.show()
+    $.post url, data
+    return false
+
+###
  *  Handle the comments of category edit
  *  @return
 ###
