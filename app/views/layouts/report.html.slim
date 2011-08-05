@@ -16,7 +16,6 @@ html
     = javascript_include_tag 'dygraph-combined.js'
     = yield :view_specific_js_head
     = google_analytics_tag
-    = clicktale_top_tag
 
   body
     a name="top"
@@ -100,6 +99,3 @@ html
           on_ready_steps();
         });
       }
-
-
-    = clicktale_bottom_tag
