@@ -21,6 +21,22 @@ describe MeegoTestSession do
     mts.errors[:tested_at].should_not be_empty
   end
 
+  it "should create test sets and test cases" do
+    params = {
+      :title => "Dummy test report",
+      :release_version => "1.2",
+      :product => "N900",
+      :target => "Core",
+      :testset => "Sanity",
+      :tested_at => "2011-12-30 23:45:59",
+      :uploaded_files => "foo.csv"
+    }
+
+    mts = MeegoTestSession.new(params)
+    mts.valid?
+    puts mts.errors
+  end
+
   describe "filters_exist?" do
 
     before(:each) do

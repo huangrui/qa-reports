@@ -59,7 +59,7 @@
             th#th_result Result
             th#th_notes Notes
 
-        = render :partial => "feature", :collection => @test_session.non_nft_sets
+        = render :partial => "feature", :collection => @test_session.non_nft_features
 
       - if @history
         table.detailed_results.history style="display:none;"
@@ -76,7 +76,7 @@
               th.th_result Current
               th
                 div style="position:relative;"
-          = render :partial => "feature_history", :collection => @test_session.non_nft_sets
+          = render :partial => "feature_history", :collection => @test_session.non_nft_features
 
       - unless @build_diff.empty?
         table.detailed_results.build style="display:none"
@@ -94,7 +94,7 @@
               th
                 div style="position:relative;"
 
-          = render :partial => "feature_build", :collection => @test_session.non_nft_sets
+          = render :partial => "feature_build", :collection => @test_session.non_nft_features
 
     - if @test_session.has_nft?
       h2#detailed_nft_results
