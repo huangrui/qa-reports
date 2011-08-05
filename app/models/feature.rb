@@ -23,22 +23,27 @@
 require 'testreport'
 require 'graph'
 
-class MeegoTestSet < ActiveRecord::Base
+class Feature < ActiveRecord::Base
   belongs_to :meego_test_session
 
-  has_many :meego_test_cases, :dependent => :destroy, :autosave => false
+  has_many :meego_test_cases, :autosave => false
 
   after_create :create_test_cases
+  before_destroy :delete_test_cases
 
   include ReportSummary
   include Graph
 
-  def has_nft?
-    has_nft
+  def find_matching_feature(session)
+    return nil unless session
+    session.features.each do |f|
+      return f if f.name == name
+    end
+    nil
   end
 
-  def has_non_nft?
-    has_ft
+  def grading
+    read_attribute(:grading) || calculate_grading
   end
 
   def nft_cases
@@ -53,14 +58,10 @@ class MeegoTestSet < ActiveRecord::Base
     return @prev_summary unless @prev_summary.nil?
     prevs = meego_test_session.prev_session
     if prevs
-      @prev_summary = prevs.meego_test_sets.find(:first, :conditions => {:feature => feature})
+      @prev_summary = prevs.features.find(:first, :conditions => {:name => name})
     else
       nil
     end
-  end
-
-  def name
-    feature
   end
 
   def graph_img_tag(max_cases)
@@ -74,13 +75,17 @@ class MeegoTestSet < ActiveRecord::Base
   private
 
   def create_test_cases
-    meego_test_cases.each {|tc| tc.meego_test_set_id = id; tc.meego_test_session_id = meego_test_session_id}
+    meego_test_cases.each {|tc| tc.feature_id = id; tc.meego_test_session_id = meego_test_session_id}
     if has_nft?
       meego_test_cases.each { |tc| tc.save! }
     else
       # when test cases have no associations to save, much faster bulk insertions can be used
       MeegoTestCase.import_from_array meego_test_cases
     end
+  end
+
+  def delete_test_cases
+    MeegoTestCase.delete_all("feature_id = #{self.id}")
   end
 
 end

@@ -23,19 +23,19 @@
 
 .field
   label for="report_test_type" Test set:
-  = f.text_field :testtype, :id => "report_test_type", :class => "text testtype", :tabindex => 3
+  = f.text_field :testset, :id => "report_test_type", :class => "text testset", :tabindex => 3
   small.suggestions
-    | e.g. #{render :partial=>'shared/suggestion', :collection => @testtypes[0,3], :spacer_template => 'shared/comma'}
-  = f.error_message_on :testtype
-  = form_ajax_error_msg "testtype"
+    | e.g. #{render :partial=>'shared/suggestion', :collection => @testsets[0,3], :spacer_template => 'shared/comma'}
+  = f.error_message_on :testset
+  = form_ajax_error_msg "testset"
 
 .field
-  label for="report_test_hardware" Hardware:
-  = f.text_field :hardware, :id => "report_test_hardware", :class => "text hardware", :tabindex => 5
+  label for="report_test_product" Product:
+  = f.text_field :product, :id => "report_test_product", :class => "text product", :tabindex => 5
   small.suggestions
-    | e.g. #{render :partial=>'shared/suggestion', :collection => @hardware[0,3], :spacer_template => 'shared/comma'}
-  = f.error_message_on :hardware
-  = form_ajax_error_msg "hardware"
+    | e.g. #{render :partial=>'shared/suggestion', :collection => @product[0,3], :spacer_template => 'shared/comma'}
+  = f.error_message_on :product
+  = form_ajax_error_msg "product"
 
 .field
   label for="report_test_build_id" 

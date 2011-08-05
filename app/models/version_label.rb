@@ -2,8 +2,8 @@ class VersionLabel < ActiveRecord::Base
 
   scope :in_sort_order, order("sort_order ASC")
 
-  def self.versions
-    find(:all, :select => "normalized").map(&:normalized)
+  def self.release_versions
+    find(:all, :order => "sort_order ASC", :select => "label").map(&:label)
   end
 
   def self.latest

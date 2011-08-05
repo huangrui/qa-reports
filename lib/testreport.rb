@@ -83,35 +83,43 @@ end
 module ReportSummary
 
   def total_cases
-    @total_cases ||= if meego_test_cases.loaded?
-      meego_test_cases.length
-    else
-      meego_test_cases.count
-    end
+    @total_cases ||= meego_test_cases.size
   end
 
   def total_passed
-    @total_passed ||= if meego_test_cases.loaded?
-      meego_test_cases.to_a.count {|x| x.result == 1}
-    else
-      meego_test_cases.count(:conditions => {:result => 1})
-    end
+    @total_passed ||= count_results(MeegoTestCase::PASS)
   end
 
   def total_failed
-    @total_failed ||= if meego_test_cases.loaded?
-      meego_test_cases.to_a.count {|x| x.result == -1}
-    else
-      meego_test_cases.count(:conditions => {:result => -1})
-    end
+    @total_failed ||= count_results(MeegoTestCase::FAIL)
   end
 
   def total_na
-    @total_na ||= if meego_test_cases.loaded?
-      meego_test_cases.to_a.count {|x| x.result == 0}
+    @total_na ||= count_results(MeegoTestCase::NA)
+  end
+
+  def count_results(result)
+    if new_record? || meego_test_cases.loaded?
+      meego_test_cases.to_a.count {|x| x.result == result}
     else
-      meego_test_cases.count(:conditions => {:result => 0})
-    end
+      meego_test_cases.count(:conditions => {:result => result})
+    end  
+  end
+
+  def total_cases=(num)
+    @total_cases = num
+  end
+
+  def total_passed=(num)
+    @total_passed = num
+  end
+
+  def total_failed=(num)
+    @total_failed = num
+  end
+
+  def total_na=(num)
+    @total_na = num
   end
 
   def total_executed
@@ -305,17 +313,27 @@ module ReportSummary
     end
   end
 
-  def update_nft_non_nft
-    update_has_nft
-    update_has_non_nft
+  def has_nft?
+    total_nft > 0
   end
 
-  def update_has_nft
-    update_attribute(:has_nft, total_nft > 0)
+  def has_non_nft?
+    total_non_nft > 0
   end
 
-  def update_has_non_nft
-    update_attribute(:has_ft, total_non_nft > 0)
+  def calculate_grading
+    if total_cases > 0
+      pass_rate = total_passed * 100 / total_cases
+      if pass_rate < 40
+        1
+      elsif pass_rate < 90
+        2
+      else
+        3
+      end
+    else
+      0
+    end
   end
 
 end

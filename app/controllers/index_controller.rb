@@ -6,12 +6,12 @@ class IndexController < ApplicationController
   before_filter :authenticate_user!, :except => :index
 
   def index
-    @hardwares = Hardware.by_profile_by_test_type(@selected_release_version)
+    @products = Product.by_profile_by_test_type(@selected_release_version)
 
     @profiles = TargetLabel.targets
     @target = params[:target]
-    @testtype = params[:testtype]
-    @hardware = params[:hardware]
+    @testset = params[:testset]
+    @product = params[:product]
     @show_rss = true
   end
 

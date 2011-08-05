@@ -1,4 +1,4 @@
-module MeegoTestSetHelper
+module FeatureHelper
   def grading_html(model)
         if model==nil
             return "N/A"

@@ -48,13 +48,13 @@ Then /^I should return to report "([^\"]*)" and see "([^\"]*)" and a "Sign out" 
   |report_string, user_name|
 
   # TODO: DRY
-  version, target, test_type, hardware = report_string.downcase.split('/')
+  version, target, test_type, product = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {:target => target, :hardware => hardware, :testtype => test_type, "version_labels.normalized" => version}, :include => :version_label 
+   {:target => target, :product => product, :testset => test_type, "version_labels.normalized" => version}, :include => :version_label 
   )
   report.should_not be_nil
 
-  current_path.should == "/#{version}/#{target}/#{test_type}/#{hardware}/#{report.id}"
+  current_path.should == "/#{version}/#{target}/#{test_type}/#{product}/#{report.id}"
 
   And %{I should see "#{user_name}" within ".h-navi"}
   And %{I should see "Sign out" within ".h-navi"}

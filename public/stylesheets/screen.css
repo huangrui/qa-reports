@@ -669,9 +669,14 @@ input#report_test_data.file {
 
 .big_btn:hover,
 .small_btn:hover,
-.dialog-delete:hover {
+.dialog-delete:hover,
+#upload_button.draghover {
     background-color: #57257b;
     color: #fff; }
+
+.draghover {
+    background-color: #bce9ae;
+}
 
 .big_btn:active,
 .small_btn:active,
@@ -1524,6 +1529,23 @@ td.dec em{
 .th_limit {
 	width:7%;}
 
+.th_build_testset {
+        font-size: 12px;
+        text-shadow: #fff 1px 1px 1px;
+        background-color: #e0dfdf;
+        table-layout:fixed;
+        width: 10%;
+        text-align: center;}
+
+.th_build_result {
+        font-size: 10px;
+        table-layout:fixed;
+        width: 10%;
+        text-align: center;}
+
+tr.compare_set {
+        border-bottom-style: none;}
+
 .th_history_result {
 	text-align: center;}
 
@@ -1537,6 +1559,9 @@ td.dec em{
 #th_test_case,
 #th_history_test_case {
     width: 50%; }
+
+#th_build_test_case {
+    border-bottom-style: none;}
 
 #th_nft_test_case {
     width: 40%; }
@@ -1557,6 +1582,7 @@ table.detailed_results  {
 
 .detailed_results th {
 /*    text-align: left;*/
+    vertical-align: top;
     border-left: 1px solid #ddd;
     padding-top: 0.8em;
     padding-bottom: 0.8em; }
@@ -2002,7 +2028,7 @@ width: 35px;
 
 /* @group wizard */
 #wizard_buttons {
-    width: 260px;
+    width: 270px;
     overflow: hidden;
     float: left; }
 
@@ -2120,4 +2146,28 @@ div.uploadify_button_wrapper a.hover {
 div.uploadify_object_wrapper {
     position:relative;
     z-index:10;
+}
+
+div#drag_drop_area {
+    padding-bottom: 20px;
+    margin-bottom: -20px;
+}
+
+div#drag_drop_area.indented {
+    float: left;
+}
+
+div#drag_drop_area.indented ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+div#drag_drop_area.indented ul input[type=checkbox] {
+    margin-right: 5px;
+}
+
+div.field.last {
+    padding-bottom: 30px;
+    margin-bottom: -30px;
 }
