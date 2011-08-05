@@ -348,6 +348,22 @@ restoreTestCase = (id, callback) ->
     $.post "/ajax_restore_testcase", {id: id}, (data) ->
         callback? this if data.ok == 1
 
+unlinkTestCaseButtons = (node) ->
+    $node = $(node)
+    $comment = $node.find '.testcase_notes'
+    $result = $node.find '.testcase_result'
+
+    $result.unbind 'click'
+    $comment.unbind 'click'
+
+linkTestCaseButtons = (node) ->
+    $node = $(node)
+    $comment = $node.find '.testcase_notes'
+    $result = $node.find '.testcase_result'
+
+    $result.click handleResultEdit
+    $comment.click handleCommentEdit
+
 $(document).ready () ->
     window.SESSION_ID = $('#session_id').text()
     $('#report_test_execution_date').val $('#fomatted_execute_date').text()

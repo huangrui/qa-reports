@@ -186,25 +186,6 @@ var renderNftTrendGraph = function(hash) {
     hash.w.show();
 };
 
-function unlinkTestCaseButtons(node) {
-    var $node = $(node);
-    var $comment = $node.find('.testcase_notes');
-    var $result = $node.find('.testcase_result');
-
-    $result.unbind('click');
-    $comment.unbind('click');
-}
-
-function linkTestCaseButtons(node) {
-    var $node = $(node);
-    var $comment = $node.find('.testcase_notes');
-    var $result = $node.find('.testcase_result');
-
-    $result.click(handleResultEdit);
-    $comment.click(handleCommentEdit);
-}
-
-
 function handleResultEdit() {
     var $node = $(this);
     var $span = $node.find('span');
