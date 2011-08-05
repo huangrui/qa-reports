@@ -17,7 +17,6 @@ html
     - if @show_rss
       link href=rss_url rel="alternate" title="RSS" type="application/rss+xml"
     = google_analytics_tag
-    = clicktale_top_tag
 
   body
     a name="top"
@@ -28,4 +27,3 @@ html
       = yield
 
     #footer
-    = clicktale_bottom_tag
