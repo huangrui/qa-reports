@@ -318,6 +318,78 @@ handleFeatureCommentFormSubmit = () ->
     fetchBugzillaInfo()
     return false
 
+handleResultEdit = () ->
+    $node = $(this)
+    $span = $node.find 'span'
+    return false if $span.is ":hidden"
+
+    $testcase = $node.closest '.testcase'
+    id = $testcase.attr('id').substring(9)
+    $form = $('#result_edit_form form').clone()
+    $form.find('.id_field').val id
+    $select = $form.find 'select'
+
+    result = $span.text()
+
+    code = switch result
+        when 'Pass' then '1'
+        when 'Fail' then '-1'
+        else '0'
+
+    $select.find('option[selected="selected"]').removeAttr "selected"
+    $select.find('option[value="' + code + '"]').attr "selected", "selected"
+
+    $node.unbind 'click'
+    $node.removeClass 'edit'
+
+    $form.submit handleResultSubmit
+    $select.change () ->
+        $select.unbind 'blur'
+        if $select.val() == code
+            $form.detach()
+            $span.show()
+            $node.addClass 'edit'
+            $node.click handleResultEdit
+        else
+            $form.submit()
+
+    $select.blur () ->
+        $form.detach()
+        $span.show()
+        $node.addClass 'edit'
+        $node.click handleResultEdit
+
+    $span.hide()
+    $form.insertAfter $span
+    $select.focus()
+
+    return false
+
+handleResultSubmit = () ->
+    $form = $(this)
+
+    data = $form.serialize()
+    url = $form.attr 'action'
+
+    $node = $form.closest 'td'
+    $node.addClass('edit').removeClass('pass fail na').click handleResultEdit
+
+    $span = $node.find 'span'
+    result = $form.find('select').val()
+
+    [cls,txt] = switch result
+        when '1'  then ['pass', 'Pass']
+        when '-1' then ['fail', 'Fail']
+        else ['na', 'N/A']
+    $node.addClass cls
+    $span.text txt
+
+    $form.detach()
+    $span.show()
+    $.post url, data
+
+    return false
+
 toggleRemoveTestCase = (eventObject) ->
     $testCaseRow = $(eventObject.target).closest '.testcase'
     id = $testCaseRow.attr('id').split('-').pop()
