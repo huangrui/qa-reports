@@ -328,49 +328,6 @@ function fetchBugzillaInfo() {
     });
 }
 
-function formatMarkup(s) {
-    s = htmlEscape(s);
-
-    lines = s.split('\n');
-    var html = "";
-    var ul = false;
-    for (var i = 0; i < lines.length; ++i) {
-        var line = $.trim(lines[i]);
-        if (ul && !/^\*/.test(line)) {
-            html += '</ul>';
-            ul = false;
-        } else if (line == '') {
-            html += "<br/>";
-        }
-        if (line == '') {
-            continue;
-        }
-        line = line.replace(/'''''(.+?)'''''/g, "<b><i>$1</i></b>");
-        line = line.replace(/'''(.+?)'''/g, "<b>$1</b>");
-        line = line.replace(/''(.+?)''/g, "<i>$1</i>");
-        line = line.replace(/http\:\/\/([^\/]+)\/show_bug\.cgi\?id=(\d+)/g, "<a class=\"bugzilla fetch bugzilla_append\" href=\"http://$1/show_bug.cgi?id=$2\">$2</a>");
-        line = line.replace(/\[\[(http[s]?:\/\/.+?) (.+?)\]\]/g, "<a href=\"$1\">$2</a>");
-        line = line.replace(/\[\[(\d+)\]\]/g, "<a class=\"bugzilla fetch bugzilla_append\" href=\"" + BUGZILLA_URI + "$1\">$1</a>");
-
-        var match;
-        line = line.replace(/^====\s*(.+)\s*====$/, "<h5>$1</h5>");
-        line = line.replace(/^===\s*(.+)\s*===$/, "<h4>$1</h4>");
-        line = line.replace(/^==\s*(.+)\s*==$/, "<h3>$1</h3>");
-        match = /^\*(.+)$/.exec(line);
-        if (match) {
-            if (!ul) {
-                html += "<ul>";
-                ul = true;
-            }
-            html += "<li>" + match[1] + "</li>";
-        } else if (!/^<h/.test(line)) {
-            html += line + "<br/>";
-        } else {
-            html += line;
-        }
-    }
-    return html;
-}
 
 function setTableLoaderSize(tableID, loaderID) {
 		t = $(tableID);
