@@ -57,7 +57,7 @@ class MeegoTestCase < ActiveRecord::Base
   end
 
   def has_measurements?
-    return has_nft
+    return !(measurements.empty? and serial_measurements.empty?)
   end
 
   def find_change_class(prev_session)

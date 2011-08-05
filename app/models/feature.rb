@@ -50,11 +50,11 @@ class Feature < ActiveRecord::Base
   end
 
   def nft_cases
-    meego_test_cases.select {|tc| tc.has_nft}
+    meego_test_cases.select {|tc| tc.has_measurements?}
   end
 
   def non_nft_cases
-    meego_test_cases.select {|tc| !tc.has_nft}
+    meego_test_cases.select {|tc| !tc.has_measurements?}
   end
 
   def prev_summary

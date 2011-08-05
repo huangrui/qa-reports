@@ -388,7 +388,7 @@ class ReportsController < ApplicationController
     sessions.each do |session|
       latest << session if (latest.empty? or session.build_id != latest.last.build_id)
     end
-    
+
     diff = MeegoTestSession.where(:id => latest).
         order("build_id DESC, tested_at DESC, created_at DESC").limit(cnt).
         includes([{:features => :meego_test_cases}, {:meego_test_cases => :feature}])

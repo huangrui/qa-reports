@@ -158,7 +158,7 @@ class MeegoTestSession < ActiveRecord::Base
   def self.load_case_counts_for_reports!(reports)
     result_counts = MeegoTestCase.select([:meego_test_session_id, :result, :count]).
       where(:meego_test_session_id => reports).group(:meego_test_session_id, :result).count(:result)
-    
+
     reports.map! do |report|
       report.total_passed = result_counts[[report.id, MeegoTestCase::PASS]]
       report.total_failed = result_counts[[report.id, MeegoTestCase::FAIL]]
@@ -256,11 +256,11 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def nft_sets
-    features.select {|set| set.has_nft?}
+    features.select &:has_nft?
   end
 
-  def non_nft_sets
-    features.select {|set| set.has_non_nft?}
+  def non_nft_features
+    features.select &:has_non_nft?
   end
 
   def test_case_by_name(feature, name)

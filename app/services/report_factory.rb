@@ -110,7 +110,7 @@ class ReportFactory
       test_session.objective_txt     = prev.objective_txt     if test_session.objective_txt.empty?
       test_session.build_txt         = prev.build_txt         if test_session.build_txt.empty?
       test_session.environment_txt   = prev.environment_txt   if test_session.environment_txt.empty?
-      test_session.qa_summary_txt    = prev.qa_sumdmary_txt   if test_session.qa_summary_txt.empty?
+      test_session.qa_summary_txt    = prev.qa_summary_txt    if test_session.qa_summary_txt.empty?
       test_session.issue_summary_txt = prev.issue_summary_txt if test_session.issue_summary_txt.empty?
 
       copy_previous_test_case_comments(test_session, prev)
