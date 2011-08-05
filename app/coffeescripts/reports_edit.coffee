@@ -318,6 +318,36 @@ handleFeatureCommentFormSubmit = () ->
     fetchBugzillaInfo()
     return false
 
+toggleRemoveTestCase = (eventObject) ->
+    $testCaseRow = $(eventObject.target).closest '.testcase'
+    id = $testCaseRow.attr('id').split('-').pop()
+    if $testCaseRow.hasClass 'removed'
+        restoreTestCase id
+        linkTestCaseButtons $testCaseRow
+    else
+        removeTestCase id
+        unlinkTestCaseButtons $testCaseRow
+
+    $nftRows = $('.testcase-nft-' + id.toString())
+    if $nftRows.length == 0
+        $testCaseRow.toggleClass 'removed'
+    else
+        $nftRows.toggleClass 'removed'
+
+    $testCaseRow.find('.testcase_name').toggleClass 'removed'
+    $testCaseRow.find('.testcase_name a').toggleClass 'remove_list_item'
+    $testCaseRow.find('.testcase_name a').toggleClass 'undo_remove_list_item'
+    $testCaseRow.find('.testcase_notes').toggleClass 'edit'
+    $testCaseRow.find('.testcase_result').toggleClass 'edit'
+
+removeTestCase = (id, callback) ->
+    $.post "/ajax_remove_testcase", {id: id}, (data) ->
+        callback? this if data.ok == 1
+
+restoreTestCase = (id, callback) ->
+    $.post "/ajax_restore_testcase", {id: id}, (data) ->
+        callback? this if data.ok == 1
+
 $(document).ready () ->
     window.SESSION_ID = $('#session_id').text()
     $('#report_test_execution_date').val $('#fomatted_execute_date').text()

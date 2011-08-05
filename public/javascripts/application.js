@@ -449,51 +449,6 @@ function removeAttachment(attachment, callback) {
     });
 };
 
-function toggleRemoveTestCase(eventObject) {
-  var $testCaseRow = $(eventObject.target).closest('.testcase');
-  var id = $testCaseRow.attr('id').split('-').pop();
-  if ($testCaseRow.hasClass('removed')) {
-    restoreTestCase(id, function(){});
-    linkTestCaseButtons($testCaseRow);
-  }
-  else {
-    removeTestCase(id, function(){});
-    unlinkTestCaseButtons($testCaseRow);
-  }
-
-  $nftRows = $('.testcase-nft-' + id.toString());
-  if ($nftRows.length == 0) {
-    $testCaseRow.toggleClass('removed');
-  } else {
-    $nftRows.toggleClass('removed');
-  }
-
-  $testCaseRow.find('.testcase_name').toggleClass('removed');
-  $testCaseRow.find('.testcase_name a').toggleClass('remove_list_item');
-  $testCaseRow.find('.testcase_name a').toggleClass('undo_remove_list_item');
-  $testCaseRow.find('.testcase_notes').toggleClass('edit');
-  $testCaseRow.find('.testcase_result').toggleClass('edit');
-}
-
-function removeTestCase(id, callback) {
-    $.post("/ajax_remove_testcase", {
-        id: id
-    }, function(data, status) {
-        if (data.ok == 1 && callback != null) {
-    	     callback.call(this);
-    	}
-    });
-}
-
-function restoreTestCase(id, callback) {
-    $.post("/ajax_restore_testcase", {
-      id:         id,
-    }, function(data, status) {
-      if (data.ok == 1 && callback != null) {
-        callback.call(this);
-      }
-    });
-}
 
 
 (function($) {
