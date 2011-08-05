@@ -648,7 +648,7 @@ linkTestCaseButtons = (node) ->
 
 $(document).ready () ->
     window.SESSION_ID = $('#session_id').text()
-    $('#report_test_execution_date').val $('#fomatted_execute_date').text()
+    $('#report_test_execution_date').val $('#formatted_execute_date').text()
 
     $('#category-dialog').jqm(modal:true).jqmAddTrigger('#test_category')
 
