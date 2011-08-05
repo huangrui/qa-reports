@@ -256,28 +256,6 @@ var renderNftTrendGraph = function(hash) {
     hash.w.show();
 };
 
-function linkEditButtons() {
-    $('div.editable_area').each(function(i, node) {
-        var $node = $(node);
-        var contentDiv = $node.children('.editcontent').first();
-        var rawDiv = contentDiv.next('.editmarkup');
-        $node.data('content', contentDiv);
-        $node.data('raw', rawDiv);
-        $node.click(handleEditButton);
-    });
-    $('div.editable_title').click(handleTitleEdit);
-    $('.testcase').each(function(i, node) { linkTestCaseButtons(node); });
-
-    $('.feature_record').each(function(i, node) {
-        var $node = $(node);
-        var $comment = $node.find('.feature_record_notes');
-        var $grading = $node.find('.feature_record_grading');
-
-        $comment.click(handleFeatureCommentEdit);
-        $grading.click(handleFeatureGradingEdit);
-    });
-}
-
 function unlinkTestCaseButtons(node) {
     var $node = $(node);
     var $comment = $node.find('.testcase_notes');
