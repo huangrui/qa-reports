@@ -59,6 +59,56 @@ handleEditButton = () ->
 
     return false
 
+handleTitleEdit = () ->
+    $button = $(this)
+    $content = $button.children('h1').find 'span.content'
+    return false if $content.is ":hidden"
+
+    title = $content.text()
+    $form = $('#title_edit_form form').clone()
+    $field = $form.find '.title_field'
+    $field.val title
+    $form.data 'original', $content
+    $form.data 'button', $button
+
+    $button.removeClass 'editable_text'
+
+    $form.submit handleTitleEditSubmit
+    $form.find('.save').click () ->
+        $form.submit()
+        return false
+
+    $form.find('.cancel').click () ->
+        $form.detach()
+        $content.show()
+        $button.addClass 'editable_text'
+        return false
+
+    $content.hide()
+    $form.insertAfter $content
+    $field.focus()
+
+    return false
+
+handleTitleEditSubmit = () ->
+    $form = $(this)
+    $content = $form.data 'original'
+    title = $form.find('.title_field').val()
+    $content.text title
+
+    data = $form.serialize()
+    action = $form.attr 'action'
+
+    $button = $form.data 'button'
+
+    $.post action, data
+
+    $button.addClass 'editable_text'
+    $form.detach()
+    $content.show()
+
+    return false
+
 ###
  *  Handle the comments of category edit
  *  @return
