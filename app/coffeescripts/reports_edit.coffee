@@ -109,6 +109,69 @@ handleTitleEditSubmit = () ->
 
     return false
 
+prepareCategoryUpdate = (div) ->
+    $div      = $(div)
+    $form     = $div.find "form"
+    $save     = $div.find ".dialog-delete"
+    $cancel   = $div.find ".dialog-cancel"
+    $testset  = $div.find ".field .testset"
+    $date     = $div.find ".field .date"
+    $product  = $div.find ".field .product"
+    $catpath  = $("dd.category")
+    $datespan = $("span.date")
+    $donebtn  = $('#wizard_buttons a')
+
+    arrow     = $('<div/>').html(" &rsaquo; ").text()
+
+    $testset.val $testset.val()
+    $product.val $product.val()
+
+    $save.click () ->
+      targetval  = $('.field .target:checked').val()
+      versionval = $('.field .version:checked').val()
+      typeval    = $testset.val()
+      hwval      = $product.val()
+      dateval    = $date.val()
+
+      # validate
+      $div.find('.error').hide()
+      if targetval == ''
+        return false
+      if typeval == ''
+        $('.error.testset').text("Test set cannot be empty.").show()
+        return false
+      if versionval == ''
+        return false
+      if dateval == ''
+        $('.error.tested_at').text("Test date cannot be empty.").show()
+        return false
+      if hwval == ''
+        $('.error.product').text("product cannot be empty.").show()
+        return false
+
+      # send to server
+      data = $form.serialize()
+      url  = $form.attr 'action'
+
+      # update DOM
+      #  - update bread crumbs
+      #  - update date
+      $.post url, data, (data) ->
+          $datespan.text(data)
+
+          $catpath.html(htmlEscape(versionval) + arrow + htmlEscape(targetval)
+                                               + arrow + htmlEscape(typeval)
+                                               + arrow + htmlEscape(hwval))
+
+          $donebtn.attr("href", "/" + encodeURI(versionval) +
+                                "/" + encodeURI(targetval) +
+                                "/" + encodeURI(typeval) +
+                                "/" + encodeURI(hwval) +
+                                "/" + SESSION_ID)
+
+      $div.jqmHide()
+      return false
+
 ###
  * Handle the feature grading edit
 ###
