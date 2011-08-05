@@ -63,6 +63,7 @@
         if (previousYear != year || previousMonth != month) {
           var monthTable = $('table.month_template').clone();
           monthTable.removeClass('month_template');
+          monthTable.addClass('month')
           monthTable.find('#month').html(monthNames[month - 1] + ' ' + year);
           monthTable.show();
           monthTable.appendTo('.index_month');

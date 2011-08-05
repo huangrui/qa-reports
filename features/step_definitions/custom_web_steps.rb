@@ -80,8 +80,9 @@ When /^I click the element "([^"]*)"$/ do |selector|
   find(selector).click
 end
 
-When /^I scroll down the page$/
-  visit '#footer'
+When /^I scroll down the page$/ do
+  page.evaluate_script('window.location.hash="footer";')
+  And %{I wait until all Ajax requests are complete}
 end
 
 When /^I click the element "([^"]*)" within "([^"]*)"$/ do |element, selector|
