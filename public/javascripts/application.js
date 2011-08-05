@@ -660,49 +660,6 @@ function handleDateEditSubmit() {
     return false;
 }
 
-function handleEditButton() {
-    $button = $(this);
-    var $div = $button.data('content');
-    if ($div.is(":hidden")) {
-        return false;
-    }
-    var $raw = $button.data('raw');
-    var fieldName = $div.attr('id');
-    var text = $.trim($raw.text());
-
-    var $form = $($('#txt_edit_form form').clone());
-    var $area = $($form.find('textarea'));
-
-    $area.attr('name', 'meego_test_session[' + fieldName + ']');
-    $area.autogrow();
-    $area.val(text);
-
-    $form.data('original', $div);
-    $form.data('markup', $raw);
-    $form.data('button', $button);
-
-    $form.submit(handleTextEditSubmit);
-    $form.find('.save').click(function() {
-        $form.submit();
-        return false;
-    });
-    $form.find('.cancel').click(function() {
-        $form.detach();
-        $div.show();
-        $button.addClass('editable_text')
-        return false;
-    });
-
-    $button.removeClass('editable_text')
-
-    $div.hide();
-    $form.insertAfter($div);
-    $area.change();
-    $area.focus();
-
-    return false;
-}
-
 function removeAttachment(attachment, callback) {
     $.post("/ajax_remove_attachment", {
         id: attachment,

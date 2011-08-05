@@ -19,6 +19,46 @@ linkEditButtons = () ->
         $comment.click handleFeatureCommentEdit
         $grading.click handleFeatureGradingEdit
 
+
+handleEditButton = () ->
+    $button = $(this)
+    $div = $button.data 'content'
+    return false if $div.is ":hidden"
+    $raw = $button.data 'raw'
+    fieldName = $div.attr 'id'
+    text = $.trim $raw.text()
+
+    $form = $($('#txt_edit_form form').clone())
+    $area = $($form.find('textarea'))
+
+    $area.attr 'name', 'meego_test_session[' + fieldName + ']'
+    $area.autogrow()
+    $area.val text
+
+    $form.data 'original', $div
+    $form.data 'markup', $raw
+    $form.data 'button', $button
+
+    $form.submit handleTextEditSubmit
+    $form.find('.save').click () ->
+        $form.submit()
+        return false
+
+    $form.find('.cancel').click () ->
+        $form.detach()
+        $div.show()
+        $button.addClass 'editable_text'
+        return false
+
+    $button.removeClass 'editable_text'
+
+    $div.hide()
+    $form.insertAfter $div
+    $area.change()
+    $area.focus()
+
+    return false
+
 ###
  *  Handle the comments of category edit
  *  @return
