@@ -281,63 +281,6 @@ function handleCommentFormSubmit() {
     return false;
 }
 
-function handleDateEdit() {
-    $button = $(this);
-    var $content = $button.find('span.content').first();
-    var $raw = $content.next('span.editmarkup');
-    if ($content.is(":hidden")) {
-        return false;
-    }
-    var data = $raw.text();
-    var $form = $('#date_edit_form form').clone();
-    var $field = $form.find('.date_field');
-    $field.val(data);
-    $form.data('original', $content).data('raw', $raw).data('button', $button);
-
-    $form.submit(handleDateEditSubmit);
-    $form.find('.save').click(function() {
-        $form.submit();
-        return false;
-    });
-    $form.find('.cancel').click(function() {
-        $form.detach();
-        $content.show();
-        $button.addClass('editable_text');
-        return false;
-    });
-
-    $content.hide();
-    $form.insertAfter($content);
-    $field.focus();
-    addDateSelector($field);
-    $button.removeClass('editable_text');
-
-    return false;
-}
-
-function handleDateEditSubmit() {
-    $form = $(this);
-    $content = $form.data('original');
-    $raw = $form.data('raw');
-    var data = $form.find('.date_field').val();
-    $raw.text(data);
-
-    var data = $form.serialize();
-    var action = $form.attr('action');
-
-    var $button = $form.data('button');
-    //$button.text("Saving...");
-    $.post(action, data, function(data) {
-        $content.text(data);
-    });
-
-    $button.addClass('editable_text');
-    $form.detach();
-    $content.show();
-
-    return false;
-}
-
 function removeAttachment(attachment, callback) {
     $.post("/ajax_remove_attachment", {
         id: attachment,
