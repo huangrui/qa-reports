@@ -531,6 +531,35 @@ handleCommentFormSubmit = () ->
 
     return false
 
+handleTextEditSubmit = () ->
+    $form = $(this)
+    $original = $form.data 'original'
+    $markup = $form.data 'markup'
+    $area = $form.find 'textarea'
+
+    text = $area.val()
+    $button = $form.data "button"
+    $button.addClass 'editable_text'
+
+    if $markup.text() == text
+        # No changes were made.
+        $form.detach()
+        $original.show()
+        return false
+
+    $markup.text text
+
+    data = $form.serialize()
+    action = $form.attr "action"
+    $.post action, data
+
+    $original.html formatMarkup text
+    $form.detach()
+    $original.show()
+
+    fetchBugzillaInfo()
+    return false
+
 toggleRemoveTestCase = (eventObject) ->
     $testCaseRow = $(eventObject.target).closest '.testcase'
     id = $testCaseRow.attr('id').split('-').pop()

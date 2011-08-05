@@ -258,37 +258,6 @@ function removeAttachment(attachment, callback) {
 
 })(jQuery);
 
-function handleTextEditSubmit() {
-    var $form = $(this);
-    var $original = $form.data('original');
-    var $markup = $form.data('markup');
-    var $area = $form.find('textarea');
-
-    var text = $area.val();
-    var $button = $form.data("button");
-    $button.addClass('editable_text');
-
-    if ($markup.text() == text) {
-        // No changes were made.
-        $form.detach();
-        $original.show();
-        return false;
-    }
-
-    $markup.text(text);
-
-    var data = $form.serialize();
-    var action = $form.attr("action");
-    $.post(action, data, function() {});
-
-    $original.html(formatMarkup(text));
-    $form.detach();
-    $original.show();
-
-    fetchBugzillaInfo();
-    return false;
-}
-
 function applyBugzillaInfo(node, info) {
     var $node = $(node);
     if (info == undefined) {
