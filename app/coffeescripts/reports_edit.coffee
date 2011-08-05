@@ -443,6 +443,94 @@ handleDateEditSubmit = () ->
 
     return false
 
+
+handleCommentEdit = () ->
+    $node = $(this)
+    $div = $node.find 'div.content'
+    return false if $div.is ":hidden"
+
+    $testcase = $node.closest '.testcase'
+    $form = $('#comment_edit_form form').clone()
+    $field = $form.find '.comment_field'
+
+    attachment_url = $div.find('.note_attachment').attr('href') || ''
+    attachment_filename = attachment_url.split('/').pop()
+
+    $current_attachment = $form.find 'div.attachment:not(.add)'
+    $add_attachment = $form.find 'div.attachment.add'
+
+    if attachment_url == '' || attachment_filename == ''
+        $current_attachment.hide()
+    else
+        $add_attachment.hide()
+
+        $attachment_link = $current_attachment.find '#attachment_link'
+        $attachment_link.attr 'href', attachment_url
+        $attachment_link.html attachment_filename
+
+        $current_attachment.find('input').attr 'value', attachment_filename
+
+        $current_attachment.find('.delete').click () ->
+            $attachment_field = $(this).closest('.field')
+            $current_attachment = $attachment_field.find('div.attachment:not(.add)');
+            $add_attachment = $attachment_field.find('div.attachment.add')
+
+            $current_attachment.hide()
+            $current_attachment.find('input').attr('value', '')
+            $add_attachment.show()
+
+    id = $testcase.attr('id').substring(9)
+    $form.find('.id_field').val(id)
+
+    markup = $testcase.find('.comment_markup').text()
+    $field.autogrow()
+    $field.val(markup)
+
+    $form.submit handleCommentFormSubmit
+    $form.find('.cancel').click () ->
+        $form.detach()
+        $div.show()
+        $node.click handleCommentEdit
+        $node.addClass 'edit'
+        return false
+
+    $node.unbind 'click'
+    $node.removeClass 'edit'
+    $div.hide()
+    $form.insertAfter $div
+    $field.change()
+    $field.focus()
+
+    return false
+
+handleCommentFormSubmit = () ->
+    $form = $(this)
+    $testcase = $form.closest '.testcase'
+    $div = $testcase.find '.testcase_notes div.content'
+    markup = $form.find('.comment_field').val()
+
+    data = $form.serialize()
+    url = $form.attr 'action'
+    $testcase.find('.comment_markup').text(markup)
+
+    html = formatMarkup markup
+    $div.html html
+    $form.hide()
+    $div.show()
+    $testcase.find('.testcase_notes').click(handleCommentEdit).addClass 'edit'
+
+    $form.ajaxSubmit
+        datatype: 'xml'
+        success: (responseText, statusText, xhr, $form) ->
+            # if the ajaxSubmit method was passed an Options Object with the dataType
+            # property set to 'json' then the first argument to the success callback
+            # is the json data object returned by the server
+
+            $testcase.find('.testcase_notes').html responseText
+            fetchBugzillaInfo()
+
+    return false
+
 toggleRemoveTestCase = (eventObject) ->
     $testCaseRow = $(eventObject.target).closest '.testcase'
     id = $testCaseRow.attr('id').split('-').pop()
