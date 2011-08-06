@@ -15,4 +15,11 @@ Before do
   })
   @default_new_api_opts.delete("testtype")
   @default_new_api_opts.delete("hwproduct")
+
+  @hide_api_opts = {
+    "auth_token"      => "foobar",
+    "release_version" => "1.2",
+    "target"          => "Core",
+    "testtype"        => "automated",
+  }
 end

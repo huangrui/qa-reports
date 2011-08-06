@@ -80,6 +80,59 @@ class ApiController < ApplicationController
 
   end
 
+  def hide_obsolete_results
+    data = request.query_parameters.merge(request.request_parameters)
+    data.delete(:auth_token)
+
+    errors = []
+
+    data[:hardware] ||= data[:hwproduct]
+    data[:product] ||= data[:hardware]
+    data[:testset] ||= data[:testtype]
+    data.delete(:hwproduct)
+    data.delete(:testtype)
+    data.delete(:hardware)
+
+    begin
+
+      if data[:release_version].nil? || data[:target].nil? || data[:testset].nil? || data[:product].nil?
+        render :json => {:ok => '0', :errors => "Request input version, target, testset, and product all the four keywords"}
+        return
+      end
+
+      @test_sessions = MeegoTestSession.by_release_version_target_testset_product(data[:release_version],data[:target],data[:testset],data[:product])
+
+      if @test_sessions.empty?
+        errors << "version <= '#{data[:release_version]}'"
+        errors << "target <= '#{data[:target]}'"
+        errors << "testset <= '#{data[:testset]}'"
+        errors << "product <= '#{data[:product]}'"
+        render :json => {:ok => '0', :errors => "No reports searched out via the keywords:" + errors.join(',')}
+        return
+      end
+
+      @test_sessions.each do |session|
+        update_session =  MeegoTestSession.find(session.id)
+        update_session.update_attributes(:editor => current_user, :updated_at => Time.now, :published => false)
+
+        if update_session.valid?
+          update_session.save!
+        else
+          render :json => {:ok => '0', :errors => invalid.record.errors}
+          return
+        end
+      end
+
+    rescue ActiveRecord::UnknownAttributeError => errors
+      render :json => {:ok => '0', :errors => errors.message}
+      return
+    end
+
+    report_count = @test_sessions.size
+
+    render :json => {:ok => '1', :count => report_count}
+  end
+
   def update_result
     data = request.query_parameters.merge(request.request_parameters)
     data.delete(:auth_token)
