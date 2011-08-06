@@ -1083,6 +1083,7 @@ function filterResults(rowsToHide, typeText) {
     $(".see_feature_build_button").click(function(){
       $("a#detailed_feature.sort_btn").removeClass("active");
       $("#test_results_by_feature").hide();
+      $('#test_feature_history_results').hide();
       $feature_build.show();
       $(this).addClass("active");
       return false;
@@ -1105,10 +1106,11 @@ function filterResults(rowsToHide, typeText) {
     });
    
     $(".see_feature_history_button").click(function(){
-        $("table.feature_detailed_results").hide();
+        $("a#detailed_feature.sort_btn").removeClass("active");
+        $("#test_results_by_feature").hide();
+        $("#test_feature_build_results").hide();
         $feature_history.show();
         $(this).addClass("active");
-        $("a.see_feature_comment_button").removeClass("active");
         return false;
     });
 
@@ -1197,12 +1199,26 @@ function filterResults(rowsToHide, typeText) {
     });
     $feature_history.find(".see_feature_comment_button").click(function(){
         $feature_history.hide();
-        $feature_details.show();
-        $feature_details.find(".see_feature_comment_button").click();
-    });
-    $feature_build.find(".see_feature_comment_button").click(function(){
         $feature_build.hide();
         $feature_details.show();
         $feature_details.find(".see_feature_comment_button").click();
+    });
+    $feature_history.find(".feature_detailed_results_with_build_id").click(function(){
+        $feature_history.hide();
+        $feature_details.hide();
+        $feature_build.show();
+        $feature_build.find(".feature_detailed_results_with_build_id").click();
+    });
+    $feature_build.find(".see_feature_comment_button").click(function(){
+        $feature_build.hide();
+        $feature_history.hide();
+        $feature_details.show();
+        $feature_details.find(".see_feature_comment_button").click();
+    });
+    $feature_build.find(".feature_detailed_results_with_passrate_history").click(function(){
+        $feature_build.hide();
+        $feature_details.hide();
+        $feature_history.show();
+        $feature_history.find(".feature_detailed_results_with_passrate_history").click();
     });
 }

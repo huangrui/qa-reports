@@ -56,7 +56,7 @@ h2#test_results
 
     h3#test_features Test Results by Feature
 
-    - if contain_history(@history) or contain_history(@build_diff)
+    - if contain_history(@history) or @build_diff.present?
       span.sort
         a.see_feature_comment_button.sort_btn#detailed_feature.active href="#" See comment and grading
         - if contain_history(@history)
