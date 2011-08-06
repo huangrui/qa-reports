@@ -23,6 +23,7 @@ end
 group :development do
   gem 'capistrano'
   gem 'capistrano-ext'
+  gem 'watchr'
 end
 
 group :development, :test do

@@ -23,7 +23,6 @@
 
 require 'digest/sha1'
 require 'open-uri'
-require 'drag_n_drop_uploaded_file'
 require 'file_storage'
 require 'report_comparison'
 require 'cache_helper'
@@ -64,7 +63,7 @@ module AjaxMixin
     field         = params[:meego_test_session]
     field         = field.keys()[0]
     @test_session.send(field + '=', params[:meego_test_session][field])
-    @test_session.updated_by(current_user)
+    @test_session.update_attribute(:editor, current_user)
     expire_caches_for(@test_session)
     expire_index_for(@test_session)
 
@@ -79,7 +78,7 @@ module AjaxMixin
     field         = params[:meego_test_session]
     field         = field.keys()[0]
     @test_session.send(field + '=', params[:meego_test_session][field])
-    @test_session.updated_by(current_user)
+    @test_session.update_attribute(:editor, current_user)
     expire_caches_for(@test_session)
 
     sym = field.sub("_txt", "_html").to_sym
@@ -97,7 +96,7 @@ module AjaxMixin
       field         = params[:meego_test_session].keys.first
       logger.warn("Updating #{field} with #{params[:meego_test_session][field]}")
       @test_session.send(field + "=", params[:meego_test_session][field])
-      @test_session.updated_by(current_user)
+      @test_session.update_attribute(:editor, current_user)
 
       expire_caches_for(@test_session)
       expire_index_for(@test_session)
@@ -118,7 +117,7 @@ module AjaxMixin
       data.keys.each do |key|
         @test_session.send(key + "=", data[key]) if data[key].present?
       end
-      @test_session.updated_by(current_user)
+      @test_session.update_attribute(:editor, current_user)
 
       expire_caches_for(@test_session)
       expire_index_for(@test_session)
@@ -136,7 +135,7 @@ module AjaxMixin
     feature.update_attribute(:comments, comments)
 
     test_session = feature.meego_test_session
-    test_session.updated_by(current_user)
+    test_session.update_attribute(:editor, current_user)
     expire_caches_for(test_session)
 
     render :text => "OK"
@@ -149,7 +148,7 @@ module AjaxMixin
     feature.update_attribute(:grading, grading)
 
     test_session = feature.meego_test_session
-    test_session.updated_by(current_user)
+    test_session.update_attribute(:editor, current_user)
     expire_caches_for(test_session)
 
     render :text => "OK"
@@ -389,7 +388,7 @@ class ReportsController < ApplicationController
     sessions.each do |session|
       latest << session if (latest.empty? or session.build_id != latest.last.build_id)
     end
-    
+
     diff = MeegoTestSession.where(:id => latest).
         order("build_id DESC, tested_at DESC, created_at DESC").limit(cnt).
         includes([{:features => :meego_test_cases}, {:meego_test_cases => :feature}])

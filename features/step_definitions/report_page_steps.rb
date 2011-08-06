@@ -85,7 +85,7 @@ Given /^there exists a report for "([^"]*)"$/ do |report_name|
   version, target, test_set, product = report_name.split('/')
 
   fpath    = File.join(Rails.root, "features", "resources", "sample.csv")
-  testfile = DragnDropUploadedFile.new(fpath)
+  testfile = File.new(fpath)
 
   user = User.create!(:name => "John Longbottom",
     :email => "email@email.com",
