@@ -87,22 +87,26 @@ class ApiController < ApplicationController
     errors = []
 
     data[:hardware] ||= data[:hwproduct]
+    data[:product] ||= data[:hardware]
+    data[:testset] ||= data[:testtype]
     data.delete(:hwproduct)
+    data.delete(:testtype)
+    data.delete(:hardware)
 
     begin
 
-      if data[:release_version].nil? || data[:target].nil? || data[:testtype].nil? || data[:hardware].nil?
-        render :json => {:ok => '0', :errors => "Request input version, target, testtype, and hardware all the four keywords"}
+      if data[:release_version].nil? || data[:target].nil? || data[:testset].nil? || data[:product].nil?
+        render :json => {:ok => '0', :errors => "Request input version, target, testset, and product all the four keywords"}
         return
       end
 
-      @test_sessions = MeegoTestSession.by_release_version_target_test_type_product(data[:release_version],data[:target],data[:testtype],data[:hardware])
+      @test_sessions = MeegoTestSession.by_release_version_target_testset_product(data[:release_version],data[:target],data[:testset],data[:product])
 
       if @test_sessions.empty?
         errors << "version <= '#{data[:release_version]}'"
         errors << "target <= '#{data[:target]}'"
-        errors << "testtype <= '#{data[:testtype]}'"
-        errors << "hardware <= '#{data[:hardware]}'"
+        errors << "testset <= '#{data[:testset]}'"
+        errors << "product <= '#{data[:product]}'"
         render :json => {:ok => '0', :errors => "No reports searched out via the keywords:" + errors.join(',')}
         return
       end
