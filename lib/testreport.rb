@@ -103,7 +103,7 @@ module ReportSummary
       meego_test_cases.to_a.count {|x| x.result == result}
     else
       meego_test_cases.count(:conditions => {:result => result})
-    end  
+    end
   end
 
   def total_cases=(num)
@@ -298,19 +298,15 @@ module ReportSummary
   end
 
   def total_nft
-    if meego_test_cases.loaded?
-      meego_test_cases.to_a.count {|x| x.has_nft}
-    else
-      meego_test_cases.count(:conditions => {:has_nft => true})
-    end
+    @total_nft ||=
+      MeegoMeasurement.select('DISTINCT meego_test_case_id').
+        where(:meego_test_case_id => meego_test_cases).count +
+      SerialMeasurement.select('DISTINCT meego_test_case_id').
+        where(:meego_test_case_id => meego_test_cases).count
   end
 
   def total_non_nft
-    if meego_test_cases.loaded?
-      meego_test_cases.to_a.count {|x| !x.has_nft}
-    else
-      meego_test_cases.count(:conditions => {:has_nft => false})
-    end
+    @total_non_nft ||= meego_test_cases.count - total_nft
   end
 
   def has_nft?

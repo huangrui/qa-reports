@@ -72,7 +72,7 @@
         span.content= result_html(testcase)
       / NOTE: The following is identical in _nft_testcase and _testcase_comment.
       / Partial not used here because of seriously bad performance.
-      td class="testcase_notes #{'edit' if @editing}" rowspan="#{testcase.all_measurements.size if testcase.has_nft }"
+      td class="testcase_notes #{'edit' if @editing}" rowspan="#{testcase.all_measurements.size if testcase.has_measurements? }"
         .content
           = comment_html(testcase)
           - if not testcase.attachments.empty?

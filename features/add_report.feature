@@ -60,7 +60,7 @@ Feature:
   Scenario: Add new report with invalid filename extension
     When I follow "Add report"
 
-    And I select target "Core", test set "Smokey" and product "n990"
+    And I select target "Core", test set "Smokey" and product "n990" with date "2010-11-22"
     And I attach the report "invalid_ext.txt"
 
     And submit the form at "upload_report_submit"
@@ -71,7 +71,7 @@ Feature:
 
     When I follow "Add report"
 
-    And I select target "Core", test set "Smokey" and product "n990"
+    And I select target "Core", test set "Smokey" and product "n990" with date "2010-11-22"
     And I attach the report "invalid.csv"
 
     And submit the form at "upload_report_submit"
@@ -83,7 +83,7 @@ Feature:
 
     When I follow "Add report"
 
-    And I select target "Core", test set "Smokey" and product "n990"
+    And I select target "Core", test set "Smokey" and product "n990" with date "2010-11-22"
     And I attach the report "empty.csv"
 
     And submit the form at "upload_report_submit"
@@ -111,7 +111,7 @@ Feature:
 
     And submit the form at "upload_report_submit"
 
-    Then I should see "Incorrect file format"
+    Then I should see "invalid.xml: Opening and ending tag mismatch: site line 3 and suite"
 
   Scenario: Try to submit without uploading a file
 

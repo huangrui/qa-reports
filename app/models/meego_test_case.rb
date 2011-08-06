@@ -33,9 +33,15 @@ class MeegoTestCase < ActiveRecord::Base
   has_many :serial_measurements, :dependent => :destroy
   has_many :meego_test_case_attachments, :dependent => :destroy
 
-  PASS = 1
+  accepts_nested_attributes_for :measurements, :serial_measurements
+
+  PASS =  1
   FAIL = -1
-  NA = 0
+  NA   =  0
+
+  def self.by_name(name)
+    where(:name => name).first
+  end
 
   def unique_id
     (feature.name + "_" + name).downcase
@@ -51,7 +57,7 @@ class MeegoTestCase < ActiveRecord::Base
   end
 
   def has_measurements?
-    return has_nft
+    return !(measurements.empty? and serial_measurements.empty?)
   end
 
   def find_change_class(prev_session)
