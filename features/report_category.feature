@@ -20,4 +20,7 @@ Feature: View several reports under a category
     Then I scroll down the page
     And reports from "2011/1" should be in the report list under "January 2011"
 
+  @selenium
   Scenario: View the graph for recent report history
+    When I view the report category "1.2/Core/Automated/N900"
+    Then I should see a graph containing data for the most recent reports
