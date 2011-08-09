@@ -401,8 +401,24 @@ function filterResults(rowsToHide, typeText) {
         return false;
     });
 
+    $(".see_all_comparison_button").click(function(){
+        $("a.see_only_failed_comparison_button.sort_btn").removeClass("active");
+        $(this).addClass("active");
+        $(rowsToHide).show();
+        updateToggles();
+        return false;
+    });
+
     $(".see_only_failed_button").click(function(){
         $("a#detailed_case.sort_btn").removeClass("active");
+        $(this).addClass("active");
+        $(rowsToHide).hide();
+        updateToggles();
+        return false;
+    });
+
+    $(".see_only_failed_comparison_button").click(function(){
+        $("a.see_all_comparison_button.sort_btn").removeClass("active");
         $(this).addClass("active");
         $(rowsToHide).hide();
         updateToggles();
