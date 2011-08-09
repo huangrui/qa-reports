@@ -25,7 +25,6 @@ require 'csv'
 require 'trimmer'
 require 'report_parser'
 require 'validation/date_time_validator'
-require 'will_paginate'
 require 'file_storage'
 
 require 'graph'
