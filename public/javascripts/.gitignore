@@ -3,3 +3,5 @@ googleAnalytics.js
 reports_view.js
 reports_edit.js
 test_results.js
+comparison_show.js
+report_group.js
