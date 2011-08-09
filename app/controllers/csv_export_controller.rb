@@ -21,6 +21,6 @@ class CsvExportController < ApplicationController
             params[:id]
     )
 
-    send_data csv, :type => "test/plain", :filename=>"report.csv", :disposition => 'attachment'
+    send_data csv, :type => "text/plain", :filename=>"report.csv", :disposition => 'attachment'
   end
 end

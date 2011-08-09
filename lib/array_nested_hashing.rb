@@ -1,5 +1,5 @@
 class Array
-  
+
   # For an array A of class C with methods a, b, c
   # H = A.to_nested_hash [:a, :b]                   ... H[a][b] returns C
   # H = A.to_nested_hash [:a, :b], :unique => false ... H[a][b] returns [C, C, ...]
@@ -10,8 +10,8 @@ class Array
 
     last_key = key_names.pop
 
-    self.inject({}) do |h, item| 
-      current = h
+    self.inject({}) do |result, item|
+      current = result
       key_names.each do |key|
         key_value = item.send(key)
         current = (current[key_value] ||= {})
@@ -25,7 +25,7 @@ class Array
         (current[last_key_value] ||= []) << end_item
       end
 
-      h
+      result
     end
   end
 end

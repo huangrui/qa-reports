@@ -5,8 +5,7 @@ class Product
       DISTINCT target as profile, testset, product
     END
 
-    @products = MeegoTestSession.published.select(selection).joins(:version_label).
-      where(:version_labels => {:normalized => release.downcase})
+    @products = MeegoTestSession.published.select(selection).release(release).order(:target, :testset, :product)
 
     @products = @products.to_nested_hash [:profile, :testset], :map => :product, :unique => false
 

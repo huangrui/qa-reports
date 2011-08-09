@@ -24,7 +24,7 @@ class ApiController < ApplicationController
   include CacheHelper
 
   cache_sweeper :meego_test_session_sweeper, :only => [:import_data]
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, :except => :reports_by_limit_and_time
 
   def import_data
     data = request.query_parameters.merge(request.request_parameters)
@@ -40,7 +40,6 @@ class ApiController < ApplicationController
       return
     end
 
-    data[:tested_at] ||= Time.now
     data[:hardware] ||= data[:hwproduct]
     data[:product] ||= data[:hardware]
     data[:testset] ||= data[:testtype]
@@ -49,8 +48,10 @@ class ApiController < ApplicationController
     data.delete(:hardware)
 
     begin
-      @test_session = MeegoTestSession.new(data)
-      @test_session.import_report(current_user, true)
+      @test_session = ReportFactory.new.build(data)
+      @test_session.author = current_user
+      @test_session.editor = current_user
+      @test_session.published = true
     rescue ActiveRecord::UnknownAttributeError => error
       render :json => {:ok => '0', :errors => error.message}
       return
@@ -62,6 +63,12 @@ class ApiController < ApplicationController
 
     begin
       @test_session.save!
+
+      #TODO: Use PaperClip
+      files = FileStorage.new()
+      attachments.each { |file|
+        files.add_file(@test_session, file, file.original_filename)
+      }
 
       report_url = url_for :controller => 'reports', :action => 'view', :release_version => data[:release_version], :target => data[:target], :testset => data[:testset], :product => data[:product], :id => @test_session.id
       render :json => {:ok => '1', :url => report_url}
@@ -90,15 +97,9 @@ class ApiController < ApplicationController
     parse_err = nil
 
     if @report_id = params[:id].try(:to_i)
-      original_cases = []
-      original_sets  = []
       begin
         @test_session = MeegoTestSession.find(@report_id)
-
-        original_sets = @test_session.features.clone
-        original_cases = @test_session.meego_test_cases.clone
-
-        parse_err = @test_session.update_report_result(current_user, data[:uploaded_files], true)
+        parse_err = @test_session.update_report_result(current_user, data, true)
       rescue ActiveRecord::UnknownAttributeError => errors
         render :json => {:ok => '0', :errors => errors.message}
         return
@@ -109,20 +110,14 @@ class ApiController < ApplicationController
         return
       end
 
-      if @test_session.valid?
-        Feature.delete(original_sets)
-        MeegoTestCase.delete(original_cases)
-
-        @test_session.save!
-
+      if @test_session.save
         expire_caches_for(@test_session, true)
         expire_index_for(@test_session)
-
       else
         render :json => {:ok => '0', :errors => invalid.record.errors}
         return
       end
-      
+
       render :json => {:ok => '1'}
     end
   end

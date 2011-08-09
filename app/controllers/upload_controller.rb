@@ -20,19 +20,19 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 # 02110-1301 USA
 #
-
-require 'drag_n_drop_uploaded_file'
+require 'tempfile'
+require 'fileutils'
 require 'cache_helper'
 
 class UploadController < ApplicationController
   include CacheHelper
-  
+
   cache_sweeper :meego_test_session_sweeper, :only => [:upload]
   before_filter :authenticate_user!
-  
+
   def upload_form
     new_report = {}
-    [:release_version, :target, :testset, :product].each do |key| 
+    [:release_version, :target, :testset, :product].each do |key|
       new_report[key] = params[key] if params[key]
     end
 
@@ -52,23 +52,22 @@ class UploadController < ApplicationController
   end
 
   def upload_report
-    raw_filename = env['HTTP_X_FILE_NAME']
-    extension = File.extname(raw_filename)
-    raw_filename_wo_extension = File.basename(raw_filename, extension)
+    file = filestream_from_qq_param
+
+    extension = File.extname(file.original_filename)
+    raw_filename_wo_extension = File.basename(file.original_filename, extension)
 
     # TODO: Temp files needs to be deleted periodically
     url      = "/reports/tmp/#{raw_filename_wo_extension.parameterize}#{extension}"
     filename = "#{Rails.root}/public#{url}"
 
-    filedata = env['rack.input'].read()
-    File.open(filename, 'wb') {|f| f.write( filedata ) }
+    File.open(filename, 'wb') {|f| f.write( file.read() ) }
 
-    render :json => { :ok => '1', :fileid => fileid, :url => url }
+    render :json => { :ok => '1', :url => url }
   end
 
   def upload_attachment
-    file = env['rack.input']
-    file.original_filename = request['qqfile']
+    file = filestream_from_qq_param
 
     session = MeegoTestSession.find(params[:id])
     session.report_attachments.create(:attachment => file)
@@ -83,17 +82,13 @@ class UploadController < ApplicationController
 
   def upload
     params[:meego_test_session][:uploaded_files] ||= []
-    params[:drag_n_drop_attachments] ||= []
-    
-    # Harmonize file handling between drag'n drop and form upload
-    params[:drag_n_drop_attachments].each do |name|
-      params[:meego_test_session][:uploaded_files].push( DragnDropUploadedFile.new("public" + name, "rb") )
-    end 
+    params[:meego_test_session][:uploaded_files] += handle_ajax_uploads(params[:drag_n_drop_attachments])
 
-    @test_session = MeegoTestSession.new(params[:meego_test_session])
-    @test_session.import_report(current_user)
-    
-    if @test_session.save
+    @test_session = ReportFactory.new.build(params[:meego_test_session])
+    @test_session.author = current_user
+    @test_session.editor = current_user
+
+    if @test_session.errors.empty? and @test_session.save
       session[:preview_id] = @test_session.id
 
       redirect_to :controller => 'reports', :action => 'preview'
@@ -105,5 +100,33 @@ class UploadController < ApplicationController
       @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
       render :upload_form
     end
+  end
+
+  private
+
+  def filestream_from_qq_param
+    if request['qqfile'].respond_to? 'original_filename'
+      return request['qqfile']
+    else
+      f = StringIO.new(env['rack.input'].read())
+      f.original_filename = request['qqfile']
+      return f
+    end
+  end
+
+  def handle_ajax_uploads(ajax_uploads)
+    uploaded_files = []
+
+    ajax_uploads ||= []
+    ajax_uploads.each do |name|
+      file = File.new("public" + name)
+      tmp = Tempfile.new("result_file")
+      tmp.write file.read
+      tmp.rewind
+      uploaded_files << ActionDispatch::Http::UploadedFile.new(:filename => File.basename(file.path), :tempfile => tmp)
+      rm file.path
+    end
+
+    uploaded_files
   end
 end
