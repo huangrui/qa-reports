@@ -58,8 +58,6 @@ $(window).load ->
     triggerAt: 800,
     page: 1
 
-  console.log $('#report_list_url').text()
-
   monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
   previousYear = null
   previousMonth = null
@@ -68,8 +66,8 @@ $(window).load ->
   $(resultTableName).bind 'infinitescroll.finish', ->
     rows = $(resultTableName + ' tr')
 
-    $.each rows, (index, row) ->
-      row = $(this)
+    for row in rows
+      row = $(row)
       year = row.children('.year').first().text()
       month = parseInt(row.children('.date').first().text().split('.').pop(), 10)
 
@@ -77,7 +75,7 @@ $(window).load ->
       if previousYear != year || previousMonth != month
         monthTable = $('table.month_template').clone()
         monthTable.removeClass('month_template').addClass('month')
-        monthTable.find('#month').html(monthNames[month - 1] + ' ' + year)
+        monthTable.find('.month').text(monthNames[month - 1] + ' ' + year)
         monthTable.show()
         monthTable.appendTo('.index_month')
         currentMonthTable = monthTable

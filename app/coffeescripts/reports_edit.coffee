@@ -318,9 +318,337 @@ handleFeatureCommentFormSubmit = () ->
     fetchBugzillaInfo()
     return false
 
+handleResultEdit = () ->
+    $node = $(this)
+    $span = $node.find 'span'
+    return false if $span.is ":hidden"
+
+    $testcase = $node.closest '.testcase'
+    id = $testcase.attr('id').substring(9)
+    $form = $('#result_edit_form form').clone()
+    $form.find('.id_field').val id
+    $select = $form.find 'select'
+
+    result = $span.text()
+
+    code = switch result
+        when 'Pass' then '1'
+        when 'Fail' then '-1'
+        else '0'
+
+    $select.find('option[selected="selected"]').removeAttr "selected"
+    $select.find('option[value="' + code + '"]').attr "selected", "selected"
+
+    $node.unbind 'click'
+    $node.removeClass 'edit'
+
+    $form.submit handleResultSubmit
+    $select.change () ->
+        $select.unbind 'blur'
+        if $select.val() == code
+            $form.detach()
+            $span.show()
+            $node.addClass 'edit'
+            $node.click handleResultEdit
+        else
+            $form.submit()
+
+    $select.blur () ->
+        $form.detach()
+        $span.show()
+        $node.addClass 'edit'
+        $node.click handleResultEdit
+
+    $span.hide()
+    $form.insertAfter $span
+    $select.focus()
+
+    return false
+
+handleResultSubmit = () ->
+    $form = $(this)
+
+    data = $form.serialize()
+    url = $form.attr 'action'
+
+    $node = $form.closest 'td'
+    $node.addClass('edit').removeClass('pass fail na').click handleResultEdit
+
+    $span = $node.find 'span'
+    result = $form.find('select').val()
+
+    [cls,txt] = switch result
+        when '1'  then ['pass', 'Pass']
+        when '-1' then ['fail', 'Fail']
+        else ['na', 'N/A']
+    $node.addClass cls
+    $span.text txt
+
+    $form.detach()
+    $span.show()
+    $.post url, data
+
+    return false
+
+handleDateEdit = () ->
+    $button = $(this)
+    $content = $button.find('span.content').first()
+    $raw = $content.next 'span.editmarkup'
+    return false if $content.is ":hidden"
+
+    data = $raw.text()
+    $form = $('#date_edit_form form').clone()
+    $field = $form.find '.date_field'
+    $field.val data
+    $form.data('original', $content).data('raw', $raw).data 'button', $button
+
+    $form.submit handleDateEditSubmit
+
+    $form.find('.save').click () ->
+        $form.submit()
+        return false
+
+    $form.find('.cancel').click () ->
+        $form.detach()
+        $content.show()
+        $button.addClass 'editable_text'
+        return false
+
+    $content.hide()
+    $form.insertAfter $content
+    $field.focus()
+    addDateSelector $field
+    $button.removeClass 'editable_text'
+
+    return false
+
+handleDateEditSubmit = () ->
+    $form = $(this)
+    $content = $form.data('original')
+    $raw = $form.data('raw')
+    data = $form.find('.date_field').val()
+    $raw.text(data);
+
+    data = $form.serialize()
+    action = $form.attr('action')
+
+    $button = $form.data('button')
+
+    $.post action, data, (data) ->
+        $content.text data
+
+    $button.addClass 'editable_text'
+    $form.detach()
+    $content.show()
+
+    return false
+
+
+handleCommentEdit = () ->
+    $node = $(this)
+    $div = $node.find 'div.content'
+    return false if $div.is ":hidden"
+
+    $testcase = $node.closest '.testcase'
+    $form = $('#comment_edit_form form').clone()
+    $field = $form.find '.comment_field'
+
+    attachment_url = $div.find('.note_attachment').attr('href') || ''
+    attachment_filename = attachment_url.split('/').pop()
+
+    $current_attachment = $form.find 'div.attachment:not(.add)'
+    $add_attachment = $form.find 'div.attachment.add'
+
+    if attachment_url == '' || attachment_filename == ''
+        $current_attachment.hide()
+    else
+        $add_attachment.hide()
+
+        $attachment_link = $current_attachment.find '#attachment_link'
+        $attachment_link.attr 'href', attachment_url
+        $attachment_link.html attachment_filename
+
+        $current_attachment.find('input').attr 'value', attachment_filename
+
+        $current_attachment.find('.delete').click () ->
+            $attachment_field = $(this).closest('.field')
+            $current_attachment = $attachment_field.find('div.attachment:not(.add)');
+            $add_attachment = $attachment_field.find('div.attachment.add')
+
+            $current_attachment.hide()
+            $current_attachment.find('input').attr('value', '')
+            $add_attachment.show()
+
+    id = $testcase.attr('id').substring(9)
+    $form.find('.id_field').val(id)
+
+    markup = $testcase.find('.comment_markup').text()
+    $field.autogrow()
+    $field.val(markup)
+
+    $form.submit handleCommentFormSubmit
+    $form.find('.cancel').click () ->
+        $form.detach()
+        $div.show()
+        $node.click handleCommentEdit
+        $node.addClass 'edit'
+        return false
+
+    $node.unbind 'click'
+    $node.removeClass 'edit'
+    $div.hide()
+    $form.insertAfter $div
+    $field.change()
+    $field.focus()
+
+    return false
+
+handleCommentFormSubmit = () ->
+    $form = $(this)
+    $testcase = $form.closest '.testcase'
+    $div = $testcase.find '.testcase_notes div.content'
+    markup = $form.find('.comment_field').val()
+
+    data = $form.serialize()
+    url = $form.attr 'action'
+    $testcase.find('.comment_markup').text(markup)
+
+    html = formatMarkup markup
+    $div.html html
+    $form.hide()
+    $div.show()
+    $testcase.find('.testcase_notes').click(handleCommentEdit).addClass 'edit'
+
+    $form.ajaxSubmit
+        datatype: 'xml'
+        success: (responseText, statusText, xhr, $form) ->
+            # if the ajaxSubmit method was passed an Options Object with the dataType
+            # property set to 'json' then the first argument to the success callback
+            # is the json data object returned by the server
+
+            $testcase.find('.testcase_notes').html responseText
+            fetchBugzillaInfo()
+
+    return false
+
+handleTextEditSubmit = () ->
+    $form = $(this)
+    $original = $form.data 'original'
+    $markup = $form.data 'markup'
+    $area = $form.find 'textarea'
+
+    text = $area.val()
+    $button = $form.data "button"
+    $button.addClass 'editable_text'
+
+    if $markup.text() == text
+        # No changes were made.
+        $form.detach()
+        $original.show()
+        return false
+
+    $markup.text text
+
+    data = $form.serialize()
+    action = $form.attr "action"
+    $.post action, data
+
+    $original.html formatMarkup text
+    $form.detach()
+    $original.show()
+
+    fetchBugzillaInfo()
+    return false
+
+formatMarkup = (s) ->
+    s = htmlEscape s
+
+    lines = s.split '\n'
+    html = ""
+    ul = false
+    for line in lines
+        line = $.trim line
+
+        if ul && not /^\*/.test(line)
+            html += '</ul>'
+            ul = false
+        else if line == ''
+            html += "<br/>"
+        if line == ''
+            continue
+
+        line = line.replace /'''''(.+?)'''''/g, "<b><i>$1</i></b>"
+        line = line.replace /'''(.+?)'''/g, "<b>$1</b>"
+        line = line.replace /''(.+?)''/g, "<i>$1</i>"
+        line = line.replace /http\:\/\/([^\/]+)\/show_bug\.cgi\?id=(\d+)/g, "<a class=\"bugzilla fetch bugzilla_append\" href=\"http://$1/show_bug.cgi?id=$2\">$2</a>"
+        line = line.replace /\[\[(http[s]?:\/\/.+?) (.+?)\]\]/g, "<a href=\"$1\">$2</a>"
+        line = line.replace /\[\[(\d+)\]\]/g, "<a class=\"bugzilla fetch bugzilla_append\" href=\"" + BUGZILLA_URI + "$1\">$1</a>"
+
+        line = line.replace /^====\s*(.+)\s*====$/, "<h5>$1</h5>"
+        line = line.replace /^===\s*(.+)\s*===$/, "<h4>$1</h4>"
+        line = line.replace /^==\s*(.+)\s*==$/, "<h3>$1</h3>"
+        match = /^\*(.+)$/.exec line
+        if match
+            if not ul
+                html += "<ul>"
+                ul = true
+            html += "<li>" + match[1] + "</li>"
+        else if not /^<h/.test(line)
+            html += line + "<br/>"
+        else
+            html += line
+
+    return html
+
+toggleRemoveTestCase = (eventObject) ->
+    $testCaseRow = $(eventObject.target).closest '.testcase'
+    id = $testCaseRow.attr('id').split('-').pop()
+    if $testCaseRow.hasClass 'removed'
+        restoreTestCase id
+        linkTestCaseButtons $testCaseRow
+    else
+        removeTestCase id
+        unlinkTestCaseButtons $testCaseRow
+
+    $nftRows = $('.testcase-nft-' + id.toString())
+    if $nftRows.length == 0
+        $testCaseRow.toggleClass 'removed'
+    else
+        $nftRows.toggleClass 'removed'
+
+    $testCaseRow.find('.testcase_name').toggleClass 'removed'
+    $testCaseRow.find('.testcase_name a').toggleClass 'remove_list_item'
+    $testCaseRow.find('.testcase_name a').toggleClass 'undo_remove_list_item'
+    $testCaseRow.find('.testcase_notes').toggleClass 'edit'
+    $testCaseRow.find('.testcase_result').toggleClass 'edit'
+
+removeTestCase = (id, callback) ->
+    $.post "/ajax_remove_testcase", {id: id}, (data) ->
+        callback? this if data.ok == 1
+
+restoreTestCase = (id, callback) ->
+    $.post "/ajax_restore_testcase", {id: id}, (data) ->
+        callback? this if data.ok == 1
+
+unlinkTestCaseButtons = (node) ->
+    $node = $(node)
+    $comment = $node.find '.testcase_notes'
+    $result = $node.find '.testcase_result'
+
+    $result.unbind 'click'
+    $comment.unbind 'click'
+
+linkTestCaseButtons = (node) ->
+    $node = $(node)
+    $comment = $node.find '.testcase_notes'
+    $result = $node.find '.testcase_result'
+
+    $result.click handleResultEdit
+    $comment.click handleCommentEdit
+
 $(document).ready () ->
     window.SESSION_ID = $('#session_id').text()
-    $('#report_test_execution_date').val $('#fomatted_execute_date').text()
+    $('#report_test_execution_date').val $('#formatted_execute_date').text()
 
     $('#category-dialog').jqm(modal:true).jqmAddTrigger('#test_category')
 
