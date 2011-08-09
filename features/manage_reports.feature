@@ -31,7 +31,7 @@ Feature: Manage reports
     Then I should see "Edit the report information" within ".notification"
     And I should see "Test Objective" within ".editable_text #test_objective"
 
-  Scenario: Deleting a report    
+  Scenario: Deleting a report
     When I view the report "1.2/Core/automated/N900"
     And I click to delete the report
 

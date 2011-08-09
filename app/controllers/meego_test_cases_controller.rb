@@ -14,7 +14,7 @@ class MeegoTestCasesController < ApplicationController
     testcase.save!
 
     test_session = testcase.meego_test_session
-    test_session.updated_by(current_user)
+    test_session.update_attribute(:editor, current_user)
     @editing = true
     expire_caches_for(testcase.meego_test_session)
 
@@ -28,7 +28,7 @@ class MeegoTestCasesController < ApplicationController
     testcase.update_attribute(:result, result.to_i)
 
     test_session = testcase.meego_test_session
-    test_session.updated_by(current_user)
+    test_session.update_attribute(:editor, current_user)
     expire_caches_for(testcase.meego_test_session, true)
 
     render :text => "OK"
