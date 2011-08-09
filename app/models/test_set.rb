@@ -1,7 +1,7 @@
 class TestSet
 
-  def self.has_comparison?(profile, test_set)
-    @comparable_test_sets ||= find_comparable_test_sets
+  def self.has_comparison?(release, profile, test_set)
+    @comparable_test_sets ||= find_comparable_test_sets(release)
     !@comparable_test_sets[profile.downcase].nil? && @comparable_test_sets[profile.downcase].include?(test_set.downcase)
   end
 
@@ -11,8 +11,8 @@ class TestSet
 
  private
 
-  def self.find_comparable_test_sets
-    @comparable_test_sets = MeegoTestSession.published.select("DISTINCT target as profile, testset").
+  def self.find_comparable_test_sets(release)
+    @comparable_test_sets = MeegoTestSession.published.release(release).joins(:version_label).select("DISTINCT target as profile, testset").
       where("testset LIKE '%:Testing'")
 
     @comparable_test_sets = @comparable_test_sets.group_by { |t| t.profile.downcase }
