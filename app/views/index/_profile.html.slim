@@ -4,7 +4,7 @@ td
 
       - testset_base = testset.split(":")[0]
       - comparetype = testset_base + ":Testing"
-      - compare = TestSet.has_comparison?(profile.downcase, testset_base)
+      - compare = TestSet.has_comparison?(@selected_release_version, profile.downcase, testset_base)
 
       strong
         = link_to testset, testset_report_path(@selected_release_version, profile, testset)
