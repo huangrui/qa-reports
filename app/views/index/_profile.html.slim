@@ -1,16 +1,16 @@
 td
-  - if @hardwares[profile.downcase]
-    - @hardwares[profile.downcase].each do |testtype, hardwares|
+  - if @products[profile.downcase]
+    - @products[profile.downcase].each do |testset, products|
 
-      - testtype_base = testtype.split(":")[0]
-      - comparetype = testtype_base + ":Testing"
-      - compare = TestType.has_comparison?(profile.downcase, testtype_base)
+      - testset_base = testset.split(":")[0]
+      - comparetype = testset_base + ":Testing"
+      - compare = TestSet.has_comparison?(profile.downcase, testset_base)
 
       strong
-        = link_to testtype.capitalize, test_type_report_path(@selected_release_version, profile, testtype)
+        = link_to testset, testset_report_path(@selected_release_version, profile, testset)
       - if compare then
-        a.compare href=branch_comparison_path(@selected_release_version, profile, testtype_base, comparetype) compare
+        a.compare href=branch_comparison_path(@selected_release_version, profile, testset_base, comparetype) compare
       ul
-        - hardwares.each do |hw|
+        - products.each do |hw|
           li
-            = link_to hw.capitalize, hardware_report_path(@selected_release_version, profile, testtype, hw)
+            = link_to hw, product_report_path(@selected_release_version, profile, testset, hw)

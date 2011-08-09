@@ -4,12 +4,12 @@ require 'graph'
 class ReportGroupViewModel
   include Graph
 
-  def initialize(release, target, testtype, hardware)
+  def initialize(release, target, testset, product)
     @params = {
       :version_label_id => VersionLabel.find_by_label(release),
       :target => target,
-      :testtype => testtype,
-      :hardware => hardware
+      :testset => testset,
+      :product => product
     }.delete_if { |key, value| value.nil? }
   end
 
@@ -68,7 +68,7 @@ class ReportGroupViewModel
 
   def find_all_reports
     MeegoTestSession.published.
-      includes(:version_label, :meego_test_cases).
+      includes(:version_label).
       where(@params).order("tested_at DESC, created_at DESC")
   end
 
@@ -80,9 +80,12 @@ class ReportGroupViewModel
   end
 
   def find_report_range(range)
-    MeegoTestSession.published.includes(:version_label, :meego_test_cases).
+    reports = MeegoTestSession.published.includes(:version_label).
       where(@params).
       limit(range.count).offset(range.begin).
       order("tested_at DESC, created_at DESC")
+    
+    MeegoTestSession.load_case_counts_for_reports! reports
   end
 end
+

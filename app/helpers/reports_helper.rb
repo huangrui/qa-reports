@@ -69,8 +69,8 @@ module ReportsHelper
   def rss_url
     href = "/#{@selected_release_version}"
     href += "/#{@target}" if @target
-    href += "/#{@testtype}" if @testtype
-    href += "/#{@hardware}" if @hardware
+    href += "/#{@testset}" if @testset
+    href += "/#{@product}" if @product
     href += "/rss"
     href
   end
@@ -82,6 +82,30 @@ module ReportsHelper
         date = s.tested_at.strftime("%d/%m")
         url  = report_url(s)
         "<th class=\"th_history_result\"><a href=\"#{url}\">#{date}</a></th>"
+      else
+        "<th class=\"th_history_result\">-</th>"
+      end
+    }.join("\n").html_safe
+  end
+
+  def build_id_headers(hist)
+    hist.reverse.map{|s|
+      if s
+        session_build_id = s.build_id
+        url  = report_url(s)
+        "<th class=\"th_build_result\"><a href=\"#{url}\">#{session_build_id}</a></th>"
+      else
+        "<th class=\"th_build_result\">-</th>"
+      end
+    }.join("\n").html_safe
+  end
+
+  def build_pass_rate_headers(hist)
+    hist.reverse.map{|s|
+      if s
+        session_build_id = s.build_id
+        url  = report_url(s)
+        "<th class=\"th_history_result\"><a href=\"#{url}\">#{session_build_id}</a></th>"
       else
         "<th class=\"th_history_result\">-</th>"
       end

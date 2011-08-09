@@ -26,23 +26,29 @@ class MeegoTestCase < ActiveRecord::Base
   default_scope where(:deleted => false)
   scope :deleted, where(:deleted => true)
 
-  belongs_to :meego_test_set
+  belongs_to :feature
   belongs_to :meego_test_session
 
   has_many :measurements, :dependent => :destroy, :class_name => "::MeegoMeasurement"
   has_many :serial_measurements, :dependent => :destroy
-  has_many :meego_test_case_attachments
+  has_many :meego_test_case_attachments, :dependent => :destroy
 
-  PASS = 1
+  accepts_nested_attributes_for :measurements, :serial_measurements
+
+  PASS =  1
   FAIL = -1
-  NA = 0
+  NA   =  0
+
+  def self.by_name(name)
+    where(:name => name).first
+  end
 
   def unique_id
-    (meego_test_set.name + "_" + name).downcase
+    (feature.name + "_" + name).downcase
   end
 
   def find_matching_case(session)
-    session.test_case_by_name(meego_test_set.feature, name) unless session.nil?
+    session.test_case_by_name(feature.name, name) unless session.nil?
   end
 
   def all_measurements
@@ -51,7 +57,7 @@ class MeegoTestCase < ActiveRecord::Base
   end
 
   def has_measurements?
-    return has_nft
+    return !(measurements.empty? and serial_measurements.empty?)
   end
 
   def find_change_class(prev_session)
@@ -79,21 +85,17 @@ class MeegoTestCase < ActiveRecord::Base
     attachments.create({:attachment=>attachment}) unless attachment.nil?
   end
 
+  def self.import_from_array(test_cases)
+    import test_cases, :validate => false
+  end
+
   def remove_from_session
-    set_deleted_from_session true
+    update_attribute :deleted, true
   end
 
   def restore_to_session
-    set_deleted_from_session false
+    update_attribute :deleted, false
   end
 
-  private
-
-  def set_deleted_from_session(deleted)
-    update_attribute :deleted, deleted
-
-    meego_test_session.update_nft_non_nft
-    meego_test_set.update_nft_non_nft
-  end
 end
 

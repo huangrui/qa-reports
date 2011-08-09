@@ -1,4 +1,3 @@
-var SESSION_ID = "#{@test_session.id}";
 $(document).ready(function(){
     $('#category-dialog').jqm({
     modal:true
@@ -12,8 +11,6 @@ $("#report_test_execution_date").datepicker({
     selectOtherMonths: true,
     dateFormat: "yy-mm-dd"
 });
-
-$('#report_test_execution_date').val("#{@test_session.formatted_date}");
 
 activateSuggestionLinks("div.field");
 

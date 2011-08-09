@@ -42,22 +42,31 @@ class NftHistory
   def start_date
     return @first_nft_result_date unless @first_nft_result_date.nil?
 
-    first_session = MeegoTestSession.find(:first, 
-                                          :conditions => 
-                                          ["target = ? AND " + 
-                                           "testtype = ? AND " +
-                                           "hardware = ? AND " +
-                                           "published = ? AND " +
-                                           "version_label_id = ? AND " +
-                                           "has_nft = ?",
-                                           @session.target.downcase,
-                                           @session.testtype.downcase,
-                                           @session.hardware.downcase,
-                                           true,
-                                           @session.version_label_id,
-                                           true],
-                                          :order => "tested_at ASC")
-    @first_nft_result_date = first_session.tested_at
+    query = <<-END
+    SELECT
+    meego_test_sessions.tested_at AS tested_at
+    FROM
+    meego_test_sessions, meego_test_cases
+    WHERE
+    meego_test_cases.meego_test_session_id=meego_test_sessions.id AND
+    meego_test_sessions.target = ? AND
+    meego_test_sessions.testset = ? AND
+    meego_test_sessions.product = ? AND
+    meego_test_sessions.published = ? AND
+    meego_test_sessions.version_label_id = ? AND
+    meego_test_cases.has_nft=1
+    ORDER BY meego_test_sessions.tested_at ASC
+    LIMIT 1
+    END
+
+    data = MeegoTestSession.find_by_sql([query,
+                                         @session.read_attribute(:target),
+                                         @session.testset,
+                                         @session.product,
+                                         true,
+                                         @session.version_label_id])
+    
+    @first_nft_result_date = data[0].tested_at
   end
 
   # Get measurement trends for given session
@@ -72,26 +81,26 @@ class NftHistory
 
     query = <<-END
     SELECT
-    meego_test_sets.feature AS feature,
+    features.name AS feature,
     meego_test_cases.name AS test_case,
     meego_measurements.name AS measurement,
     meego_measurements.unit AS unit,
     meego_measurements.value AS value,
     meego_test_sessions.tested_at AS tested_at
     FROM
-    meego_measurements, meego_test_cases, meego_test_sets, meego_test_sessions
+    meego_measurements, meego_test_cases, features, meego_test_sessions
     WHERE
     meego_measurements.meego_test_case_id=meego_test_cases.id AND
-    meego_test_cases.meego_test_set_id=meego_test_sets.id AND
-    meego_test_sets.meego_test_session_id=meego_test_sessions.id AND
+    meego_test_cases.feature_id=features.id AND
+    features.meego_test_session_id=meego_test_sessions.id AND
     meego_test_sessions.version_label_id=? AND
     meego_test_sessions.target=? AND
-    meego_test_sessions.testtype=? AND
-    meego_test_sessions.hardware=? AND
+    meego_test_sessions.testset=? AND
+    meego_test_sessions.product=? AND
     meego_test_sessions.tested_at <= ? AND
     meego_test_sessions.published=?
     ORDER BY
-    meego_test_sets.feature ASC, 
+    features.name ASC, 
     meego_test_cases.name ASC,
     meego_measurements.name ASC,
     meego_test_sessions.tested_at ASC
@@ -100,8 +109,8 @@ class NftHistory
     data = MeegoTestSession.find_by_sql([query,
                                          @session.version_label_id,
                                          @session.read_attribute(:target),
-                                         @session.testtype,
-                                         @session.hardware,
+                                         @session.testset,
+                                         @session.product,
                                          @session.tested_at,
                                          true])
 
@@ -156,7 +165,7 @@ class NftHistory
     # Nearly same, heavy query as in function measurements
     query = <<-END
     SELECT
-    meego_test_sets.feature AS feature,
+    features.name AS feature,
     meego_test_cases.name AS test_case,
     serial_measurements.name AS measurement,
     serial_measurements.unit AS unit,
@@ -166,19 +175,19 @@ class NftHistory
     serial_measurements.median_value AS med_value,
     meego_test_sessions.tested_at AS tested_at
     FROM
-    serial_measurements, meego_test_cases, meego_test_sets, meego_test_sessions
+    serial_measurements, meego_test_cases, features, meego_test_sessions
     WHERE
     serial_measurements.meego_test_case_id=meego_test_cases.id AND
-    meego_test_cases.meego_test_set_id=meego_test_sets.id AND
-    meego_test_sets.meego_test_session_id=meego_test_sessions.id AND
+    meego_test_cases.feature_id=features.id AND
+    features.meego_test_session_id=meego_test_sessions.id AND
     meego_test_sessions.version_label_id=? AND
     meego_test_sessions.target=? AND
-    meego_test_sessions.testtype=? AND
-    meego_test_sessions.hardware=? AND
+    meego_test_sessions.testset=? AND
+    meego_test_sessions.product=? AND
     meego_test_sessions.tested_at <= ? AND
     meego_test_sessions.published=?
     ORDER BY
-    meego_test_sets.feature ASC, 
+    features.name ASC, 
     meego_test_cases.name ASC,
     serial_measurements.name ASC,
     meego_test_sessions.tested_at ASC
@@ -187,8 +196,8 @@ class NftHistory
     data = MeegoTestSession.find_by_sql([query,
                                          @session.version_label_id,
                                          @session.read_attribute(:target),
-                                         @session.testtype,
-                                         @session.hardware,
+                                         @session.testset,
+                                         @session.product,
                                          @session.tested_at,
                                          true])
 

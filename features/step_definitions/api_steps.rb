@@ -23,9 +23,9 @@ When /^the client sends file "([^"]*)" via the REST API with RESTful parameters$
   response.should be_success
 end
 
-When /^the client sends reports "([^"]*)" via the REST API to test set "([^"]*)" and hardware "([^"]*)"$/ do |files, testtype, hardware|
+When /^the client sends reports "([^"]*)" via the REST API to test set "([^"]*)" and product "([^"]*)"$/ do |files, testset, hardware|
   data = @default_api_opts.merge({
-    "testtype"        => testtype,
+    "testtype"        => testset,
     "hwproduct"       => hardware
   })
 
@@ -37,6 +37,19 @@ When /^the client sends reports "([^"]*)" via the REST API to test set "([^"]*)"
   response.should be_success
 end
 
+When /^the client sends reports "([^"]*)" via the new REST API to test set "([^"]*)" and product "([^"]*)"$/ do |files, testset, hardware|
+  data = @default_new_api_opts.merge({
+    "testset"        => testset,
+    "hardware"       => hardware
+  })
+
+  files.split(',').each_with_index do |file, index|
+    data["report."+(index+1).to_s] = Rack::Test::UploadedFile.new(file, "text/xml")
+  end
+
+  api_import data
+  response.should be_success
+end
 
 When /^the client sends file with attachments via the REST API$/ do
   api_import @default_api_opts.merge({
@@ -83,10 +96,10 @@ When /^the client sends a request with optional parameter "([^"]*)" with value "
 end
 
 When /^I view the latest report "([^"]*)"/ do |report_string|
-  version, target, test_type, hardware = report_string.downcase.split('/')
-  report = MeegoTestSession.joins(:version_label).where(:version_labels => {:label => version}, :target => target, :hardware => hardware, :testtype => test_type).order("created_at DESC").first
-  raise "report not found with parameters #{version}/#{target}/#{hardware}/#{test_type}!" unless report
-  visit("/#{version}/#{target}/#{test_type}/#{hardware}/#{report.id}")
+  version, target, test_type, product = report_string.downcase.split('/')
+  report = MeegoTestSession.joins(:version_label).where(:version_labels => {:label => version}, :target => target, :product => product, :testset => test_type).order("created_at DESC").first
+  raise "report not found with parameters #{version}/#{target}/#{product}/#{test_type}!" unless report
+  visit("/#{version}/#{target}/#{test_type}/#{product}/#{report.id}")
 end
 
 Then /^I should be able to view the latest created report$/ do
@@ -101,4 +114,24 @@ Then /^the REST result "([^"]*)" is "([^"]*)"$/ do |key, value|
   json = ActiveSupport::JSON.decode(@response.body)
   key.split('|').each { |item| json = json[item] }
   json.should == value
+end
+
+def get_testsessionid(file)
+  TestResultFile.where('path like ?', '%' + file).first.meego_test_session_id
+end
+
+And /^session "([^"]*)" has been modified at "([^"]*)"$/ do |file, date|
+  tid = get_testsessionid(file)
+  d = DateTime.parse(date)
+  ActiveRecord::Base.connection.execute("update meego_test_sessions set updated_at = '#{d}' where id = #{tid}")
+end
+
+When /^I download "([^"]*)"$/ do |file|
+  get file
+end
+
+And /^resulting JSON should match file "([^"]*)"$/ do |file1|
+  json = ActiveSupport::JSON.decode(response.body)
+  json[0]['qa_id'].should == get_testsessionid(file1)
+  json.count.should == 1
 end

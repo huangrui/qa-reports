@@ -23,17 +23,17 @@ class RssController < ApplicationController
 
   def rss
     @target   = params[:target]
-    @testtype = params[:testtype]
-    @hardware = params[:hardware]
+    @testset = params[:testset]
+    @product = params[:product]
 
-    unless MeegoTestSession.filters_exist?(@target, @testtype, @hardware)
+    unless MeegoTestSession.filters_exist?(@target, @testset, @product)
       return render_404
     end
 
-    if @hardware
-      @sessions = MeegoTestSession.by_release_version_target_test_type_product(@selected_release_version, @target, @testtype, @hardware, "created_at DESC", 10)
-    elsif @testtype
-      @sessions = MeegoTestSession.published_by_release_version_target_test_type(@selected_release_version, @target, @testtype, "created_at DESC", 10)
+    if @product
+      @sessions = MeegoTestSession.by_release_version_target_testset_product(@selected_release_version, @target, @testset, @product, "created_at DESC", 10)
+    elsif @testset
+      @sessions = MeegoTestSession.published_by_release_version_target_testset(@selected_release_version, @target, @testset, "created_at DESC", 10)
     elsif @target
       @sessions = MeegoTestSession.published_by_release_version_target(@selected_release_version, @target, "created_at DESC", 10)
     else
