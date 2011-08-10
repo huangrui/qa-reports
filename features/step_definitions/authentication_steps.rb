@@ -1,11 +1,11 @@
-Given /^I am an unauthenticated user$/ do
+Given /^I am not logged in$/ do
   #TODO: Get rid of fixtures
   VersionLabel.delete_all
 
   user = FactoryGirl.create(:user, 
-    :name => 'Johnny Depp',
-    :email => 'john@meego.com', 
-    :password => 'buzzword', 
+    :name                  => 'Johnny Depp',
+    :email                 => 'john@meego.com', 
+    :password              => 'buzzword', 
     :password_confirmation => 'buzzword')
 end
 

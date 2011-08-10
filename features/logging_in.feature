@@ -4,7 +4,7 @@ Feature: Authentication
   Want to be able to log in to MeeGoQA
 
   Scenario: Log in with valid credentials
-    Given I am an unauthenticated user
+    Given I am not logged in
     And I am viewing a test report
 
     When I log in with valid credentials
