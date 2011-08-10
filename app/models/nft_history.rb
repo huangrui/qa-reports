@@ -54,7 +54,15 @@ class NftHistory
     meego_test_sessions.product = ? AND
     meego_test_sessions.published = ? AND
     meego_test_sessions.version_label_id = ? AND
-    meego_test_cases.has_nft=1
+    (
+     EXISTS(SELECT id 
+            FROM meego_measurements 
+            WHERE meego_test_case_id=meego_test_cases.id) 
+     OR
+     EXISTS(SELECT id 
+            FROM serial_measurements 
+            WHERE meego_test_case_id=meego_test_cases.id)
+    )
     ORDER BY meego_test_sessions.tested_at ASC
     LIMIT 1
     END
