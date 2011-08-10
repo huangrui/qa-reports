@@ -222,7 +222,7 @@ class NftHistory
         if not m.unit.nil?
           unit = m.unit
         end
-        csv = "Date,Max #{unit},Avg #{unit}, Med #{unit}, Min #{unit}\n"
+        csv = "Date,Max #{unit},Avg #{unit},Med #{unit},Min #{unit}\n"
         json = []
         feature = m.feature
         testcase = m.test_case
