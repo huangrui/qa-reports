@@ -1940,10 +1940,10 @@ width: 35px;
         padding: 20px;
         border: 1px solid #b2b2b2;
 */
-#nft_drilldown_graph, #nft_trend_graph, #nft_series_history_graph {
-  width: 778px;
-  height: 314px;
-  padding: 10px;
+.drilldown_container {
+  width: 770px;
+  height: 270px;
+  padding : 10px;
   border: 1px solid #b2b2b2;
 }
 
