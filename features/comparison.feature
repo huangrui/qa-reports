@@ -44,6 +44,18 @@ Feature: Consolidated reports
     And I should see "2" within "#changed_from_pass"
     And I should not see values "N900" in columns of "tr.compare_testset th"
 
+  @selenium
+  Scenario: Toggle visibility of unchanged results
+    When report files "spec/fixtures/sim1.xml,features/resources/bluetooth.xml" are uploaded to branch "Sanity" for product "N910"
+    And report files "spec/fixtures/sim2.xml,features/resources/bluetooth.xml" are uploaded to branch "Sanity:Testing" for product "N910"
 
+    When I am on the front page
+    And I follow "compare"
 
+    Then I should really see "SMOKE-SIM-Query_SIM_card_status" within "#test_case_3 .testcase_name"
+    And I really should not see "SMOKE-SIM-Write_read_and_delete_ADN_phonebook_entry" within "#test_case_0 .testcase_name"
 
+    Then I follow "See all"
+
+    Then I should really see "SMOKE-SIM-Query_SIM_card_status" within "#test_case_3 .testcase_name"
+    And I should really see "SMOKE-SIM-Write_read_and_delete_ADN_phonebook_entry" within "#test_case_0 .testcase_name"
