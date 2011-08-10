@@ -113,7 +113,8 @@ renderSeriesGraphs = function(selector) {
 		    var m_id = id.match("[0-9]{1,}$");
 		    renderNftTrendGraph(m_id);
                 // Open NFT serial measurement graph
-// TODO! Open the NFT Serial History Graph and somehow handle the data
+		} else if ($div.hasClass('nft_serial_history')) {
+		    renderNftSerialTrendGraph($modal_info);
 		} else {
                     renderModalGraph($modal_info);		    
 		}
@@ -159,10 +160,55 @@ renderSeriesGraphs = function(selector) {
           //yValueFormatter: function(y) {return y + yunit;}
         });
 
-    }
+    };
+
+    var renderNftSerialTrendGraph = function(elem) {
+	var updateNftSerialTrendGraphData = function(dyg) {
+	    var $modal = $("#nft_series_history_dialog");
+	    var visibility = [true, true, true, true];
+	    
+	    // Change Dygraph series visibility based on the checkboxes
+	    // Note: the checkboxes have value attribute set, and the order
+	    // needs to match with the CSV columns    
+	    $modal.find(":checkbox").each(function(i, node) {
+		visibility[parseInt(node.value)] = node.checked;
+		});
+
+	    dyg.updateOptions({ visibility: visibility });
+	};
+
+	var $modal = $("#nft_series_history_dialog");
+    
+	var $elem = $(elem);
+	var title = $elem.find(".nft_serial_trend_graph_title").text();
+	var data = $elem.children(".nft_serial_trend_graph_data").text();
+
+	$modal.find("h1").text(title);
+	$modal.jqmShow();
+    
+	if (!data) {
+	    // Set some data for the graph to work
+	    var data = 
+		"Date,Max. value,Avg. value,Med. value,Min. value\n0,0,0,0,0";
+	}
+
+	var graph = document.getElementById("nft_series_history_graph");
+	dyg = new Dygraph(graph, data, {
+			      colors: ["#2a7438", 
+				       "#6c3d0f", 
+				       "#233a84", 
+				       "#bb2825"]
+			  });
+
+	// Serial trend dialog checkboxes
+	$modal.find(':checkbox').change(function() {
+	    updateNftSerialTrendGraphData(dyg);
+	});
+	updateNftSerialTrendGraphData(dyg);
+    };
 
     $selector.each(renderGraph);
-}
+};
 
 prepareCategoryUpdate = function(div) {
     var $div      = $(div);
@@ -233,27 +279,27 @@ prepareCategoryUpdate = function(div) {
     });
 
 
-}
+};
 
 var renderNftTrendGraph = function(m_id) {
     var $modal = $("#nft_trend_dialog");
-    $modal.find("h1").text(title);
+    var $elem = $("#nft-trend-data-" + m_id.toString());
 
-    var $elem = $("#nft-trend-data-" + m_id);
     var data = $elem.children(".nft_trend_graph_data").text();
     // Don't break the whole thing if there's no data - now one can
     // at least close the window
     if (!data) {
-	data = "Date,Value";
+	data = "Date,Value\n0,0";
     }
+
     var title = $elem.find(".nft_trend_graph_title").text();
     var unit = $elem.find(".nft_trend_graph_unit").text();
-
     var graph = document.getElementById("nft_trend_graph");
-    dyg = new Dygraph(graph, data);
 
     $modal.find("h1").text(title);
     $modal.jqmShow();
+
+    dyg = new Dygraph(graph, data);
 };
 
 function linkEditButtons() {
@@ -1186,6 +1232,10 @@ function filterResults(rowsToHide, typeText) {
     });
 
     // NFT history
+
+    var $nft_detail  = $("table.non-functional_results.detailed_results").first(); 
+    var $nft_history = $("table.non-functional_results.detailed_results.history");
+
     $(".see_nft_history_button").click(function(){
       $nft_detail.hide();
       $nft_history.show();
@@ -1197,8 +1247,4 @@ function filterResults(rowsToHide, typeText) {
         $nft_detail.show();
         return false;
     });
-
-
-    var $nft_detail  = $("table.non-functional_results.detailed_results").first(); 
-    var $nft_history = $("table.non-functional_results.detailed_results.history");
 }

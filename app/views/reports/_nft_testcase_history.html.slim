@@ -18,13 +18,15 @@
         br
         small.un2 (Based on medians)
       td.testcase_graph
-        .modal_graph style="display:none"
-          span.modal_graph_title= testcase.name
-          span.modal_graph_data= m.long_json
-          span.modal_graph_x_unit= m.interval_unit or ""
-          span.modal_graph_y_unit= m.unit
+        div.modal_graph id="nft-serial-trend-data-#{m.id}" style="display:none"
+          span.nft_serial_trend_graph_title
+            = testcase.name
+            | : 
+            = m.name
+          span.nft_serial_trend_graph_data
+            = @nft_trends.serial_measurements[feature][testcase.name][m.name]['csv']
 
-        .serial_canvas id="serial-history-graph-#{m.id}" style="visibility:hidden;width:287px;height:46px"
+        div.serial_canvas.nft_serial_history id="serial-history-graph-#{m.id}" style="visibility:hidden;width:287px;height:46px"
           = ints2js @nft_trends.serial_measurements[feature][testcase.name][m.name]['json']
 
         table.nft_graph_key_figures
