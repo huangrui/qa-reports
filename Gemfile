@@ -5,8 +5,6 @@ gem 'mysql2', '~>0.2.11' # 0.3 branch only works with rails 3.1
 gem 'nokogiri'
 gem 'devise', '1.1.9'
 gem 'fastercsv'
-#gem 'rack', :git => "https://github.com/rack/rack.git" # Use next release when available
-gem "will_paginate"
 gem 'slim'
 gem 'paperclip'
 gem 'coffee-script'
