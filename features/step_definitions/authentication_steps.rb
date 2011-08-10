@@ -1,3 +1,35 @@
+Given /^I am an unauthenticated user$/ do
+  #TODO: Get rid of fixtures
+  VersionLabel.delete_all
+
+  user = FactoryGirl.create(:user, 
+    :name => 'Johnny Depp',
+    :email => 'john@meego.com', 
+    :password => 'buzzword', 
+    :password_confirmation => 'buzzword')
+end
+
+Given /^I am viewing a test report$/ do
+  FactoryGirl.create(:test_report)
+  visit('/1.3/Hanset/Acceptance/N900/' + MeegoTestSession.first.id.to_s)
+end
+
+When /^I log in with valid credentials$/ do
+  click_link_or_button('Sign In')
+  fill_in('Email', :with => 'john@meego.com')
+  fill_in('Password', :with => 'buzzword')
+  click_link_or_button('Login')
+end
+
+Then /^I should be redirected back to the report I was viewing$/ do
+  current_path.should == '/1.3/Hanset/Acceptance/N900/' + MeegoTestSession.first.id.to_s
+end
+
+Then /^I should see my username and "([^"]*)" button$/ do |arg1|
+  page.should have_link('Sign out')
+  page.should have_content('Johnny Depp')
+end
+
 Given /^I am a new, authenticated user$/ do
   email = 'testing@man.net'
   password = 'secretpass'
