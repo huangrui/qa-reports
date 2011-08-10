@@ -55,7 +55,7 @@ Feature: Consolidated reports
     Then I should really see "SMOKE-SIM-Query_SIM_card_status" within "#test_case_3 .testcase_name"
     And I really should not see "SMOKE-SIM-Write_read_and_delete_ADN_phonebook_entry" within "#test_case_0 .testcase_name"
 
-    Then I follow "See all"
+    Then I click the element ".see_all_comparison_button"
 
     Then I should really see "SMOKE-SIM-Query_SIM_card_status" within "#test_case_3 .testcase_name"
     And I should really see "SMOKE-SIM-Write_read_and_delete_ADN_phonebook_entry" within "#test_case_0 .testcase_name"
