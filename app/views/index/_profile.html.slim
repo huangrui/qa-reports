@@ -1,6 +1,6 @@
 td
   - if @products[profile.downcase]
-    - @products[profile.downcase].each do |testset, products|
+    - @products[profile.downcase].sort.each do |testset, products|
 
       - testset_base = testset.split(":")[0]
       - comparetype = testset_base + ":Testing"

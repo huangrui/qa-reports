@@ -26,11 +26,11 @@ Feature: Consolidated reports
 
     And I should see values "N900,N910,N900,N910" in columns of "tr.compare_testset th"
 
-    And I should see "SMOKE-SIM-Disable_PIN_query" within "#test_case_12 .testcase_name"
-    And I should see values "Fail,Fail,Fail,Pass" in columns of "#test_case_12 td"
+    And I should see "SMOKE-SIM-Disable_PIN_query" within "#test_case_13 .testcase_name"
+    And I should see values "Fail,Fail,Fail,Pass" in columns of "#test_case_13 td"
 
-    And I should see "SMOKE-SIM-Get_IMSI" within "#test_case_4 .testcase_name"
-    And I should see values "Pass,Pass,Pass,Fail" in columns of "#test_case_4 td"
+    And I should see "SMOKE-SIM-Get_IMSI" within "#test_case_5 .testcase_name"
+    And I should see values "Pass,Pass,Pass,Fail" in columns of "#test_case_5 td"
 
 
 #  Scenario: Comparing results between two branches where data is missing for one device

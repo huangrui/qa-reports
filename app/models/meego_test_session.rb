@@ -29,6 +29,7 @@ require 'file_storage'
 
 require 'graph'
 require 'nft'
+require 'lib/array_nested_hashing'
 
 #noinspection Rails3Deprecated
 class MeegoTestSession < ActiveRecord::Base
@@ -262,9 +263,9 @@ class MeegoTestSession < ActiveRecord::Base
     features.select &:has_non_nft?
   end
 
-  def test_case_by_name(feature, name)
-    @test_case_hash ||= make_test_case_hash
-    @test_case_hash[feature][name] unless @test_case_hash[feature].nil?
+  def test_case_by_name(feature_key, name)
+    @test_case_hash ||= meego_test_cases.to_nested_hash [:feature_key, :name]
+    @test_case_hash[feature_key][name] unless @test_case_hash[feature_key].nil?
   end
 
   ###############################################
@@ -572,14 +573,6 @@ class MeegoTestSession < ActiveRecord::Base
 
   def create_labels
     create_version_label && create_target_label
-  end
-
-  def make_test_case_hash
-    test_cases = meego_test_cases.group_by {|tc| tc.feature.name }
-    test_cases.each_key do |feature|
-      test_cases[feature] = Hash[test_cases[feature].map {|tc| [tc.name, tc]}]
-    end
-    test_cases
   end
 
 end
