@@ -40,9 +40,8 @@ Feature: Consolidated reports
     When I am on the front page
     And I follow "compare"
 
-    And I should see "1" within "#changed_to_pass"
-    Then I should see "2" within "#changed_from_pass"
-
+    Then I should see "1" within "#changed_to_pass"
+    And I should see "2" within "#changed_from_pass"
     And I should not see values "N900" in columns of "tr.compare_testset th"
 
 
