@@ -1,7 +1,7 @@
 Feature: As a Test Manager I want to see changes between latest test sessions
 
   Background:
-    Given I am a new, authenticated user
+    Given I am logged in
     And I have created the "1.2/Core/Sanity/FeaturePassRate" report with date "2011-04-18" using "comparison1.csv"
     And I have created the "1.2/Core/Sanity/FeaturePassRate" report with date "2011-04-19" using "comparison2.csv"
     And I have created the "1.2/Core/Sanity/FeaturePassRate" report with date "2011-04-20" using "comparison3.csv"
