@@ -32,6 +32,8 @@
       #{@test_session.id}
     span#formatted_execute_date
       #{@test_session.formatted_date}
+    span#bugzilla_uri
+      #{BUGZILLA_CONFIG['link_uri']}
 
   = javascript_include_tag 'datetime'
   = javascript_include_tag 'jquery.form.js'

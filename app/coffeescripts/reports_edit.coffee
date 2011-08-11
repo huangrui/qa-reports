@@ -561,6 +561,7 @@ handleTextEditSubmit = () ->
     return false
 
 formatMarkup = (s) ->
+    BUGZILLA_URI = $('#bugzilla_uri').text()
     s = htmlEscape s
 
     lines = s.split '\n'
@@ -647,7 +648,8 @@ linkTestCaseButtons = (node) ->
     $comment.click handleCommentEdit
 
 $(document).ready () ->
-    window.SESSION_ID = $('#session_id').text()
+    window.SESSION_ID   = $('#session_id').text()
+
     $('#report_test_execution_date').val $('#formatted_execute_date').text()
 
     $('#category-dialog').jqm(modal:true).jqmAddTrigger('#test_category')

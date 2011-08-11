@@ -59,44 +59,5 @@ html
         span X
       #nft_trend_graph style="width:790px; height:290px;"
 
-    span#bugzilla_uri style="display:none"
-      #{BUGZILLA_CONFIG['link_uri']}
-    = javascript_include_tag 'application'
-    = javascript_include_tag 'jqModal'
+    = javascript_include_tag 'application', 'jqModal', 'layout_report'
     = yield :view_specific_js
-    javascript:
-
-      var on_ready_steps = function() {
-        renderSeriesGraphs(".serial_canvas");
-
-        var updateTemplateImage = function(params) {
-          var attachment_url = params.t.text;
-          var attachment_filename = attachment_url.split('/').pop()
-
-          $('h1#attachment_dialog_header').html(attachment_filename);
-          $('img#attachment_dialog_image').attr('src', attachment_url);
-          params.w.show();
-
-        };
-
-        $('#attachment_template').jqm({
-          modal:true,
-          onShow:updateTemplateImage
-        }).jqmAddTrigger('.image_attachment').jqmAddClose('.modal_close');
-
-        $('#nft_trend_dialog').jqm({
-          modal:true,
-          onShow:renderNftTrendGraph
-        }).jqmAddTrigger('.nft_trend_button').jqmAddClose($('a.modal_close'));
-      }
-
-      // IE hack
-      if (typeof G_vmlCanvasManager != 'undefined') {
-        $(window).load(function(){
-          on_ready_steps();
-        });
-      } else {
-        $(document).ready(function(){
-          on_ready_steps();
-        });
-      }
