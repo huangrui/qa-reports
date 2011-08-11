@@ -14,8 +14,8 @@ Meegoqa::Application.routes.draw do
   match '/api/reports' => 'api#reports_by_limit_and_time', :via => "get"
 
   match '/finalize' => 'reports#preview', :via => "get"
-  match '/finalize/download' => 'csv_export#export_report', :via => "get"
   match '/publish' => 'reports#publish', :via => "post"
+  match '/download' => 'csv_export#export_report', :via => "get"
 
   match '/ajax_update_tested_at' => 'reports#update_tested_at', :via => "post"
   match '/ajax_update_txt' => 'reports#update_txt', :via => "post"
