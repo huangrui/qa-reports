@@ -59,8 +59,8 @@ html
         span X
       #nft_trend_graph style="width:790px; height:290px;"
 
-    javascript:
-      var BUGZILLA_URI = "#{BUGZILLA_CONFIG['link_uri']}";
+    span#bugzilla_uri style="display:none"
+      #{BUGZILLA_CONFIG['link_uri']}
     = javascript_include_tag 'application'
     = javascript_include_tag 'jqModal'
     = yield :view_specific_js
