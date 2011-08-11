@@ -35,3 +35,8 @@ Before do
     :features_attributes => [@feature_template]
   }
 end
+
+After do
+  #visit destroy_user_session_path
+  #DatabaseCleaner.clean
+end

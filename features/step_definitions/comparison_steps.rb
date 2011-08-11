@@ -1,5 +1,5 @@
 When /^report files "([^"]*)" are uploaded to branch "([^"]*)" for product "([^"]*)"$/ do |files, branch, hardware|
-  Given %{I have one user "John Restless" with email "resting@man.net" and password "secretpass" and token "foobar"}
+  Given "I am an user with a REST authentication token"
   When %{the client sends reports "#{files}" via the REST API to test set "#{branch}" and product "#{hardware}"}
 end
 
