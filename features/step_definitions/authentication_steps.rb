@@ -54,9 +54,11 @@ When /^I log out$/ do
     click_link_or_button 'Sign out'
 end
 
-When /^I sign up with unique email address$/ do
+Given /^I am at the registration page$/ do
   visit new_user_registration_path
+end
 
+When /^I sign up with unique email address$/ do
   fill_in              'Full name',             :with => 'Johnny Depp'
   fill_in              'Email',                 :with => 'john@meego.com'
   fill_in              'Password',              :with => 'buzzword'
@@ -67,12 +69,11 @@ end
 When /^I sign up with an already registered email address$/ do
   When "I sign up with unique email address"
   When "I log out"
+  Given "I am at the registration page"
   When "I sign up with unique email address"
 end
 
 When /^I sign up with invalid name, email and password$/ do
-  visit new_user_registration_path
-
   fill_in              'Full name',             :with => ''
   fill_in              'Email',                 :with => 'peter@mee@go.com'
   fill_in              'Password',              :with => 'neverneverland'
