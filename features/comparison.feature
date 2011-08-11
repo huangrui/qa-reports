@@ -52,10 +52,10 @@ Feature: Consolidated reports
     When I am on the front page
     And I follow "compare"
 
-    Then I should really see "SMOKE-SIM-Query_SIM_card_status" within "#test_case_3 .testcase_name"
-    And I really should not see "SMOKE-SIM-Write_read_and_delete_ADN_phonebook_entry" within "#test_case_0 .testcase_name"
+    Then I should really see "SMOKE-SIM-Query_SIM_card_status"
+    And I really should not see "SMOKE-SIM-Write_read_and_delete_ADN_phonebook_entry"
 
     Then I click the element ".see_all_comparison_button"
 
-    Then I should really see "SMOKE-SIM-Query_SIM_card_status" within "#test_case_3 .testcase_name"
-    And I should really see "SMOKE-SIM-Write_read_and_delete_ADN_phonebook_entry" within "#test_case_0 .testcase_name"
+    Then I should really see "SMOKE-SIM-Query_SIM_card_status"
+    And I should really see "SMOKE-SIM-Write_read_and_delete_ADN_phonebook_entry"
