@@ -106,6 +106,10 @@ GEM
       abstract (>= 1.0.0)
     execjs (1.2.0)
       multi_json (~> 1.0)
+    factory_girl (2.0.3)
+    factory_girl_rails (1.1.0)
+      factory_girl (~> 2.0.0)
+      railties (>= 3.0.0)
     fastercsv (1.5.4)
     fattr (2.2.0)
     ffi (1.0.9)
@@ -251,6 +255,8 @@ DEPENDENCIES
   cucumber-rails (~> 0.3.2)
   database_cleaner
   devise (= 1.1.9)
+  factory_girl
+  factory_girl_rails (~> 1.1)
   fastercsv
   launchy
   metric_fu!
