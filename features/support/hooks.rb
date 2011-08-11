@@ -1,4 +1,5 @@
 Before do
+  #DatabaseCleaner.clean
   @default_api_opts = {
     "auth_token"      => "foobar",
     "release_version" => "1.2",
