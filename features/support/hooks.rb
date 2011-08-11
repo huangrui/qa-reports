@@ -16,3 +16,8 @@ Before do
   @default_new_api_opts.delete("testtype")
   @default_new_api_opts.delete("hwproduct")
 end
+
+After do
+  #visit destroy_user_session_path
+  #DatabaseCleaner.clean
+end

@@ -2,7 +2,7 @@ Feature: Manage reports
 
   Background:
     Given the report for "sample.csv" exists on the service
-    And I am a new, authenticated user
+    And I am logged in
     When I view the report "1.2/Core/automated/N900"
 
   @smoke

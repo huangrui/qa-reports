@@ -1,35 +1,28 @@
 Feature: Signing up as a new user
-  In order to gain access to submit test reports to MeeGoQA
+  In order to submit test reports
   New MeeGo test engineers
-  Want to be able to sign up for an account to MeeGoQA
+  Want to sign up
 
   Scenario: Signing up with unique email address
-    Given there is no user with email "jamesbond@mi6.co.uk"
+    Given I am not logged in
+    And I am at the registration page
 
-    When I sign up as "Timothy Dalton" with email "jamesbond@mi6.co.uk" and password "pussygalore"
-
+    When I sign up with unique email address
     Then I should be on the front page
-    And I should see "Sign out" within ".h-navi"
-    And there should be a user "Timothy Dalton" with email "jamesbond@mi6.co.uk"
-
-    When I follow "Sign out" within ".h-navi"
-    And I log in with email "jamesbond@mi6.co.uk" and password "pussygalore"
-
-    Then I should see "Sign out" within ".h-navi"
+    And I should see my username and "Sign out" button
 
   Scenario: Signing up with an already registered email address
-    Given I have one user "Timothy Dalton" with email "jamesbond@mi6.co.uk" and password "pussygalore"
+    Given I am not logged in
+    And I am at the registration page
 
-    When I sign up as "Austin Powers" with email "jamesbond@mi6.co.uk" and password "shagyoulater"
+    When I sign up with an already registered email address
+    Then I should see "Email has already been taken"
 
-    Then I should see "Email has already been taken" within "#error"
-    And I should see "Sign In" within ".h-navi"
+  Scenario: Signing up without name, invalid email and not matching password confirmation
+    Given I am not logged in
+    And I am at the registration page
 
-  Scenario: Signing up without a given name, invalid email and not matching password confirmation
-    Given there is no user with email "jamesbond@mi6.co.uk"
-
-    When I sign up as "" with email "james bond @ mi6@co.uk" and password "pussygalore" and password confirmation "somethingelsepussy"
-
+    When I sign up with invalid name, email and password
     Then I should see "Name can't be blank"
     And I should see "Email is invalid"
     And I should see "Password doesn't match confirmation"
