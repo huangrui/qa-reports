@@ -27,3 +27,18 @@ Feature: Filter visible test cases when viewing a report
     Then I should really see "Test One" within "table.detailed_results"
     And I should really see "Test Three" within "table.detailed_results"
     And I really should not see "Test Two" within "table.detailed_results"
+
+  @selenium
+  Scenario: Print view shows all cases by default
+    When I follow "Print"
+
+    Then I should really see "Test One" within "table.detailed_results"
+    And I should really see "Test Two" within "table.detailed_results"
+    And I should really see "Test Three" within "table.detailed_results"
+
+  @selenium
+  Scenario: Print view doesn't have filtering buttons
+    When I follow "Print"
+
+    Then I really should not see "See all"
+    And I really should not see "See only failed"
