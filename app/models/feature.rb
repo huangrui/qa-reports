@@ -27,7 +27,7 @@ class Feature < ActiveRecord::Base
   belongs_to :meego_test_session
   has_many :meego_test_cases, :autosave => false, :dependent => :destroy
 
-  after_save :save_test_cases
+  after_create :save_test_cases
 
   include ReportSummary
   include Graph
