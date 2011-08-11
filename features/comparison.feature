@@ -54,8 +54,12 @@ Feature: Consolidated reports
 
     Then I should really see "SMOKE-SIM-Query_SIM_card_status"
     And I really should not see "SMOKE-SIM-Write_read_and_delete_ADN_phonebook_entry"
+    And I should see active "Changed"
+    And I should see inactive "See all"
 
     Then I press "See all"
 
     Then I should really see "SMOKE-SIM-Query_SIM_card_status"
     And I should really see "SMOKE-SIM-Write_read_and_delete_ADN_phonebook_entry"
+    And I should see inactive "Changed"
+    And I should see active "See all"

@@ -129,6 +129,18 @@ Then /^(?:|I )should see \/([^\/]*)\/(?: within "([^"]*)")?$/ do |regexp, select
   end
 end
 
+Then /^(?:|I )should see active "([^"]*)"(?: within "([^"]*)")?$/ do |element, selector|
+  with_scope(selector) do
+    find('a', :text => element)['class'].should =~ /active/
+  end
+end
+
+Then /^(?:|I )should see inactive "([^"]*)"(?: within "([^"]*)")?$/ do |element, selector|
+  with_scope(selector) do
+    find('a', :text => element)['class'].should_not =~ /active/
+  end
+end
+
 Then /^(?:|I )should not see "([^"]*)"(?: within "([^"]*)")?$/ do |text, selector|
   with_scope(selector) do
     if page.respond_to? :should
