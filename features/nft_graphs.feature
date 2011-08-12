@@ -4,7 +4,7 @@ Feature: Check NFT graphs from the web page
   So I can see how things have progressed over time
 
   Background:
-    Given I am a new, authenticated user
+    Given I am logged in
 
     When I follow "Add report"
     And I select target "Handset", test set "NFT" and product "N900" with date "2010-11-21"

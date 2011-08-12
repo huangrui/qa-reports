@@ -22,12 +22,14 @@ require 'report_exporter'
 class MeegoTestSessionObserver < ActiveRecord::Observer
 
   def after_save(test_session)
-    return if not test_session.published         
+    return true if not test_session.published
     ReportExporter::export_test_session(test_session)
-  end 
+    return true
+  end
 
   def before_destroy(test_session)
     ReportExporter::delete_test_session_export(test_session)
+    return true
   end
 
 end

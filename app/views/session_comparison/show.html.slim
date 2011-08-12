@@ -24,8 +24,4 @@
       = render :partial => "feature", :collection => @comparison.features
 
 - content_for :view_specific_js do
-  javascript:
-    $(document).ready(function(){
-    filterResults("tr.testcase:not(.has_changes)", "unchanged tests");
-    fetchBugzillaInfo();
-    });
+  = javascript_include_tag 'comparison_show'

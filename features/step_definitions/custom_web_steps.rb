@@ -19,6 +19,49 @@ When /^(?:|I )wait until all Ajax requests are complete$/ do
   end
 end
 
+When /^I wait for (\d+)s$/ do |n|
+  sleep n.to_i
+end
+
+Then /^I should really see "([^\"]*)"(?: within "([^\"]*)")?$/ do |text, locator| #"
+  if Capybara.current_driver == :selenium
+    wait_until do
+      script = <<-eos
+      function () {
+        var containsText = $('#{locator} :contains(#{text}), #{locator}:contains(#{text})');
+        var leaves = containsText.not(containsText.parents()).filter(':visible');
+        return leaves.filter(function() {return !$(this).parents().is(':hidden');}).length > 0;
+      }();
+      eos
+      page.evaluate_script(script).should be_true
+    end
+  else
+    with_scope(locator) do
+      page.should have_content(text)
+    end
+  end
+end
+
+Then /^I really should not see "([^\"]*)"(?: within "([^\"]*)")?$/ do |text, locator| #"
+  if Capybara.current_driver == :selenium
+    wait_until do
+      script = <<-eos
+      function () {
+        var containsText = $('#{locator} :contains(#{text}), #{locator}:contains(#{text})');
+        var leaves = containsText.not(containsText.parents()).filter(':visible');
+        return leaves.filter(function() {return !$(this).parents().is(':hidden');}).length > 0;
+      }();
+      eos
+      page.evaluate_script(script).should be_false
+    end
+  else
+    with_scope(locator) do
+      page.should have_no_content(text)
+    end
+  end
+end
+
+
 Then /^the link "([^"]*)" within "([^"]*)" should point to the report "([^"]*)"/ do |link, selector, expected_report|
   with_scope(selector) do
     field = find_link(link)
@@ -35,6 +78,11 @@ end
 
 When /^I click the element "([^"]*)"$/ do |selector|
   find(selector).click
+end
+
+When /^I scroll down the page$/ do
+  page.evaluate_script('window.location.hash="footer";')
+  And %{I wait until all Ajax requests are complete}
 end
 
 When /^I click the element "([^"]*)" within "([^"]*)"$/ do |element, selector|

@@ -1,7 +1,7 @@
 Feature: RSS Feed
 
   Background:
-    Given I am a new, authenticated user
+    Given I am logged in
     And I have created the "1.1/Core/Sanity/Aava" report using "sim.xml"
     And I have created the "1.1/Core/Sanity/N900" report using "sim.xml"
     And I have created the "1.1/Core/Weekly/Aava" report using "sim.xml"

@@ -76,8 +76,8 @@
                     a.see_the_same_build_button.sort_btn#detailed_case href="#" See build
               = history_headers(@history)
               th.th_result Current
-              th
-                div style="position:relative;"
+              th#th_notes Latest notes
+
           = render :partial => "feature_history", :collection => @test_session.non_nft_features
 
       - unless @build_diff.empty?

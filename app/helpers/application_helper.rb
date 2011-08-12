@@ -147,20 +147,6 @@ module ApplicationHelper
     end
   end
 
-  def clicktale_top_tag
-    # only run clicktale on the official server
-    if request.host.include? "qa-reports.meego.com"
-      render :partial => 'shared/clicktale_top'
-    end
-  end
-
-  def clicktale_bottom_tag
-    # only run clicktale on the official server
-    if request.host.include? "qa-reports.meego.com"
-      render :partial => 'shared/clicktale_bottom'
-    end
-  end
-
   def form_ajax_error_msg(cls)
     "<div style=\"display:none\" class=\"error #{cls}\">&nbsp;</div>".html_safe
   end
