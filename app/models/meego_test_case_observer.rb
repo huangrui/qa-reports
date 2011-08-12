@@ -23,9 +23,10 @@ class MeegoTestCaseObserver < ActiveRecord::Observer
 
   def after_save(test_case)
       test_session = test_case.meego_test_session
-      return unless test_session and test_session.published
+      return true unless test_session and test_session.published
 
       ReportExporter::export_test_session(test_session)
+      return true
   end
 
 end
