@@ -47,12 +47,12 @@ Feature: Check NFT graphs from the web page
   # may be broken.
   @selenium
   Scenario: Open and close NFT trend window
-    When I view the report "1.2/Handset/NFT/N900"
+   When I view the report "1.2/Handset/NFT/N900"
 
-    And I click on element "//a[@class='nft_trend_button'][1]"
-    Then I should see "simple-case2: temperature" within "#nft_trend_dialog"
+   And I click on element "//a[@class='nft_trend_button'][1]"
+   Then I should see "simple-case2: temperature" within "#nft_trend_dialog"
 
-    And I click on element "//a[@class='ui_btn modal_close']"
+   And I click on element "//a[@class='ui_btn modal_close']"
 
   @selenium
   Scenario: Open and close NFT trend window in history view
@@ -60,8 +60,8 @@ Feature: Check NFT graphs from the web page
     
     And I follow "See history"
 
-    And I click on element "//canvas[@id='nft-history-graph-2']"
-    Then I should see "simple-case2: bandwidth" within "#nft_trend_dialog"
+    And I click on element "//canvas[contains(@id, 'nft-history-graph')]"
+    Then I should see "simple-case2: temperature" within "#nft_trend_dialog"
 
     And I click on element "//a[@class='ui_btn modal_close']"
 
@@ -71,7 +71,7 @@ Feature: Check NFT graphs from the web page
    
     And I follow "See history"
 
-    And I click on element "//canvas[@id='serial-history-graph-4']"
-    Then I should see "simple-case3: temperature" within "#nft_series_history_dialog"
+    And I click on element "//canvas[contains(@id, 'serial-history-graph')]"
+    Then I should see "simple-case1: Current samples" within "#nft_series_history_dialog"
 
     And I click on element "//a[@class='ui_btn modal_close']"
