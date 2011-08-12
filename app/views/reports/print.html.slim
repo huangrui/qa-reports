@@ -1,10 +1,5 @@
 - content_for :view_specific_js do
-  javascript:
-    $(document).ready(function(){
-    filterResults("tr.result_pass", "passing tests");
-    $("#see_all_button").click();
-    fetchBugzillaInfo();
-    });
+  = javascript_include_tag "reports_print"
 
 - content_for :view_in_browser_link do
   .report-backlink
