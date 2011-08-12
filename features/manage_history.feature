@@ -2,8 +2,8 @@ Feature: Manage history
   The history report will be clearer, if the the comment of the test cases result could be shown in the "see history"
 
   Background:
-    Given I am a new, authenticated user
-    Given I have created the "1.1/Core/Sanity/Aava" report using "sample.csv"
+    Given I am logged in
+    And I have created the "1.1/Core/Sanity/Aava" report using "sample.csv"
     And I have created the "1.1/Core/Sanity/Aava" report with date "2010-02-03" using "sample_new.csv"
 
 
