@@ -1,5 +1,4 @@
 - if (@files != nil && @files.length > 0) || @editing
-  = javascript_include_tag "file_attachments"
   div#drag_drop_area
     h2#attachments Attachments
 
@@ -8,6 +7,7 @@
           = render :partial => "reports/file_attachment_list", :locals => {:report => @report, :files => @files || []}
 
     - if @editing
+        = javascript_include_tag "file_attachments"
         a#upload_button.small_btn + Add attachment (or drag here)
         br style="clear: both;"
 
