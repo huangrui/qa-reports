@@ -9,4 +9,10 @@ Then /^I should see values "([^"]*)" in columns of "([^"]*)"$/ do |columns, scop
   }
 end
 
+Then /^I should not see values "([^"]*)" in columns of "([^"]*)"$/ do |columns, scope|
+  columns.split(",").each_with_index{|column, index|
+      And %{I should not see "#{column}" within "#{scope}.column_#{index}"}
+  }
+end
+
 

@@ -94,31 +94,14 @@ h2#test_results
 
 - data = @report.summary_data
 
-javascript:
-  $(window).load(function() {
+div style="display:none"
+  span#summary_passed
+    #{data.passed.join(',')}
+  span#summary_failed
+    #{data.failed.join(',')}
+  span#summary_na
+    #{data.na.join(',')}
+  span#summary_labels
+    #{data.labels.join(',')}
 
-    var summary_passed = #{ ints2js data.passed } ;
-    var summary_failed = #{ ints2js data.failed } ;
-    var summary_na     = #{ ints2js data.na } ;
-    var summary_labels = #{ strs2js data.labels } ;
-
-    var g = new Bluff.StackedBar("summary_graph_canvas", "395x210");
-    g.hide_title = true;
-    g.tooltips = true;
-    g.sort = false;
-    g.bar_spacing = 0.7;
-    g.marker_font_size = 18;
-    g.legend_font_size = 24;
-    g.set_theme({
-      colors: ['#acacac'],
-      marker_color: '#dedede',
-      font_color: '#6f6f6f',
-      background_colors: ['white', 'white']
-    });
-
-    g.data('pass', summary_passed, '#bcd483');
-    g.data('fail', summary_failed, '#f36c6c');
-    g.data('n/a',  summary_na,     '#ddd');
-    g.labels = summary_labels;
-    g.draw();
-  });
+= javascript_include_tag 'test_results'

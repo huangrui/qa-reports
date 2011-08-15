@@ -84,7 +84,7 @@ class ReportGroupViewModel
       where(@params).
       limit(range.count).offset(range.begin).
       order("tested_at DESC, created_at DESC")
-    
+
     MeegoTestSession.load_case_counts_for_reports! reports
   end
 end

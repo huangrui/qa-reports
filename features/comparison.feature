@@ -32,26 +32,34 @@ Feature: Consolidated reports
     And I should see "SMOKE-SIM-Get_IMSI" within "#test_case_5 .testcase_name"
     And I should see values "Pass,Pass,Pass,Fail" in columns of "#test_case_5 td"
 
+  Scenario: Comparing results between two branches where data is missing for one device
+    When report files "spec/fixtures/sim1.xml,features/resources/bluetooth.xml" are uploaded to branch "Sanity" for product "N900"
+    And report files "spec/fixtures/sim1.xml,features/resources/bluetooth.xml" are uploaded to branch "Sanity" for product "N910"
+    And report files "spec/fixtures/sim2.xml,features/resources/bluetooth.xml" are uploaded to branch "Sanity:Testing" for product "N910"
 
-#  Scenario: Comparing results between two branches where data is missing for one device
-#    When report files "spec/fixtures/sim1.xml,features/resources/bluetooth.xml" are uploaded to branch "Sanity" for product "N900"
-#    And report files "spec/fixtures/sim1.xml,features/resources/bluetooth.xml" are uploaded to branch "Sanity" for product "N910"
-#    And report files "spec/fixtures/sim2.xml,features/resources/bluetooth.xml" are uploaded to branch "Sanity:Testing" for product "N910"
+    When I am on the front page
+    And I follow "compare"
 
-#    When I am on the front page
-#    And I follow "compare"
+    Then I should see "1" within "#changed_to_pass"
+    And I should see "2" within "#changed_from_pass"
+    And I should not see values "N900" in columns of "tr.compare_testset th"
 
-#    And I should see "+1" within "#changed_to_pass"
-#    Then I should see "-2" within "#changed_to_fail"
+  @selenium
+  Scenario: Toggle visibility of unchanged results
+    When report files "spec/fixtures/sim1.xml,features/resources/bluetooth.xml" are uploaded to branch "Sanity" for product "N910"
+    And report files "spec/fixtures/sim2.xml,features/resources/bluetooth.xml" are uploaded to branch "Sanity:Testing" for product "N910"
 
-#    And I should see values "N900,N910,N900,N910" in columns of "tr.compare_testset th"
+    When I am on the front page
+    And I follow "compare"
 
-#    And I should see "SMOKE-SIM-Update_ADN_phonebook_entry" within "#row_0 .testcase_name"
-#    And I should see values "Pass,Pass,N/A,Pass" in columns of "#row_0 td"
+    Then I should really see "SMOKE-SIM-Query_SIM_card_status"
+    And I really should not see "SMOKE-SIM-Write_read_and_delete_ADN_phonebook_entry"
+    And I should see active "Changed"
+    And I should see inactive "See all"
 
-#    And I should see "SMOKE-SIM-Get_IMSI" within "#row_10 .testcase_name"
-#    And I should see values "Pass,Pass,N/A,Fail" in columns of "#row_10 td"
+    Then I press "See all"
 
-
-
-
+    Then I should really see "SMOKE-SIM-Query_SIM_card_status"
+    And I should really see "SMOKE-SIM-Write_read_and_delete_ADN_phonebook_entry"
+    And I should see inactive "Changed"
+    And I should see active "See all"
