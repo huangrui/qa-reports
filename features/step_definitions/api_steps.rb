@@ -1,5 +1,12 @@
 Given /^I am an user with a REST authentication token$/ do
-  Given %{I have one user "John Restless" with email "resting@man.net" and password "secretpass" and token "foobar"}
+  if !User.find_by_email('resting@man.net')
+    FactoryGirl.create(:user, 
+      :name                  => 'John Restless',
+      :email                 => 'resting@man.net', 
+      :password              => 'secretpass', 
+      :password_confirmation => 'secretpass',
+      :authentication_token  => 'foobar')
+  end
 end
 
 Given /^I have sent a request with optional parameter "([^"]*)" with value "([^"]*)" via the REST API$/ do |opt, val|

@@ -179,3 +179,15 @@ end
 Then /^I should not see the header$/ do
   Then "I should not see \"#header\""
 end
+
+When /^I click to confirm the delete$/ do
+  find('.dialog-delete').click
+end
+
+Then /^(?:|I )should not be able to view the report "([^"]*)"$/ do |report_string|
+  version, target, test_set, product = report_string.downcase.split('/')
+  report = MeegoTestSession.first(:conditions =>
+   {"version_labels.normalized" => version, :target => target, :product => product, :testset => test_set}, :include => :version_label,
+   :order => "tested_at DESC, created_at DESC")
+  report.should == nil
+end

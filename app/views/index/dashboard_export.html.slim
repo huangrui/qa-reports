@@ -1,7 +1,0 @@
-h3#content
-  | Exporting all reports to QA-Dashboard, this may take several minutes ... 
-  javascript:
-    $.post("/ajax_do_dashboard_export", {}, function(data, status){
-        $('#content').append(data);
-    });
-  

@@ -2,7 +2,7 @@ Feature: Edit Report
 
   Background:
     Given the report for "short-sim.csv" exists on the service
-    And I am a new, authenticated user
+    And I am logged in
 
   @selenium
   Scenario: Add and view a test case attachment for existing report
