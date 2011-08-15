@@ -2,7 +2,7 @@ Feature: Manage reports
 
   Background:
     Given the report for "sample.csv" exists on the service
-    And I am a new, authenticated user
+    And I am logged in
     When I view the report "1.2/Core/automated/N900"
 
   @smoke
@@ -16,7 +16,7 @@ Feature: Manage reports
 
   @smoke
   Scenario: Printing a report
-	When I click to print the report
+	  When I click to print the report
 
     And I should not see the header
 
@@ -31,14 +31,19 @@ Feature: Manage reports
     Then I should see "Edit the report information" within ".notification"
     And I should see "Test Objective" within ".editable_text #test_objective"
 
+  Scenario: Linking from print view to report view
+    When I click to print the report
+
+    Then I should see "Click here to view this message in your browser or handheld device" within ".report-backlink"
+    And the link "Click here" within ".report-backlink" should point to the report "1.2/Core/automated/N900"
+
+  @selenium
   Scenario: Deleting a report
     When I view the report "1.2/Core/automated/N900"
     And I click to delete the report
 
     Then I should see "Are you sure you want to delete"
 
-  Scenario: Linking from print view to report view
-    When I click to print the report
+    When I click to confirm the delete
 
-    Then I should see "Click here to view this message in your browser or handheld device" within ".report-backlink"
-    And the link "Click here" within ".report-backlink" should point to the report "1.2/Core/automated/N900"
+    Then I should not be able to view the report "1.2/Core/automated/N900"

@@ -14,7 +14,7 @@ Feature: Loading times
 
   @performance
   Scenario: Upload a big report via web form and view it
-    Given I am a new, authenticated user
+    Given I am logged in
     And I am on the front page
 
     When I start the timer

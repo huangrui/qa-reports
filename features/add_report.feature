@@ -4,7 +4,7 @@ Feature:
   So that stakeholders can easily see the current status
 
   Background:
-    Given I am a new, authenticated user
+    Given I am logged in
 
   @smoke
   Scenario: The front page should show the add report link

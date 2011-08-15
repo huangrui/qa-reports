@@ -1,5 +1,5 @@
 Given /^the report for "([^"]*)" exists on the service$/ do |file|
-  Given %{I have one user "John Restless" with email "resting@man.net" and password "secretpass" and token "foobar"}
+  Given "I am an user with a REST authentication token"
 
   # @default_api_opts defined in features/support/hooks.rb
   api_import @default_api_opts.merge( "report.1" => Rack::Test::UploadedFile.new("features/resources/#{file}", "text/xml") )

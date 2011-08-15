@@ -8,4 +8,9 @@ tr.testcase
     - else
       td class="testcase_result history_result" -
   td class="testcase_result #{result_class(testcase)} current_result" #{result_html(testcase)}
-  td
+  td class="testcase_notes" rowspan="#{testcase.all_measurements.size if testcase.has_measurements? }"
+    .content
+      = comment_html(testcase)
+      - if not testcase.attachments.empty?
+        - attachment = testcase.attachments.first
+        a class="note_attachment #{'image_attachment' if attachment.image?}" href="#{attachment.pretty_url}" title=attachment.filename =attachment.pretty_url
