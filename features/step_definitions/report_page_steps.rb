@@ -21,6 +21,12 @@ When /I view the group report "([^"]*)"$/ do |report_string|
   visit("/#{version}/#{target}/#{test_set}/#{product}")
 end
 
+Then /^I should see the download link for the result file "([^"]*)"$/ do |result_file|
+  with_scope('#raw_file_attachment_list_ready') do
+    find_link(result_file)
+  end
+end
+
 Then /I should see the imported data from "([^"]*)" and "([^"]*)" in the exported CSV.$/ do |file1, file2|
   input = FasterCSV.read('features/resources/' + file1).drop(1) +
           FasterCSV.read('features/resources/' + file2).drop(1)
