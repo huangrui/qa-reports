@@ -20,16 +20,16 @@ def api_import( params )
 end
 
 When "the client sends a basic test result file" do
-  When %{the client sends file "features/resources/sim.xml"}
+  When %{the client sends file "features/resources/sim.xml" via the REST API}
 end
 
 When "the client sends a report with tests without features" do
-  When %{the client sends file "spec/fixtures/no_features.xml"}
+  When %{the client sends file "spec/fixtures/no_features.xml" via the REST API}
 end
 
 # Note: this must use the API parameters for the current API version. There
 # are other methods for using deprecated parameters.
-When /^the client sends file "([^"]*)"$/ do |file|
+When /^the client sends file "([^"]*)" via the REST API$/ do |file|
   # @default_api_opts defined in features/support/hooks.rb
   api_import @default_api_opts.merge({
     "report.1" => Rack::Test::UploadedFile.new("#{file}", "text/xml")
@@ -53,6 +53,20 @@ When "the client sends a basic test result file with deprecated product paramete
   response.should be_success
 end
 
+When /^the client sends reports "([^"]*)" via the REST API to test set "([^"]*)" and product "([^"]*)"$/ do |files, testset, hardware|
+  data = @default_api_opts.merge({
+    "testset" => testset,
+    "product" => hardware
+  })
+
+  files.split(',').each_with_index do |file, index|
+    data["report."+(index+1).to_s] = Rack::Test::UploadedFile.new(file, "text/xml")
+  end
+
+  api_import data
+  response.should be_success
+end
+
 When /^the client sends files with attachments$/ do
   api_import @default_api_opts.merge({
       "report.1"        => Rack::Test::UploadedFile.new("features/resources/sim.xml", "text/xml"),
@@ -65,9 +79,9 @@ end
 
 # This is used in test session listing tests
 When "the client sends three CSV files" do
-  When %{the client sends file "features/resources/short1.csv"}
-  When %{the client sends file "features/resources/short2.csv"}
-  When %{the client sends file "features/resources/short3.csv"}
+  When %{the client sends file "features/resources/short1.csv" via the REST API}
+  When %{the client sends file "features/resources/short2.csv" via the REST API}
+  When %{the client sends file "features/resources/short3.csv" via the REST API}
   # Update here, no need to have a step in the feature for this
   And %{session "short1.csv" has been modified at "2011-01-01 01:01"}
   And %{session "short2.csv" has been modified at "2011-02-01 01:01"}

@@ -20,7 +20,7 @@ When "the client sends an updated file with invalid extension" do
 end
 
 When "I have sent a file with NFT results" do
-  When %{the client sends file "features/resources/serial_result.xml"}
+  When %{the client sends file "features/resources/serial_result.xml" via the REST API}
 end
 
 When "I have sent a basic result file" do
