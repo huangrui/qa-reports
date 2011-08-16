@@ -1,4 +1,4 @@
-class MeegoTestCasesController < ApplicationController
+class TestCasesController < ApplicationController
   include CacheHelper
 
   before_filter :authenticate_user!
@@ -34,4 +34,21 @@ class MeegoTestCasesController < ApplicationController
     render :text => "OK"
   end
 
+  def remove_testcase
+    case_id = params[:id].to_i
+    tc = MeegoTestCase.find(case_id)
+    tc.remove_from_session
+
+    expire_caches_for(tc.meego_test_session)
+    render :json => {:ok => '1'}
+  end
+
+  def restore_testcase
+    case_id         = params[:id].to_i
+    tc = MeegoTestCase.deleted.find(case_id)
+    tc.restore_to_session
+
+    expire_caches_for(tc.meego_test_session)
+    render :json => { :ok => '1' }
+  end
 end
