@@ -77,29 +77,12 @@ Feature: REST API
     And I should be able to view the latest created report
     And I should see the objective of previous report
 
-  # For the optional parameters, title, build_txt/Build (image), objective_txt (Test Objective), qa_summary_txt/(Quality Summary), issue_summary_txt
-  Scenario: Sending REST import with valid optional title parameter
-    When the client sends a request with extra parameter "title=Core+Test+Report%3A+N900+UX+Key+Feature+%2D+20110320+%28for+0315+release%29"
-
-    Then the upload succeeds
-    And I should be able to view the created report
-    And I should see "Core Test Report: N900 UX Key Feature - 20110320 (for 0315 release)" within "h1"
-
-
   Scenario: Sending REST import with valid optional build_image parameter
     When the client sends a request with extra parameter "build_txt=meego%2Dtablet%2Dia32%2Dproduct%2DPinetrail%2D1%2E1%2E90%2E7%2E20110315%2E10%2Eiso"
 
     Then the upload succeeds
     And I should be able to view the created report
     And I should see "meego-tablet-ia32-product-Pinetrail-1.1.90.7.20110315.10.iso"
-
-
-  Scenario: Sending REST import with an optional objective_txt parameter
-    When the client sends a request with extra parameter "objective_txt=It+is+a+weekly+testing+cycle+for+preview+images+released+by+distribution+team+to+ensure+MeeGo+Tablet+UX+delivers+correct+software+feature+integrations+and+stable+existed+functions%2E+Based+on+the+Tablet+requirements+documented%2C+our+testing+focus+would+be+basic+feature+testing%2C+bug+verification+and+regression+test+according+to+package+changes%2E"
-
-    Then the upload succeeds
-    And I should be able to view the created report
-    And I should see "It is a weekly testing cycle for preview images released by distribution team to ensure MeeGo Tablet UX delivers correct software feature integrations and stable existed functions. Based on the Tablet requirements documented, our testing focus would be basic feature testing, bug verification and regression test according to package changes."
 
 
   Scenario: Sending REST import with valid optional qa_summary_txt parameter
