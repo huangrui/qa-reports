@@ -27,7 +27,7 @@ Meegoqa::Application.routes.draw do
   match '/ajax_remove_testcase' => 'reports#remove_testcase', :via => "post"
   match '/ajax_restore_testcase' => 'reports#restore_testcase', :via => "post"
 
-  match '/fetch_bugzilla_data' => 'reports#fetch_bugzilla_data', :via => "get"
+  match '/fetch_bugzilla_data' => 'bugs#fetch_bugzilla_data', :via => "get"
 
   # For submit the comments of features
   match '/ajax_update_feature_comment' => 'reports#update_feature_comment', :via => "post"
