@@ -37,60 +37,49 @@ Feature: REST API
     Then the upload succeeds
     And I should be able to view the created report
 
-  Scenario: Sending REST import with string values instead of files
-    When the client sends a request with string value instead of a files via the REST API
-
+  Scenario: Sending a report with string values instead of files
+    When the client sends a request with string value instead of a file
     Then the upload fails
-    Then the REST result "errors" is "Request contained invalid files: Invalid file attachment for field report.1"
+    And the result complains about invalid file
 
-  Scenario: Sending REST import without valid report file
-    When the client sends a request without file via the REST API
-
+  Scenario: Sending a report without a valid report file
+    When the client sends a request without file
     Then the upload fails
-    Then the REST result "errors|uploaded_files" is "can't be blank"
+    And the result complains about missing file
 
-  Scenario: Sending REST import without valid parameters
-    When the client sends a request without parameter "target" via the REST API
-
+  Scenario: Sending a report without a target profile
+    When the client sends a request without a target profile
     Then the upload fails
-    Then the REST result "errors|target" is "can't be blank"
+    And the result complains about missing target profile    
 
-
-  Scenario: Sending REST import with invalid extra parameters
-    When the client sends a request with extra parameter "foobar=1" via the REST API
-
+  Scenario: Sending a report with invalid extra parameters
+    When the client sends a request containing invalid extra parameter
     Then the upload fails
-    Then the REST result "errors" is "unknown attribute: foobar"
+    And the result complains about invalid parameter
 
-  Scenario: Sending REST import with user defined report title
-    When the client sends a request with optional parameter "title" with value "My Test Report" via the REST API
-
+  Scenario: Sending a report with a user defined report title
+    When the client sends a request with a defined title
     Then the upload succeeds
     And I should be able to view the created report
+    And I should see the defined report title
 
-    Then I should see "My Test Report"
-
-  Scenario: Sending REST import with user defined test objective
-    When the client sends a request with optional parameter "objective_txt" with value "To test that [[1234]] works now" via the REST API
-
+  Scenario: Sending a report with user defined test objective
+    When the client sends a request with defined test objective
     Then the upload succeeds
     And I should be able to view the created report
+    And I should see the defined test objective
 
-    Then I should see "To test that 1234 works now"
-
-  Scenario: Sending REST import first with user defined test objective and then without
-    Given I have sent a request with optional parameter "objective_txt" with value "To notice regression" via the REST API
-
+  Scenario: Test objective is copied from previous report if not given
+    Given the client has sent a request with a defined test objective
     When the client sends a basic test result file
 
     Then the upload succeeds
     And I should be able to view the latest created report
-
-    Then I should see "To notice regression"
+    And I should see the objective of previous report
 
   # For the optional parameters, title, build_txt/Build (image), objective_txt (Test Objective), qa_summary_txt/(Quality Summary), issue_summary_txt
   Scenario: Sending REST import with valid optional title parameter
-    When the client sends a request with extra parameter "title=Core+Test+Report%3A+N900+UX+Key+Feature+%2D+20110320+%28for+0315+release%29" via the REST API
+    When the client sends a request with extra parameter "title=Core+Test+Report%3A+N900+UX+Key+Feature+%2D+20110320+%28for+0315+release%29"
 
     Then the upload succeeds
     And I should be able to view the created report
@@ -98,7 +87,7 @@ Feature: REST API
 
 
   Scenario: Sending REST import with valid optional build_image parameter
-    When the client sends a request with extra parameter "build_txt=meego%2Dtablet%2Dia32%2Dproduct%2DPinetrail%2D1%2E1%2E90%2E7%2E20110315%2E10%2Eiso" via the REST API
+    When the client sends a request with extra parameter "build_txt=meego%2Dtablet%2Dia32%2Dproduct%2DPinetrail%2D1%2E1%2E90%2E7%2E20110315%2E10%2Eiso"
 
     Then the upload succeeds
     And I should be able to view the created report
@@ -106,7 +95,7 @@ Feature: REST API
 
 
   Scenario: Sending REST import with an optional objective_txt parameter
-    When the client sends a request with extra parameter "objective_txt=It+is+a+weekly+testing+cycle+for+preview+images+released+by+distribution+team+to+ensure+MeeGo+Tablet+UX+delivers+correct+software+feature+integrations+and+stable+existed+functions%2E+Based+on+the+Tablet+requirements+documented%2C+our+testing+focus+would+be+basic+feature+testing%2C+bug+verification+and+regression+test+according+to+package+changes%2E" via the REST API
+    When the client sends a request with extra parameter "objective_txt=It+is+a+weekly+testing+cycle+for+preview+images+released+by+distribution+team+to+ensure+MeeGo+Tablet+UX+delivers+correct+software+feature+integrations+and+stable+existed+functions%2E+Based+on+the+Tablet+requirements+documented%2C+our+testing+focus+would+be+basic+feature+testing%2C+bug+verification+and+regression+test+according+to+package+changes%2E"
 
     Then the upload succeeds
     And I should be able to view the created report
@@ -114,7 +103,7 @@ Feature: REST API
 
 
   Scenario: Sending REST import with valid optional qa_summary_txt parameter
-    When the client sends a request with extra parameter "qa_summary_txt=Improvement%3A%2D+Notification+UX+can+be+shown+now+%28top+bug+5518+is+fixed%29%2C+but+new+IM+message+failed+to+show+in+notification+UI%3B%2D+Be+able+to+transfer+files+using+Chat%3B" via the REST API
+    When the client sends a request with extra parameter "qa_summary_txt=Improvement%3A%2D+Notification+UX+can+be+shown+now+%28top+bug+5518+is+fixed%29%2C+but+new+IM+message+failed+to+show+in+notification+UI%3B%2D+Be+able+to+transfer+files+using+Chat%3B"
 
     Then the upload succeeds
     And I should be able to view the created report
@@ -122,14 +111,14 @@ Feature: REST API
 
 
   Scenario: Sending REST import with valid optional issue_summary_txt
-    When the client sends a request with extra parameter "issue_summary_txt=New+Issue%285%29%3A6306+System+time+setting+is+wrong+for+Los+Angeles%3B+6235+VKB+in+browser+does+not+launch+in+some+text+fields%3B+6043+Mismatched+sync+service+icon+and+text+in+Sync+Details+page%3B+6055+Sync+shared+credentials+not+reflected+in+Sync+Settings+main+page%3B+6056+Sync+UI+intermittent+crash+after+log+in" via the REST API
+    When the client sends a request with extra parameter "issue_summary_txt=New+Issue%285%29%3A6306+System+time+setting+is+wrong+for+Los+Angeles%3B+6235+VKB+in+browser+does+not+launch+in+some+text+fields%3B+6043+Mismatched+sync+service+icon+and+text+in+Sync+Details+page%3B+6055+Sync+shared+credentials+not+reflected+in+Sync+Settings+main+page%3B+6056+Sync+UI+intermittent+crash+after+log+in"
 
     Then the upload succeeds
     And I should be able to view the created report
     And I should see "New Issue(5):6306 System time setting is wrong for Los Angeles; 6235 VKB in browser does not launch in some text fields; 6043 Mismatched sync service icon and text in Sync Details page; 6055 Sync shared credentials not reflected in Sync Settings main page; 6056 Sync UI intermittent crash after log in"
 
   Scenario: Sending REST import with all valid optional parameters
-    When the client sends a request with extra parameter "title=Core+Test+Report%3A+N900+UX+Key+Feature+%2D+20110320+%28for+0315+release%29&build_txt=meego%2Dtablet%2Dia32%2Dproduct%2DPinetrail%2D1%2E1%2E90%2E7%2E20110315%2E10%2Eiso&objective_txt=It+is+a+weekly+testing+cycle+for+preview+images+released+by+distribution+team+to+ensure+MeeGo+Tablet+UX+delivers+correct+software+feature+integrations+and+stable+existed+functions%2E+Based+on+the+Tablet+requirements+documented%2C+our+testing+focus+would+be+basic+feature+testing%2C+bug+verification+and+regression+test+according+to+package+changes%2E&qa_summary_txt=Improvement%3A%2D+Notification+UX+can+be+shown+now+%28top+bug+5518+is+fixed%29%2C+but+new+IM+message+failed+to+show+in+notification+UI%3B%2D+Be+able+to+transfer+files+using+Chat%3B&issue_summary_txt=New+Issue%285%29%3A6306+System+time+setting+is+wrong+for+Los+Angeles%3B+6235+VKB+in+browser+does+not+launch+in+some+text+fields%3B+6043+Mismatched+sync+service+icon+and+text+in+Sync+Details+page%3B+6055+Sync+shared+credentials+not+reflected+in+Sync+Settings+main+page%3B+6056+Sync+UI+intermittent+crash+after+log+in" via the REST API
+    When the client sends a request with extra parameter "title=Core+Test+Report%3A+N900+UX+Key+Feature+%2D+20110320+%28for+0315+release%29&build_txt=meego%2Dtablet%2Dia32%2Dproduct%2DPinetrail%2D1%2E1%2E90%2E7%2E20110315%2E10%2Eiso&objective_txt=It+is+a+weekly+testing+cycle+for+preview+images+released+by+distribution+team+to+ensure+MeeGo+Tablet+UX+delivers+correct+software+feature+integrations+and+stable+existed+functions%2E+Based+on+the+Tablet+requirements+documented%2C+our+testing+focus+would+be+basic+feature+testing%2C+bug+verification+and+regression+test+according+to+package+changes%2E&qa_summary_txt=Improvement%3A%2D+Notification+UX+can+be+shown+now+%28top+bug+5518+is+fixed%29%2C+but+new+IM+message+failed+to+show+in+notification+UI%3B%2D+Be+able+to+transfer+files+using+Chat%3B&issue_summary_txt=New+Issue%285%29%3A6306+System+time+setting+is+wrong+for+Los+Angeles%3B+6235+VKB+in+browser+does+not+launch+in+some+text+fields%3B+6043+Mismatched+sync+service+icon+and+text+in+Sync+Details+page%3B+6055+Sync+shared+credentials+not+reflected+in+Sync+Settings+main+page%3B+6056+Sync+UI+intermittent+crash+after+log+in"
 
     Then the upload succeeds
     And I should be able to view the created report

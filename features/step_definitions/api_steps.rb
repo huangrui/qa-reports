@@ -9,8 +9,8 @@ Given /^I am an user with a REST authentication token$/ do
   end
 end
 
-Given /^I have sent a request with optional parameter "([^"]*)" with value "([^"]*)" via the REST API$/ do |opt, val|
-  Given %{the client sends a request with optional parameter "#{opt}" with value "#{val}" via the REST API}
+Given "the client has sent a request with a defined test objective" do
+  Given %{the client sends a request with defined test objective}  
   # Needed in order to get different time stamps for current - previous matching
   sleep 1
 end
@@ -20,16 +20,16 @@ def api_import( params )
 end
 
 When "the client sends a basic test result file" do
-  When %{the client sends file "features/resources/sim.xml" via the REST API}
+  When %{the client sends file "features/resources/sim.xml"}
 end
 
 When "the client sends a report with tests without features" do
-  When %{the client sends file "spec/fixtures/no_features.xml" via the REST API}
+  When %{the client sends file "spec/fixtures/no_features.xml"}
 end
 
 # Note: this must use the API parameters for the current API version. There
 # are other methods for using deprecated parameters.
-When /^the client sends file "([^"]*)" via the REST API$/ do |file|
+When /^the client sends file "([^"]*)"$/ do |file|
   # @default_api_opts defined in features/support/hooks.rb
   api_import @default_api_opts.merge("report.1" => Rack::Test::UploadedFile.new("#{file}", "text/xml"))
   response.should be_success
@@ -58,41 +58,44 @@ When /^the client sends files with attachments$/ do
 end
 
 When "the client sends three CSV files" do
-  When %{the client sends file "features/resources/short1.csv" via the REST API}
-  When %{the client sends file "features/resources/short2.csv" via the REST API}
-  When %{the client sends file "features/resources/short3.csv" via the REST API}
+  When %{the client sends file "features/resources/short1.csv"}
+  When %{the client sends file "features/resources/short2.csv"}
+  When %{the client sends file "features/resources/short3.csv"}
   # Update here, no need to have a step in the feature for this
   And %{session "short1.csv" has been modified at "2011-01-01 01:01"}
   And %{session "short2.csv" has been modified at "2011-02-01 01:01"}
   And %{session "short3.csv" has been modified at "2011-03-01 01:01"}
 end
 
-When /^the client sends a request with string value instead of a files via the REST API$/ do
+When /^the client sends a request with string value instead of a file$/ do
     api_import @default_api_opts.merge("report.1" => "Foo!")
 end
 
-When /^the client sends a request without file via the REST API$/ do
+When /^the client sends a request without file$/ do
   @default_api_opts.delete("report.1")
   api_import @default_api_opts
   response.should be_success
 end
 
-When /^the client sends a request without parameter "target" via the REST API$/ do
+When /^the client sends a request without a target profile$/ do
   @default_api_opts.delete("target")
   api_import @default_api_opts
   response.should be_success
 end
 
-When /^the client sends a request with extra parameter "([^"]*)" via the REST API$/ do |extra|
-  # TODO: this step should be replaced with the step defined below
-  post "/api/import?auth_token=foobar&release_version=1.2&target=Core&testtype=automated&hardware=N900&" + extra, {
-      "report.1"        => Rack::Test::UploadedFile.new("features/resources/sim.xml", "text/xml")
-  }
-  response.should be_success
-
+When "the client sends a request containing invalid extra parameter" do
+  When %{the client sends a request with optional parameter "foobar" with value "1"}
 end
 
-When /^the client sends a request with optional parameter "([^"]*)" with value "([^"]*)" via the REST API$/ do |opt, val|
+When "the client sends a request with a defined title" do
+  When %{the client sends a request with optional parameter "title" with value "My Test Report"}
+end
+
+When "the client sends a request with defined test objective" do
+  When %{the client sends a request with optional parameter "objective_txt" with value "To notice regression"}
+end
+
+When /^the client sends a request with optional parameter "([^"]*)" with value "([^"]*)"$/ do |opt, val|
   api_import @default_api_opts.merge({
     "report.1"        => Rack::Test::UploadedFile.new("features/resources/sim.xml", "text/xml"),
     opt               => val
@@ -139,12 +142,40 @@ Then "I should see the correct amount of test cases without a feature" do
   Then %{I should see "8" within "td.total"}
 end
 
+Then "I should see the defined test objective" do
+  Then %{I should see "To notice regression"}
+end
+
+Then "I should see the objective of previous report" do
+  Then %{I should see the defined test objective}
+end
+
+Then "I should see the defined report title" do
+  Then %{I should see "My Test Report"}
+end
+
 Then "the upload succeeds" do
   Then %{the REST result "ok" is "1"}
 end
 
 Then "the upload fails" do
   Then %{the REST result "ok" is "0"}
+end
+
+Then "the result complains about invalid file" do
+  Then %{the REST result "errors" is "Request contained invalid files: Invalid file attachment for field report.1"}
+end
+
+Then "the result complains about missing file" do
+  Then %{the REST result "errors|uploaded_files" is "can't be blank"}
+end
+
+Then "the result complains about missing target profile" do
+  Then %{the REST result "errors|target" is "can't be blank"}
+end
+
+Then "the result complains about invalid parameter" do
+  Then %{the REST result "errors" is "unknown attribute: foobar"}
 end
 
 Then /^the REST result "([^"]*)" is "([^"]*)"$/ do |key, value|
