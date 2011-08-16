@@ -117,6 +117,14 @@ Then /^I should be able to view the created report$/ do
   Then %{I view the report "1.2/Core/Automated/N900"}
 end
 
+Then "the upload succeeds" do
+  Then %{the REST result "ok" is "1"}
+end
+
+Then "the upload fails" do
+  Then %{the REST result "ok" is "0"}
+end
+
 Then /^the REST result "([^"]*)" is "([^"]*)"$/ do |key, value|
   json = ActiveSupport::JSON.decode(@response.body)
   key.split('|').each { |item| json = json[item] }
