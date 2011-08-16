@@ -6,9 +6,8 @@ Feature: REST API
   Background:
     Given I am an user with a REST authentication token
 
-  Scenario: Uploading test report with HTTP POST
-    When the client sends file "sim.xml" via the REST API
-
+  Scenario: Uploading a test report with single basic file
+    When the client sends a basic test result file
     Then the upload succeeds
     And I should be able to view the created report
 
@@ -81,20 +80,12 @@ Feature: REST API
   Scenario: Sending REST import first with user defined test objective and then without
     Given I have sent a request with optional parameter "objective_txt" with value "To notice regression" via the REST API
 
-    When the client sends file "sim.xml" via the REST API
+    When the client sends a basic test result file
 
     Then the upload succeeds
     And I should be able to view the latest created report
 
     Then I should see "To notice regression"
-
-  Scenario: Sending REST import without user defined test environment
-    When the client sends file "sim.xml" via the REST API
-    Then the upload succeeds
-
-    And I should be able to view the latest created report
-    Then I should see "Product: N900"
-
 
   # For the optional parameters, title, build_txt/Build (image), objective_txt (Test Objective), qa_summary_txt/(Quality Summary), issue_summary_txt
   Scenario: Sending REST import with valid optional title parameter

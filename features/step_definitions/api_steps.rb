@@ -19,6 +19,10 @@ def api_import( params )
   post "api/import", params
 end
 
+When "the client sends a basic test result file" do
+  When %{the client sends file "sim.xml" via the REST API}
+end
+
 When /^the client sends file "([^"]*)" via the REST API$/ do |file|
   # @default_api_opts defined in features/support/hooks.rb
   api_import @default_api_opts.merge( "report.1" => Rack::Test::UploadedFile.new("features/resources/#{file}", "text/xml") )
