@@ -181,6 +181,10 @@ When /^I download "([^"]*)"$/ do |file|
   get file
 end
 
+When /^I view the (updated )?report$/ do |unused_param|
+  When %{I view the report "1.2/Core/Automated/N900"}
+end
+
 Then /^I should be able to view the latest created report$/ do
   Then %{I view the latest report "1.2/Core/Automated/N900"}
 end
