@@ -11,30 +11,31 @@ Feature: REST API
     Then the upload succeeds
     And I should be able to view the created report
 
-  Scenario: Uploading test report with multiple files and attachments
-    When the client sends file with attachments via the REST API
+  Scenario: Uploading a test report with multiple files and attachments
+    When the client sends files with attachments
     Then the upload succeeds
     And I should be able to view the created report
 
-    Then I should see "SIM"
-    And I should see "BT"
-
-    And I should see "ajax-loader.gif" within "#file_attachment_list"
-    And I should see "icon_alert.gif" within "#file_attachment_list"
+    Then I should see names of the two features
+    And I should see the uploaded attachments
 
   Scenario: Adding a report with tests that do not belong to any feature
-    When the client sends reports "spec/fixtures/no_features.xml" via the REST API to test set "Automated" and product "N900"
+    When the client sends a report with tests without features
+    Then the upload succeeds
     And I should be able to view the created report
 
-    Then I should see "N/A" within ".feature_name"
-    And I should see "8" within "td.total"
+    Then I should see an unnamed feature section
+    And I should see the correct amount of test cases without a feature
 
-  Scenario: Adding a report with tests that do not belong to any feature vie the new API
-    When the client sends reports "spec/fixtures/no_features.xml" via the new REST API to test set "Automated" and product "N900"
+  Scenario: Adding a report with deprecated parameters
+    When the client sends a basic test result file with deprecated parameters
+    Then the upload succeeds
     And I should be able to view the created report
 
-    Then I should see "N/A" within ".feature_name"
-    And I should see "8" within "td.total"
+  Scenario: Adding a report with deprecated product parameter
+    When the client sends a basic test result file with deprecated product parameter
+    Then the upload succeeds
+    And I should be able to view the created report
 
   Scenario: Sending REST import with string values instead of files
     When the client sends a request with string value instead of a files via the REST API
@@ -140,21 +141,11 @@ Feature: REST API
     And I should see "New Issue(5):6306 System time setting is wrong for Los Angeles; 6235 VKB in browser does not launch in some text fields; 6043 Mismatched sync service icon and text in Sync Details page; 6055 Sync shared credentials not reflected in Sync Settings main page; 6056 Sync UI intermittent crash after log in"
 
   Scenario: Getting a list of sessions from API
-    When the client sends file "short1.csv" via the REST API
-    When the client sends file "short2.csv" via the REST API
-    When the client sends file "short3.csv" via the REST API
-    And session "short1.csv" has been modified at "2011-01-01 01:01"
-    And session "short2.csv" has been modified at "2011-02-01 01:01"
-    And session "short3.csv" has been modified at "2011-03-01 01:01"
+    When the client sends three CSV files
     When I download "/api/reports?limit_amount=1&begin_time=2011-01-10%2012:00"
     Then resulting JSON should match file "short2.csv"
 
   Scenario: Getting a list of sessions from API without date
-    When the client sends file "short1.csv" via the REST API
-    When the client sends file "short2.csv" via the REST API
-    When the client sends file "short3.csv" via the REST API
-    And session "short1.csv" has been modified at "2011-01-01 01:01"
-    And session "short2.csv" has been modified at "2011-02-01 01:01"
-    And session "short3.csv" has been modified at "2011-03-01 01:01"
+    When the client sends three CSV files
     When I download "/api/reports?limit_amount=1"
     Then resulting JSON should match file "short1.csv"

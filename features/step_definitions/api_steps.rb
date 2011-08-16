@@ -20,44 +20,34 @@ def api_import( params )
 end
 
 When "the client sends a basic test result file" do
-  When %{the client sends file "sim.xml" via the REST API}
+  When %{the client sends file "features/resources/sim.xml" via the REST API}
 end
 
+When "the client sends a report with tests without features" do
+  When %{the client sends file "spec/fixtures/no_features.xml" via the REST API}
+end
+
+# Note: this must use the API parameters for the current API version. There
+# are other methods for using deprecated parameters.
 When /^the client sends file "([^"]*)" via the REST API$/ do |file|
   # @default_api_opts defined in features/support/hooks.rb
-  api_import @default_api_opts.merge( "report.1" => Rack::Test::UploadedFile.new("features/resources/#{file}", "text/xml") )
+  api_import @default_api_opts.merge("report.1" => Rack::Test::UploadedFile.new("#{file}", "text/xml"))
   response.should be_success
 end
 
-When /^the client sends reports "([^"]*)" via the REST API to test set "([^"]*)" and product "([^"]*)"$/ do |files, testset, hardware|
-  data = @default_api_opts.merge({
-    "testtype"        => testset,
-    "hwproduct"       => hardware
-  })
-
-  files.split(',').each_with_index do |file, index|
-    data["report."+(index+1).to_s] = Rack::Test::UploadedFile.new(file, "text/xml")
-  end
-
-  api_import data
+# The first API had hwproduct and testtype
+When "the client sends a basic test result file with deprecated parameters" do
+  api_import @default_version_1_api_opts.merge("report.1" => Rack::Test::UploadedFile.new("features/resources/sim.xml", "text/xml"))
   response.should be_success
 end
 
-When /^the client sends reports "([^"]*)" via the new REST API to test set "([^"]*)" and product "([^"]*)"$/ do |files, testset, hardware|
-  data = @default_new_api_opts.merge({
-    "testset"        => testset,
-    "hardware"       => hardware
-  })
-
-  files.split(',').each_with_index do |file, index|
-    data["report."+(index+1).to_s] = Rack::Test::UploadedFile.new(file, "text/xml")
-  end
-
-  api_import data
+# The 2nd API had "hardware"
+When "the client sends a basic test result file with deprecated product parameter" do
+  api_import @default_version_2_api_opts.merge("report.1" => Rack::Test::UploadedFile.new("features/resources/sim.xml", "text/xml"))
   response.should be_success
 end
 
-When /^the client sends file with attachments via the REST API$/ do
+When /^the client sends files with attachments$/ do
   api_import @default_api_opts.merge({
       "report.1"        => Rack::Test::UploadedFile.new("features/resources/sim.xml", "text/xml"),
       "report.2"        => Rack::Test::UploadedFile.new("features/resources/bluetooth.xml", "text/xml"),
@@ -65,6 +55,16 @@ When /^the client sends file with attachments via the REST API$/ do
       "attachment.2"    => Rack::Test::UploadedFile.new("public/images/icon_alert.gif", "image/gif"),
   })
   response.should be_success
+end
+
+When "the client sends three CSV files" do
+  When %{the client sends file "features/resources/short1.csv" via the REST API}
+  When %{the client sends file "features/resources/short2.csv" via the REST API}
+  When %{the client sends file "features/resources/short3.csv" via the REST API}
+  # Update here, no need to have a step in the feature for this
+  And %{session "short1.csv" has been modified at "2011-01-01 01:01"}
+  And %{session "short2.csv" has been modified at "2011-02-01 01:01"}
+  And %{session "short3.csv" has been modified at "2011-03-01 01:01"}
 end
 
 When /^the client sends a request with string value instead of a files via the REST API$/ do
@@ -114,6 +114,29 @@ end
 
 Then /^I should be able to view the created report$/ do
   Then %{I view the report "1.2/Core/Automated/N900"}
+end
+
+# For uploading multiple files (sim and bluetooth)
+Then /^I should see names of the two features/ do
+  Then %{I should see "SIM"}
+  And %{I should see "BT"}
+end
+
+# For uploading attachments
+Then "I should see the uploaded attachments" do
+  Then %{I should see "ajax-loader.gif" within "#file_attachment_list"}
+  And %{I should see "icon_alert.gif" within "#file_attachment_list"}
+end
+
+# Checking for a feature named N/A when had cases without a feature
+Then "I should see an unnamed feature section" do
+  Then %{I should see "N/A" within ".feature_name"}
+end
+
+# Checking the amount of cases match when we sent the file with test
+# cases without features
+Then "I should see the correct amount of test cases without a feature" do
+  Then %{I should see "8" within "td.total"}
 end
 
 Then "the upload succeeds" do
