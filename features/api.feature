@@ -52,6 +52,23 @@ Feature: REST API
     Then the upload fails
     And the result complains about missing target profile    
 
+  Scenario: Sending a report with invalid release version
+    When the client sends a request with invalid release version
+    Then the upload fails
+    And the result complains about invalid release version
+
+  Scenario: Sending a report with invalid target profile
+    When the client sends a request with invalid target profile
+    Then the upload fails
+    And the result complains about invalid target profile
+
+  Scenario: Sending a report with product with not allowed characters
+    When the client sends a request with invalid product
+    Then the upload fails
+    And the result complains about invalid product
+
+  # Tests for additional parameters
+
   Scenario: Sending a report with invalid extra parameters
     When the client sends a request containing invalid extra parameter
     Then the upload fails
@@ -69,6 +86,50 @@ Feature: REST API
     And I should be able to view the created report
     And I should see the defined test objective
 
+  Scenario: Sending a report with user defined build information
+    When the client sends a request with defined build information
+    Then the upload succeeds
+    And I should be able to view the created report
+    And I should see the defined build information
+
+  Scenario: Sending a report with user defined build ID
+    When the client sends a request with defined build ID
+    Then the upload succeeds
+    And I should be able to view the created report
+    And I should see the defined build ID
+
+  Scenario: Sending a report with user defined environment information
+    When the client sends a request with defined environment information
+    Then the upload succeeds
+    And I should be able to view the created report
+    And I should see the defined environment information
+
+  Scenario: Sending a report with user defined quality summary
+    When the client sends a request with defined quality summary
+    Then the upload succeeds
+    And I should be able to view the created report
+    And I should see the defined quality summary
+
+  Scenario: Sending a report with user defined issue summary
+    When the client sends a request with defined issue summary
+    Then the upload succeeds
+    And I should be able to view the created report
+    And I should see the defined issue summary
+
+  Scenario: Sending a report with all possible parameters
+    When the client sends a request with all optional parameters defined
+    Then the upload succeeds
+    And I should be able to view the created report
+
+    And I should see the defined report title
+    And I should see the defined test objective
+    And I should see the defined build ID
+    And I should see the defined environment information
+    And I should see the defined quality summary
+    And I should see the defined issue summary
+
+  # Tests for additional parameters end
+
   Scenario: Test objective is copied from previous report if not given
     Given the client has sent a request with a defined test objective
     When the client sends a basic test result file
@@ -77,47 +138,12 @@ Feature: REST API
     And I should be able to view the latest created report
     And I should see the objective of previous report
 
-  Scenario: Sending REST import with valid optional build_image parameter
-    When the client sends a request with extra parameter "build_txt=meego%2Dtablet%2Dia32%2Dproduct%2DPinetrail%2D1%2E1%2E90%2E7%2E20110315%2E10%2Eiso"
-
-    Then the upload succeeds
-    And I should be able to view the created report
-    And I should see "meego-tablet-ia32-product-Pinetrail-1.1.90.7.20110315.10.iso"
-
-
-  Scenario: Sending REST import with valid optional qa_summary_txt parameter
-    When the client sends a request with extra parameter "qa_summary_txt=Improvement%3A%2D+Notification+UX+can+be+shown+now+%28top+bug+5518+is+fixed%29%2C+but+new+IM+message+failed+to+show+in+notification+UI%3B%2D+Be+able+to+transfer+files+using+Chat%3B"
-
-    Then the upload succeeds
-    And I should be able to view the created report
-    And I should see "Improvement:- Notification UX can be shown now (top bug 5518 is fixed), but new IM message failed to show in notification UI;- Be able to transfer files using Chat;"
-
-
-  Scenario: Sending REST import with valid optional issue_summary_txt
-    When the client sends a request with extra parameter "issue_summary_txt=New+Issue%285%29%3A6306+System+time+setting+is+wrong+for+Los+Angeles%3B+6235+VKB+in+browser+does+not+launch+in+some+text+fields%3B+6043+Mismatched+sync+service+icon+and+text+in+Sync+Details+page%3B+6055+Sync+shared+credentials+not+reflected+in+Sync+Settings+main+page%3B+6056+Sync+UI+intermittent+crash+after+log+in"
-
-    Then the upload succeeds
-    And I should be able to view the created report
-    And I should see "New Issue(5):6306 System time setting is wrong for Los Angeles; 6235 VKB in browser does not launch in some text fields; 6043 Mismatched sync service icon and text in Sync Details page; 6055 Sync shared credentials not reflected in Sync Settings main page; 6056 Sync UI intermittent crash after log in"
-
-  Scenario: Sending REST import with all valid optional parameters
-    When the client sends a request with extra parameter "title=Core+Test+Report%3A+N900+UX+Key+Feature+%2D+20110320+%28for+0315+release%29&build_txt=meego%2Dtablet%2Dia32%2Dproduct%2DPinetrail%2D1%2E1%2E90%2E7%2E20110315%2E10%2Eiso&objective_txt=It+is+a+weekly+testing+cycle+for+preview+images+released+by+distribution+team+to+ensure+MeeGo+Tablet+UX+delivers+correct+software+feature+integrations+and+stable+existed+functions%2E+Based+on+the+Tablet+requirements+documented%2C+our+testing+focus+would+be+basic+feature+testing%2C+bug+verification+and+regression+test+according+to+package+changes%2E&qa_summary_txt=Improvement%3A%2D+Notification+UX+can+be+shown+now+%28top+bug+5518+is+fixed%29%2C+but+new+IM+message+failed+to+show+in+notification+UI%3B%2D+Be+able+to+transfer+files+using+Chat%3B&issue_summary_txt=New+Issue%285%29%3A6306+System+time+setting+is+wrong+for+Los+Angeles%3B+6235+VKB+in+browser+does+not+launch+in+some+text+fields%3B+6043+Mismatched+sync+service+icon+and+text+in+Sync+Details+page%3B+6055+Sync+shared+credentials+not+reflected+in+Sync+Settings+main+page%3B+6056+Sync+UI+intermittent+crash+after+log+in"
-
-    Then the upload succeeds
-    And I should be able to view the created report
-
-    And I should see "Core Test Report: N900 UX Key Feature - 20110320 (for 0315 release)" within "h1"
-    And I should see "meego-tablet-ia32-product-Pinetrail-1.1.90.7.20110315.10.iso"
-    And I should see "It is a weekly testing cycle for preview images released by distribution team to ensure MeeGo Tablet UX delivers correct software feature integrations and stable existed functions. Based on the Tablet requirements documented, our testing focus would be basic feature testing, bug verification and regression test according to package changes."
-    And I should see "Improvement:- Notification UX can be shown now (top bug 5518 is fixed), but new IM message failed to show in notification UI;- Be able to transfer files using Chat;"
-    And I should see "New Issue(5):6306 System time setting is wrong for Los Angeles; 6235 VKB in browser does not launch in some text fields; 6043 Mismatched sync service icon and text in Sync Details page; 6055 Sync shared credentials not reflected in Sync Settings main page; 6056 Sync UI intermittent crash after log in"
-
   Scenario: Getting a list of sessions from API
     When the client sends three CSV files
-    When I download "/api/reports?limit_amount=1&begin_time=2011-01-10%2012:00"
-    Then resulting JSON should match file "short2.csv"
+    And I download a list of sessions with begin time given
+    Then result should match the file with defined date
 
   Scenario: Getting a list of sessions from API without date
     When the client sends three CSV files
-    When I download "/api/reports?limit_amount=1"
-    Then resulting JSON should match file "short1.csv"
+    And I download a list of sessions without a begin time
+    Then result should match the file with oldest date
