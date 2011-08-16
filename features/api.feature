@@ -12,12 +12,6 @@ Feature: REST API
     Then the upload succeeds
     And I should be able to view the created report
 
-  Scenario: Uploading test report with HTTP POST with RESTful parameters
-    When the client sends file "bluetooth.xml" via the REST API with RESTful parameters
-
-    Then the upload succeeds
-    And I should be able to view the created report
-
   Scenario: Uploading test report with multiple files and attachments
     When the client sends file with attachments via the REST API
     Then the upload succeeds

@@ -25,11 +25,6 @@ When /^the client sends file "([^"]*)" via the REST API$/ do |file|
   response.should be_success
 end
 
-When /^the client sends file "([^"]*)" via the REST API with RESTful parameters$/ do |file|
-  api_import @default_api_opts.merge("report.1" => Rack::Test::UploadedFile.new("features/resources/#{file}", "text/xml"))
-  response.should be_success
-end
-
 When /^the client sends reports "([^"]*)" via the REST API to test set "([^"]*)" and product "([^"]*)"$/ do |files, testset, hardware|
   data = @default_api_opts.merge({
     "testtype"        => testset,
