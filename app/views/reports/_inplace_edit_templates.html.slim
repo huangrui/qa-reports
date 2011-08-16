@@ -33,7 +33,7 @@
       input.small_btn.save type="submit" value="Save"
       input.small_btn.cancel type="button" value="Cancel"
   #comment_edit_form
-    form.comment_form action=url_for(:controller=>'test_cases', :action=>'update_case_comment') method="post"
+    form.comment_form action=url_for(:controller=>'test_cases', :action=>'update_comment') method="post"
       input name="authenticity_token" type="hidden" value=form_authenticity_token
       input.id_field name="id" type="hidden" value=""
       textarea.comment_field name="comment"
@@ -47,7 +47,7 @@
       input.small_btn.save type="submit" value="Save"
       input.small_btn.cancel.last type="button" value="Cancel"
   #result_edit_form
-    form.result_form.float_container action=url_for(:controller=>'test_cases', :action=>'update_case_result') method="post"
+    form.result_form.float_container action=url_for(:controller=>'test_cases', :action=>'update_result') method="post"
       input name="authenticity_token" type="hidden" value=form_authenticity_token
       input.id_field name="id" type="hidden" value=""
       div.float_above

@@ -3,7 +3,7 @@ class TestCasesController < ApplicationController
 
   before_filter :authenticate_user!
 
-  def update_case_comment
+  def update_comment
     case_id  = params[:id]
     comment  = params[:comment]
     attachment = params[:attachment]
@@ -21,7 +21,7 @@ class TestCasesController < ApplicationController
     render :partial => 'reports/testcase_comment', :locals => {:testcase => testcase}
   end
 
-  def update_case_result
+  def update_result
     case_id  = params[:id]
     result   = params[:result]
     testcase = MeegoTestCase.find(case_id)
