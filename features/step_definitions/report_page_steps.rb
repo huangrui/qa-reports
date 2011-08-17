@@ -192,7 +192,8 @@ end
 
 
 Then /^(?:|I )should see feature "([^"]*)" as (passed|partially passed|failed|N\/A)$/ do |feature, status|
-  feature_name_cell = find('.feature_record a', :text => feature) # Locate the feature title cell
+  status_colors = {"passed"=>"green", "partially passed"=>"yellow", "failed"=>"red", "N/A"=>"red"}
+  feature_name_cell = find(".feature_record a", :text => feature) # Locate the feature title cell
   feature_row = feature_name_cell.find(:xpath, "ancestor::tr[contains(@class, 'feature_record')]") # Locate the parent feature row
-  feature_row.find(:xpath, "descendant::span[contains(@class, #{{'passed'=>'green', "failed"=>'red'}})]") # Check that the color matches the status
+  feature_row.find(:xpath, "descendant::span")['class'].should =~ /#{status_colors[status]}/ # Check that the color matches the status
 end
