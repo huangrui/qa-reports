@@ -189,3 +189,10 @@ Then /^(?:|I )should not be able to view the report "([^"]*)"$/ do |report_strin
    :order => "tested_at DESC, created_at DESC")
   report.should == nil
 end
+
+
+Then /^(?:|I )should see feature "([^"]*)" as (passed|partially passed|failed|N\/A)$/ do |feature, status|
+  feature_name_cell = find('.feature_record a', :text => feature) # Locate the feature title cell
+  feature_row = feature_name_cell.find(:xpath, "ancestor::tr[contains(@class, 'feature_record')]") # Locate the parent feature row
+  feature_row.find(:xpath, "descendant::span[contains(@class, #{{'passed'=>'green', "failed"=>'red'}})]") # Check that the color matches the status
+end
