@@ -3,6 +3,7 @@ Feature: automatically calculating the pass percentage for each features.
 
   Background:
     Given I am logged in
+    And the report for "results_by_feature.csv" exists on the service
 
   @smoke
   Scenario: Viewing the feature percentage

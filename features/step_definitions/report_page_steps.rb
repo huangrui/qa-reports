@@ -1,5 +1,10 @@
 require 'faster_csv'
 
+def find_feature_row (feature_name)
+  feature_name_cell = find(".feature_record a", :text => feature_name) # Locate the feature title cell
+  feature_name_cell.find(:xpath, "ancestor::tr[contains(@class, 'feature_record')]") # Locate the parent feature row
+end
+
 Then /^I should see the following table:$/ do |expected_report_front_pages_table|
   expected_report_front_pages_table.diff!(tableish('table tr', 'td,th'))
 end
@@ -192,8 +197,10 @@ end
 
 
 Then /^(?:|I )should see feature "([^"]*)" as (passed|partially passed|failed|N\/A)$/ do |feature, status|
+Then /^(?:|I )should see feature "([^"]*)" as (passed|partially passed|failed|N\/A)$/ do |feature_name, status|
   status_colors = {"passed"=>"green", "partially passed"=>"yellow", "failed"=>"red", "N/A"=>"red"}
   feature_name_cell = find(".feature_record a", :text => feature) # Locate the feature title cell
   feature_row = feature_name_cell.find(:xpath, "ancestor::tr[contains(@class, 'feature_record')]") # Locate the parent feature row
   feature_row.find(:xpath, "descendant::span")['class'].should =~ /#{status_colors[status]}/ # Check that the color matches the status
+  find_feature_row(feature_name).find(:xpath, "descendant::span")['class'].should =~ /#{status_colors[status]}/ # Check that the color matches the status
 end
