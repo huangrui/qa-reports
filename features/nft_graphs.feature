@@ -5,26 +5,15 @@ Feature: Check NFT graphs from the web page
 
   Background:
     Given I am logged in
-
-    When I follow "Add report"
-    And I select target "Handset", test set "NFT" and product "N900" with date "2010-11-21"
-    And I attach the report "serial_result_2.xml"
-    And submit the form at "upload_report_submit"
-    And I press "Publish"
-
-    And I follow "Add report"
-    And I select target "Handset", test set "NFT" and product "N900" with date "2010-11-22"
-    And I attach the report "serial_result.xml"
-    And submit the form at "upload_report_submit"
-    And I press "Publish"
-
+    And I upload two NFT test reports
+  
   Scenario: Should see CSV data in view mode
     When I view the report "1.2/Handset/NFT/N900"
-    Then I should see "Date,kg"
+    Then I should see "Date,bps"
 
   Scenario: Should see serial measurement CSV data in view mode
     When I view the report "1.2/Handset/NFT/N900"
-    Then I should see "Date,Max mA,Avg mA,Med mA,Min mA"
+    Then I should see "Date,Max bps,Avg bps,Med bps,Min bps"
 
   Scenario: Should see "See history" link
     When I view the report "1.2/Handset/NFT/N900"
@@ -33,12 +22,12 @@ Feature: Check NFT graphs from the web page
   Scenario: Should not see CSV data in edit mode
     When I view the report "1.2/Handset/NFT/N900"
     And I follow "Edit"
-    Then I should not see "Date,kg"
+    Then I should not see "Date,bps"
  
   Scenario: Should see serial history CSV data
     When I view the report "1.2/Handset/NFT/N900"
-    Then I should see "2010-11-21,92.2,80.4909,84.4,30.0"
-    And I should see "2010-11-22,500.0,486.855,486.8,478.4"
+    Then I should see "2011-08-09,150.0"
+    And I should see "2011-08-09,150.0"
 
   # Note: the Selenium cases below are based on the JavaScript code updating
   # the title of the hidden modal windows - if we click an item and it works
@@ -49,10 +38,10 @@ Feature: Check NFT graphs from the web page
   Scenario: Open and close NFT trend window
    When I view the report "1.2/Handset/NFT/N900"
 
-   And I click on element "//a[@class='nft_trend_button'][1]"
-   Then I should see "simple-case2: temperature" within "#nft_trend_dialog"
+   And I click on the first NFT trend button
+   Then I should see "NFT Case 1: Throughput" within "#nft_trend_dialog"
 
-   And I click on element "//a[@class='ui_btn modal_close']"
+   And I close the trend dialog
 
   @selenium
   Scenario: Open and close NFT trend window in history view
@@ -60,10 +49,10 @@ Feature: Check NFT graphs from the web page
     
     And I follow "See history"
 
-    And I click on element "//canvas[contains(@id, 'nft-history-graph')]"
-    Then I should see "simple-case2: temperature" within "#nft_trend_dialog"
+    And I click on the first NFT trend graph
+    Then I should see "NFT Case 1: Throughput" within "#nft_trend_dialog"
 
-    And I click on element "//a[@class='ui_btn modal_close']"
+    And I close the trend dialog
 
   @selenium
   Scenario: Open and close NFT serial trend window in history view
@@ -71,7 +60,7 @@ Feature: Check NFT graphs from the web page
    
     And I follow "See history"
 
-    And I click on element "//canvas[contains(@id, 'serial-history-graph')]"
-    Then I should see "simple-case1: Current samples" within "#nft_series_history_dialog"
+    And I click on the first NFT serial measurement trend graph
+    Then I should see "Serial Case: Data rate" within "#nft_series_history_dialog"
 
-    And I click on element "//a[@class='ui_btn modal_close']"
+    And I close the trend dialog
