@@ -63,7 +63,7 @@ Meegoqa::Application.routes.draw do
 
     match '/:release_version/:target(/:testset(/:product))/report_list(/:page)' => 'report_groups#report_page', :via => "get", :as => :report_list
 
-    match '/:release_version/:target/:testset/:product/:id' => 'reports#view', :via => "get"
+    match '/:release_version/:target/:testset/:product/:id' => 'reports#show', :via => "get"
     match '/:release_version/:target/:testset/:product/:id/edit' => 'reports#edit', :via => "get"
     match '/:release_version/:target/:testset/:product/:id/download' => 'csv_export#export_report', :via => "get"
     match '/:release_version/:target/:testset/:product/:id/delete' => 'reports#delete', :via => "post"

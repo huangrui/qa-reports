@@ -142,7 +142,7 @@ class ReportsController < ApplicationController
   include AjaxMixin
   include CacheHelper
 
-  before_filter :authenticate_user!, :except => ["view", "print", "compare", "fetch_bugzilla_data", "redirect_by_id"]
+  before_filter :authenticate_user!, :except => ["show", "print", "compare", "redirect_by_id"]
 
   def preview
     @preview_id = session[:preview_id] || params[:id]
@@ -178,15 +178,15 @@ class ReportsController < ApplicationController
     expire_caches_for(test_session, true)
     expire_index_for(test_session)
 
-    redirect_to :action          => 'view',
+    redirect_to :action          => 'show',
                 :id              => report_id,
                 :release_version => test_session.release_version,
                 :target          => test_session.target,
-                :testset        => test_session.testset,
-                :product       => test_session.product
+                :testset         => test_session.testset,
+                :product         => test_session.product
   end
 
-  def view
+  def show
     if @report_id = params[:id].try(:to_i)
       preview_id = session[:preview_id]
 
@@ -302,7 +302,7 @@ class ReportsController < ApplicationController
     # Shortcut for accessing the correct report using report ID only
     begin
       s = MeegoTestSession.find(params[:id].to_i)
-      redirect_to :controller => 'reports', :action => 'view', :release_version => s.release_version, :target => s.target, :testset => s.testset, :product => s.product, :id => s.id
+      redirect_to :controller => 'reports', :action => 'show', :release_version => s.release_version, :target => s.target, :testset => s.testset, :product => s.product, :id => s.id
     rescue ActiveRecord::RecordNotFound
       redirect_to :controller => :index, :action => :index
     end
