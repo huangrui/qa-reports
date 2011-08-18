@@ -2,6 +2,7 @@ Meegoqa::Application.routes.draw do
   devise_for :users, :controllers => { :sessions => "users/sessions" }  , :path_names => { :sign_up => "#{DeviseRegistrationConfig::URL_TOKEN}/register" }
 
   resources :test_cases, :only => [:update]
+  resources :attachments, :only => [:destroy]
 
   match '/upload_post' => 'upload#upload', :via => "post"
   match '/upload_report' => 'upload#upload_report', :via => "post"

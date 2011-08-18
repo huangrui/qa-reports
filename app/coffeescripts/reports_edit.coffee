@@ -473,11 +473,15 @@ handleCommentEdit = () ->
         $current_attachment.find('.delete').click () ->
             $attachment_field = $(this).closest('.field')
             $current_attachment = $attachment_field.find('div.attachment:not(.add)');
+            attachment_id = $current_attachment.attr('id')
+            $.post "/attachments/#{attachment_id}", {"_method": "destroy"}, null, null
+
             $add_attachment = $attachment_field.find('div.attachment.add')
 
             $current_attachment.hide()
             $current_attachment.find('input').attr('value', '')
             $add_attachment.show()
+            return false
 
     id = $testcase.attr('id').substring(9)
     $form.attr('action', "/test_cases/#{id}")
