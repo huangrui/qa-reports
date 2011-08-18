@@ -3,35 +3,19 @@ class TestCasesController < ApplicationController
 
   before_filter :authenticate_user!
 
-  def update_comment
-    case_id  = params[:id]
-    comment  = params[:comment]
-    attachment = params[:attachment]
-    old_attachment = params[:old_attachment]
-    testcase = MeegoTestCase.find(case_id)
-    testcase.comment = comment
-    testcase.attachment = attachment unless attachment.nil? and old_attachment.present?
-    testcase.save!
+  def update
+    #TODO: Doesn't check if the update fails
+    #TODO: AttachmentsController should take care of attachments
+    # Ugly hack to maintain current "delete attachment" functionality
+    params[:test_case][:attachment] = params[:test_case][:attachment] if params[:test_case][:comment]
+    test_case = MeegoTestCase.find(params[:id])
+    test_case.update_attributes(params[:test_case])
 
-    test_session = testcase.meego_test_session
-    test_session.update_attribute(:editor, current_user)
-    @editing = true
-    expire_caches_for(testcase.meego_test_session)
+    test_report = test_case.meego_test_session
+    test_report.update_attribute(:editor, current_user)
 
-    render :partial => 'reports/testcase_comment', :locals => {:testcase => testcase}
-  end
-
-  def update_result
-    case_id  = params[:id]
-    result   = params[:result]
-    testcase = MeegoTestCase.find(case_id)
-    testcase.update_attribute(:result, result.to_i)
-
-    test_session = testcase.meego_test_session
-    test_session.update_attribute(:editor, current_user)
-    expire_caches_for(testcase.meego_test_session, true)
-
-    render :text => "OK"
+    expire_caches_for(test_report, true)
+    render :partial => 'reports/testcase_comment', :locals => {:testcase => test_case}
   end
 
   def remove_testcase

@@ -326,7 +326,7 @@ handleResultEdit = () ->
     $testcase = $node.closest '.testcase'
     id = $testcase.attr('id').substring(9)
     $form = $('#result_edit_form form').clone()
-    $form.find('.id_field').val id
+    $form.attr('action', "/test_cases/#{id}")
     $select = $form.find 'select'
 
     result = $span.text()
@@ -480,7 +480,7 @@ handleCommentEdit = () ->
             $add_attachment.show()
 
     id = $testcase.attr('id').substring(9)
-    $form.find('.id_field').val(id)
+    $form.attr('action', "/test_cases/#{id}")
 
     markup = $testcase.find('.comment_markup').text()
     $field.autogrow()

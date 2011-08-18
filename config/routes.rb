@@ -1,8 +1,7 @@
 Meegoqa::Application.routes.draw do
   devise_for :users, :controllers => { :sessions => "users/sessions" }  , :path_names => { :sign_up => "#{DeviseRegistrationConfig::URL_TOKEN}/register" }
 
-  # The priority is based upon order of creation:
-  # first created -> highest priority.
+  resources :test_cases, :only => [:update]
 
   match '/upload_post' => 'upload#upload', :via => "post"
   match '/upload_report' => 'upload#upload_report', :via => "post"
