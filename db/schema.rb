@@ -22,10 +22,10 @@ ActiveRecord::Schema.define(:version => 20110817075345) do
   add_index "features", ["meego_test_session_id"], :name => "index_meego_test_sets_on_meego_test_session_id"
   add_index "features", ["name"], :name => "index_meego_test_sets_on_feature"
 
-  create_table "file_attachments", :force => true do |t|
+  create_table "file_attachments", :id => false, :force => true do |t|
     t.integer  "attachable_id"
     t.string   "attachable_type"
-    t.string   "attachment_type",   :null => false
+    t.string   "attachment_type"
     t.string   "file_file_name"
     t.string   "file_content_type"
     t.integer  "file_file_size"
