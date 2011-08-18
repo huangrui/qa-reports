@@ -21,3 +21,10 @@ Feature: automatically calculating the pass percentage for each features.
     And I should see feature "Home screen" as partially passed
     And I should see feature "Audio" as failed
     And I should see feature "Dialer" as N/A
+
+  @selenium
+  Scenario: Editing feature result comments and grading (status color)
+    When I edit the report "1.2/Core/automated/N900"
+    And I change comment of feature "Contacts" to "Verify with manual test"
+    Then I should see "Verify with manual test"
+

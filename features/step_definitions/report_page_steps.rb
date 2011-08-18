@@ -199,3 +199,17 @@ Then /^(?:|I )should see feature "([^"]*)" as (passed|partially passed|failed|N\
   status_colors = {"passed"=>"green", "partially passed"=>"yellow", "failed"=>"red", "N/A"=>"red"}
   find_feature_row(feature_name).find(:xpath, "descendant::span")['class'].should =~ /#{status_colors[status]}/ # Check that the color matches the status
 end
+
+When /^(?:|I )fill in comment "([^"]*)" for feature "([^"]*)"$/ do |comment, feature_name|
+  find_feature_row(feature_name).find(".edit").click()
+  fill_in("comment", :with => comment)
+end
+
+When /^I save the comment of feature "([^"]*)"$/ do |feature_name|
+  find_feature_row(feature_name).click_link_or_button("Save")
+end
+
+When /^I change comment of feature "([^"]*)" to "([^"]*)"$/ do |feature_name, comment|
+  When %{I fill in comment "#{comment}" for feature "#{feature_name}"}
+  And %{I save the comment of feature "#{feature_name}"}
+end
