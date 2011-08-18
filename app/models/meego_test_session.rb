@@ -92,7 +92,7 @@ class MeegoTestSession < ActiveRecord::Base
   def self.fetch_fully(id)
     find(id, :include =>
          {:features =>
-           {:meego_test_cases => [:measurements, :serial_measurements, :meego_test_case_attachments, :feature, :meego_test_session]}
+           {:meego_test_cases => [:measurements, :serial_measurements, :attachment, :feature, :meego_test_session]}
          })
   end
 
@@ -141,10 +141,6 @@ class MeegoTestSession < ActiveRecord::Base
 
   def prev_summary
     prev_session
-  end
-
-  def raw_result_files
-    FileStorage.new(dir="public/reports", baseurl="/reports/").list_report_files(self)
   end
 
   def self.import(attributes, files, user)

@@ -29,11 +29,11 @@ class MeegoTestCase < ActiveRecord::Base
   belongs_to :feature
   belongs_to :meego_test_session
 
-  has_many :measurements, :dependent => :destroy, :class_name => "::MeegoMeasurement"
+  has_many :measurements,        :dependent => :destroy, :class_name => "MeegoMeasurement"
   has_many :serial_measurements, :dependent => :destroy
-  has_many :attachments, :as => :attachable, :dependent => :destroy, :class_name => "FileAttachment"
+  has_one  :attachment, :as => :attachable, :dependent => :destroy, :class_name => "FileAttachment", :autosave => true
 
-  accepts_nested_attributes_for :measurements, :serial_measurements
+  accepts_nested_attributes_for :measurements, :serial_measurements, :attachment
 
   PASS =  1
   FAIL = -1
@@ -79,31 +79,8 @@ class MeegoTestCase < ActiveRecord::Base
     end
   end
 
-  def attachments
-    meego_test_case_attachments
-  end
-
-  def attachment=(attachment)
-    attachments.clear
-    attachments.build({:attachment=>attachment}) unless attachment.nil?
-  end
-
-  def update_attachment(attachment)
-    attachments.clear
-    attachments.create({:attachment=>attachment}) unless attachment.nil?
-  end
-
   def self.import_from_array(test_cases)
     import test_cases, :validate => false
   end
-
-  def remove_from_session
-    update_attribute :deleted, true
-  end
-
-  def restore_to_session
-    update_attribute :deleted, false
-  end
-
 end
 

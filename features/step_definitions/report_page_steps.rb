@@ -146,7 +146,8 @@ When /^(?:|I )attach the file "([^"]*)" to test case "([^"]*)"$/ do |file, test_
 end
 
 When /^I remove the attachment from the test case "([^"]*)"$/ do |test_case|
-  And "I click the element \"#delete_attachment\" for the test case \"#{test_case}\""
+  #save_and_open_page
+  click_link_or_button("x")
   And "I submit the comment for the test case \"#{test_case}\""
 end
 

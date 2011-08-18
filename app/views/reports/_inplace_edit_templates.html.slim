@@ -25,6 +25,7 @@
       input.title_field name="meego_test_session[title]" type="text"
       input.small_btn.save type="submit" value="Save"
       input.small_btn.cancel type="button" value="Cancel"
+
   #date_edit_form
     form.date_form action=url_for(:controller=>'reports', :action=>'update_tested_at') method="post"
       input name="authenticity_token" type="hidden" value=form_authenticity_token
@@ -32,29 +33,31 @@
       input.date_field name="meego_test_session[tested_at]" type="text"
       input.small_btn.save type="submit" value="Save"
       input.small_btn.cancel type="button" value="Cancel"
+
   #comment_edit_form
-    form.comment_form action=url_for(:controller=>'meego_test_cases', :action=>'update_case_comment') method="post"
+    form.comment_form action="" method="post"
       input name="authenticity_token" type="hidden" value=form_authenticity_token
-      input.id_field name="id" type="hidden" value=""
-      textarea.comment_field name="comment"
+      input name="_method" type="hidden" value="put"
+      textarea.comment_field name="test_case[comment]"
       div.field.inplace
-        div.attachment
-          a#attachment_link href="#" attachment_file.xml
-          input type="hidden" name="old_attachment" value=""
-          a#delete_attachment.delete x
-        div.attachment.add
-          input#testcase_attachment type="file" name="attachment"
+        div.attachment.current
+          a.attachment_link href="#" attachment_file.xml
+          a.delete_attachment.delete x
+        div.attachment.new
+          input#testcase_attachment type="file" name="test_case[attachment_attributes][attachment]"
       input.small_btn.save type="submit" value="Save"
       input.small_btn.cancel.last type="button" value="Cancel"
+
   #result_edit_form
-    form.result_form.float_container action=url_for(:controller=>'meego_test_cases', :action=>'update_case_result') method="post"
+    form.result_form.float_container action="" method="post"
       input name="authenticity_token" type="hidden" value=form_authenticity_token
-      input.id_field name="id" type="hidden" value=""
+      input name="_method" type="hidden" value="put"
       div.float_above
-        select name="result"
+        select name="test_case[result]"
           option value="1" Pass
           option value="-1" Fail
           option value="0" N/A
+
   #feature_comment_edit_form
     form.comment_form action=url_for(:controller=>'reports', :action=>'update_feature_comment') method="post"
       input name="authenticity_token" type="hidden" value=form_authenticity_token
@@ -62,6 +65,7 @@
       textarea.comment_field name="comment"
       input.small_btn.save type="submit" value="Save"
       input.small_btn.cancel.last type="button" value="Cancel"
+
   #feature_grading_edit_form
     form.result_form.float_container action=url_for(:controller=>'reports', :action=>'update_feature_grading') method="post"
       input name="authenticity_token" type="hidden" value=form_authenticity_token
