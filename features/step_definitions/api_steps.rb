@@ -283,7 +283,7 @@ Then "the result complains about missing target profile" do
 end
 
 Then "the result complains about invalid release version" do
-  Then %{the REST result "errors|release_version" is "Incorrect release version 'Foo'. Valid ones are 1.2,1.1,1.0."}
+  Then %{the REST result "errors|release_version" is "Incorrect release version 'foo'. Valid ones are 1.2,1.1,1.0."}
 end
 
 Then "the result complains about invalid target profile" do

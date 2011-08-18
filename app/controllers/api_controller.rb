@@ -47,6 +47,14 @@ class ApiController < ApplicationController
     data.delete(:testtype)
     data.delete(:hardware)
 
+    if VersionLabel.where(:normalized => data[:release_version]).first.nil?
+      valid_versions = VersionLabel.release_versions.join(",")
+      error_msgs = {}
+      error_msgs["release_version"] = "Incorrect release version '#{data[:release_version]}'. Valid ones are #{valid_versions}."
+      render :json => {:ok => '0', :errors => error_msgs}
+      return
+    end
+
     begin
       @test_session = ReportFactory.new.build(data)
       @test_session.author = current_user
