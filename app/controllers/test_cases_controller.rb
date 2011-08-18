@@ -8,7 +8,7 @@ class TestCasesController < ApplicationController
   def update
     #TODO: AttachmentsController should take care of attachments
     #TODO: Ugly hack to maintain current "delete attachment" functionality
-    params[:test_case][:attachment] = params[:test_case][:attachment] if params[:test_case][:comment]
+    #params[:test_case][:attachment] = params[:test_case][:attachment] if params[:test_case][:comment]
 
     @test_case = MeegoTestCase.unscoped.find(params[:id])
 

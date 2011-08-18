@@ -31,9 +31,9 @@ class MeegoTestCase < ActiveRecord::Base
 
   has_many :measurements,        :dependent => :destroy, :class_name => "MeegoMeasurement"
   has_many :serial_measurements, :dependent => :destroy
-  has_many :attachments,         :dependent => :destroy, :class_name => "MeegoTestCaseAttachment"
+  has_one  :attachment,          :dependent => :destroy, :class_name => "MeegoTestCaseAttachment", :autosave => true
 
-  accepts_nested_attributes_for :measurements, :serial_measurements, :attachments
+  accepts_nested_attributes_for :measurements, :serial_measurements, :attachment
 
   PASS =  1
   FAIL = -1
@@ -79,15 +79,15 @@ class MeegoTestCase < ActiveRecord::Base
     end
   end
 
-  def attachment=(attachment)
-    attachments.clear
-    attachments.build({:attachment=>attachment}) unless attachment.nil?
-  end
+#  def attachment=(attachment)
+#    attachment.clear
+#    attachment.build({:attachment=>attachment}) unless attachment.nil?
+#  end
 
-  def update_attachment(attachment)
-    attachments.clear
-    attachments.create({:attachment=>attachment}) unless attachment.nil?
-  end
+  # def update_attachment(attachment)
+  #   attachment.clear
+  #   attachment.create({:attachment=>attachment}) unless attachment.nil?
+  # end
 
   def self.import_from_array(test_cases)
     import test_cases, :validate => false
