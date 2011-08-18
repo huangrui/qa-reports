@@ -1,9 +1,10 @@
 require 'test_set'
 
 class MeegoTestSessionSweeper < ActionController::Caching::Sweeper
-  observe MeegoTestSession
+  observe MeegoTestSession, MeegoTestCase
 
-  def after_save(test_session)
+  def after_save(record)
+    test_session = record.is_a?(MeegoTestSession) ? record : record.meego_test_session
     expire_cache(test_session)
     expire_index_for(test_session)
   end

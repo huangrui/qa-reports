@@ -1,9 +1,9 @@
 class TestCasesController < ApplicationController
   include CacheHelper
+  cache_sweeper :meego_test_session_sweeper
 
   before_filter :authenticate_user!
   after_filter  :update_report_editor
-  after_filter  :expire_report_cache
 
   def update
     #TODO: Doesn't check if the update fails
@@ -14,6 +14,7 @@ class TestCasesController < ApplicationController
     @test_case = MeegoTestCase.unscoped.find(params[:id])
     @test_case.update_attributes(params[:test_case])
 
+    #TODO: Canonical way of doing response: head :ok
     render :partial => 'reports/testcase_comment', :locals => {:testcase => @test_case}
   end
 
@@ -23,10 +24,4 @@ class TestCasesController < ApplicationController
     test_report = @test_case.meego_test_session
     test_report.update_attribute(:editor, current_user)
   end
-
-  #TODO: Cache sweeper should be used
-  def expire_report_cache
-    expire_caches_for(@test_case.meego_test_session)
-  end
-
 end
