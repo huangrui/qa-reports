@@ -201,7 +201,7 @@ Then /^(?:|I )should see feature "([^"]*)" as (passed|partially passed|failed|N\
 end
 
 When /^(?:|I )fill in comment "([^"]*)" for feature "([^"]*)"$/ do |comment, feature_name|
-  find_feature_row(feature_name).find(".edit").click()
+  find_feature_row(feature_name).find(".feature_record_notes").click()
   fill_in("comment", :with => comment)
 end
 
@@ -212,4 +212,11 @@ end
 When /^I change comment of feature "([^"]*)" to "([^"]*)"$/ do |feature_name, comment|
   When %{I fill in comment "#{comment}" for feature "#{feature_name}"}
   And %{I save the comment of feature "#{feature_name}"}
+end
+
+When /^I change grading of feature "([^"]*)" to "([^"]*)"$/ do |feature_name, grading_color|
+  grading_area = find_feature_row(feature_name).find(".feature_record_grading")
+  grading_area.click()
+  grading_area.select("Red", :from => "grading")
+  save_and_open_page
 end

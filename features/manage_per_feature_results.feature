@@ -26,5 +26,8 @@ Feature: automatically calculating the pass percentage for each features.
   Scenario: Editing feature result comments and grading (status color)
     When I edit the report "1.2/Core/automated/N900"
     And I change comment of feature "Contacts" to "Verify with manual test"
+    And I change grading of feature "Contacts" to "Red"
+
     Then I should see "Verify with manual test"
+    And I should see feature "Contacts" as failed
 
