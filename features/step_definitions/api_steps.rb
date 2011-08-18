@@ -1,16 +1,16 @@
 Given /^I am an user with a REST authentication token$/ do
   if !User.find_by_email('resting@man.net')
-    FactoryGirl.create(:user, 
+    FactoryGirl.create(:user,
       :name                  => 'John Restless',
-      :email                 => 'resting@man.net', 
-      :password              => 'secretpass', 
+      :email                 => 'resting@man.net',
+      :password              => 'secretpass',
       :password_confirmation => 'secretpass',
       :authentication_token  => 'foobar')
   end
 end
 
 Given "the client has sent a request with a defined test objective" do
-  Given %{the client sends a request with defined test objective}  
+  Given %{the client sends a request with defined test objective}
   # Needed in order to get different time stamps for current - previous matching
   sleep 1
 end
