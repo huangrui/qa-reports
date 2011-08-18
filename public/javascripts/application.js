@@ -375,7 +375,6 @@ function fetchBugzillaInfo() {
 
 function setTableLoaderSize(tableID, loaderID) {
                 t = $(tableID);
-//              w = t.width();
                 h = t.height();
                 $(loaderID).height(h);
         }
@@ -427,9 +426,6 @@ function filterResults(rowsToHide, typeText) {
     });
 
     $(".see_history_button").click(function(){
-      //setTableLoaderSize('#detailed_functional_test_results', '#history_loader');
-      //$('#history_loader').show();
-      //history loader should be visible during AJAX loading
       $("a#detailed_case.sort_btn").removeClass("active");
       $("#detailed_functional_test_results").hide();
       $history.show();
