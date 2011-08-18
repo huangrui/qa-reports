@@ -1,5 +1,5 @@
 When /^I fetch the rss feed for "([^"]*)"$/ do |filter|
-  visit(filter + "/rss")
+  visit("http://www.exaple.com/" + filter + "/rss")
 end
 
 Then /^I should see (\d+) instance(?:s)? of "([^"]*)"$/ do |num, selector|
