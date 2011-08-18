@@ -624,11 +624,11 @@ toggleRemoveTestCase = (eventObject) ->
     $testCaseRow.find('.testcase_result').toggleClass 'edit'
 
 removeTestCase = (id, callback) ->
-    $.post "/ajax_remove_testcase", {id: id}, (data) ->
+    $.post "/test_cases/#{id}", {"_method": "put", "test_case": {"deleted": "true"}}, (data) ->
         callback? this if data.ok == 1
 
 restoreTestCase = (id, callback) ->
-    $.post "/ajax_restore_testcase", {id: id}, (data) ->
+    $.post "/test_cases/#{id}", {"_method": "put", "test_case": {"deleted": "false"}}, (data) ->
         callback? this if data.ok == 1
 
 unlinkTestCaseButtons = (node) ->

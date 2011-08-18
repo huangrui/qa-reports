@@ -96,14 +96,5 @@ class MeegoTestCase < ActiveRecord::Base
   def self.import_from_array(test_cases)
     import test_cases, :validate => false
   end
-
-  def remove_from_session
-    update_attribute :deleted, true
-  end
-
-  def restore_to_session
-    update_attribute :deleted, false
-  end
-
 end
 
