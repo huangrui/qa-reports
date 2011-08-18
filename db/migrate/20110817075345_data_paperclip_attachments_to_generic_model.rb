@@ -1,6 +1,6 @@
 class DataPaperclipAttachmentsToGenericModel < ActiveRecord::Migration
   def self.up
-    ReportAttachment.all.each do |attachment|
+    ReportAttachment.find_each do |attachment|
       FileAttachment.create! :file => attachment.attachment,
         :attachable => attachment.meego_test_session,
         :attachment_type => :attachment
@@ -12,14 +12,12 @@ class DataPaperclipAttachmentsToGenericModel < ActiveRecord::Migration
         :attachment_type => :attachment
     end
 
-    MeegoTestSession.includes(:test_result_files).find_each do |session|
-      session.raw_result_files.each do |file_info|
-        file_path = "public/reports/#{file_info[:path]}"
-        if File.exists? file_path
-          FileAttachment.create! :file => File.open(file_path),
-            :attachable => session,
-            :attachment_type => :result_file
-        end
+    TestResultFile.find_each do |file|
+      if File.exists? file[:path]
+        FileAttachment.create! :file => File.open(file[:path]),
+          :attachable_id => file[:meego_test_session_id],
+          :attachable_type => 'MeegoTestSession',
+          :attachment_type => :result_file
       end
     end
 

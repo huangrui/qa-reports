@@ -42,8 +42,9 @@ class MeegoTestSession < ActiveRecord::Base
 
   has_many :features, :dependent => :destroy, :order => "id DESC"
   has_many :meego_test_cases, :autosave => false, :order => "id DESC"
-  has_many :test_result_files, :dependent => :destroy
-  has_many :report_attachments, :dependent => :destroy
+  has_many :result_files, :class_name => 'FileAttachment', :as => :attachable, :dependent => :destroy, :conditions => "attachment_type = 'result_file'"
+  has_many :attachments,  :class_name => 'FileAttachment', :as => :attachable, :dependent => :destroy, :conditions => "attachment_type = 'attachment'"
+
   has_many :passed, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::PASS}"
   has_many :failed, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::FAIL}"
   has_many :na, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::NA}"
@@ -62,7 +63,7 @@ class MeegoTestSession < ActiveRecord::Base
   validate :validate_labels
   validate :validate_type_hw
 
-  accepts_nested_attributes_for :features, :test_result_files
+  accepts_nested_attributes_for :features, :result_files
 
   before_save :force_testset_product_names
 

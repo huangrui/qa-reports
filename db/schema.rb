@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(:version => 20110817075345) do
   add_index "features", ["meego_test_session_id"], :name => "index_meego_test_sets_on_meego_test_session_id"
   add_index "features", ["name"], :name => "index_meego_test_sets_on_feature"
 
-  create_table "file_attachments", :force => true do |t|
+  create_table "file_attachments", :id => false, :force => true do |t|
     t.integer  "attachable_id"
     t.string   "attachable_type"
     t.string   "attachment_type"
@@ -31,6 +31,8 @@ ActiveRecord::Schema.define(:version => 20110817075345) do
     t.integer  "file_file_size"
     t.datetime "file_updated_at"
   end
+
+  add_index "file_attachments", ["attachable_id"], :name => "index_file_attachments_on_attachable_id"
 
   create_table "meego_measurements", :force => true do |t|
     t.integer "meego_test_case_id"

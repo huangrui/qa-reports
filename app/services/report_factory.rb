@@ -69,17 +69,16 @@ class ReportFactory
     end
   end
 
-  # TODO: This should be handled with paperclip
   def save_result_files(params)
-    test_result_files = []
+    result_files = []
 
     params[:uploaded_files].each do |tmpfile|
       result_file_path = generate_file_destination_path(tmpfile.original_filename)
       FileUtils.move tmpfile.path, result_file_path
-      test_result_files << {:path => result_file_path}
+      result_files << {:file => File.open(result_file_path), :attachment_type => :result_file}
     end
 
-    params[:test_result_files_attributes] = test_result_files
+    params[:result_files_attributes] = result_files
   end
 
   def generate_file_destination_path(original_filename)
