@@ -482,7 +482,7 @@ handleCommentEdit = () ->
             $current_attachment.find('input').attr('value', '')
             $add_attachment.show()
             return false
-
+ 
     id = $testcase.attr('id').substring(9)
     $form.attr('action', "/test_cases/#{id}")
 

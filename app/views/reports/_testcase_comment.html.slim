@@ -5,6 +5,6 @@ td class="testcase_notes #{'edit' if @editing}" rowspan="#{testcase.all_measurem
     = comment_html(testcase)
     - if testcase.attachment
       - attachment = testcase.attachment
-      a class="note_attachment #{'image_attachment' if attachment.image?}" href="#{attachment.pretty_url}" title=attachment.filename =attachment.pretty_url
+      a id=attachment.id class="note_attachment #{'image_attachment' if attachment.image?}" href="#{attachment.pretty_url}" title=attachment.filename =attachment.pretty_url
   - if @editing
     .comment_markup style="display:none;" #{testcase.comment}
