@@ -453,18 +453,19 @@ handleCommentEdit = () ->
     $form = $('#comment_edit_form form').clone()
     $field = $form.find '.comment_field'
 
+    attachment_id = $div.find('.note_attachment').attr('id')
     attachment_url = $div.find('.note_attachment').attr('href') || ''
     attachment_filename = attachment_url.split('/').pop()
 
-    $current_attachment = $form.find 'div.attachment:not(.add)'
-    $add_attachment = $form.find 'div.attachment.add'
+    $current_attachment = $form.find 'div.attachment.current'
+    $add_attachment = $form.find 'div.attachment.new'
 
     if attachment_url == '' || attachment_filename == ''
         $current_attachment.hide()
     else
         $add_attachment.hide()
 
-        $attachment_link = $current_attachment.find '#attachment_link'
+        $attachment_link = $current_attachment.find '.attachment_link'
         $attachment_link.attr 'href', attachment_url
         $attachment_link.html attachment_filename
 
@@ -472,11 +473,10 @@ handleCommentEdit = () ->
 
         $current_attachment.find('.delete').click () ->
             $attachment_field = $(this).closest('.field')
-            $current_attachment = $attachment_field.find('div.attachment:not(.add)');
-            attachment_id = $current_attachment.attr('id')
-            $.post "/attachments/#{attachment_id}", {"_method": "destroy"}, null, null
+            $current_attachment = $attachment_field.find('div.attachment:not(.add)')
+            $.post "/attachments/#{attachment_id}", {"_method": "delete"}
 
-            $add_attachment = $attachment_field.find('div.attachment.add')
+            $add_attachment = $attachment_field.find('div.attachment.new')
 
             $current_attachment.hide()
             $current_attachment.find('input').attr('value', '')

@@ -79,16 +79,6 @@ class MeegoTestCase < ActiveRecord::Base
     end
   end
 
-#  def attachment=(attachment)
-#    attachment.clear
-#    attachment.build({:attachment=>attachment}) unless attachment.nil?
-#  end
-
-  # def update_attachment(attachment)
-  #   attachment.clear
-  #   attachment.create({:attachment=>attachment}) unless attachment.nil?
-  # end
-
   def self.import_from_array(test_cases)
     import test_cases, :validate => false
   end
