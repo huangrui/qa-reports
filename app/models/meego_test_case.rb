@@ -29,11 +29,11 @@ class MeegoTestCase < ActiveRecord::Base
   belongs_to :feature
   belongs_to :meego_test_session
 
-  has_many :measurements, :dependent => :destroy, :class_name => "::MeegoMeasurement"
+  has_many :measurements,        :dependent => :destroy, :class_name => "MeegoMeasurement"
   has_many :serial_measurements, :dependent => :destroy
-  has_many :meego_test_case_attachments, :dependent => :destroy
+  has_many :attachments,         :dependent => :destroy, :class_name => "MeegoTestCaseAttachment"
 
-  accepts_nested_attributes_for :measurements, :serial_measurements
+  accepts_nested_attributes_for :measurements, :serial_measurements, :attachments
 
   PASS =  1
   FAIL = -1
@@ -77,10 +77,6 @@ class MeegoTestCase < ActiveRecord::Base
       when      0 then 'changed_result changed_from_na'
       when      1 then 'changed_result changed_from_pass'
     end
-  end
-
-  def attachments
-    meego_test_case_attachments
   end
 
   def attachment=(attachment)
