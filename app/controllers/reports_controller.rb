@@ -32,12 +32,6 @@ require 'net/https'
 require 'report_exporter'
 
 module AjaxMixin
-  def remove_attachment
-    @attachment_id   = params[:id].to_i
-    ReportAttachment.destroy(@attachment_id)
-    render :json => {:ok => '1'}
-  end
-
   def update_title
     @preview_id   = params[:id].to_i
     @test_session = MeegoTestSession.find(@preview_id)
