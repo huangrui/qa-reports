@@ -9,7 +9,7 @@ class MeegoTestCase < ActiveRecord::Base
 
   has_many :measurements,        :dependent => :destroy, :class_name => "MeegoMeasurement"
   has_many :serial_measurements, :dependent => :destroy
-  has_one  :attachment,          :dependent => :destroy, :class_name => "MeegoTestCaseAttachment", :autosave => true
+  has_one  :attachment,          :dependent => :destroy, :class_name => "MeegoTestCaseAttachment"
 
   accepts_nested_attributes_for :measurements, :serial_measurements, :attachment
 
