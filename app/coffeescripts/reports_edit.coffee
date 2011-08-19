@@ -482,7 +482,7 @@ handleCommentEdit = () ->
             $current_attachment.find('input').attr('value', '')
             $add_attachment.show()
             return false
-
+ 
     id = $testcase.attr('id').substring(9)
     $form.attr('action', "/test_cases/#{id}")
 
@@ -628,12 +628,16 @@ toggleRemoveTestCase = (eventObject) ->
     $testCaseRow.find('.testcase_result').toggleClass 'edit'
 
 removeTestCase = (id, callback) ->
-    $.post "/test_cases/#{id}", {"_method": "put", "test_case": {"deleted": "true"}}, (data) ->
-        callback? this if data.ok == 1
+    $.post "/test_cases/#{id}", {"_method": "put", "test_case": {"deleted": "true"}}, () ->
+        callback? this
 
 restoreTestCase = (id, callback) ->
-    $.post "/test_cases/#{id}", {"_method": "put", "test_case": {"deleted": "false"}}, (data) ->
-        callback? this if data.ok == 1
+    $.post "/test_cases/#{id}", {"_method": "put", "test_case": {"deleted": "false"}}, () ->
+        callback? this
+
+removeAttachment = (id, callback) ->
+    $.post "/attachments/#{id}", {"_method": "delete", "type": "report_attachment" }, () ->
+        callback? this
 
 unlinkTestCaseButtons = (node) ->
     $node = $(node)
