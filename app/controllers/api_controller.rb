@@ -47,13 +47,11 @@ class ApiController < ApplicationController
     data.delete(:testtype)
     data.delete(:hardware)
 
-    if VersionLabel.where(:normalized => data[:release_version]).first.nil?
-      valid_versions = VersionLabel.release_versions.join(",")
-      error_msgs = {}
-      error_msgs["release_version"] = "Incorrect release version '#{data[:release_version]}'. Valid ones are #{valid_versions}."
-      render :json => {:ok => '0', :errors => error_msgs}
-      return
-    end
+    error_msgs = {}
+
+    error_msgs.merge! errmsg_invalid_version data[:release_version] if not valid_version_label? data[:release_version]
+
+    return render :json => {:ok => '0', :errors => error_msgs} if !error_msgs.empty?
 
     begin
       @test_session = ReportFactory.new.build(data)
@@ -166,6 +164,15 @@ class ApiController < ApplicationController
       results << collect_file(parameters, key, errors)
     }
     results.compact
+  end
+
+  def valid_version_label?(version)
+    VersionLabel.where(:normalized => version).first.present?
+  end
+
+  def errmsg_invalid_version(version)
+    valid_versions = VersionLabel.release_versions.join(",")
+    {:release_version => "Incorrect release version '#{version}'. Valid ones are #{valid_versions}."}
   end
 
 end
