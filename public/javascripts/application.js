@@ -186,18 +186,6 @@ var renderNftTrendGraph = function(hash) {
     hash.w.show();
 };
 
-function removeAttachment(attachment, callback) {
-    $.post("/ajax_remove_attachment", {
-        id: attachment,
-    }, function(data, status){
-        if(data.ok==1 && callback!=null) {
-            callback.call(this);
-        }
-    });
-};
-
-
-
 (function($) {
 
     /*

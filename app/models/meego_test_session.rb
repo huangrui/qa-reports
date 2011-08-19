@@ -67,8 +67,6 @@ class MeegoTestSession < ActiveRecord::Base
 
   before_save :force_testset_product_names
 
-  after_destroy :remove_uploaded_files
-
   scope :published, where(:published => true)
   scope :release, lambda { |release| published.joins(:version_label).where(:version_labels => {:normalized => release.downcase}) }
   scope :profile, lambda { |profile| published.where(:target => profile.downcase) }
@@ -515,10 +513,6 @@ class MeegoTestSession < ActiveRecord::Base
 
     filename     = ("%06i-" % Time.now.usec) + sanitize_filename(original_filename)
     path_to_file = File.join(dir, filename)
-  end
-
-  def remove_uploaded_files
-    # TODO: when report is deleted files should be deleted as well
   end
 
   def update_report_result(user, params, published = true)
