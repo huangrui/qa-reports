@@ -192,19 +192,19 @@ GEM
       mime-types (>= 1.16)
     roodi (2.1.0)
       ruby_parser
-    rspec (2.5.0)
-      rspec-core (~> 2.5.0)
-      rspec-expectations (~> 2.5.0)
-      rspec-mocks (~> 2.5.0)
-    rspec-core (2.5.2)
-    rspec-expectations (2.5.0)
+    rspec (2.6.0)
+      rspec-core (~> 2.6.0)
+      rspec-expectations (~> 2.6.0)
+      rspec-mocks (~> 2.6.0)
+    rspec-core (2.6.4)
+    rspec-expectations (2.6.0)
       diff-lcs (~> 1.1.2)
-    rspec-mocks (2.5.0)
-    rspec-rails (2.5.0)
+    rspec-mocks (2.6.0)
+    rspec-rails (2.6.1)
       actionpack (~> 3.0)
       activesupport (~> 3.0)
       railties (~> 3.0)
-      rspec (~> 2.5.0)
+      rspec (~> 2.6.0)
     ruby-progressbar (0.0.10)
     ruby2ruby (1.2.5)
       ruby_parser (~> 2.0)
@@ -263,8 +263,8 @@ DEPENDENCIES
   rake
   rcov
   rest-client
-  rspec (~> 2.5.0)
-  rspec-rails
+  rspec (~> 2.6.0)
+  rspec-rails (= 2.6.1)
   slim
   therubyracer (~> 0.9.0)
   watchr
