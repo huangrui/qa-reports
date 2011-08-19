@@ -1,4 +1,4 @@
-Feature: REST API
+Feature: Import API
   As an external service
   I want to upload reports via REST API
   So that they can be browsed by users
@@ -50,7 +50,7 @@ Feature: REST API
   Scenario: Sending a report without a target profile
     When the client sends a request without a target profile
     Then the upload fails
-    And the result complains about missing target profile    
+    And the result complains about missing target profile
 
   Scenario: Sending a report with invalid release version
     When the client sends a request with invalid release version

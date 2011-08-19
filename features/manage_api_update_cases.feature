@@ -1,8 +1,8 @@
-Feature: Manage api_update_cases
-  In order to provide a REST API for updating the result of test cases from a special report. 
+Feature: Update API
+  In order to provide a REST API for updating the result of test cases from a special report.
   The API respond at /api/update/<report_id>
-  When this API is invoked, the new uploaded result files(XML or CSV) would be parsed and saved in DB, and the original test cases should be removed. 
-  
+  When this API is invoked, the new uploaded result files(XML or CSV) would be parsed and saved in DB, and the original test cases should be removed.
+
   Background:
     Given I am an user with a REST authentication token
     And I have sent a basic result file
