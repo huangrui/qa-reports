@@ -70,7 +70,7 @@ class UploadController < ApplicationController
     file = filestream_from_qq_param
 
     session = MeegoTestSession.find(params[:id])
-    session.attachments.create(:file => file, :attachment_type => :attachment)
+    session.attachments.create(:file => file)
     @editing = true
 
     expire_caches_for(session)

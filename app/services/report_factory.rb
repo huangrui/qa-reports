@@ -70,11 +70,7 @@ class ReportFactory
   end
 
   def save_result_files(params)
-    result_files = params[:uploaded_files].map do |tmpfile|
-      {:file => tmpfile, :attachment_type => :result_file}
-    end
-
-    params[:result_files_attributes] = result_files
+    params[:result_files_attributes] = params[:uploaded_files].map {|tmpfile| {:file => tmpfile} }
   end
 
   def sanitize_filename(filename)
