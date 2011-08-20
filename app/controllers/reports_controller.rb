@@ -32,20 +32,6 @@ require 'net/https'
 require 'report_exporter'
 
 module AjaxMixin
-  def update_title
-    @preview_id   = params[:id].to_i
-    @test_session = MeegoTestSession.find(@preview_id)
-
-    field         = params[:meego_test_session]
-    field         = field.keys()[0]
-    @test_session.send(field + '=', params[:meego_test_session][field])
-    @test_session.update_attribute(:editor, current_user)
-    expire_caches_for(@test_session)
-    expire_index_for(@test_session)
-
-    render :text => "OK"
-  end
-
 
   def update_txt
     @preview_id   = params[:id]
@@ -137,6 +123,7 @@ class ReportsController < ApplicationController
   include CacheHelper
 
   before_filter :authenticate_user!, :except => ["show", "print", "compare", "redirect_by_id"]
+  cache_sweeper :meego_test_session_sweeper, :only => [:update]
 
   def preview
     @preview_id = session[:preview_id] || params[:id]
@@ -265,6 +252,14 @@ class ReportsController < ApplicationController
     end
   end
 
+  def update
+    @report = MeegoTestSession.find(params[:id])
+    @report.update_attributes(params[:report]) # Doesn't check for failure
+    @report.update_attribute(:editor, current_user)
+    head :ok
+  end
+
+  #TODO: This should be in comparison controller
   def compare
     @comparison = ReportComparison.new()
     @release_version = params[:release_version]
@@ -283,7 +278,7 @@ class ReportsController < ApplicationController
   end
 
   def delete
-    test_session = MeegoTestSession.fetch_fully(params[:id])
+    test_session = MeegoTestSession.find(params[:id])
 
     expire_caches_for(test_session, true)
     expire_index_for(test_session)
