@@ -48,27 +48,6 @@ module AjaxMixin
     render :text => @test_session.send(sym)
   end
 
-
-  def update_tested_at
-    @preview_id = params[:id]
-
-    if @preview_id
-      @test_session = MeegoTestSession.find(@preview_id)
-
-      field         = params[:meego_test_session].keys.first
-      logger.warn("Updating #{field} with #{params[:meego_test_session][field]}")
-      @test_session.send(field + "=", params[:meego_test_session][field])
-      @test_session.update_attribute(:editor, current_user)
-
-      expire_caches_for(@test_session)
-      expire_index_for(@test_session)
-
-      render :text => @test_session.tested_at.strftime('%d %B %Y')
-    else
-      logger.warn "WARNING: report id #{@preview_id} not found"
-    end
-  end
-
   def update_category
     @preview_id = params[:id]
 

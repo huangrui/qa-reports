@@ -17,20 +17,12 @@
             * bulleted list
             [[http://foo.bar/ Link]]
             [[1234]] (Bugzilla issue link)
-                
+
   #title_edit_form
     form.title_form action=report_path(@test_session) method="post"
       input name="_method" type="hidden" value="put"
       input name="authenticity_token" type="hidden" value=form_authenticity_token
       input.title_field name="report[title]" type="text"
-      input.small_btn.save type="submit" value="Save"
-      input.small_btn.cancel type="button" value="Cancel"
-
-  #date_edit_form
-    form.date_form action=url_for(:controller=>'reports', :action=>'update_tested_at') method="post"
-      input name="authenticity_token" type="hidden" value=form_authenticity_token
-      input.id_field name="id" type="hidden" value=@test_session.id
-      input.date_field name="meego_test_session[tested_at]" type="text"
       input.small_btn.save type="submit" value="Save"
       input.small_btn.cancel type="button" value="Cancel"
 
