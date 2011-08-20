@@ -38,7 +38,7 @@ Feature: Edit Report
   Scenario: Edit title
     When I edit the report "1.2/Core/automated/N900"
     And I click the element "h1"
-    And fill in "meego_test_session[title]" with "Test title" within "h1"
+    And fill in "report[title]" with "Test title" within "h1"
     And I press "Save"
     And I wait until all Ajax requests are complete
 
