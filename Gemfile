@@ -26,9 +26,9 @@ end
 
 group :development, :test do
   gem 'launchy'
-  gem 'rspec', '~>2.5.0'
-  gem 'rspec-rails'
-  gem 'capybara', '0.4.1.2'
+  gem 'rspec', '~>2.6.0'
+  gem 'rspec-rails', '2.6.1'
+  gem 'capybara', '1.0.1'
   gem 'cucumber'
   gem 'rcov', :require => false
   gem 'cucumber-rails', '~> 0.3.2' #newer ones fail

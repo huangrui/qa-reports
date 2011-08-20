@@ -1,4 +1,5 @@
 When /^I fetch the rss feed for "([^"]*)"$/ do |filter|
+  filter = "/#{filter}" unless (filter.start_with?("/") or filter =~ URI::regexp)
   visit(filter + "/rss")
 end
 
