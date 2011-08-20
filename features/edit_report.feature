@@ -49,9 +49,11 @@ Feature: Edit Report
     When I view the report "1.2/Core/automated/N900"
     And I click to edit the report
     And I click the element ".editable_date"
-    And fill in "meego_test_session[tested_at]" with "2011-1-1" within "#upload_report"
+    And fill in "Test execution date:" with "2011-1-1"
+    And show me the page
     And I press "Save"
 
+    Then show me the page
     Then I should see "01 January 2011" within "#test_category .date"
 
   @selenium

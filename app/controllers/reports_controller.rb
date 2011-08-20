@@ -32,27 +32,6 @@ require 'net/https'
 require 'report_exporter'
 
 module AjaxMixin
-  def update_category
-    @preview_id = params[:id]
-
-    if @preview_id
-      @test_session = MeegoTestSession.find(@preview_id)
-
-      data = params[:meego_test_session]
-      data.keys.each do |key|
-        @test_session.send(key + "=", data[key]) if data[key].present?
-      end
-      @test_session.update_attribute(:editor, current_user)
-
-      expire_caches_for(@test_session)
-      expire_index_for(@test_session)
-
-      render :text => @test_session.tested_at.strftime('%d %B %Y')
-    else
-      logger.warn "WARNING: report id #{@preview_id} not found"
-    end
-  end
-
   def update_feature_comment
     feature_id = params[:id]
     comments = params[:comment]
@@ -78,7 +57,6 @@ module AjaxMixin
 
     render :text => "OK"
   end
-
 end
 
 class ReportsController < ApplicationController
@@ -219,7 +197,9 @@ class ReportsController < ApplicationController
     @report = MeegoTestSession.find(params[:id])
     @report.update_attributes(params[:report]) # Doesn't check for failure
     @report.update_attribute(:editor, current_user)
-    head :ok
+
+    #TODO: Fix templates so that normal 'head :ok' response is enough
+    render :text => @report.tested_at.strftime('%d %B %Y')
   end
 
   #TODO: This should be in comparison controller
