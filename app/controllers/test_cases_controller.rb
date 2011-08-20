@@ -16,7 +16,7 @@ class TestCasesController < ApplicationController
   private
 
   def update_report_editor
-    test_report = @test_case.meego_test_session
-    test_report.update_attribute(:editor, current_user)
+    report = @test_case.meego_test_session
+    report.update_attribute(:editor, current_user)
   end
 end
