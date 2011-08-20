@@ -1,9 +1,9 @@
 #templates style="display:none;"
   #txt_edit_form
-    form.txt_form action=url_for(:controller=>'reports', :action=>'update_txt') method="post"
+    form.txt_form action=report_path(@test_session) method="post"
       .editables
+        input name="_method" type="hidden" value="put"
         input name="authenticity_token" type="hidden" value=form_authenticity_token
-        input.id_field name="id" type="hidden" value=@test_session.id
         textarea.txt_edit
         input.small_btn.save type="submit" value="Save"
         input.small_btn.cancel type="button" value="Cancel"

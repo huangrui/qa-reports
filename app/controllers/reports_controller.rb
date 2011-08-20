@@ -32,22 +32,6 @@ require 'net/https'
 require 'report_exporter'
 
 module AjaxMixin
-
-  def update_txt
-    @preview_id   = params[:id]
-    @test_session = MeegoTestSession.find(@preview_id)
-
-    field         = params[:meego_test_session]
-    field         = field.keys()[0]
-    @test_session.send(field + '=', params[:meego_test_session][field])
-    @test_session.update_attribute(:editor, current_user)
-    expire_caches_for(@test_session)
-
-    sym = field.sub("_txt", "_html").to_sym
-
-    render :text => @test_session.send(sym)
-  end
-
   def update_category
     @preview_id = params[:id]
 

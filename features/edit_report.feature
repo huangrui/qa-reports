@@ -58,7 +58,7 @@ Feature: Edit Report
   Scenario: Edit test objective
     When I edit the report "1.2/Core/automated/N900"
     And I click the element "#test_objective"
-    And fill in "meego_test_session[objective_txt]" within ".editable_area" with:
+    And fill in "report[objective_txt]" within ".editable_area" with:
       """
       == Test Header ==
       * testing list
@@ -73,7 +73,7 @@ Feature: Edit Report
   Scenario: Create a dynamic link to bugzilla
     When I edit the report "1.2/Core/automated/N900"
     And I click the element "#test_objective"
-    And fill in "meego_test_session[objective_txt]" with "* [[9353]]" within ".editable_area"
+    And fill in "report[objective_txt]" with "* [[9353]]" within ".editable_area"
     And I press "Save"
     And I wait until all Ajax requests are complete
 
