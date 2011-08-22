@@ -1,9 +1,9 @@
 Given /^I am an user with a REST authentication token$/ do
   if !User.find_by_email('resting@man.net')
-    FactoryGirl.create(:user, 
+    FactoryGirl.create(:user,
       :name                  => 'John Restless',
-      :email                 => 'resting@man.net', 
-      :password              => 'secretpass', 
+      :email                 => 'resting@man.net',
+      :password              => 'secretpass',
       :password_confirmation => 'secretpass',
       :authentication_token  => 'foobar')
   end
@@ -124,7 +124,7 @@ Then /^the REST result "([^"]*)" is "([^"]*)"$/ do |key, value|
 end
 
 def get_testsessionid(file)
-  TestResultFile.where('path like ?', '%' + file).first.meego_test_session_id
+  FileAttachment.where('file_file_name like ?', '%' + file).first.attachable_id
 end
 
 And /^session "([^"]*)" has been modified at "([^"]*)"$/ do |file, date|

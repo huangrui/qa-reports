@@ -77,14 +77,11 @@ class ReportsController < ApplicationController
       @report         = @test_session
       @no_upload_link = true
 
-      @report         = @test_session
       @release_versions = VersionLabel.all.map { |release| release.label }
       @targets = TargetLabel.targets
       @testsets = MeegoTestSession.release(@selected_release_version).testsets
       @product = MeegoTestSession.release(@selected_release_version).popular_products
       @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
-
-      @raw_result_files = @test_session.raw_result_files
 
       render :layout => "report"
     else
@@ -131,8 +128,7 @@ class ReportsController < ApplicationController
       @product = @test_session.product
 
       @report    = @test_session
-      @files = @test_session.report_attachments
-      @raw_result_files = @test_session.raw_result_files
+      @attachments = @test_session.attachments
       @editing = false
       @wizard  = false
 
@@ -153,7 +149,7 @@ class ReportsController < ApplicationController
 
       @report       = @test_session
       @editing      = false
-      @files = @test_session.report_attachments
+      @attachments = @test_session.attachments
       @wizard = false
       @email  = true
       @build_diff = []
@@ -184,8 +180,7 @@ class ReportsController < ApplicationController
       @product = MeegoTestSession.release(@selected_release_version).popular_products
       @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
       @no_upload_link = true
-      @files = @test_session.report_attachments
-      @raw_result_files = @test_session.raw_result_files
+      @attachments = @test_session.attachments
 
       render :layout => "report"
     else

@@ -25,9 +25,9 @@ ol.toc
         a href="#detailed_nft_results" Non-Functional Test Results
   li
     a href="#issue_summary" Issue Summary
-  - if (@files != nil && @files.length > 0) || @editing
+  - if @test_session.result_files.present? || @editing
     li
       a href="#attachments" Attachments
-  - if (@raw_result_files != nil && @raw_result_files.length > 0) || @editing
+  - if @attachments.present? || @editing
     li
       a href="#raw_result_files" Original Result Files

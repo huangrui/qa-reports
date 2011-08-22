@@ -42,8 +42,9 @@ class MeegoTestSession < ActiveRecord::Base
 
   has_many :features, :dependent => :destroy, :order => "id DESC"
   has_many :meego_test_cases, :autosave => false, :order => "id DESC"
-  has_many :test_result_files, :dependent => :destroy
-  has_many :report_attachments, :dependent => :destroy
+  has_many :result_files, :class_name => 'FileAttachment', :as => :attachable, :dependent => :destroy, :conditions => {:attachment_type => 'result_file'}
+  has_many :attachments,  :class_name => 'FileAttachment', :as => :attachable, :dependent => :destroy, :conditions => {:attachment_type => 'attachment'}
+
   has_many :passed, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::PASS}"
   has_many :failed, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::FAIL}"
   has_many :na, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::NA}"
@@ -62,11 +63,9 @@ class MeegoTestSession < ActiveRecord::Base
   validate :validate_labels
   validate :validate_type_hw
 
-  accepts_nested_attributes_for :features, :test_result_files
+  accepts_nested_attributes_for :features, :result_files
 
   before_save :force_testset_product_names
-
-  after_destroy :remove_uploaded_files
 
   scope :published, where(:published => true)
   scope :release, lambda { |release| published.joins(:version_label).where(:version_labels => {:normalized => release.downcase}) }
@@ -78,6 +77,10 @@ class MeegoTestSession < ActiveRecord::Base
   INVALID_RESULTS_DIR = "public/reports/invalid_files"
 
   include ReportSummary
+
+  def meego_test_session
+    self
+  end
 
   def self.latest
     published.order(:tested_at).last
@@ -140,10 +143,6 @@ class MeegoTestSession < ActiveRecord::Base
 
   def prev_summary
     prev_session
-  end
-
-  def raw_result_files
-    FileStorage.new(dir="public/reports", baseurl="/reports/").list_report_files(self)
   end
 
   def self.import(attributes, files, user)
@@ -518,10 +517,6 @@ class MeegoTestSession < ActiveRecord::Base
 
     filename     = ("%06i-" % Time.now.usec) + sanitize_filename(original_filename)
     path_to_file = File.join(dir, filename)
-  end
-
-  def remove_uploaded_files
-    # TODO: when report is deleted files should be deleted as well
   end
 
   def update_report_result(user, params, published = true)

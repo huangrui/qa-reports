@@ -69,26 +69,8 @@ class ReportFactory
     end
   end
 
-  # TODO: This should be handled with paperclip
   def save_result_files(params)
-    test_result_files = []
-
-    params[:uploaded_files].each do |tmpfile|
-      result_file_path = generate_file_destination_path(tmpfile.original_filename)
-      FileUtils.move tmpfile.path, result_file_path
-      test_result_files << {:path => result_file_path}
-    end
-
-    params[:test_result_files_attributes] = test_result_files
-  end
-
-  def generate_file_destination_path(original_filename)
-    datepart = Time.now.strftime("%Y%m%d")
-    dir      = File.join(MeegoTestSession::RESULT_FILES_DIR, datepart)
-    FileUtils.mkdir_p(dir)
-
-    filename     = ("%06i-" % Time.now.usec) + sanitize_filename(original_filename)
-    path_to_file = File.join(dir, filename)
+    params[:result_files_attributes] = params[:uploaded_files].map {|tmpfile| {:file => tmpfile} }
   end
 
   def sanitize_filename(filename)
