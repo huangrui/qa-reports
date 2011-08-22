@@ -15,15 +15,15 @@ class DataPaperclipAttachmentsToGenericModel < ActiveRecord::Migration
 
   def self.up
     ReportAttachment.find_each do |attachment|
-      FileAttachment.create! :file => attachment.attachment,
+      FileAttachment.create!(:file => attachment.attachment,
         :attachable => attachment.meego_test_session,
-        :attachment_type => :attachment
+        :attachment_type => :attachment) unless attachment.meego_test_session.nil?
     end
 
     MeegoTestCaseAttachment.includes(:meego_test_case => :meego_test_session).find_each do |attachment|
-      FileAttachment.create! :file => attachment.attachment,
+      FileAttachment.create!(:file => attachment.attachment,
         :attachable => attachment.meego_test_case,
-        :attachment_type => :attachment
+        :attachment_type => :attachment) unless attachment.meego_test_case.nil?
     end
 
     TestResultFile.find_each do |file|

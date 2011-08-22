@@ -1,7 +1,7 @@
 class CreateFileAttachments < ActiveRecord::Migration
   def self.up
     create_table :file_attachments do |t|
-      t.references :attachable, :polymorphic => true
+      t.references :attachable, :polymorphic => true, :null => false
       t.string :attachment_type, :null => false
 
       t.string :file_file_name
