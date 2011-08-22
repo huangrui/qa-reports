@@ -28,7 +28,9 @@ class DataPaperclipAttachmentsToGenericModel < ActiveRecord::Migration
 
     TestResultFile.find_each do |file|
       if File.exists? file.path
-        FileAttachment.create! :file => File.open(file.path),
+        clean_filename = file.path.gsub(/\/\d+-/, '/')
+        File.rename(file.path, clean_filename)
+        FileAttachment.create! :file => File.open(clean_filename),
           :attachable_id => file.meego_test_session_id,
           :attachable_type => 'MeegoTestSession',
           :attachment_type => :result_file
@@ -37,6 +39,8 @@ class DataPaperclipAttachmentsToGenericModel < ActiveRecord::Migration
 
     drop_table :report_attachments
     drop_table :meego_test_case_attachments
+    remove_index :test_result_files, :meego_test_session_id
+    drop_table :test_result_files
   end
 
   def self.down
@@ -67,5 +71,12 @@ class DataPaperclipAttachmentsToGenericModel < ActiveRecord::Migration
     end
 
     FileAttachment.delete_all
+
+    create_table :test_result_files, :force => true do |t|
+      t.integer :meego_test_session_id, :null => false
+      t.string  :path
+    end
+
+    add_index :test_result_files, :meego_test_session_id
   end
 end

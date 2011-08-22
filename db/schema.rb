@@ -23,8 +23,8 @@ ActiveRecord::Schema.define(:version => 20110817075345) do
   add_index "features", ["name"], :name => "index_meego_test_sets_on_feature"
 
   create_table "file_attachments", :force => true do |t|
-    t.integer  "attachable_id"
-    t.string   "attachable_type"
+    t.integer  "attachable_id",     :null => false
+    t.string   "attachable_type",   :null => false
     t.string   "attachment_type",   :null => false
     t.string   "file_file_name"
     t.string   "file_content_type"
@@ -107,13 +107,6 @@ ActiveRecord::Schema.define(:version => 20110817075345) do
     t.string  "normalized", :limit => 64, :null => false
     t.integer "sort_order",               :null => false
   end
-
-  create_table "test_result_files", :force => true do |t|
-    t.integer "meego_test_session_id", :null => false
-    t.string  "path"
-  end
-
-  add_index "test_result_files", ["meego_test_session_id"], :name => "index_test_result_files_on_meego_test_session_id"
 
   create_table "users", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
