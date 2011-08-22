@@ -195,8 +195,8 @@ Then /^(?:|I )should not be able to view the report "([^"]*)"$/ do |report_strin
   report.should == nil
 end
 
-Then /^(?:|I )should see feature "([^"]*)" graded as (green|yellow|red|grey)$/ do |feature_name, status|
-  find_feature_row(feature_name).find(:xpath, "descendant::span")['class'].should =~ /#{status}/ # Check that the color matches the status
+Then /^(?:|I )should see feature "([^"]*)" graded as ([^"]*)$/ do |feature_name, grading_color|
+  find_feature_row(feature_name).find(:xpath, "descendant::span")['class'].should =~ /#{grading_color}/ # Check that the color matches the status
 end
 
 When /^(?:|I )fill in comment "([^"]*)" for feature "([^"]*)"$/ do |comment, feature_name|
