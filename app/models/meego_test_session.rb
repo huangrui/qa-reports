@@ -78,6 +78,10 @@ class MeegoTestSession < ActiveRecord::Base
 
   include ReportSummary
 
+  def meego_test_session
+    self
+  end
+
   def self.latest
     published.order(:tested_at).last
   end

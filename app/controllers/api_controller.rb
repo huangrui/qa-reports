@@ -58,7 +58,7 @@ class ApiController < ApplicationController
     end
 
     attachments.each do |file|
-      @test_session.attachments.build(:file => file, :attachment_type => :attachment)
+      @test_session.attachments.build :file => file
     end
 
     begin

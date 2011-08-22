@@ -6,10 +6,9 @@ class AttachmentsController < ApplicationController
 
   def destroy
     attachment  = FileAttachment.find(params[:id])
-    attachable  = attachment.attachable
-    test_report = attachable.try(:meego_test_session) || attachable
+    test_report = attachment.attachable.meego_test_session
 
-    test_report.update_attribute(:editor, current_user) if test_report.present?
+    test_report.update_attribute(:editor, current_user)
     attachment.destroy
 
     head :ok
