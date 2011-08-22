@@ -38,7 +38,7 @@ Feature: Edit Report
   Scenario: Edit title
     When I edit the report "1.2/Core/automated/N900"
     And I click the element "h1"
-    And fill in "meego_test_session[title]" with "Test title" within "h1"
+    And fill in "report[title]" with "Test title" within "h1"
     And I press "Save"
     And I wait until all Ajax requests are complete
 
@@ -49,7 +49,7 @@ Feature: Edit Report
     When I view the report "1.2/Core/automated/N900"
     And I click to edit the report
     And I click the element ".editable_date"
-    And fill in "meego_test_session[tested_at]" with "2011-1-1" within "#upload_report"
+    And fill in "Test execution date:" with "2011-1-1"
     And I press "Save"
 
     Then I should see "01 January 2011" within "#test_category .date"
@@ -58,7 +58,7 @@ Feature: Edit Report
   Scenario: Edit test objective
     When I edit the report "1.2/Core/automated/N900"
     And I click the element "#test_objective"
-    And fill in "meego_test_session[objective_txt]" within ".editable_area" with:
+    And fill in "report[objective_txt]" within ".editable_area" with:
       """
       == Test Header ==
       * testing list
@@ -73,7 +73,7 @@ Feature: Edit Report
   Scenario: Create a dynamic link to bugzilla
     When I edit the report "1.2/Core/automated/N900"
     And I click the element "#test_objective"
-    And fill in "meego_test_session[objective_txt]" with "* [[9353]]" within ".editable_area"
+    And fill in "report[objective_txt]" with "* [[9353]]" within ".editable_area"
     And I press "Save"
     And I wait until all Ajax requests are complete
 

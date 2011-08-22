@@ -31,7 +31,7 @@ handleEditButton = () ->
     $form = $($('#txt_edit_form form').clone())
     $area = $($form.find('textarea'))
 
-    $area.attr 'name', 'meego_test_session[' + fieldName + ']'
+    $area.attr "name", "report[#{fieldName}]"
     $area.autogrow()
     $area.val text
 

@@ -32,78 +32,6 @@ require 'net/https'
 require 'report_exporter'
 
 module AjaxMixin
-  def update_title
-    @preview_id   = params[:id].to_i
-    @test_session = MeegoTestSession.find(@preview_id)
-
-    field         = params[:meego_test_session]
-    field         = field.keys()[0]
-    @test_session.send(field + '=', params[:meego_test_session][field])
-    @test_session.update_attribute(:editor, current_user)
-    expire_caches_for(@test_session)
-    expire_index_for(@test_session)
-
-    render :text => "OK"
-  end
-
-
-  def update_txt
-    @preview_id   = params[:id]
-    @test_session = MeegoTestSession.find(@preview_id)
-
-    field         = params[:meego_test_session]
-    field         = field.keys()[0]
-    @test_session.send(field + '=', params[:meego_test_session][field])
-    @test_session.update_attribute(:editor, current_user)
-    expire_caches_for(@test_session)
-
-    sym = field.sub("_txt", "_html").to_sym
-
-    render :text => @test_session.send(sym)
-  end
-
-
-  def update_tested_at
-    @preview_id = params[:id]
-
-    if @preview_id
-      @test_session = MeegoTestSession.find(@preview_id)
-
-      field         = params[:meego_test_session].keys.first
-      logger.warn("Updating #{field} with #{params[:meego_test_session][field]}")
-      @test_session.send(field + "=", params[:meego_test_session][field])
-      @test_session.update_attribute(:editor, current_user)
-
-      expire_caches_for(@test_session)
-      expire_index_for(@test_session)
-
-      render :text => @test_session.tested_at.strftime('%d %B %Y')
-    else
-      logger.warn "WARNING: report id #{@preview_id} not found"
-    end
-  end
-
-  def update_category
-    @preview_id = params[:id]
-
-    if @preview_id
-      @test_session = MeegoTestSession.find(@preview_id)
-
-      data = params[:meego_test_session]
-      data.keys.each do |key|
-        @test_session.send(key + "=", data[key]) if data[key].present?
-      end
-      @test_session.update_attribute(:editor, current_user)
-
-      expire_caches_for(@test_session)
-      expire_index_for(@test_session)
-
-      render :text => @test_session.tested_at.strftime('%d %B %Y')
-    else
-      logger.warn "WARNING: report id #{@preview_id} not found"
-    end
-  end
-
   def update_feature_comment
     feature_id = params[:id]
     comments = params[:comment]
@@ -129,7 +57,6 @@ module AjaxMixin
 
     render :text => "OK"
   end
-
 end
 
 class ReportsController < ApplicationController
@@ -137,6 +64,7 @@ class ReportsController < ApplicationController
   include CacheHelper
 
   before_filter :authenticate_user!, :except => ["show", "print", "compare", "redirect_by_id"]
+  cache_sweeper :meego_test_session_sweeper, :only => [:update]
 
   def preview
     @preview_id = session[:preview_id] || params[:id]
@@ -260,6 +188,16 @@ class ReportsController < ApplicationController
     end
   end
 
+  def update
+    @report = MeegoTestSession.find(params[:id])
+    @report.update_attributes(params[:report]) # Doesn't check for failure
+    @report.update_attribute(:editor, current_user)
+
+    #TODO: Fix templates so that normal 'head :ok' response is enough
+    render :text => @report.tested_at.strftime('%d %B %Y')
+  end
+
+  #TODO: This should be in comparison controller
   def compare
     @comparison = ReportComparison.new()
     @release_version = params[:release_version]
@@ -278,7 +216,7 @@ class ReportsController < ApplicationController
   end
 
   def delete
-    test_session = MeegoTestSession.fetch_fully(params[:id])
+    test_session = MeegoTestSession.find(params[:id])
 
     expire_caches_for(test_session, true)
     expire_index_for(test_session)
