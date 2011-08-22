@@ -195,9 +195,8 @@ Then /^(?:|I )should not be able to view the report "([^"]*)"$/ do |report_strin
   report.should == nil
 end
 
-Then /^(?:|I )should see feature "([^"]*)" as (passed|partially passed|failed|N\/A)$/ do |feature_name, status|
-  status_colors = {"passed"=>"green", "partially passed"=>"yellow", "failed"=>"red", "N/A"=>"red"}
-  find_feature_row(feature_name).find(:xpath, "descendant::span")['class'].should =~ /#{status_colors[status]}/ # Check that the color matches the status
+Then /^(?:|I )should see feature "([^"]*)" graded as (green|yellow|red|grey)$/ do |feature_name, status|
+  find_feature_row(feature_name).find(:xpath, "descendant::span")['class'].should =~ /#{status}/ # Check that the color matches the status
 end
 
 When /^(?:|I )fill in comment "([^"]*)" for feature "([^"]*)"$/ do |comment, feature_name|
@@ -214,8 +213,8 @@ When /^I change comment of feature "([^"]*)" to "([^"]*)"$/ do |feature_name, co
   And %{I save the comment of feature "#{feature_name}"}
 end
 
-When /^I change grading of feature "([^"]*)" to "([^"]*)"$/ do |feature_name, grading_color|
+When /^I change grading of feature "([^"]*)" to ([^"]*)$/ do |feature_name, grading_color|
   grading_area = find_feature_row(feature_name).find(".feature_record_grading")
   grading_area.click()
-  grading_area.select("Red", :from => "grading")
+  grading_area.select(grading_color.capitalize, :from => "grading")
 end
