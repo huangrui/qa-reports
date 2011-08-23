@@ -55,7 +55,11 @@ namespace :db do
     `rm qa_reports_production.sql`
   end
 
+  # Internal: Run on localhost or staging environment by capistrano
   task :import_files do
+    if Rails.env == 'production'
+      raise "ERROR: Your should not import data to production environment"
+    end
     `tar -xzf qa-reports-files.tar.gz && rm qa-reports-files.tar.gz`
   end
 
