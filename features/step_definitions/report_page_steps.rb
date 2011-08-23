@@ -201,7 +201,7 @@ end
 
 When /^(?:|I )fill in comment "([^"]*)" for feature "([^"]*)"$/ do |comment, feature_name|
   find_feature_row(feature_name).find(".feature_record_notes").click()
-  fill_in("comment", :with => comment)
+  fill_in("feature[comments]", :with => comment)
 end
 
 When /^I (save|cancel) the comment of feature "([^"]*)"$/ do |action, feature_name|

@@ -51,10 +51,10 @@
           option value="0" N/A
 
   #feature_comment_edit_form
-    form.comment_form action=url_for(:controller=>'features', :action=>'update_comment') method="post"
+    form.comment_form action="" method="post"
       input name="authenticity_token" type="hidden" value=form_authenticity_token
-      input.id_field name="id" type="hidden" value=""
-      textarea.comment_field name="comment"
+      input name="_method" type="hidden" value="put"
+      textarea.comment_field name="feature[comments]"
       input.small_btn.save type="submit" value="Save"
       input.small_btn.cancel.last type="button" value="Cancel"
 

@@ -270,7 +270,7 @@ handleFeatureCommentEdit = () ->
     $field = $form.find '.comment_field'
 
     id = $feature.attr('id').substring(8)
-    $form.find('.id_field').val id
+    $form.attr 'action', "/features/#{id}"
 
     markup = $feature.find('.comment_markup').text()
     $field.autogrow()
