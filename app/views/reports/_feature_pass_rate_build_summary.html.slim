@@ -1,5 +1,5 @@
 - feature_summary = feature_pass_rate_build_summary
-tr class="feature_record #{row_class(feature_pass_rate_build_summary_counter)}" id="feature-#{feature_summary.id}"
+tr class="feature_record #{row_class(feature_pass_rate_build_summary_counter)}" id="#{feature_summary.id}"
   - if @email
     td
       = feature_summary.name
