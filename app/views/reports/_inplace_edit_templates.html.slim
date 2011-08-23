@@ -59,10 +59,10 @@
       input.small_btn.cancel.last type="button" value="Cancel"
 
   #feature_grading_edit_form
-    form.result_form.float_container action=url_for(:controller=>'features', :action=>'update_grading') method="post"
+    form.result_form.float_container action="" method="post"
       input name="authenticity_token" type="hidden" value=form_authenticity_token
-      input.id_field name="id" type="hidden" value=""
-      select.grading_select.float_above name="grading"
+      input name="_method" type="hidden" value="put"
+      select.grading_select.float_above name="feature[grading]"
         option value="0" N/A
         option value="1" Red
         option value="2" Yellow

@@ -183,9 +183,8 @@ handleFeatureGradingEdit = () ->
     $feature = $node.closest '.feature_record'
     id = $feature.attr('id')
     $form = $('#feature_grading_edit_form form').clone()
-    $form.find('.id_field').val id
+    $form.attr 'action', "/features/#{id}"
     $select = $form.find 'select'
-
     $div = $feature.find '.feature_record_grading_content'
 
     grading = $div.text()

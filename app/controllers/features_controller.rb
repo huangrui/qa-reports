@@ -5,19 +5,6 @@ class FeaturesController < ApplicationController
   before_filter :authenticate_user!
   after_filter  :update_report_editor
 
-  def update_grading
-    feature_id = params[:id]
-    grading = params[:grading]
-    feature = Feature.find(feature_id)
-    feature.update_attribute(:grading, grading)
-
-    test_session = feature.meego_test_session
-    test_session.update_attribute(:editor, current_user)
-    expire_caches_for(test_session)
-
-    render :text => "OK"
-  end
-
   def update
     @feature = Feature.find(params[:id])
     @feature.update_attributes(params[:feature]) # Doesn't check for failure

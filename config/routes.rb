@@ -31,9 +31,6 @@ Meegoqa::Application.routes.draw do
 
   match '/fetch_bugzilla_data' => 'bugs#fetch_bugzilla_data', :via => "get"
 
-  # For submit the grading of features
-  match '/ajax_update_feature_grading' => 'features#update_grading', :via => "post"
-
   # to test exception notifier
   match '/raise_exception' => 'exceptions#index' unless Rails.env.production?
 
