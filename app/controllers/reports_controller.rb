@@ -31,36 +31,7 @@ require 'net/http'
 require 'net/https'
 require 'report_exporter'
 
-module AjaxMixin
-  def update_feature_comment
-    feature_id = params[:id]
-    comments = params[:comment]
-    feature = Feature.find(feature_id)
-    feature.update_attribute(:comments, comments)
-
-    test_session = feature.meego_test_session
-    test_session.update_attribute(:editor, current_user)
-    expire_caches_for(test_session)
-
-    render :text => "OK"
-  end
-
-  def update_feature_grading
-    feature_id = params[:id]
-    grading = params[:grading]
-    feature = Feature.find(feature_id)
-    feature.update_attribute(:grading, grading)
-
-    test_session = feature.meego_test_session
-    test_session.update_attribute(:editor, current_user)
-    expire_caches_for(test_session)
-
-    render :text => "OK"
-  end
-end
-
 class ReportsController < ApplicationController
-  include AjaxMixin
   include CacheHelper
 
   before_filter :authenticate_user!, :except => ["show", "print", "compare", "redirect_by_id"]

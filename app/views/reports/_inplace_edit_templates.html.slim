@@ -51,7 +51,7 @@
           option value="0" N/A
 
   #feature_comment_edit_form
-    form.comment_form action=url_for(:controller=>'reports', :action=>'update_feature_comment') method="post"
+    form.comment_form action=url_for(:controller=>'features', :action=>'update_feature_comment') method="post"
       input name="authenticity_token" type="hidden" value=form_authenticity_token
       input.id_field name="id" type="hidden" value=""
       textarea.comment_field name="comment"
@@ -59,7 +59,7 @@
       input.small_btn.cancel.last type="button" value="Cancel"
 
   #feature_grading_edit_form
-    form.result_form.float_container action=url_for(:controller=>'reports', :action=>'update_feature_grading') method="post"
+    form.result_form.float_container action=url_for(:controller=>'features', :action=>'update_feature_grading') method="post"
       input name="authenticity_token" type="hidden" value=form_authenticity_token
       input.id_field name="id" type="hidden" value=""
       select.grading_select.float_above name="grading"
