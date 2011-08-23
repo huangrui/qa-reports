@@ -5,7 +5,7 @@ class FeaturesController < ApplicationController
   before_filter :authenticate_user!
   after_filter  :update_report_editor
 
-  def update_feature_comment
+  def update_comment
     feature_id = params[:id]
     comments = params[:comment]
     feature = Feature.find(feature_id)
@@ -18,7 +18,7 @@ class FeaturesController < ApplicationController
     render :text => "OK"
   end
 
-  def update_feature_grading
+  def update_grading
     feature_id = params[:id]
     grading = params[:grading]
     feature = Feature.find(feature_id)
