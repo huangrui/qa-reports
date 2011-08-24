@@ -9,6 +9,16 @@ Before do
     "report.1"        => Rack::Test::UploadedFile.new("features/resources/sim.xml", "text/xml")
   }
 
+  @default_api_opts_all = @default_api_opts.merge({
+    "title"                => "My Test Report",
+    "objective_txt"        => "To notice regression",
+    "build_txt"            => "foobar-image.bin",
+    "build_id_txt"         => "1234.78a",
+    "environment_txt"      => "Laboratory environment",
+    "qa_summary_txt"       => "Ready to ship",
+    "issue_summary_txt"    => "No major issues found"
+  })
+
   # The oldest API (hwproduct and testtype have since been renamed)
   @default_version_1_api_opts = @default_api_opts.merge({
     "hwproduct"       => "N900",

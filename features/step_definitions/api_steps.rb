@@ -164,15 +164,7 @@ When /^the client sends a request with optional parameter "([^"]*)" with value "
 end
 
 When "the client sends a request with all optional parameters defined" do
-  api_import @default_api_opts.merge({
-    "title"                => "My Test Report",
-    "objective_txt"        => "To notice regression",
-    "build_txt"            => "foobar-image.bin",
-    "build_id_txt"         => "1234.78a",
-    "environment_txt"      => "Laboratory environment",
-    "qa_summary_txt"       => "Ready to ship",
-    "issue_summary_txt"    => "No major issues found"
-  })
+  api_import @default_api_opts_all
   response.should be_success
 end
 
