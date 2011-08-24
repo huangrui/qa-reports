@@ -39,4 +39,5 @@ end
 After do
   #visit destroy_user_session_path
   #DatabaseCleaner.clean
+  Rails.cache.clear
 end
