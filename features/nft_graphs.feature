@@ -6,7 +6,7 @@ Feature: Check NFT graphs from the web page
   Background:
     Given I am logged in
     And I upload two NFT test reports
-  
+
   Scenario: Should see CSV data in view mode
     When I view the report "1.2/Handset/NFT/N900"
     Then I should see "Date,bps"
@@ -23,7 +23,7 @@ Feature: Check NFT graphs from the web page
     When I view the report "1.2/Handset/NFT/N900"
     And I follow "Edit"
     Then I should not see "Date,bps"
- 
+
   Scenario: Should see serial history CSV data
     When I view the report "1.2/Handset/NFT/N900"
     Then I should see "2011-08-09,150.0"
@@ -46,7 +46,7 @@ Feature: Check NFT graphs from the web page
   @selenium
   Scenario: Open and close NFT trend window in history view
     When I view the report "1.2/Handset/NFT/N900"
-    
+
     And I follow "See history"
 
     And I click on the first NFT trend graph
@@ -57,7 +57,7 @@ Feature: Check NFT graphs from the web page
   @selenium
   Scenario: Open and close NFT serial trend window in history view
     When I view the report "1.2/Handset/NFT/N900"
-   
+
     And I follow "See history"
 
     And I click on the first NFT serial measurement trend graph
