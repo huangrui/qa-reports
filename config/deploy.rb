@@ -62,11 +62,11 @@ after "deploy:update_code" do
   run "ln -nfs #{shared_path}/config/qa-dashboard_config.yml #{latest_release}/config/qa-dashboard_config.yml"
 
   # Remove local directories
-  run "rm -fr #{current_path}/public/reports"
+  run "rm -fr #{latest_release}/public/reports"
 
   # Link to shared folders
-  run "ln -nfs #{shared_path}/reports #{current_path}/public/"
-  run "ln -nfs #{shared_path}/files #{current_path}/public/"
+  run "ln -nfs #{shared_path}/reports #{latest_release}/public/"
+  run "ln -nfs #{shared_path}/files #{latest_release}/public/"
 end
 
 after "deploy:symlink" do
