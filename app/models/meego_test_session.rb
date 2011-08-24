@@ -402,17 +402,6 @@ class MeegoTestSession < ActiveRecord::Base
         errors.add :target, "Incorrect target '#{target}'. Valid ones are #{valid_targets}."
       end
     end
-
-    if release_version.blank?
-      errors.add :release_version, "can't be blank"
-    else
-      label = VersionLabel.find(:first, :conditions => {:normalized => release_version.downcase})
-      if not label
-        valid_versions = VersionLabel.release_versions.join(",")
-        errors.add :release_version, "Incorrect release version '#{release_version}'. Valid ones are #{valid_versions}."
-      end
-    end
-
   end
 
   # Validate user entered test set and hw product. If all characters are
