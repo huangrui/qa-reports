@@ -323,7 +323,7 @@ handleResultEdit = () ->
     return false if $span.is ":hidden"
 
     $testcase = $node.closest '.testcase'
-    id = $testcase.attr('id').substring(9)
+    id = $testcase.attr('id').replace 'testcase-', ''
     $form = $('#result_edit_form form').clone()
     $form.attr('action', "/test_cases/#{id}")
     $select = $form.find 'select'
@@ -482,7 +482,7 @@ handleCommentEdit = () ->
             $add_attachment.show()
             return false
 
-    id = $testcase.attr('id').substring(9)
+    id = $testcase.attr('id').replace 'testcase-', ''
     $form.attr('action', "/test_cases/#{id}")
 
     markup = $testcase.find('.comment_markup').text()
