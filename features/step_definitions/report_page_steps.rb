@@ -201,7 +201,7 @@ end
 
 When /^(?:|I )fill in comment "([^"]*)" for feature "([^"]*)"$/ do |comment, feature_name|
   find_feature_row(feature_name).find(".feature_record_notes").click()
-  fill_in("comment", :with => comment)
+  fill_in("feature[comments]", :with => comment)
 end
 
 When /^I (save|cancel) the comment of feature "([^"]*)"$/ do |action, feature_name|
@@ -216,5 +216,5 @@ end
 When /^I change grading of feature "([^"]*)" to ([^"]*)$/ do |feature_name, grading_color|
   grading_area = find_feature_row(feature_name).find(".feature_record_grading")
   grading_area.click()
-  grading_area.select(grading_color.capitalize, :from => "grading")
+  grading_area.select(grading_color.capitalize, :from => "feature[grading]")
 end
