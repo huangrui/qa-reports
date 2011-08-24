@@ -34,6 +34,7 @@ class DataPaperclipAttachmentsToGenericModel < ActiveRecord::Migration
           :attachable_id => file.meego_test_session_id,
           :attachable_type => 'MeegoTestSession',
           :attachment_type => :result_file
+        File.rename(clean_filename, file.path)
       end
     end
 
