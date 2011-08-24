@@ -60,16 +60,16 @@ after "deploy:update_code" do
   # Remove default QA Dashboard config and symlink to shared.
   run "rm #{latest_release}/config/qa-dashboard_config.yml"
   run "ln -nfs #{shared_path}/config/qa-dashboard_config.yml #{latest_release}/config/qa-dashboard_config.yml"
-end
 
-after "deploy:symlink" do
   # Remove local directories
   run "rm -fr #{current_path}/public/reports"
 
   # Link to shared folders
   run "ln -nfs #{shared_path}/reports #{current_path}/public/"
   run "ln -nfs #{shared_path}/files #{current_path}/public/"
+end
 
+after "deploy:symlink" do
   # Remove empty token file that comes with deployment and symlink to shared
   run "rm -rf #{current_path}/config/registeration_token"
   run "ln -nfs #{shared_path}/config/registeration_token #{current_path}/config/registeration_token"

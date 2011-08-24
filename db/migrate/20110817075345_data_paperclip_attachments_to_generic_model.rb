@@ -2,12 +2,12 @@ class DataPaperclipAttachmentsToGenericModel < ActiveRecord::Migration
 
   class MeegoTestCaseAttachment < ActiveRecord::Base
     belongs_to :meego_test_case
-    has_attached_file :attachment
+    has_attached_file :attachment, :url => "/files/attachments/:id/:filename"
   end
 
   class ReportAttachment < ActiveRecord::Base
     belongs_to :meego_test_session
-    has_attached_file :attachment
+    has_attached_file :attachment, :url => "/files/report_attachments/:id/:filename"
   end
 
   class TestResultFile < ActiveRecord::Base
@@ -39,8 +39,8 @@ class DataPaperclipAttachmentsToGenericModel < ActiveRecord::Migration
 
     drop_table :report_attachments
     drop_table :meego_test_case_attachments
-    remove_index :test_result_files, :meego_test_session_id
-    drop_table :test_result_files
+    # remove_index :test_result_files, :meego_test_session_id
+    # drop_table :test_result_files
   end
 
   def self.down
@@ -72,11 +72,11 @@ class DataPaperclipAttachmentsToGenericModel < ActiveRecord::Migration
 
     FileAttachment.delete_all
 
-    create_table :test_result_files, :force => true do |t|
-      t.integer :meego_test_session_id, :null => false
-      t.string  :path
-    end
+    # create_table :test_result_files, :force => true do |t|
+    #   t.integer :meego_test_session_id, :null => false
+    #   t.string  :path
+    # end
 
-    add_index :test_result_files, :meego_test_session_id
+    # add_index :test_result_files, :meego_test_session_id
   end
 end
