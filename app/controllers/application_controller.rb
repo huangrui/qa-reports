@@ -22,16 +22,16 @@
 
 class ApplicationController < ActionController::Base
 
-  before_filter :get_meego_versions
-  before_filter :get_selected_release_version
+  before_filter :find_releases
+  before_filter :find_selected_release
 
   #protect_from_forgery
 
-  def get_meego_versions
+  def find_releases
     @meego_releases = VersionLabel.release_versions
   end
 
-  def get_selected_release_version
+  def find_selected_release
     @selected_release_version = session[:release_version] =
       valid_version_label(params[:release_version]) || session[:release_version] || VersionLabel.latest.label
   end

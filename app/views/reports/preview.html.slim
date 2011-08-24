@@ -50,6 +50,10 @@
   = javascript_include_tag "fileuploader.js"
 
 - content_for :view_specific_js do
+  div style="display:none"
+    span#session_id
+      #{@test_session.id}
+
   = javascript_include_tag 'datetime'
   = javascript_include_tag 'jquery.form.js'
   = javascript_include_tag 'reports_edit.js'

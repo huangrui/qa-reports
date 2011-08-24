@@ -297,7 +297,7 @@ Then /^the REST result "([^"]*)" is "([^"]*)"$/ do |key, value|
 end
 
 def get_testsessionid(file)
-  TestResultFile.where('path like ?', '%' + file).first.meego_test_session_id
+  FileAttachment.where('file_file_name like ?', '%' + file).first.attachable_id
 end
 
 And /^session "([^"]*)" has been modified at "([^"]*)"$/ do |file, date|

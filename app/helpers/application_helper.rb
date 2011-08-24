@@ -106,7 +106,7 @@ module ApplicationHelper
   end
 
   def report_url(s)
-      url_for :controller=>'reports',:action=>'view', :release_version=>s.release_version, :target=>s.target, :testset=>s.testset, :product=>s.product, :id=>s.id
+      url_for :controller=>'reports',:action=>'show', :release_version=>s.release_version, :target=>s.target, :testset=>s.testset, :product=>s.product, :id=>s.id
   end
 
   def format_date_to_human_readable(date)

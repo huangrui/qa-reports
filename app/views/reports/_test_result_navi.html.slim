@@ -1,5 +1,5 @@
 #test_results_navi
   - if @test_session.prev_session
-    a.go_to_previous href=url_for(:controller=>'reports', :action=>'view', :id=>@test_session.prev_session.id) Previous report
+    a.go_to_previous href=url_for(:controller=>'reports', :action=>'show', :id=>@test_session.prev_session.id) Previous report
   - if @test_session.next_session
-    a.go_to_next href=url_for(:controller=>'reports', :action=>'view', :id=>@test_session.next_session.id) Next report
+    a.go_to_next href=url_for(:controller=>'reports', :action=>'show', :id=>@test_session.next_session.id) Next report
