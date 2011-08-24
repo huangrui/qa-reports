@@ -116,7 +116,7 @@ renderSeriesGraphs = function(selector) {
                 } else if ($div.hasClass('nft_serial_history')) {
                     renderNftSerialTrendGraph($modal_info);
                 } else {
-                    renderModalGraph($modal_info);                    
+                    renderModalGraph($modal_info);
                 }
             });
         }
@@ -166,10 +166,10 @@ renderSeriesGraphs = function(selector) {
         var updateNftSerialTrendGraphData = function(dyg) {
             var $modal = $("#nft_series_history_dialog");
             var visibility = [true, true, true, true];
-            
+
             // Change Dygraph series visibility based on the checkboxes
             // Note: the checkboxes have value attribute set, and the order
-            // needs to match with the CSV columns    
+            // needs to match with the CSV columns
             $modal.find(":checkbox").each(function(i, node) {
                 visibility[parseInt(node.value)] = node.checked;
                 });
@@ -178,25 +178,25 @@ renderSeriesGraphs = function(selector) {
         };
 
         var $modal = $("#nft_series_history_dialog");
-    
+
         var $elem = $(elem);
         var title = $elem.find(".nft_serial_trend_graph_title").text();
         var data = $elem.children(".nft_serial_trend_graph_data").text();
 
         $modal.find("h1").text(title);
         $modal.jqmShow();
-    
+
         if (!data) {
             // Set some data for the graph to work
-            var data = 
+            var data =
                 "Date,Max. value,Avg. value,Med. value,Min. value\n0,0,0,0,0";
         }
 
         var graph = document.getElementById("nft_series_history_graph");
         dyg = new Dygraph(graph, data, {
-                              colors: ["#2a7438", 
-                                       "#6c3d0f", 
-                                       "#233a84", 
+                              colors: ["#2a7438",
+                                       "#6c3d0f",
+                                       "#233a84",
                                        "#bb2825"]
                           });
 
@@ -230,17 +230,6 @@ var renderNftTrendGraph = function(m_id) {
 
     dyg = new Dygraph(graph, data);
 };
-
-function removeAttachment(attachment, callback) {
-    $.post("/ajax_remove_attachment", {
-        id: attachment,
-    }, function(data, status){
-        if(data.ok==1 && callback!=null) {
-            callback.call(this);
-        }
-    });
-};
-
 
 (function($) {
 
@@ -520,7 +509,7 @@ function filterResults(rowsToHide, typeText) {
 
     // NFT history
 
-    var $nft_detail  = $("table.non-functional_results.detailed_results").first(); 
+    var $nft_detail  = $("table.non-functional_results.detailed_results").first();
     var $nft_history = $("table.non-functional_results.detailed_results.history");
 
     $(".see_nft_history_button").click(function(){

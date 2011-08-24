@@ -19,4 +19,13 @@ namespace :db do
     get "#{current_path}/qa_reports_production.sql.bz2", "./qa_reports_production.sql.bz2"
     run "rm #{current_path}/qa_reports_production.sql.bz2"
   end
+
+  desc "Compress and fetch files"
+  task :fetch_files, :roles => :db, :only => {:primary => true} do
+    tarball    = "qa-reports-files.tar.gz"
+    files_path = "./public/files/*"
+    run "cd #{current_path} && tar -czf #{tarball} #{files_path}"
+    get "#{current_path}/#{tarball}", "./#{tarball}"
+    run "rm #{current_path}/#{tarball}"
+  end
 end

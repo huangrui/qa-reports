@@ -145,6 +145,6 @@
 
     = render :partial => 'reports/file_attachments'
 
-    = render :partial => 'reports/raw_result_files'
+    = render :partial => 'reports/raw_result_files', :locals => {:result_files => @test_session.result_files}
 
     = yield :wizard_actions

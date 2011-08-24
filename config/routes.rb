@@ -1,8 +1,10 @@
 Meegoqa::Application.routes.draw do
   devise_for :users, :controllers => { :sessions => "users/sessions" }  , :path_names => { :sign_up => "#{DeviseRegistrationConfig::URL_TOKEN}/register" }
 
-  # The priority is based upon order of creation:
-  # first created -> highest priority.
+  resources :reports,     :only => [:update]
+  resources :features,    :only => [:update]
+  resources :test_cases,  :only => [:update]
+  resources :attachments, :only => [:destroy]
 
   match '/upload_post' => 'upload#upload', :via => "post"
   match '/upload_report' => 'upload#upload_report', :via => "post"
@@ -20,20 +22,14 @@ Meegoqa::Application.routes.draw do
   match '/ajax_update_tested_at' => 'reports#update_tested_at', :via => "post"
   match '/ajax_update_txt' => 'reports#update_txt', :via => "post"
   match '/ajax_update_title' => 'reports#update_title', :via => "post"
-  match '/ajax_update_comment' => 'meego_test_cases#update_case_comment', :via => "post"
-  match '/ajax_update_result' => 'meego_test_cases#update_case_result', :via => "post"
-  match '/ajax_remove_attachment' => 'reports#remove_attachment', :via => "post"
   match '/ajax_update_category' => 'reports#update_category', :via => "post"
-  match '/ajax_remove_testcase' => 'reports#remove_testcase', :via => "post"
-  match '/ajax_restore_testcase' => 'reports#restore_testcase', :via => "post"
 
-  match '/fetch_bugzilla_data' => 'reports#fetch_bugzilla_data', :via => "get"
+  match '/ajax_update_comment' => 'test_cases#update_comment', :via => "post"
+  match '/ajax_update_result' => 'test_cases#update_result', :via => "post"
+  match '/ajax_remove_testcase' => 'test_cases#remove_testcase', :via => "post"
+  match '/ajax_restore_testcase' => 'test_cases#restore_testcase', :via => "post"
 
-  # For submit the comments of features
-  match '/ajax_update_feature_comment' => 'reports#update_feature_comment', :via => "post"
-
-  # For submit the grading of features
-  match '/ajax_update_feature_grading' => 'reports#update_feature_grading', :via => "post"
+  match '/fetch_bugzilla_data' => 'bugs#fetch_bugzilla_data', :via => "get"
 
   # to test exception notifier
   match '/raise_exception' => 'exceptions#index' unless Rails.env.production?
@@ -62,7 +58,7 @@ Meegoqa::Application.routes.draw do
 
     match '/:release_version/:target(/:testset(/:product))/report_list(/:page)' => 'report_groups#report_page', :via => "get", :as => :report_list
 
-    match '/:release_version/:target/:testset/:product/:id' => 'reports#view', :via => "get"
+    match '/:release_version/:target/:testset/:product/:id' => 'reports#show', :via => "get"
     match '/:release_version/:target/:testset/:product/:id/edit' => 'reports#edit', :via => "get"
     match '/:release_version/:target/:testset/:product/:id/download' => 'csv_export#export_report', :via => "get"
     match '/:release_version/:target/:testset/:product/:id/delete' => 'reports#delete', :via => "post"

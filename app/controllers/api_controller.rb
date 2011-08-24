@@ -47,6 +47,12 @@ class ApiController < ApplicationController
     data.delete(:testtype)
     data.delete(:hardware)
 
+    error_msgs = {}
+
+    error_msgs.merge! errmsg_invalid_version data[:release_version] if not valid_version_label? data[:release_version]
+
+    return render :json => {:ok => '0', :errors => error_msgs} if !error_msgs.empty?
+
     begin
       @test_session = ReportFactory.new.build(data)
       @test_session.author = current_user
@@ -58,19 +64,13 @@ class ApiController < ApplicationController
     end
 
     attachments.each do |file|
-      @test_session.report_attachments.build(:attachment => file)
+      @test_session.attachments.build :file => file
     end
 
     begin
       @test_session.save!
 
-      #TODO: Use PaperClip
-      files = FileStorage.new()
-      attachments.each { |file|
-        files.add_file(@test_session, file, file.original_filename)
-      }
-
-      report_url = url_for :controller => 'reports', :action => 'view', :release_version => data[:release_version], :target => data[:target], :testset => data[:testset], :product => data[:product], :id => @test_session.id
+      report_url = url_for :controller => 'reports', :action => 'show', :release_version => data[:release_version], :target => data[:target], :testset => data[:testset], :product => data[:product], :id => @test_session.id
       render :json => {:ok => '1', :url => report_url}
     rescue ActiveRecord::RecordInvalid => invalid
       error_messages = {}
@@ -158,6 +158,15 @@ class ApiController < ApplicationController
       results << collect_file(parameters, key, errors)
     }
     results.compact
+  end
+
+  def valid_version_label?(version)
+    VersionLabel.where(:normalized => version).first.present?
+  end
+
+  def errmsg_invalid_version(version)
+    valid_versions = VersionLabel.release_versions.join(",")
+    {:release_version => "Incorrect release version '#{version}'. Valid ones are #{valid_versions}."}
   end
 
 end

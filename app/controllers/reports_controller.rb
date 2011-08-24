@@ -31,143 +31,11 @@ require 'net/http'
 require 'net/https'
 require 'report_exporter'
 
-module AjaxMixin
-  def remove_attachment
-    @attachment_id   = params[:id].to_i
-    ReportAttachment.destroy(@attachment_id)
-    render :json => {:ok => '1'}
-  end
-
-  def remove_testcase
-    case_id = params[:id].to_i
-    tc = MeegoTestCase.find(case_id)
-    tc.remove_from_session
-
-    expire_caches_for(tc.meego_test_session)
-    render :json => {:ok => '1'}
-  end
-
-  def restore_testcase
-    case_id         = params[:id].to_i
-    tc = MeegoTestCase.deleted.find(case_id)
-    tc.restore_to_session
-
-    expire_caches_for(tc.meego_test_session)
-    render :json => { :ok => '1' }
-  end
-
-  def update_title
-    @preview_id   = params[:id].to_i
-    @test_session = MeegoTestSession.find(@preview_id)
-
-    field         = params[:meego_test_session]
-    field         = field.keys()[0]
-    @test_session.send(field + '=', params[:meego_test_session][field])
-    @test_session.update_attribute(:editor, current_user)
-    expire_caches_for(@test_session)
-    expire_index_for(@test_session)
-
-    render :text => "OK"
-  end
-
-
-  def update_txt
-    @preview_id   = params[:id]
-    @test_session = MeegoTestSession.find(@preview_id)
-
-    field         = params[:meego_test_session]
-    field         = field.keys()[0]
-    @test_session.send(field + '=', params[:meego_test_session][field])
-    @test_session.update_attribute(:editor, current_user)
-    expire_caches_for(@test_session)
-
-    sym = field.sub("_txt", "_html").to_sym
-
-    render :text => @test_session.send(sym)
-  end
-
-
-  def update_tested_at
-    @preview_id = params[:id]
-
-    if @preview_id
-      @test_session = MeegoTestSession.find(@preview_id)
-
-      field         = params[:meego_test_session].keys.first
-      logger.warn("Updating #{field} with #{params[:meego_test_session][field]}")
-      @test_session.send(field + "=", params[:meego_test_session][field])
-      @test_session.update_attribute(:editor, current_user)
-
-      expire_caches_for(@test_session)
-      expire_index_for(@test_session)
-
-      render :text => @test_session.tested_at.strftime('%d %B %Y')
-    else
-      logger.warn "WARNING: report id #{@preview_id} not found"
-    end
-  end
-
-  def update_category
-    @preview_id = params[:id]
-
-    if @preview_id
-      @test_session = MeegoTestSession.find(@preview_id)
-
-      data = params[:meego_test_session]
-      data.keys.each do |key|
-        @test_session.send(key + "=", data[key]) if data[key].present?
-      end
-      @test_session.update_attribute(:editor, current_user)
-
-      expire_caches_for(@test_session)
-      expire_index_for(@test_session)
-
-      render :text => @test_session.tested_at.strftime('%d %B %Y')
-    else
-      logger.warn "WARNING: report id #{@preview_id} not found"
-    end
-  end
-
-  def update_feature_comment
-    feature_id = params[:id]
-    comments = params[:comment]
-    feature = Feature.find(feature_id)
-    feature.update_attribute(:comments, comments)
-
-    test_session = feature.meego_test_session
-    test_session.update_attribute(:editor, current_user)
-    expire_caches_for(test_session)
-
-    render :text => "OK"
-  end
-
-  def update_feature_grading
-    feature_id = params[:id]
-    grading = params[:grading]
-    feature = Feature.find(feature_id)
-    feature.update_attribute(:grading, grading)
-
-    test_session = feature.meego_test_session
-    test_session.update_attribute(:editor, current_user)
-    expire_caches_for(test_session)
-
-    render :text => "OK"
-  end
-
-end
-
 class ReportsController < ApplicationController
-  include AjaxMixin
   include CacheHelper
 
-  before_filter :authenticate_user!, :except => ["view", "print", "compare", "fetch_bugzilla_data", "redirect_by_id"]
-
-  #caches_page :print
-  #caches_page :index, :upload_form, :email, :filtered_list
-  #caches_page :view, :if => proc {|c|!c.just_published?}
-  caches_action :fetch_bugzilla_data,
-                :cache_path => Proc.new { |controller| controller.bugzilla_cache_key },
-                :expires_in => 1.hour
+  before_filter :authenticate_user!, :except => ["show", "print", "compare", "redirect_by_id"]
+  cache_sweeper :meego_test_session_sweeper, :only => [:update]
 
   def preview
     @preview_id = session[:preview_id] || params[:id]
@@ -180,14 +48,11 @@ class ReportsController < ApplicationController
       @report         = @test_session
       @no_upload_link = true
 
-      @report         = @test_session
       @release_versions = VersionLabel.all.map { |release| release.label }
       @targets = TargetLabel.targets
       @testsets = MeegoTestSession.release(@selected_release_version).testsets
       @product = MeegoTestSession.release(@selected_release_version).popular_products
       @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
-
-      @raw_result_files = @test_session.raw_result_files
 
       render :layout => "report"
     else
@@ -203,15 +68,15 @@ class ReportsController < ApplicationController
     expire_caches_for(test_session, true)
     expire_index_for(test_session)
 
-    redirect_to :action          => 'view',
+    redirect_to :action          => 'show',
                 :id              => report_id,
                 :release_version => test_session.release_version,
                 :target          => test_session.target,
-                :testset        => test_session.testset,
-                :product       => test_session.product
+                :testset         => test_session.testset,
+                :product         => test_session.product
   end
 
-  def view
+  def show
     if @report_id = params[:id].try(:to_i)
       preview_id = session[:preview_id]
 
@@ -234,8 +99,7 @@ class ReportsController < ApplicationController
       @product = @test_session.product
 
       @report    = @test_session
-      @files = @test_session.report_attachments
-      @raw_result_files = @test_session.raw_result_files
+      @attachments = @test_session.attachments
       @editing = false
       @wizard  = false
 
@@ -256,7 +120,7 @@ class ReportsController < ApplicationController
 
       @report       = @test_session
       @editing      = false
-      @files = @test_session.report_attachments
+      @attachments = @test_session.attachments
       @wizard = false
       @email  = true
       @build_diff = []
@@ -287,8 +151,7 @@ class ReportsController < ApplicationController
       @product = MeegoTestSession.release(@selected_release_version).popular_products
       @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
       @no_upload_link = true
-      @files = @test_session.report_attachments
-      @raw_result_files = @test_session.raw_result_files
+      @attachments = @test_session.attachments
 
       render :layout => "report"
     else
@@ -296,6 +159,16 @@ class ReportsController < ApplicationController
     end
   end
 
+  def update
+    @report = MeegoTestSession.find(params[:id])
+    @report.update_attributes(params[:report]) # Doesn't check for failure
+    @report.update_attribute(:editor, current_user)
+
+    #TODO: Fix templates so that normal 'head :ok' response is enough
+    render :text => @report.tested_at.strftime('%d %B %Y')
+  end
+
+  #TODO: This should be in comparison controller
   def compare
     @comparison = ReportComparison.new()
     @release_version = params[:release_version]
@@ -313,46 +186,13 @@ class ReportsController < ApplicationController
     render :layout => "report"
   end
 
-  def fetch_bugzilla_data
-    ids       = params[:bugids]
-
-    uri = BUGZILLA_CONFIG['uri'] + ids.join(',')
-
-    content = ""
-    if not BUGZILLA_CONFIG['proxy_server'].nil?
-      @http = Net::HTTP.Proxy(BUGZILLA_CONFIG['proxy_server'], BUGZILLA_CONFIG['proxy_port']).new(BUGZILLA_CONFIG['server'], BUGZILLA_CONFIG['port'])
-    else
-      @http = Net::HTTP.new(BUGZILLA_CONFIG['server'], BUGZILLA_CONFIG['port'])
-    end
-
-    @http.use_ssl = BUGZILLA_CONFIG['use_ssl']
-    @http.start() {|http|
-      req = Net::HTTP::Get.new(uri)
-      if not BUGZILLA_CONFIG['http_username'].nil?
-        req.basic_auth BUGZILLA_CONFIG['http_username'], BUGZILLA_CONFIG['http_password']
-      end
-      response = http.request(req)
-      content = response.body
-    }
-
-    # XXX: bugzilla seems to encode its exported csv to utf-8 twice
-    # so we convert from utf-8 to iso-8859-1, which is then interpreted
-    # as utf-8
-    data = Iconv.iconv("iso-8859-1", "utf-8", content)
-    render :json => FasterCSV.parse(data.join '\n')
-
-  end
-
   def delete
-    id           = params[:id]
-
-    test_session = MeegoTestSession.fetch_fully(id)
+    test_session = MeegoTestSession.find(params[:id])
 
     expire_caches_for(test_session, true)
     expire_index_for(test_session)
 
     test_session.destroy
-
     redirect_to :controller => :index, :action => :index
   end
 
@@ -360,18 +200,13 @@ class ReportsController < ApplicationController
     # Shortcut for accessing the correct report using report ID only
     begin
       s = MeegoTestSession.find(params[:id].to_i)
-      redirect_to :controller => 'reports', :action => 'view', :release_version => s.release_version, :target => s.target, :testset => s.testset, :product => s.product, :id => s.id
+      redirect_to :controller => 'reports', :action => 'show', :release_version => s.release_version, :target => s.target, :testset => s.testset, :product => s.product, :id => s.id
     rescue ActiveRecord::RecordNotFound
       redirect_to :controller => :index, :action => :index
     end
   end
 
   protected
-
-  def bugzilla_cache_key
-    h = Digest::SHA1.hexdigest params.to_hash.to_a.map{|k,v| if v.respond_to?(:join) then k+v.join(",") else k+v end}.join(';')
-    "bugzilla_#{h}"
-  end
 
   def history(s, cnt)
     MeegoTestSession.where("(tested_at < '#{s.tested_at}' OR tested_at = '#{s.tested_at}' AND created_at < '#{s.created_at}') AND target = '#{s.target.downcase}' AND testset = '#{s.testset.downcase}' AND product = '#{s.product.downcase}' AND published = 1 AND version_label_id = #{s.version_label_id}").
