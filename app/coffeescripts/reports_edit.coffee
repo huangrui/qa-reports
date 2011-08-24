@@ -181,7 +181,7 @@ handleFeatureGradingEdit = () ->
     return false if $span.is ":hidden"
 
     $feature = $node.closest '.feature_record'
-    id = $feature.attr('id')
+    id = $feature.attr('id').replace 'feature-', ''
     $form = $('#feature_grading_edit_form form').clone()
     $form.attr 'action', "/features/#{id}"
     $select = $form.find 'select'
@@ -268,7 +268,7 @@ handleFeatureCommentEdit = () ->
 
     $field = $form.find '.comment_field'
 
-    id = $feature.attr('id')
+    id = $feature.attr('id').replace 'feature-', ''
     $form.attr 'action', "/features/#{id}"
 
     markup = $feature.find('.comment_markup').text()
