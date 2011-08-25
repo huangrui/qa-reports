@@ -20,8 +20,8 @@
 module ReportExporter
 
   EXPORTER_CONFIG    = YAML.load_file("#{Rails.root.to_s}/config/qa-dashboard_config.yml")
-  POST_TIMEOUT       = 10
-  POST_RETRIES_LIMIT = 4
+  POST_TIMEOUT       = 8
+  POST_RETRIES_LIMIT = 3
 
   def self.hashify_test_session(test_session)
     sets = []
@@ -93,8 +93,8 @@ module ReportExporter
       begin
         response = RestClient::Request.execute :method  => :post,
                                                :url     => uri,
-                                               :timeout => POST_TIMEOUT + 5 * (POST_RETRIES_LIMIT - tries),
-                                               :open_timeout => POST_TIMEOUT + 5 * (POST_RETRIES_LIMIT - tries),
+                                               :timeout => POST_TIMEOUT + 3 * (POST_RETRIES_LIMIT - tries),
+                                               :open_timeout => POST_TIMEOUT + 3 * (POST_RETRIES_LIMIT - tries),
                                                :payload => post_data,
                                                :headers => headers
       rescue => e
