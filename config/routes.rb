@@ -66,9 +66,7 @@ Meegoqa::Application.routes.draw do
 
     match '/:release_version' => 'index#index', :via => "get"
 
-    match '/:release_version/:target' => 'report_groups#show', :via => "get", :as => :profile_report
-    match '/:release_version/:target/:testset' => 'report_groups#show', :via => "get", :as => :testset_report
-    match '/:release_version/:target/:testset/:product' => 'report_groups#show', :via => "get", :as => :product_report
+    match '/:release_version(/:target(/:testset(/:product)))' => 'report_groups#show', :via => "get", :as => :group_report
   end
 
 
