@@ -33,7 +33,7 @@ class ApplicationController < ActionController::Base
 
   def find_selected_release
     @selected_release_version = session[:release_version] =
-      valid_version_label(params[:release_version]) || session[:release_version] || VersionLabel.latest.label
+      valid_release(params[:release_version]) || session[:release_version] || VersionLabel.latest.label
   end
 
   def render_404
@@ -41,8 +41,8 @@ class ApplicationController < ActionController::Base
   end
 
   private
-  
-  def valid_version_label release_version
+
+  def valid_release release_version
     return unless release_version.present?
 
     if VersionLabel.all.map(&:normalized).include? release_version.downcase

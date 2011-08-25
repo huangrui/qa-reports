@@ -10,7 +10,7 @@ end
 When /^(?:|I )edit the report "([^"]*)"$/ do |report_string|
   version, target, test_type, product = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {"version_labels.normalized" => version, :target => target, :product => product, :testset => test_type}, :include => :version_label,
+   {"version_labels.normalized" => version, :target => target, :product => product, :testset => test_type}, :include => :release,
    :order => "tested_at DESC, created_at DESC")
   raise "report not found with parameters #{version}/#{target}/#{product}/#{test_type}!" unless report
   visit("/#{version}/#{target}/#{test_type}/#{product}/#{report.id}/edit")
@@ -31,7 +31,7 @@ When /^(?:|I )delete all test cases/ do
   When %{I follow "See all"}
 
   session = MeegoTestSession.find(current_url.split('/')[-2])
-  session.meego_test_cases.each do |tc| 
+  session.meego_test_cases.each do |tc|
     with_scope("#testcase-#{tc.id}") do
       click_link "Remove"
     end
