@@ -46,9 +46,9 @@ module ApplicationHelper
  def breadcrumbs
   html = '<div id="breadcrumb"><li><a href="' + url_for(:controller=>'index', :action=>'index') + '">Home</a></li>'
 
-  html += ('<li> &rsaquo; ' + link_to_unless_current(@target, profile_report_path(@selected_release_version, @target)) + '</li>') if @target
-  html += ('<li> &rsaquo; ' + link_to_unless_current(@testset, testset_report_path(@selected_release_version, @target, @testset)) + '</li>') if @testset
-  html += ('<li> &rsaquo; ' + link_to_unless_current(@product, product_report_path(@selected_release_version, @target, @testset, @product)) + '</li>') if @product
+  html += ('<li> &rsaquo; ' + link_to_unless_current(@target, group_report_path(@selected_release_version, @target)) + '</li>') if @target
+  html += ('<li> &rsaquo; ' + link_to_unless_current(@testset, group_report_path(@selected_release_version, @target, @testset)) + '</li>') if @testset
+  html += ('<li> &rsaquo; ' + link_to_unless_current(@product, group_report_path(@selected_release_version, @target, @testset, @product)) + '</li>') if @product
   html += ('<li> &rsaquo; ' + @test_session.title + '</li>') if @test_session
   html += '</div>'
   html.html_safe
@@ -115,6 +115,10 @@ module ApplicationHelper
 
   def format_date_to_input(date)
     date ? date.strftime('%Y-%m-%d') : ''
+  end
+
+  def format_date_for_nft_history(date)
+    date ? date.strftime('%d/%m/%Y') : ''
   end
 
   def use_nokia_layout?

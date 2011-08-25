@@ -181,11 +181,10 @@ handleFeatureGradingEdit = () ->
     return false if $span.is ":hidden"
 
     $feature = $node.closest '.feature_record'
-    id = $feature.attr('id').substring(8)
+    id = $feature.attr('id').replace 'feature-', ''
     $form = $('#feature_grading_edit_form form').clone()
-    $form.find('.id_field').val id
+    $form.attr 'action', "/features/#{id}"
     $select = $form.find 'select'
-
     $div = $feature.find '.feature_record_grading_content'
 
     grading = $div.text()
@@ -269,8 +268,8 @@ handleFeatureCommentEdit = () ->
 
     $field = $form.find '.comment_field'
 
-    id = $feature.attr('id').substring(8)
-    $form.find('.id_field').val id
+    id = $feature.attr('id').replace 'feature-', ''
+    $form.attr 'action', "/features/#{id}"
 
     markup = $feature.find('.comment_markup').text()
     $field.autogrow()
@@ -324,7 +323,7 @@ handleResultEdit = () ->
     return false if $span.is ":hidden"
 
     $testcase = $node.closest '.testcase'
-    id = $testcase.attr('id').substring(9)
+    id = $testcase.attr('id').replace 'testcase-', ''
     $form = $('#result_edit_form form').clone()
     $form.attr('action', "/test_cases/#{id}")
     $select = $form.find 'select'
@@ -482,8 +481,8 @@ handleCommentEdit = () ->
             $current_attachment.find('input').attr('value', '')
             $add_attachment.show()
             return false
- 
-    id = $testcase.attr('id').substring(9)
+
+    id = $testcase.attr('id').replace 'testcase-', ''
     $form.attr('action', "/test_cases/#{id}")
 
     markup = $testcase.find('.comment_markup').text()

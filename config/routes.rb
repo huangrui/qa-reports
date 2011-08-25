@@ -2,6 +2,7 @@ Meegoqa::Application.routes.draw do
   devise_for :users, :controllers => { :sessions => "users/sessions" }  , :path_names => { :sign_up => "#{DeviseRegistrationConfig::URL_TOKEN}/register" }
 
   resources :reports,     :only => [:update]
+  resources :features,    :only => [:update]
   resources :test_cases,  :only => [:update]
   resources :attachments, :only => [:destroy]
 
@@ -23,18 +24,7 @@ Meegoqa::Application.routes.draw do
   match '/ajax_update_title' => 'reports#update_title', :via => "post"
   match '/ajax_update_category' => 'reports#update_category', :via => "post"
 
-  match '/ajax_update_comment' => 'test_cases#update_comment', :via => "post"
-  match '/ajax_update_result' => 'test_cases#update_result', :via => "post"
-  match '/ajax_remove_testcase' => 'test_cases#remove_testcase', :via => "post"
-  match '/ajax_restore_testcase' => 'test_cases#restore_testcase', :via => "post"
-
   match '/fetch_bugzilla_data' => 'bugs#fetch_bugzilla_data', :via => "get"
-
-  # For submit the comments of features
-  match '/ajax_update_feature_comment' => 'reports#update_feature_comment', :via => "post"
-
-  # For submit the grading of features
-  match '/ajax_update_feature_grading' => 'reports#update_feature_grading', :via => "post"
 
   # to test exception notifier
   match '/raise_exception' => 'exceptions#index' unless Rails.env.production?
@@ -71,9 +61,7 @@ Meegoqa::Application.routes.draw do
 
     match '/:release_version' => 'index#index', :via => "get"
 
-    match '/:release_version/:target' => 'report_groups#show', :via => "get", :as => :profile_report
-    match '/:release_version/:target/:testset' => 'report_groups#show', :via => "get", :as => :testset_report
-    match '/:release_version/:target/:testset/:product' => 'report_groups#show', :via => "get", :as => :product_report
+    match '/:release_version(/:target(/:testset(/:product)))' => 'report_groups#show', :via => "get", :as => :group_report
   end
 
 

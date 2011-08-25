@@ -11,6 +11,8 @@ class ReportGroupViewModel
       :testset => testset,
       :product => product
     }.delete_if { |key, value| value.nil? }
+
+    raise ActiveRecord::RecordNotFound if MeegoTestSession.published.where(@params).count == 0
   end
 
   def all_reports
@@ -68,7 +70,7 @@ class ReportGroupViewModel
 
   def find_all_reports
     MeegoTestSession.published.
-      includes(:version_label).
+      includes(:release).
       where(@params).order("tested_at DESC, created_at DESC")
   end
 
@@ -80,7 +82,7 @@ class ReportGroupViewModel
   end
 
   def find_report_range(range)
-    reports = MeegoTestSession.published.includes(:version_label).
+    reports = MeegoTestSession.published.includes(:release).
       where(@params).
       limit(range.count).offset(range.begin).
       order("tested_at DESC, created_at DESC")

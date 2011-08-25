@@ -68,7 +68,7 @@ Then /^the link "([^"]*)" within "([^"]*)" should point to the report "([^"]*)"/
 
     version, target, testset, product = expected_report.split('/')
     report = MeegoTestSession.first(:conditions =>
-     {"version_labels.normalized" => version, :target => target, :product => product, :testset => testset}, :include => :version_label
+     {"version_labels.normalized" => version, :target => target, :product => product, :testset => testset}, :include => :release
     )
     raise "report not found with parameters #{version}/#{target}/#{hardware}/#{testset}!" unless report
 

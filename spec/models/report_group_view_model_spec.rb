@@ -3,6 +3,8 @@ require 'spec_helper'
 describe ReportGroupViewModel do
 
   before(:each) do
+    #TODO: Don't stub class under test.
+
     @latest_report = MeegoTestSession.new
     @latest_report.stub!(:passed).and_return(34)
     @latest_report.stub!(:failed).and_return(12)
@@ -26,6 +28,7 @@ describe ReportGroupViewModel do
     @previous_tc_count = @previous_report.passed + @previous_report.failed + @previous_report.na
     @oldest_tc_count = @oldest_report.passed + @oldest_report.failed + @oldest_report.na
 
+     MeegoTestSession.stub_chain(:published, :where, :count).and_return(3)
     @rgvm = ReportGroupViewModel.new("release", "target", "testset", "hwproduct")
   end
 

@@ -1,5 +1,10 @@
 require 'faster_csv'
 
+def find_feature_row (feature_name)
+  feature_name_cell = find(".feature_record a", :text => feature_name) # Locate the feature title cell
+  feature_name_cell.find(:xpath, "ancestor::tr[contains(@class, 'feature_record')]") # Locate the parent feature row
+end
+
 Then /^I should see the following table:$/ do |expected_report_front_pages_table|
   expected_report_front_pages_table.diff!(tableish('table tr', 'td,th'))
 end
@@ -50,7 +55,7 @@ end
 When /^(?:|I )(?:|return to )view the report "([^"]*)"$/ do |report_string|
   version, target, test_set, product = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {"version_labels.normalized" => version, :target => target, :product => product, :testset => test_set}, :include => :version_label,
+   {"version_labels.normalized" => version, :target => target, :product => product, :testset => test_set}, :include => :release,
    :order => "tested_at DESC, created_at DESC")
   raise "report not found with parameters #{version}/#{target}/#{product}/#{test_set}!" unless report
   visit("/#{version}/#{target}/#{test_set}/#{product}/#{report.id}")
@@ -59,7 +64,7 @@ end
 When /I view the report "([^"]*)" for build$/ do |report_string|
   version, target, testset, product = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {"version_labels.normalized" => version, :target => target, :product => product, :testset => testset}, :include => :version_label,
+   {"version_labels.normalized" => version, :target => target, :product => product, :testset => testset}, :include => :release,
    :order => "build_id DESC, tested_at DESC, created_at DESC")
   raise "report not found with parameters #{version}/#{target}/#{hardware}/#{test_type}!" unless report
   visit("/#{version}/#{target}/#{testset}/#{product}/#{report.id}")
@@ -185,7 +190,31 @@ end
 Then /^(?:|I )should not be able to view the report "([^"]*)"$/ do |report_string|
   version, target, test_set, product = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {"version_labels.normalized" => version, :target => target, :product => product, :testset => test_set}, :include => :version_label,
+   {"version_labels.normalized" => version, :target => target, :product => product, :testset => test_set}, :include => :release,
    :order => "tested_at DESC, created_at DESC")
   report.should == nil
+end
+
+Then /^(?:|I )should see feature "([^"]*)" graded as ([^"]*)$/ do |feature_name, grading_color|
+  find_feature_row(feature_name).find(:xpath, "descendant::span")['class'].should =~ /#{grading_color}/ # Check that the color matches the status
+end
+
+When /^(?:|I )fill in comment "([^"]*)" for feature "([^"]*)"$/ do |comment, feature_name|
+  find_feature_row(feature_name).find(".feature_record_notes").click()
+  fill_in("feature[comments]", :with => comment)
+end
+
+When /^I (save|cancel) the comment of feature "([^"]*)"$/ do |action, feature_name|
+  find_feature_row(feature_name).click_link_or_button(action.capitalize)
+end
+
+When /^I change comment of feature "([^"]*)" to "([^"]*)"$/ do |feature_name, comment|
+  When %{I fill in comment "#{comment}" for feature "#{feature_name}"}
+  And %{I save the comment of feature "#{feature_name}"}
+end
+
+When /^I change grading of feature "([^"]*)" to ([^"]*)$/ do |feature_name, grading_color|
+  grading_area = find_feature_row(feature_name).find(".feature_record_grading")
+  grading_area.click()
+  grading_area.select(grading_color.capitalize, :from => "feature[grading]")
 end

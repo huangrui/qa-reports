@@ -52,7 +52,7 @@ class MeegoTestSession < ActiveRecord::Base
   belongs_to :author, :class_name => "User"
   belongs_to :editor, :class_name => "User"
 
-  belongs_to :version_label, :class_name => "VersionLabel", :foreign_key => "version_label_id"
+  belongs_to :release, :class_name => "VersionLabel", :foreign_key => "version_label_id"
 
   validates_presence_of :title, :target, :testset, :product
   validates_presence_of :uploaded_files #, :on => :create
@@ -68,7 +68,7 @@ class MeegoTestSession < ActiveRecord::Base
   before_save :force_testset_product_names
 
   scope :published, where(:published => true)
-  scope :release, lambda { |release| published.joins(:version_label).where(:version_labels => {:normalized => release.downcase}) }
+  scope :release, lambda { |release| published.joins(:release).where(:version_labels => {:normalized => release.downcase}) }
   scope :profile, lambda { |profile| published.where(:target => profile.downcase) }
   scope :testset, lambda { |testset| published.where(:testset => testset.downcase) }
   scope :product_is, lambda { |product| published.where(:product => product.downcase) }
@@ -192,28 +192,28 @@ class MeegoTestSession < ActiveRecord::Base
       target    = target.downcase
       testset  = testset.downcase
       product = product.downcase
-      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testset => testset, :product => product).joins(:version_label).order(order_by).limit(limit)
+      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testset => testset, :product => product).joins(:release).order(order_by).limit(limit)
     end
 
     def published_by_release_version_target_testset(release_version, target, testset, order_by = "tested_at DESC, id DESC", limit = nil)
       target   = target.downcase
       testset = testset.downcase
-      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testset => testset).joins(:version_label).order(order_by).limit(limit)
+      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testset => testset).joins(:release).order(order_by).limit(limit)
     end
 
     def published_hwversion_by_release_version_target_testset(release_version, target, testset)
       target   = target.downcase
       testset = testset.downcase
-      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testset => testset).select("DISTINCT product").joins(:version_label).order("product")
+      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testset => testset).select("DISTINCT product").joins(:release).order("product")
     end
 
     def published_by_release_version_target(release_version, target, order_by = "tested_at DESC, id DESC", limit = nil)
       target = target.downcase
-      published.where("version_labels.normalized" => release_version.downcase, :target => target).joins(:version_label).order(order_by).limit(limit)
+      published.where("version_labels.normalized" => release_version.downcase, :target => target).joins(:release).order(order_by).limit(limit)
     end
 
     def published_by_release_version(release_version, order_by = "tested_at DESC", limit = nil)
-      published.where("version_labels.normalized" => release_version.downcase).joins(:version_label).order(order_by).limit(limit)
+      published.where("version_labels.normalized" => release_version.downcase).joins(:release).order(order_by).limit(limit)
     end
   end
 
@@ -402,17 +402,6 @@ class MeegoTestSession < ActiveRecord::Base
         errors.add :target, "Incorrect target '#{target}'. Valid ones are #{valid_targets}."
       end
     end
-
-    if release_version.blank?
-      errors.add :release_version, "can't be blank"
-    else
-      label = VersionLabel.find(:first, :conditions => {:normalized => release_version.downcase})
-      if not label
-        valid_versions = VersionLabel.release_versions.join(",")
-        errors.add :release_version, "Incorrect release version '#{release_version}'. Valid ones are #{valid_versions}."
-      end
-    end
-
   end
 
   # Validate user entered test set and hw product. If all characters are
@@ -496,13 +485,13 @@ class MeegoTestSession < ActiveRecord::Base
   # For encapsulating the release_version          #
   ###############################################
   def release_version=(release_version)
-    version_label = VersionLabel.where( :normalized => release_version.downcase)
-    self.version_label = version_label.first
+    release = VersionLabel.where( :normalized => release_version.downcase)
+    self.release = release.first
   end
 
   def release_version
-    if self.version_label
-      return self.version_label.label
+    if self.release
+      return self.release.label
     else
       return nil
     end
@@ -544,10 +533,10 @@ class MeegoTestSession < ActiveRecord::Base
 
   private
 
-  def create_version_label
+  def create_release
     verlabel = VersionLabel.find(:first, :conditions => {:normalized => release_version.downcase})
     if verlabel
-      self.version_label = verlabel
+      self.release = verlabel
       save
     else
       verlabel = VersionLabel.new(:label => release_version, :normalized => release_version.downcase)
@@ -567,7 +556,7 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def create_labels
-    create_version_label && create_target_label
+    create_release && create_target_label
   end
 
 end
