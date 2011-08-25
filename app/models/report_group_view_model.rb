@@ -11,6 +11,8 @@ class ReportGroupViewModel
       :testset => testset,
       :product => product
     }.delete_if { |key, value| value.nil? }
+
+    raise ActiveRecord::RecordNotFound if MeegoTestSession.published.where(@params).count == 0
   end
 
   def all_reports
