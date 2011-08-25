@@ -8,12 +8,14 @@ class ReportGroupsController < ApplicationController
     @show_rss = true
 
     @group_report = ReportGroupViewModel.new(@selected_release_version, @target, @testset, @product)
+
+    respond_to { |format| format.html }
   end
 
   def report_page
     @reports_per_page = 40
     @page = [1, params[:page].to_i].max rescue 1
-    @page_index = @page - 1 
+    @page_index = @page - 1
     @selected_release_version, @target, @testset, @product =
       params[:release_version], params[:target], params[:testset], params[:product]
 
