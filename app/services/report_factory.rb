@@ -11,8 +11,6 @@ class ReportFactory
     begin
       generate_title(params)
       parse_result_files(params)
-      save_result_files(params)
-
       test_session = MeegoTestSession.new(params)
       copy_template_values(test_session)
 
@@ -39,12 +37,19 @@ class ReportFactory
   def parse_result_files(params)
     features = {}
 
-    params[:uploaded_files].each do |file|
+    params[:result_files] ||= []
+    params[:result_files_attributes] ||= []
+    params[:result_files] += params.delete(:result_files_attributes).map do |file|
+      FileAttachment.create! :file => file
+    end
+
+    params[:result_files].each do |result_attachment|
+      file = result_attachment.file.to_file
       if file.original_filename =~ /.csv$/i
-        new_features = CSVResultFileParser.new.parse(file.open)
+        new_features = CSVResultFileParser.new.parse(file.read)
       elsif file.original_filename =~ /.xml$/i
         begin
-          new_features = XMLResultFileParser.new.parse(file.open)
+          new_features = XMLResultFileParser.new.parse(file.read)
         rescue Nokogiri::XML::SyntaxError => e
           raise ParseError.new(file.original_filename), file.original_filename + ": " + e.message
         end
@@ -67,10 +72,6 @@ class ReportFactory
       features[feature] ||= {}
       features[feature].merge!(tcs)
     end
-  end
-
-  def save_result_files(params)
-    params[:result_files_attributes] = params[:uploaded_files].map {|tmpfile| {:file => tmpfile} }
   end
 
   def sanitize_filename(filename)

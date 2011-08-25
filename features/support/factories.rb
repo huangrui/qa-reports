@@ -128,6 +128,6 @@ FactoryGirl.define do
     product         "N900"
     published       true
     tested_at       "2011-08-06"
-    uploaded_files  "result.csv"
+    result_files    []
   end
 end

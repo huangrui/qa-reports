@@ -10,7 +10,11 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(:version => 20110831095400) do
+=======
+ActiveRecord::Schema.define(:version => 20110825071933) do
+>>>>>>> refactoring uploaded_files attribute away from mts. works through form, tests BROKEN
 
   create_table "features", :force => true do |t|
     t.string  "name",                  :default => ""
@@ -23,9 +27,9 @@ ActiveRecord::Schema.define(:version => 20110831095400) do
   add_index "features", ["name"], :name => "index_meego_test_sets_on_feature"
 
   create_table "file_attachments", :force => true do |t|
-    t.integer  "attachable_id",     :null => false
-    t.string   "attachable_type",   :null => false
-    t.string   "attachment_type",   :null => false
+    t.integer  "attachable_id"
+    t.string   "attachable_type"
+    t.string   "attachment_type"
     t.string   "file_file_name"
     t.string   "file_content_type"
     t.integer  "file_file_size"

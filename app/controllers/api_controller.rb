@@ -32,8 +32,8 @@ class ApiController < ApplicationController
 
     errors = []
 
-    data[:uploaded_files] = collect_files(data, "report", errors)
-    attachments           = collect_files(data, "attachment", errors)
+    data[:result_files_attributes] = collect_files(data, "report", errors).map {|file| {:file => file} }
+    data[:attachments_attributes]  = collect_files(data, "attachment", errors).map {|file| {:file => file} }
 
     if !errors.empty?
       render :json => {:ok => '0', :errors => "Request contained invalid files: " + errors.join(',')}
@@ -63,10 +63,6 @@ class ApiController < ApplicationController
       return
     end
 
-    attachments.each do |file|
-      @test_session.attachments.build :file => file
-    end
-
     begin
       @test_session.save!
 
@@ -86,7 +82,7 @@ class ApiController < ApplicationController
 
     errors                = []
 
-    data[:uploaded_files] = collect_files(data, "report", errors)
+    data[:result_files_attributes] = collect_files(data, "report", errors).map {|file| {:file => file} }
     data[:updated_at] = data[:updated_at] || Time.now
 
     if !errors.empty?
