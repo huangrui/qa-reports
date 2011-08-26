@@ -19,6 +19,11 @@ initGradingEdit = (context) ->
     input   = form.find 'select'
     cls     = 'edit'
 
+    grading_classes =
+        "1": 'grading_red'
+        "2": 'grading_yellow'
+        "3": 'grading_green'
+
     clickHandler = () ->
         form.toggle()
         if context.hasClass cls
@@ -37,13 +42,7 @@ initGradingEdit = (context) ->
         action = form.attr 'action'
         $.post action, data
 
-        result = input.val()
-
-        grade_cls = switch result
-            when "1" then 'grading_red'
-            when "2" then 'grading_yellow'
-            when "3" then 'grading_green'
-            else 'grading_white'
+        grade_cls = grading_classes[input.val()] ? 'grading_white'
 
         content.removeClass().addClass 'content'
         content.addClass grade_cls
