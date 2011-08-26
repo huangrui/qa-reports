@@ -5,7 +5,24 @@ h2 id=anchor
   = title
   span.heading_actions= back_to_top
 
-= editable_txt(field)
+.editcontent =@report.send(field + "_html")
+form.txt_form action=report_path(@test_session) method="post" style="display:none"
+      .editables
+        input name="_method" type="hidden" value="put"
+        input name="authenticity_token" type="hidden" value=form_authenticity_token
+        textarea.txt_edit
+        input.small_btn.save type="submit" value="Save"
+        input.small_btn.cancel type="button" value="Cancel"
+      .help
+        strong Markup Reference
+        pre
+          | == Header ==
+            === Subheader ===
+            ''italics''
+            '''bold'''
+            * bulleted list
+            [[http://foo.bar/ Link]]
+            [[1234]] (Bugzilla issue link)
 
 - if @editing
   | </div>
