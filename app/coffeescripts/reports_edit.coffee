@@ -1,4 +1,5 @@
 linkEditButtons = () ->
+    ###
     $('div.editable_area').each (i, node) ->
         $node = $(node);
         contentDiv = $node.children('.editcontent').first()
@@ -6,6 +7,9 @@ linkEditButtons = () ->
         $node.data 'content', contentDiv
         $node.data 'raw', rawDiv
         $node.click handleEditButton
+    ###
+    $('.editable_area').each (i, node) ->
+        initTextAreaEdit $(node)
 
     initTitleEdit()
 
@@ -20,7 +24,7 @@ linkEditButtons = () ->
         $comment.click handleFeatureCommentEdit
         $grading.click handleFeatureGradingEdit
 
-
+###
 handleEditButton = () ->
     $button = $(this)
     $div = $button.data 'content'
@@ -88,6 +92,36 @@ handleTextEditSubmit = () ->
 
     fetchBugzillaInfo()
     return false
+###
+initTextAreaEdit = (context) ->
+    content = context.find('.editcontent')
+    form    = context.find('form')
+    input   = form.find('textarea')
+
+    clickHandler = () ->
+        if context.hasClass 'editable_text'
+            context.unbind 'click'
+        else
+            context.click clickHandler
+        context.toggleClass 'editable_text'
+        content.toggle()
+        form.toggle()
+
+        return false
+
+    context.click clickHandler
+
+    form.find('.cancel').click clickHandler
+
+    form.submit ->
+        data   = form.serialize()
+        action = form.attr 'action'
+        $.post action, data
+
+        content.text input.val()
+
+        clickHandler()
+        return false
 
 initTitleEdit = () ->
     context = $('div.editable_title')

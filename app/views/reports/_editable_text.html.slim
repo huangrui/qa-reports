@@ -10,7 +10,7 @@ form.txt_form action=report_path(@test_session) method="post" style="display:non
       .editables
         input name="_method" type="hidden" value="put"
         input name="authenticity_token" type="hidden" value=form_authenticity_token
-        textarea.txt_edit
+        textarea.txt_edit name="report[#{field}_txt]" =@report.send("#{field}_txt")
         input.small_btn.save type="submit" value="Save"
         input.small_btn.cancel type="button" value="Cancel"
       .help
