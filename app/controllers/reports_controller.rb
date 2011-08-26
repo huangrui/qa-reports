@@ -79,26 +79,33 @@ class ReportsController < ApplicationController
   end
 
   def show
-      @test_session = MeegoTestSession.fetch_fully(params[:id])
+    #TODO: Move checks and building to ReportView model
+    query_params = {}
+    query_params[:version_label_id] = VersionLabel.find_by_label(params[:release_version]) if query_params[:version_label_id]
 
-      @history = history(@test_session, 5)
-      @build_diff = build_diff(@test_session, 4)
+    [:target, :testset, :product, :id].each { |key| query_params[key] = params[key] if params[key] }
+    raise ActiveRecord::RecordNotFound unless MeegoTestSession.where(query_params).count == 1
 
-      @target    = @test_session.target
-      @testset  = @test_session.testset
-      @product = @test_session.product
+    @test_session = MeegoTestSession.fetch_fully(params[:id])
 
-      @report    = @test_session
-      @attachments = @test_session.attachments
-      @editing = false
-      @wizard  = false
+    @history = history(@test_session, 5)
+    @build_diff = build_diff(@test_session, 4)
 
-      @nft_trends = nil
-      if @test_session.has_nft?
-        @nft_trends = NftHistory.new(@test_session)
-      end
+    @target    = @test_session.target
+    @testset  = @test_session.testset
+    @product = @test_session.product
 
-      render :layout => "report"
+    @report    = @test_session
+    @attachments = @test_session.attachments
+    @editing = false
+    @wizard  = false
+
+    @nft_trends = nil
+    if @test_session.has_nft?
+      @nft_trends = NftHistory.new(@test_session)
+    end
+
+    render :layout => "report"
  end
 
   def print

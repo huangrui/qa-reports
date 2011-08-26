@@ -30,6 +30,12 @@ FactoryGirl.define do
     result MeegoTestCase::PASS
   end
 
+  factory :target, :class => TargetLabel do
+    label      "Handset"
+    normalized "handset"
+    sort_order 0
+  end
+
   factory :test_report, :class => MeegoTestSession do
     after_build { |report| FactoryGirl.build(:feature, :meego_test_session => report)}
     author
