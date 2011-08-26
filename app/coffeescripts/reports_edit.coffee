@@ -1,13 +1,4 @@
 linkEditButtons = () ->
-    ###
-    $('div.editable_area').each (i, node) ->
-        $node = $(node);
-        contentDiv = $node.children('.editcontent').first()
-        rawDiv = contentDiv.next '.editmarkup'
-        $node.data 'content', contentDiv
-        $node.data 'raw', rawDiv
-        $node.click handleEditButton
-    ###
     $('.editable_area').each (i, node) ->
         initTextAreaEdit $(node)
 
@@ -24,75 +15,6 @@ linkEditButtons = () ->
         $comment.click handleFeatureCommentEdit
         $grading.click handleFeatureGradingEdit
 
-###
-handleEditButton = () ->
-    $button = $(this)
-    $div = $button.data 'content'
-    return false if $div.is ":hidden"
-    $raw = $button.data 'raw'
-    fieldName = $div.attr 'id'
-    text = $.trim $raw.text()
-
-    $form = $($('#txt_edit_form form').clone())
-    $area = $($form.find('textarea'))
-
-    $area.attr "name", "report[#{fieldName}]"
-    $area.autogrow()
-    $area.val text
-
-    $form.data 'original', $div
-    $form.data 'markup', $raw
-    $form.data 'button', $button
-
-    $form.submit handleTextEditSubmit
-    $form.find('.save').click () ->
-        $form.submit()
-        return false
-
-    $form.find('.cancel').click () ->
-        $form.detach()
-        $div.show()
-        $button.addClass 'editable_text'
-        return false
-
-    $button.removeClass 'editable_text'
-
-    $div.hide()
-    $form.insertAfter $div
-    $area.change()
-    $area.focus()
-
-    return false
-
-handleTextEditSubmit = () ->
-    $form = $(this)
-    $original = $form.data 'original'
-    $markup = $form.data 'markup'
-    $area = $form.find 'textarea'
-
-    text = $area.val()
-    $button = $form.data "button"
-    $button.addClass 'editable_text'
-
-    if $markup.text() == text
-        # No changes were made.
-        $form.detach()
-        $original.show()
-        return false
-
-    $markup.text text
-
-    data = $form.serialize()
-    action = $form.attr "action"
-    $.post action, data
-
-    $original.html
-    $form.detach()
-    $original.show()
-
-    fetchBugzillaInfo()
-    return false
-###
 initTextAreaEdit = (context) ->
     content = context.find('.editcontent')
     form    = context.find('form')

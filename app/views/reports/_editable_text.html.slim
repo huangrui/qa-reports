@@ -1,28 +1,30 @@
 - if @editing
   | <div class="editable_text editable_area">
 
-h2 id=anchor
+h2 id=anchor 
   = title
   span.heading_actions= back_to_top
 
 .editcontent =@report.send(field + "_html")
-form.txt_form action=report_path(@test_session) method="post" style="display:none"
-      .editables
-        input name="_method" type="hidden" value="put"
-        input name="authenticity_token" type="hidden" value=form_authenticity_token
-        textarea.txt_edit name="report[#{field}_txt]" =@report.send("#{field}_txt")
-        input.small_btn.save type="submit" value="Save"
-        input.small_btn.cancel type="button" value="Cancel"
-      .help
-        strong Markup Reference
-        pre
-          | == Header ==
-            === Subheader ===
-            ''italics''
-            '''bold'''
-            * bulleted list
-            [[http://foo.bar/ Link]]
-            [[1234]] (Bugzilla issue link)
+
+- if @editing
+  form.txt_form action=report_path(@test_session) method="post" style="display:none"
+    .editables
+      input name="_method" type="hidden" value="put"
+      input name="authenticity_token" type="hidden" value=form_authenticity_token
+      textarea.txt_edit name="report[#{field}_txt]" =@report.send("#{field}_txt")
+      input.small_btn.save type="submit" value="Save"
+      input.small_btn.cancel type="button" value="Cancel"
+    .help
+      strong Markup Reference
+      pre
+        | == Header ==
+          === Subheader ===
+          ''italics''
+          '''bold'''
+          * bulleted list
+          [[http://foo.bar/ Link]]
+          [[1234]] (Bugzilla issue link)
 
 - if @editing
   | </div>
