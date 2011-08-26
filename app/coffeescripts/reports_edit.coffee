@@ -7,8 +7,6 @@ linkEditButtons = () ->
         $node.data 'raw', rawDiv
         $node.click handleEditButton
 
-    #$('div.editable_title').click handleTitleEdit
-
     initTitleEdit()
 
     $('.testcase').each (i, node) ->
@@ -96,9 +94,11 @@ initTitleEdit = () ->
 
     content = context.find('span.content')
     form    = context.find('form')
+    input   = form.find('.title_field')
 
     clickHandler = () ->
         if context.hasClass 'editable_text'
+            input.val content.text()
             context.unbind 'click'
         else
             context.click clickHandler
@@ -109,60 +109,19 @@ initTitleEdit = () ->
         return false
 
     context.click clickHandler
+
     form.find('.cancel').click clickHandler
 
+    form.submit ->
+        data   = form.serialize()
+        action = form.attr 'action'
+        $.post action, data
 
-###
-handleTitleEdit = () ->
-    $button = $(this)
-    $content = $button.children('h1').find 'span.content'
-    return false if $content.is ":hidden"
+        content.text input.val()
 
-    title = $content.text()
-    $form = $('#title_edit_form form').clone()
-    $field = $form.find '.title_field'
-    $field.val title
-    $form.data 'original', $content
-    $form.data 'button', $button
-
-    $button.removeClass 'editable_text'
-
-    $form.submit handleTitleEditSubmit
-    $form.find('.save').click () ->
-        $form.submit()
+        clickHandler()
         return false
 
-    $form.find('.cancel').click () ->
-        $form.detach()
-        $content.show()
-        $button.addClass 'editable_text'
-        return false
-
-    $content.hide()
-    $form.insertAfter $content
-    $field.focus()
-
-    return false
-
-handleTitleEditSubmit = () ->
-    $form = $(this)
-    $content = $form.data 'original'
-    title = $form.find('.title_field').val()
-    $content.text title
-
-    data = $form.serialize()
-    action = $form.attr 'action'
-
-    $button = $form.data 'button'
-
-    $.post action, data
-
-    $button.addClass 'editable_text'
-    $form.detach()
-    $content.show()
-
-    return false
-###
 prepareCategoryUpdate = (div) ->
     $div      = $(div)
     $form     = $div.find "form"
