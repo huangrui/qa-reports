@@ -7,8 +7,9 @@ linkEditButtons = () ->
     $('.testcase').each (i, node) ->
         linkTestCaseButtons node
 
-    $('.feature_record_notes').each (i, node) ->
-        initInplaceEdit node, '.content', '.comment_field', true
+    $('.feature_record').each (i, node) ->
+        initInplaceEdit $(node).find('.feature_record_notes'), '.content', '.comment_field', true
+        initGradingEdit $(node).find('.feature_record_grading')
         ###
         $node = $(node)
         $comment = $node.find '.feature_record_notes'
@@ -17,6 +18,30 @@ linkEditButtons = () ->
         $comment.click handleFeatureCommentEdit
         $grading.click handleFeatureGradingEdit
         ###
+
+initGradingEdit = (context) ->
+    context = $(context)
+
+    content = context.find 'span.content'
+    form    = context.find 'form'
+    input   = form.find 'select'
+    cls     = 'edit'
+
+    clickHandler = () ->
+        form.toggle()
+        if context.hasClass cls
+            context.unbind 'click'
+            undo = input.val()
+            input.focus()
+        else
+            context.click clickHandler
+        context.toggleClass cls
+        content.toggle()
+
+        return false
+
+    context.click clickHandler
+
 
 initInplaceEdit = (context, contentSelector, inputSelector, hasMarkup) ->
     context = $(context)
@@ -29,7 +54,6 @@ initInplaceEdit = (context, contentSelector, inputSelector, hasMarkup) ->
     cls = if context.hasClass 'edit' then 'edit' else 'editable_text'
 
     clickHandler = () ->
-        console.log "click"
         form.toggle()
         if context.hasClass cls
             context.unbind 'click'
