@@ -1,37 +1,43 @@
 linkEditButtons = () ->
     $('.editable_area').each (i, node) ->
-        initInplaceEdit node, 'textarea', true
+        initInplaceEdit node, '.editcontent', 'textarea', true
 
-    initInplaceEdit '.editable_title','.title_field', false
+    initInplaceEdit '.editable_title', '.editcontent', '.title_field', false
 
     $('.testcase').each (i, node) ->
         linkTestCaseButtons node
 
-    $('.feature_record').each (i, node) ->
+    $('.feature_record_notes').each (i, node) ->
+        initInplaceEdit node, '.content', '.comment_field', true
+        ###
         $node = $(node)
         $comment = $node.find '.feature_record_notes'
         $grading = $node.find '.feature_record_grading'
 
         $comment.click handleFeatureCommentEdit
         $grading.click handleFeatureGradingEdit
+        ###
 
-initInplaceEdit = (context, inputSelect, hasMarkup) ->
+initInplaceEdit = (context, contentSelector, inputSelector, hasMarkup) ->
     context = $(context)
 
-    content = context.find '.editcontent'
+    content = context.find contentSelector
     form    = context.find 'form'
-    input   = form.find inputSelect
+    input   = form.find inputSelector
     undo    = null
 
+    cls = if context.hasClass 'edit' then 'edit' else 'editable_text'
+
     clickHandler = () ->
+        console.log "click"
         form.toggle()
-        if context.hasClass 'editable_text'
+        if context.hasClass cls
             context.unbind 'click'
             undo = input.val()
             input.focus()
         else
             context.click clickHandler
-        context.toggleClass 'editable_text'
+        context.toggleClass cls
         content.toggle()
 
         return false
@@ -124,7 +130,7 @@ prepareCategoryUpdate = (div) ->
 
 ###
  * Handle the feature grading edit
-###
+
 handleFeatureGradingEdit = () ->
     $node = $(this)
     $span = $node.find('span')
@@ -172,9 +178,8 @@ handleFeatureGradingEdit = () ->
     $select.focus()
     return false
 
-###
+
  * Submit feature's grading Ajax requirement
-###
 handleFeatureGradingSubmit = () ->
     $form = $(this)
     data = $form.serialize()
@@ -203,6 +208,7 @@ handleFeatureGradingSubmit = () ->
     $span.show()
     $.post url, data
     return false
+###
 
 ###
  *  Handle the comments of category edit
