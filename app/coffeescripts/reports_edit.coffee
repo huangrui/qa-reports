@@ -7,7 +7,10 @@ linkEditButtons = () ->
         $node.data 'raw', rawDiv
         $node.click handleEditButton
 
-    $('div.editable_title').click handleTitleEdit
+    #$('div.editable_title').click handleTitleEdit
+
+    initTitleEdit()
+
     $('.testcase').each (i, node) ->
         linkTestCaseButtons node
 
@@ -59,6 +62,57 @@ handleEditButton = () ->
 
     return false
 
+handleTextEditSubmit = () ->
+    $form = $(this)
+    $original = $form.data 'original'
+    $markup = $form.data 'markup'
+    $area = $form.find 'textarea'
+
+    text = $area.val()
+    $button = $form.data "button"
+    $button.addClass 'editable_text'
+
+    if $markup.text() == text
+        # No changes were made.
+        $form.detach()
+        $original.show()
+        return false
+
+    $markup.text text
+
+    data = $form.serialize()
+    action = $form.attr "action"
+    $.post action, data
+
+    $original.html formatMarkup text
+    $form.detach()
+    $original.show()
+
+    fetchBugzillaInfo()
+    return false
+
+initTitleEdit = () ->
+    context = $('div.editable_title')
+
+    content = context.find('span.content')
+    form    = context.find('form')
+
+    clickHandler = () ->
+        if context.hasClass 'editable_text'
+            context.unbind 'click'
+        else
+            context.click clickHandler
+        context.toggleClass 'editable_text'
+        content.toggle()
+        form.toggle()
+
+        return false
+
+    context.click clickHandler
+    form.find('.cancel').click clickHandler
+
+
+###
 handleTitleEdit = () ->
     $button = $(this)
     $content = $button.children('h1').find 'span.content'
@@ -108,7 +162,7 @@ handleTitleEditSubmit = () ->
     $content.show()
 
     return false
-
+###
 prepareCategoryUpdate = (div) ->
     $div      = $(div)
     $form     = $div.find "form"
@@ -532,35 +586,6 @@ handleCommentFormSubmit = () ->
             $testcase.find('.testcase_notes').html responseText
             fetchBugzillaInfo()
 
-    return false
-
-handleTextEditSubmit = () ->
-    $form = $(this)
-    $original = $form.data 'original'
-    $markup = $form.data 'markup'
-    $area = $form.find 'textarea'
-
-    text = $area.val()
-    $button = $form.data "button"
-    $button.addClass 'editable_text'
-
-    if $markup.text() == text
-        # No changes were made.
-        $form.detach()
-        $original.show()
-        return false
-
-    $markup.text text
-
-    data = $form.serialize()
-    action = $form.attr "action"
-    $.post action, data
-
-    $original.html formatMarkup text
-    $form.detach()
-    $original.show()
-
-    fetchBugzillaInfo()
     return false
 
 formatMarkup = (s) ->
