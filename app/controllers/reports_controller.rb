@@ -35,7 +35,8 @@ class ReportsController < ApplicationController
   include CacheHelper
 
   before_filter :authenticate_user!, :except => [:show, :print, :compare]
-  cache_sweeper :meego_test_session_sweeper, :only => [:update, :delete]
+  cache_sweeper :meego_test_session_sweeper, :only => [:update, :delete, :publish]
+  layout :report
 
   def preview
     @preview_id = session[:preview_id] || params[:id]
@@ -61,19 +62,15 @@ class ReportsController < ApplicationController
   end
 
   def publish
-    report_id    = params[:report_id]
-    test_session = MeegoTestSession.fetch_fully(report_id)
-    test_session.update_attribute(:published, true)
-
-    expire_caches_for(test_session, true)
-    expire_index_for(test_session)
+    report = MeegoTestSession.find(params[:id])
+    report.update_attribute(:published, true)
 
     redirect_to :action          => 'show',
-                :id              => report_id,
-                :release_version => test_session.release_version,
-                :target          => test_session.target,
-                :testset         => test_session.testset,
-                :product         => test_session.product
+                :id              => report,
+                :release_version => report.release,
+                :target          => report.target,
+                :testset         => report.testset,
+                :product         => report.product
   end
 
   def show

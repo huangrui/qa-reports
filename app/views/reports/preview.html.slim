@@ -40,7 +40,7 @@
 
       form action=url_for( :controller=>'reports', :action=>'publish') method="post"
         input name="authenticity_token" type="hidden" value=form_authenticity_token
-        input name="report_id" type="hidden" value=@test_session.id
+        input name="id" type="hidden" value=@test_session.id
         input#upload_report_submit.big_btn.submit type="submit" value="Publish"
 
 - content_for :inplace_edit_templates do
