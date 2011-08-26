@@ -7,5 +7,5 @@ table.index_month
     tr class=cycle("odd", "even")
       td.date=s.format_date
       td.report_name
-        a href=report_url(s) =s.title
+        a href=show_report_path(s) =s.title
       td.graph= s.small_graph_img_tag(@max_cases)
