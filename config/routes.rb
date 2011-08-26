@@ -1,7 +1,12 @@
 Meegoqa::Application.routes.draw do
   devise_for :users, :controllers => { :sessions => "users/sessions" }  , :path_names => { :sign_up => "#{DeviseRegistrationConfig::URL_TOKEN}/register" }
 
-  resources :reports,     :only => [:update]
+  resources :reports,     :only => [:update, :show, :edit] do
+    member do
+      get 'print'
+    end
+  end
+
   resources :features,    :only => [:update]
   resources :test_cases,  :only => [:update]
   resources :attachments, :only => [:destroy]
@@ -28,9 +33,6 @@ Meegoqa::Application.routes.draw do
 
   # to test exception notifier
   match '/raise_exception' => 'exceptions#index' unless Rails.env.production?
-
-  # Shortcut by report ID
-  match '/reports/:id' => 'reports#redirect_by_id', :via => "get"
 
   match '/reports/:id/compare/:compare_id' => 'session_comparison#show', :via => "get", :as => :session_comparison
 

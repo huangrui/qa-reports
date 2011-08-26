@@ -5,10 +5,10 @@
 - content_for :breadcrumbs do
   = breadcrumbs
 
-- if @published
+- if flash[:notice]
   - content_for :notification_area do
     .published
-      h3 Your report has been successfully published.
+      h3=flash[:notice]
 
 - content_for :button_area do
   form#edit_report action=""

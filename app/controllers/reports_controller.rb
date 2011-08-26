@@ -68,6 +68,8 @@ class ReportsController < ApplicationController
     expire_caches_for(test_session, true)
     expire_index_for(test_session)
 
+    flash[:notice] = "Your report has been successfully published"
+
     redirect_to :action          => 'show',
                 :id              => report_id,
                 :release_version => test_session.release_version,
@@ -77,19 +79,7 @@ class ReportsController < ApplicationController
   end
 
   def show
-    if @report_id = params[:id].try(:to_i)
-      preview_id = session[:preview_id]
-
-      if preview_id == @report_id
-        session[:preview_id] = nil
-        @published           = true
-      else
-        @published = false
-      end
-
-      @test_session = MeegoTestSession.fetch_fully(@report_id)
-
-      return render_404 unless @selected_release_version.downcase.eql? @test_session.release_version.downcase
+      @test_session = MeegoTestSession.fetch_fully(params[:id])
 
       @history = history(@test_session, 5)
       @build_diff = build_diff(@test_session, 4)
@@ -109,10 +99,7 @@ class ReportsController < ApplicationController
       end
 
       render :layout => "report"
-    else
-      redirect_to :action => :index
-    end
-  end
+ end
 
   def print
     if @report_id = params[:id].try(:to_i)
@@ -194,16 +181,6 @@ class ReportsController < ApplicationController
 
     test_session.destroy
     redirect_to :controller => :index, :action => :index
-  end
-
-  def redirect_by_id
-    # Shortcut for accessing the correct report using report ID only
-    begin
-      s = MeegoTestSession.find(params[:id].to_i)
-      redirect_to :controller => 'reports', :action => 'show', :release_version => s.release_version, :target => s.target, :testset => s.testset, :product => s.product, :id => s.id
-    rescue ActiveRecord::RecordNotFound
-      redirect_to :controller => :index, :action => :index
-    end
   end
 
   protected
