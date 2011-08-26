@@ -33,9 +33,9 @@
 - content_for :wizard_actions do
   #wizard_actions
     #wizard_buttons
-      form action=url_for( :controller=>'reports', :action=>'delete', :release_version=>@selected_release_version, :target=>@test_session.target, :testset=>@test_session.testset, :product=>@test_session.product, :id=>@test_session.id) method="post"
+      form action=report_path(@test_session) method="post"
         input name="authenticity_token" type="hidden" value=form_authenticity_token
-        input.id_field name="id" type="hidden" value=@test_session.id
+        input name="_method" type="hidden" value="delete"
         input#cancel-publish.big_btn.cancel type="submit" value="Cancel"
 
       form action=url_for( :controller=>'reports', :action=>'publish') method="post"

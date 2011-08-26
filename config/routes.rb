@@ -1,7 +1,7 @@
 Meegoqa::Application.routes.draw do
   devise_for :users, :controllers => { :sessions => "users/sessions" }  , :path_names => { :sign_up => "#{DeviseRegistrationConfig::URL_TOKEN}/register" }
 
-  resources :reports,     :only => [:update]
+  resources :reports,     :only => [:update, :destroy]
   resources :features,    :only => [:update]
   resources :test_cases,  :only => [:update]
   resources :attachments, :only => [:destroy]
@@ -56,7 +56,6 @@ Meegoqa::Application.routes.draw do
     match '/:release_version/:target/:testset/:product/:id' => 'reports#show', :via => "get"
     match '/:release_version/:target/:testset/:product/:id/edit' => 'reports#edit', :via => "get"
     match '/:release_version/:target/:testset/:product/:id/download' => 'csv_export#export_report', :via => "get"
-    match '/:release_version/:target/:testset/:product/:id/delete' => 'reports#delete', :via => "post"
     match '/:release_version/:target/:testset/:product/:id/print' => 'reports#print', :via => "get"
 
     match '/:release_version' => 'index#index', :via => "get"

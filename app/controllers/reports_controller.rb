@@ -34,8 +34,8 @@ require 'report_exporter'
 class ReportsController < ApplicationController
   include CacheHelper
 
-  before_filter :authenticate_user!, :except => ["show", "print", "compare", "redirect_by_id"]
-  cache_sweeper :meego_test_session_sweeper, :only => [:update]
+  before_filter :authenticate_user!, :except => [:show, :print, :compare]
+  cache_sweeper :meego_test_session_sweeper, :only => [:update, :delete]
 
   def preview
     @preview_id = session[:preview_id] || params[:id]
@@ -186,14 +186,10 @@ class ReportsController < ApplicationController
     render :layout => "report"
   end
 
-  def delete
-    test_session = MeegoTestSession.find(params[:id])
-
-    expire_caches_for(test_session, true)
-    expire_index_for(test_session)
-
-    test_session.destroy
-    redirect_to :controller => :index, :action => :index
+  def destroy
+    report = MeegoTestSession.find(params[:id])
+    report.destroy
+    redirect_to root_path
   end
 
   def redirect_by_id
