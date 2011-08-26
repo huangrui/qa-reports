@@ -26,6 +26,9 @@ class ApplicationController < ActionController::Base
   before_filter :find_selected_release
 
   #protect_from_forgery
+  rescue_from ActiveRecord::RecordNotFound do
+    render :file => "#{Rails.root}/public/404.html", :status => :not_found, :layout => false
+  end
 
   def find_releases
     @meego_releases = VersionLabel.release_versions
@@ -34,10 +37,6 @@ class ApplicationController < ActionController::Base
   def find_selected_release
     @selected_release_version = session[:release_version] =
       valid_release(params[:release_version]) || session[:release_version] || VersionLabel.latest.label
-  end
-
-  def render_404
-    render :file => "#{Rails.root}/public/404.html", :status => :not_found, :layout => false
   end
 
   private

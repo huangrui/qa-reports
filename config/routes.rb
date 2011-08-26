@@ -1,7 +1,7 @@
 Meegoqa::Application.routes.draw do
   devise_for :users, :controllers => { :sessions => "users/sessions" }  , :path_names => { :sign_up => "#{DeviseRegistrationConfig::URL_TOKEN}/register" }
 
-  resources :reports,     :only => [:update, :destroy]
+  resources :reports,     :only => [:update, :show, :edit, :destroy]
   resources :features,    :only => [:update]
   resources :test_cases,  :only => [:update]
   resources :attachments, :only => [:destroy]
@@ -29,9 +29,6 @@ Meegoqa::Application.routes.draw do
   # to test exception notifier
   match '/raise_exception' => 'exceptions#index' unless Rails.env.production?
 
-  # Shortcut by report ID
-  match '/reports/:id' => 'reports#redirect_by_id', :via => "get"
-
   match '/reports/:id/compare/:compare_id' => 'session_comparison#show', :via => "get", :as => :session_comparison
 
   # Constraint to allow a dot (.) in release vesion
@@ -53,10 +50,11 @@ Meegoqa::Application.routes.draw do
 
     match '/:release_version/:target(/:testset(/:product))/report_list(/:page)' => 'report_groups#report_page', :via => "get", :as => :report_list
 
-    match '/:release_version/:target/:testset/:product/:id' => 'reports#show', :via => "get"
+    match '/:release_version/:target/:testset/:product/:id' => 'reports#show', :via => "get", :as => :show_report
     match '/:release_version/:target/:testset/:product/:id/edit' => 'reports#edit', :via => "get"
     match '/:release_version/:target/:testset/:product/:id/download' => 'csv_export#export_report', :via => "get"
-    match '/:release_version/:target/:testset/:product/:id/print' => 'reports#print', :via => "get"
+    match '/:release_version/:target/:testset/:product/:id/delete' => 'reports#delete', :via => "post"
+    match '/:release_version/:target/:testset/:product/:id/print' => 'reports#print', :via => "get", :as => :print_report
 
     match '/:release_version' => 'index#index', :via => "get"
 

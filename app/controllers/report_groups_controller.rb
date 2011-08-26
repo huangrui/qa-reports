@@ -7,12 +7,8 @@ class ReportGroupsController < ApplicationController
       params[:release_version], params[:target], params[:testset], params[:product]
     @show_rss = true
 
-    begin
-      @group_report = ReportGroupViewModel.new(@selected_release_version, @target, @testset, @product)
-      respond_to { |format| format.html }
-    rescue ActiveRecord::RecordNotFound
-      render_404
-    end
+    @group_report = ReportGroupViewModel.new(@selected_release_version, @target, @testset, @product)
+    respond_to { |format| format.html }
   end
 
   def report_page

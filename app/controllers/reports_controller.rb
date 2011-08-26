@@ -65,6 +65,8 @@ class ReportsController < ApplicationController
     report = MeegoTestSession.find(params[:id])
     report.update_attribute(:published, true)
 
+    flash[:notice] = "Your report has been successfully published"
+
     redirect_to :action          => 'show',
                 :id              => report,
                 :release_version => report.release,
@@ -74,42 +76,34 @@ class ReportsController < ApplicationController
   end
 
   def show
-    if @report_id = params[:id].try(:to_i)
-      preview_id = session[:preview_id]
+    #TODO: Move checks and building to ReportView model
+    query_params = {}
+    query_params[:version_label_id] = VersionLabel.find_by_label(params[:release_version]) if query_params[:version_label_id]
 
-      if preview_id == @report_id
-        session[:preview_id] = nil
-        @published           = true
-      else
-        @published = false
-      end
+    [:target, :testset, :product, :id].each { |key| query_params[key] = params[key] if params[key] }
+    raise ActiveRecord::RecordNotFound unless MeegoTestSession.where(query_params).count == 1
 
-      @test_session = MeegoTestSession.fetch_fully(@report_id)
+    @test_session = MeegoTestSession.fetch_fully(params[:id])
 
-      return render_404 unless @selected_release_version.downcase.eql? @test_session.release_version.downcase
+    @history = history(@test_session, 5)
+    @build_diff = build_diff(@test_session, 4)
 
-      @history = history(@test_session, 5)
-      @build_diff = build_diff(@test_session, 4)
+    @target    = @test_session.target
+    @testset  = @test_session.testset
+    @product = @test_session.product
 
-      @target    = @test_session.target
-      @testset  = @test_session.testset
-      @product = @test_session.product
+    @report    = @test_session
+    @attachments = @test_session.attachments
+    @editing = false
+    @wizard  = false
 
-      @report    = @test_session
-      @attachments = @test_session.attachments
-      @editing = false
-      @wizard  = false
-
-      @nft_trends = nil
-      if @test_session.has_nft?
-        @nft_trends = NftHistory.new(@test_session)
-      end
-
-      render :layout => "report"
-    else
-      redirect_to :action => :index
+    @nft_trends = nil
+    if @test_session.has_nft?
+      @nft_trends = NftHistory.new(@test_session)
     end
-  end
+
+    render :layout => "report"
+ end
 
   def print
     if @report_id = params[:id].try(:to_i)
@@ -187,16 +181,6 @@ class ReportsController < ApplicationController
     report = MeegoTestSession.find(params[:id])
     report.destroy
     redirect_to root_path
-  end
-
-  def redirect_by_id
-    # Shortcut for accessing the correct report using report ID only
-    begin
-      s = MeegoTestSession.find(params[:id].to_i)
-      redirect_to :controller => 'reports', :action => 'show', :release_version => s.release_version, :target => s.target, :testset => s.testset, :product => s.product, :id => s.id
-    rescue ActiveRecord::RecordNotFound
-      redirect_to :controller => :index, :action => :index
-    end
   end
 
   protected
