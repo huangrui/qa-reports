@@ -86,7 +86,7 @@ handleTextEditSubmit = () ->
     action = $form.attr "action"
     $.post action, data
 
-    $original.html formatMarkup text
+    $original.html
     $form.detach()
     $original.show()
 
@@ -97,10 +97,12 @@ initTextAreaEdit = (context) ->
     content = context.find('.editcontent')
     form    = context.find('form')
     input   = form.find('textarea')
+    undo    = null
 
     clickHandler = () ->
         if context.hasClass 'editable_text'
             context.unbind 'click'
+            undo = input.val()
         else
             context.click clickHandler
         context.toggleClass 'editable_text'
@@ -111,14 +113,18 @@ initTextAreaEdit = (context) ->
 
     context.click clickHandler
 
-    form.find('.cancel').click clickHandler
+    form.find('.cancel').click ->
+        input.val undo
+        clickHandler()
+        return false
 
     form.submit ->
         data   = form.serialize()
         action = form.attr 'action'
         $.post action, data
 
-        content.text input.val()
+        content.html formatMarkup input.val()
+        fetchBugzillaInfo()
 
         clickHandler()
         return false
