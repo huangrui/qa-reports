@@ -1,8 +1,8 @@
 linkEditButtons = () ->
     $('.editable_area').each (i, node) ->
-        initTextAreaEdit $(node)
+        initInplaceEdit node, 'textarea', true
 
-    initTitleEdit()
+    initInplaceEdit '.editable_title','.title_field', false
 
     $('.testcase').each (i, node) ->
         linkTestCaseButtons node
@@ -15,21 +15,24 @@ linkEditButtons = () ->
         $comment.click handleFeatureCommentEdit
         $grading.click handleFeatureGradingEdit
 
-initTextAreaEdit = (context) ->
-    content = context.find('.editcontent')
-    form    = context.find('form')
-    input   = form.find('textarea')
+initInplaceEdit = (context, inputSelect, hasMarkup) ->
+    context = $(context)
+
+    content = context.find '.editcontent'
+    form    = context.find 'form'
+    input   = form.find inputSelect
     undo    = null
 
     clickHandler = () ->
+        form.toggle()
         if context.hasClass 'editable_text'
             context.unbind 'click'
             undo = input.val()
+            input.focus()
         else
             context.click clickHandler
         context.toggleClass 'editable_text'
         content.toggle()
-        form.toggle()
 
         return false
 
@@ -45,41 +48,13 @@ initTextAreaEdit = (context) ->
         action = form.attr 'action'
         $.post action, data
 
-        content.html formatMarkup input.val()
-        fetchBugzillaInfo()
+        val = input.val()
 
-        clickHandler()
-        return false
-
-initTitleEdit = () ->
-    context = $('div.editable_title')
-
-    content = context.find('span.content')
-    form    = context.find('form')
-    input   = form.find('.title_field')
-
-    clickHandler = () ->
-        if context.hasClass 'editable_text'
-            input.val content.text()
-            context.unbind 'click'
+        if hasMarkup
+            content.html formatMarkup val
+            fetchBugzillaInfo()
         else
-            context.click clickHandler
-        context.toggleClass 'editable_text'
-        content.toggle()
-        form.toggle()
-
-        return false
-
-    context.click clickHandler
-
-    form.find('.cancel').click clickHandler
-
-    form.submit ->
-        data   = form.serialize()
-        action = form.attr 'action'
-        $.post action, data
-
-        content.text input.val()
+            content.text val
 
         clickHandler()
         return false

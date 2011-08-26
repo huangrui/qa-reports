@@ -2,7 +2,7 @@
   | <div class="editable_text editable_title">
 
 h1.clearfix.report-title
-  span.content= @report.title
+  span.editcontent= @report.title
   - if @editing
     form.title_form action=report_path(@test_session) method="post" style="display:none"
       input name="_method" type="hidden" value="put"
