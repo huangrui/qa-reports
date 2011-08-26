@@ -27,7 +27,7 @@ class XMLResultFileParser
   }
 
   def parse_test_case(test_case)
-    raise Nokogiri::XML::SyntaxError.new("Missing test case name") unless test_case['name'].present?
+    raise Nokogiri::XML::SyntaxError.new("Missing test case name")               unless test_case['name'].present?
     raise Nokogiri::XML::SyntaxError.new(test_case['name'] + ": Missing result") unless test_case['result'].present?
 
     {

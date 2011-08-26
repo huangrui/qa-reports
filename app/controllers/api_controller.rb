@@ -49,7 +49,7 @@ class ApiController < ApplicationController
 
     error_msgs = {}
 
-    error_msgs.merge! errmsg_invalid_version data[:release_version] if not valid_version_label? data[:release_version]
+    error_msgs.merge! errmsg_invalid_version data[:release_version] if not valid_release? data[:release_version]
 
     return render :json => {:ok => '0', :errors => error_msgs} if !error_msgs.empty?
 
@@ -160,7 +160,7 @@ class ApiController < ApplicationController
     results.compact
   end
 
-  def valid_version_label?(version)
+  def valid_release?(version)
     VersionLabel.where(:normalized => version).first.present?
   end
 

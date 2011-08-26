@@ -1,9 +1,9 @@
 FactoryGirl.define do
-  sequence :email do |n| 
+  sequence :email do |n|
     "john.longbottom#{n}@meego.com"
   end
 
-  sequence :authentication_token do |n| 
+  sequence :authentication_token do |n|
     n.to_s
   end
 
@@ -15,7 +15,7 @@ FactoryGirl.define do
     authentication_token
   end
 
-  factory :release, :class => VersionLabel, :aliases => [:version_label] do
+  factory :release, :class => VersionLabel do
     label      "1.3"
     normalized "1.3"
     sort_order  0
@@ -34,7 +34,7 @@ FactoryGirl.define do
     after_build { |report| FactoryGirl.build(:feature, :meego_test_session => report)}
     author
     editor
-    version_label
+    release
     title           "N900 Test Report"
     target          "Handset"
     testset         "Acceptance"
@@ -53,7 +53,7 @@ FactoryGirl.define do
     target      135
     failure     115
   end
-  
+
   factory :serial_measurement do
     name          "Data rate"
     short_json    "1.7e+03,3.2e+03,3.2e+03"
@@ -92,16 +92,16 @@ FactoryGirl.define do
 
   factory :nft_feature, :class => Feature do
     after_create { |feature|
-      FactoryGirl.create(:nft_test_case, 
-                         :feature => feature, 
+      FactoryGirl.create(:nft_test_case,
+                         :feature => feature,
                          :meego_test_session => feature.meego_test_session,
                          :name => "NFT Case 1")
-      FactoryGirl.create(:nft_test_case, 
-                         :feature => feature, 
+      FactoryGirl.create(:nft_test_case,
+                         :feature => feature,
                          :meego_test_session => feature.meego_test_session,
                          :name => "NFT Case 2")
-      FactoryGirl.create(:nft_serial_test_case, 
-                         :feature => feature, 
+      FactoryGirl.create(:nft_serial_test_case,
+                         :feature => feature,
                          :meego_test_session => feature.meego_test_session,
                          :name => "Serial Case")
 
@@ -110,12 +110,12 @@ FactoryGirl.define do
   end
 
   factory :nft_test_report, :class => MeegoTestSession do
-    after_create { |report| 
+    after_create { |report|
       FactoryGirl.create(:nft_feature, :meego_test_session => report)
     }
     author
     editor
-    version_label   {VersionLabel.where(:normalized => '1.2').first}
+    release         {VersionLabel.where(:normalized => '1.2').first}
     title           "N900 NFT TEST REPORT"
     target          "Handset"
     testset         "NFT"

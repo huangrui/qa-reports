@@ -30,7 +30,7 @@ class CSVResultFileParser
 
     feature   = row[0].toutf8.strip
     test_case = row[1].toutf8.strip
-    comment   = row[2] ? row[2].toutf8.strip : ""
+    comment   = row[2].try(:toutf8).try(:strip) || ""
     
     raise "Invalid test case result" if row.fields(:pass, :fail, :na).count("1") != 1
     result    = RESULT_MAPPING[row.fields(:pass, :fail, :na).index("1")]

@@ -55,7 +55,7 @@ end
 When /^(?:|I )(?:|return to )view the report "([^"]*)"$/ do |report_string|
   version, target, test_set, product = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {"version_labels.normalized" => version, :target => target, :product => product, :testset => test_set}, :include => :version_label,
+   {"version_labels.normalized" => version, :target => target, :product => product, :testset => test_set}, :include => :release,
    :order => "tested_at DESC, created_at DESC")
   raise "report not found with parameters #{version}/#{target}/#{product}/#{test_set}!" unless report
   visit("/#{version}/#{target}/#{test_set}/#{product}/#{report.id}")
@@ -64,7 +64,7 @@ end
 When /I view the report "([^"]*)" for build$/ do |report_string|
   version, target, testset, product = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {"version_labels.normalized" => version, :target => target, :product => product, :testset => testset}, :include => :version_label,
+   {"version_labels.normalized" => version, :target => target, :product => product, :testset => testset}, :include => :release,
    :order => "build_id DESC, tested_at DESC, created_at DESC")
   raise "report not found with parameters #{version}/#{target}/#{hardware}/#{test_type}!" unless report
   visit("/#{version}/#{target}/#{testset}/#{product}/#{report.id}")
@@ -190,7 +190,7 @@ end
 Then /^(?:|I )should not be able to view the report "([^"]*)"$/ do |report_string|
   version, target, test_set, product = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {"version_labels.normalized" => version, :target => target, :product => product, :testset => test_set}, :include => :version_label,
+   {"version_labels.normalized" => version, :target => target, :product => product, :testset => test_set}, :include => :release,
    :order => "tested_at DESC, created_at DESC")
   report.should == nil
 end

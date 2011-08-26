@@ -170,7 +170,7 @@ end
 
 When /^I view the latest report "([^"]*)"/ do |report_string|
   version, target, test_type, product = report_string.downcase.split('/')
-  report = MeegoTestSession.joins(:version_label).where(:version_labels => {:label => version}, :target => target, :product => product, :testset => test_type).order("created_at DESC").first
+  report = MeegoTestSession.joins(:release).where(:version_labels => {:label => version}, :target => target, :product => product, :testset => test_type).order("created_at DESC").first
   raise "report not found with parameters #{version}/#{target}/#{product}/#{test_type}!" unless report
   visit("/#{version}/#{target}/#{test_type}/#{product}/#{report.id}")
 end
