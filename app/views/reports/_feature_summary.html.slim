@@ -32,7 +32,5 @@ tr class="feature_record #{row_class(feature_summary_counter)}" id="feature-#{fe
         input name="authenticity_token" type="hidden" value=form_authenticity_token
         input name="_method" type="hidden" value="put"
         select.grading_select.float_above name="feature[grading]"
-          option selected="#{feature_summary.grading == 0 ? 'selected' : ''}" value="0" N/A
-          option selected="#{feature_summary.grading == 1 ? 'selected' : ''}" value="1" Red
-          option selected="#{feature_summary.grading == 2 ? 'selected' : ''}" value="2" Yellow
-          option selected="#{feature_summary.grading == 3 ? 'selected' : ''}" value="3" Green
+          - (0..3).each do |g|
+            option selected="#{feature_summary.grading == g ? 'selected' : ''}" value="#{g}" =grading_to_str(g)
