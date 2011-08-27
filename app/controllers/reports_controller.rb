@@ -101,28 +101,19 @@ class ReportsController < ApplicationController
     @attachments = @test_session.attachments
     @editing = false
     @wizard  = false
-
-    @nft_trends = nil
-    if @test_session.has_nft?
-      @nft_trends = NftHistory.new(@test_session)
-    end
- end
+    
+    @nft_trends = NftHistory.new(@test_session) if @test_session.has_nft?
+  end
 
   def print
-    if @report_id = params[:id].try(:to_i)
-      @test_session = MeegoTestSession.fetch_fully(@report_id)
-
-      @report       = @test_session
-      @editing      = false
-      @attachments = @test_session.attachments
-      @wizard = false
-      @email  = true
-      @build_diff = []
-
-      @nft_trends = NftHistory.new(@test_session) if @test_session.has_nft?
-    else
-      redirect_to :action => :index
-    end
+    @test_session = MeegoTestSession.fetch_fully(params[:id])
+    @report       = @test_session
+    @attachments  = @test_session.attachments
+    @nft_trends   = NftHistory.new(@test_session) if @test_session.has_nft?
+    @build_diff   = []
+    @editing      = false
+    @wizard       = false
+    @email        = true
   end
 
   def edit

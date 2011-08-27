@@ -33,7 +33,7 @@ Meegoqa::Application.routes.draw do
 
   # Constraint to allow a dot (.) in release vesion
   constraints(:release_version => /[a-zA-Z0-9._-]+/, :id => /[0-9]+/) do
-    match '/:release_version'  => 'reports#index', :via => "get"
+    match '/:release_version'  => 'reports#index', :via => "get", :as => :root
 
     match '/:release_version/:target/:testset/:product/:id'             => 'reports#show',             :via => "get", :as => :show_report
     match '/:release_version/:target/:testset/:product/:id/edit'        => 'reports#edit',             :via => "get", :as => :edit_report
@@ -51,5 +51,5 @@ Meegoqa::Application.routes.draw do
     match '/:release_version(/:target(/:testset(/:product)))'                   => 'report_groups#show',        :via => "get", :as => :group_report
   end
 
-  root :to => "reports#index"
+    root :to => "reports#index"
 end
