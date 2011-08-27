@@ -34,10 +34,8 @@ require 'report_exporter'
 class ReportsController < ApplicationController
   include CacheHelper
   layout        'report'
-
   before_filter :authenticate_user!,         :except => [:index, :show, :print, :compare]
   before_filter :validate_path_params,       :only   => [:show, :print]
-
   cache_sweeper :meego_test_session_sweeper, :only   => [:update, :delete, :publish]
 
   def index
@@ -48,14 +46,8 @@ class ReportsController < ApplicationController
   end
 
   def preview
-    @test_session     = MeegoTestSession.fetch_fully(params[:id])
-    @report           = @test_session
-    @release_versions = VersionLabel.all.map { |release| release.label }
-    @targets          = TargetLabel.targets
-    @testsets         = MeegoTestSession.release(@selected_release_version).testsets
-    @product          = MeegoTestSession.release(@selected_release_version).popular_products
-    @build_id         = MeegoTestSession.release(@selected_release_version).popular_build_ids
-    @build_diff       = []
+    populate_report_fields
+    populate_edit_fields
     @editing          = true
     @wizard           = true
     @no_upload_link   = true
@@ -70,36 +62,20 @@ class ReportsController < ApplicationController
   end
 
   def show
-    @test_session = MeegoTestSession.fetch_fully(params[:id])
-    @nft_trends   = NftHistory.new(@test_session) if @test_session.has_nft?
-    @report       = @test_session
-    @attachments  = @test_session.attachments
+    populate_report_fields
     @history      = history(@test_session, 5)
     @build_diff   = build_diff(@test_session, 4)
-    @target       = @test_session.target
-    @testset      = @test_session.testset
-    @product      = @test_session.product
   end
 
   def print
-    @test_session = MeegoTestSession.fetch_fully(params[:id])
-    @report       = @test_session
-    @attachments  = @test_session.attachments
-    @nft_trends   = NftHistory.new(@test_session) if @test_session.has_nft?
+    populate_report_fields
     @build_diff   = []
     @email        = true
   end
 
   def edit
-    @test_session     = MeegoTestSession.fetch_fully(params[:id])
-    @report           = @test_session
-    @attachments      = @test_session.attachments
-    @build_diff       = []
-    @release_versions = VersionLabel.all.map { |release| release.label }
-    @targets          = TargetLabel.targets
-    @testsets         = MeegoTestSession.release(@selected_release_version).testsets
-    @product          = MeegoTestSession.release(@selected_release_version).popular_products
-    @build_id         = MeegoTestSession.release(@selected_release_version).popular_build_ids
+    populate_report_fields
+    populate_edit_fields
     @editing          = true
     @no_upload_link   = true
   end
@@ -111,6 +87,12 @@ class ReportsController < ApplicationController
 
     #TODO: Fix templates so that normal 'head :ok' response is enough
     render :text => @report.tested_at.strftime('%d %B %Y')
+  end
+
+  def destroy
+    report = MeegoTestSession.find(params[:id])
+    report.destroy
+    redirect_to root_path
   end
 
   #TODO: This should be in comparison controller
@@ -131,12 +113,6 @@ class ReportsController < ApplicationController
     render :layout => "report"
   end
 
-  def destroy
-    report = MeegoTestSession.find(params[:id])
-    report.destroy
-    redirect_to root_path
-  end
-
   private
 
   def validate_path_params
@@ -145,8 +121,25 @@ class ReportsController < ApplicationController
     end
   end
 
+  def populate_report_fields
+    @test_session = MeegoTestSession.fetch_fully(params[:id])
+    @report       = @test_session
+    @attachments  = @test_session.attachments
+    @nft_trends   = NftHistory.new(@test_session) if @test_session.has_nft?
+  end
+
+  def populate_edit_fields
+    @build_diff       = []
+    @release_versions = VersionLabel.all.map { |release| release.label }
+    @targets          = TargetLabel.targets
+    @testsets         = MeegoTestSession.release(release.label).testsets
+    @product          = MeegoTestSession.release(release.label).popular_products
+    @build_id         = MeegoTestSession.release(release.label).popular_build_ids
+  end
+
   protected
 
+  #TODO: These should be somewhere else..
   def history(s, cnt)
     MeegoTestSession.where("(tested_at < '#{s.tested_at}' OR tested_at = '#{s.tested_at}' AND created_at < '#{s.created_at}') AND target = '#{s.target.downcase}' AND testset = '#{s.testset.downcase}' AND product = '#{s.product.downcase}' AND published = 1 AND version_label_id = #{s.version_label_id}").
         order("tested_at DESC, created_at DESC").limit(cnt).
