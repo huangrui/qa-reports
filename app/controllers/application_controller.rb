@@ -26,6 +26,7 @@ class ApplicationController < ActionController::Base
   before_filter :find_selected_release
 
   #protect_from_forgery
+
   rescue_from ActiveRecord::RecordNotFound do
     render :file => "#{Rails.root}/public/404.html", :status => :not_found, :layout => false
   end
@@ -37,6 +38,22 @@ class ApplicationController < ActionController::Base
   def find_selected_release
     @selected_release_version = session[:release_version] =
       valid_release(params[:release_version]) || session[:release_version] || VersionLabel.latest.label
+  end
+
+  def release
+    @release ||= session[:release] = VersionLabel.find_by_label(params[:release_version]) || session[:release_version] || VersionLabel.latest
+  end
+
+  def profile
+    @profile ||= params[:target]
+  end
+
+  def testset
+    @testset ||= params[:testset]
+  end
+
+  def product
+    @product ||= params[:product]
   end
 
   private
