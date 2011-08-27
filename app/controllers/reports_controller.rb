@@ -140,11 +140,12 @@ class ReportsController < ApplicationController
   private
 
   def validate_path_params
-    query_params = {}
-    query_params[:version_label_id] = VersionLabel.find_by_label(params[:release_version]) if params[:release_version]
+    if params[:release_version]
+      query_params = { :version_label_id => VersionLabel.find_by_label(params[:release_version]) }
 
-    [:target, :testset, :product, :id].each { |key| query_params[key] = params[key] if params[key]}
-    raise ActiveRecord::RecordNotFound unless MeegoTestSession.where(query_params).count == 1
+      [:target, :testset, :product, :id].each { |key| query_params[key] = params[key] }
+      raise ActiveRecord::RecordNotFound unless MeegoTestSession.where(query_params).count == 1
+    end
   end
 
   protected
