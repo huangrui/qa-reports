@@ -62,12 +62,12 @@ When /^(?:|I )(?:|return to )view the report "([^"]*)"$/ do |report_string|
 end
 
 When /I view the report "([^"]*)" for build$/ do |report_string|
-  version, target, testset, product = report_string.downcase.split('/')
+  release, profile, testset, product = report_string.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {"version_labels.normalized" => version, :target => target, :product => product, :testset => testset}, :include => :release,
+   {"version_labels.label" => release, :target => profile, :product => product, :testset => testset}, :include => :release,
    :order => "build_id DESC, tested_at DESC, created_at DESC")
   raise "report not found with parameters #{version}/#{target}/#{hardware}/#{test_type}!" unless report
-  visit("/#{version}/#{target}/#{testset}/#{product}/#{report.id}")
+  visit report_path(report)
 end
 
 Given /^I have created the "([^"]*)" report(?: using "([^"]*)")?(?: and optional build id is "([^"]*)")?$/ do |report_name, report_template, build_id|
