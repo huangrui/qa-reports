@@ -89,9 +89,7 @@ class UploadController < ApplicationController
     @test_session.editor = current_user
 
     if @test_session.errors.empty? and @test_session.save
-      session[:preview_id] = @test_session.id
-
-      redirect_to :controller => 'reports', :action => 'preview'
+      redirect_to preview_report_path(@test_session)
     else
       @release_versions = VersionLabel.all.map { |release| release.label }
       @targets = TargetLabel.targets

@@ -1,7 +1,11 @@
 Meegoqa::Application.routes.draw do
   devise_for :users, :controllers => { :sessions => "users/sessions" }  , :path_names => { :sign_up => "#{DeviseRegistrationConfig::URL_TOKEN}/register" }
 
-  resources :reports,     :only => [:index, :show, :edit, :update, :destroy]
+  resources :reports, :only => [:index, :show, :edit, :update, :destroy] do
+    get  'preview', :on => :member
+    post 'publish', :on => :member
+  end
+
   resources :features,    :only => [:update]
   resources :test_cases,  :only => [:update]
   resources :attachments, :only => [:destroy]
@@ -15,7 +19,6 @@ Meegoqa::Application.routes.draw do
   match '/api/update/:id' => 'api#update_result', :via => "post"
   match '/api/reports' => 'api#reports_by_limit_and_time', :via => "get"
 
-  match '/finalize' => 'reports#preview', :via => "get"
   match '/publish' => 'reports#publish', :via => "post"
   match '/download' => 'csv_export#export_report', :via => "get"
 
