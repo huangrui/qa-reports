@@ -33,10 +33,12 @@ require 'report_exporter'
 
 class ReportsController < ApplicationController
   include CacheHelper
+  layout        'report'
 
   before_filter :authenticate_user!,         :except => [:index, :show, :print, :compare]
+  before_filter :validate_path_params,       :only   => [:show, :print]
+
   cache_sweeper :meego_test_session_sweeper, :only   => [:update, :delete, :publish]
-  layout        'report'
 
   def index
     @profiles = TargetLabel.targets
@@ -64,30 +66,19 @@ class ReportsController < ApplicationController
     report.update_attribute(:published, true)
 
     flash[:notice] = "Your report has been successfully published"
-
     redirect_to show_report_path(report.release.label, report.target, report.testset, report.product, report)
   end
 
   def show
-    #TODO: Move checks and building to ReportView model
-    query_params = {}
-    query_params[:version_label_id] = VersionLabel.find_by_label(params[:release_version]) if query_params[:version_label_id]
-
-    [:target, :testset, :product, :id].each { |key| query_params[key] = params[key] if params[key] }
-    raise ActiveRecord::RecordNotFound unless MeegoTestSession.where(query_params).count == 1
-
     @test_session = MeegoTestSession.fetch_fully(params[:id])
-
-    @history = history(@test_session, 5)
-    @build_diff = build_diff(@test_session, 4)
-
-    @target    = @test_session.target
-    @testset  = @test_session.testset
-    @product = @test_session.product
-
-    @report    = @test_session
-    @attachments = @test_session.attachments
-    @nft_trends = NftHistory.new(@test_session) if @test_session.has_nft?
+    @nft_trends   = NftHistory.new(@test_session) if @test_session.has_nft?
+    @report       = @test_session
+    @attachments  = @test_session.attachments
+    @history      = history(@test_session, 5)
+    @build_diff   = build_diff(@test_session, 4)
+    @target       = @test_session.target
+    @testset      = @test_session.testset
+    @product      = @test_session.product
   end
 
   def print
@@ -144,6 +135,16 @@ class ReportsController < ApplicationController
     report = MeegoTestSession.find(params[:id])
     report.destroy
     redirect_to root_path
+  end
+
+  private
+
+  def validate_path_params
+    query_params = {}
+    query_params[:version_label_id] = VersionLabel.find_by_label(params[:release_version]) if params[:release_version]
+
+    [:target, :testset, :product, :id].each { |key| query_params[key] = params[key] if params[key]}
+    raise ActiveRecord::RecordNotFound unless MeegoTestSession.where(query_params).count == 1
   end
 
   protected
