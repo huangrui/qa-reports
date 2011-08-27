@@ -34,9 +34,9 @@ require 'report_exporter'
 class ReportsController < ApplicationController
   include CacheHelper
 
-  before_filter :authenticate_user!, :except => [:index, :show, :print, :compare]
-  cache_sweeper :meego_test_session_sweeper, :only => [:update, :delete, :publish]
-  layout :report
+  before_filter :authenticate_user!,         :except => [:index, :show, :print, :compare]
+  cache_sweeper :meego_test_session_sweeper, :only   => [:update, :delete, :publish]
+  layout        'report'
 
   def index
     @profiles = TargetLabel.targets
@@ -61,8 +61,6 @@ class ReportsController < ApplicationController
       @testsets = MeegoTestSession.release(@selected_release_version).testsets
       @product = MeegoTestSession.release(@selected_release_version).popular_products
       @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
-
-      render :layout => "report"
     else
       redirect_to :controller => 'upload', :action => :upload_form
     end
@@ -108,8 +106,6 @@ class ReportsController < ApplicationController
     if @test_session.has_nft?
       @nft_trends = NftHistory.new(@test_session)
     end
-
-    render :layout => "report"
  end
 
   def print
@@ -123,12 +119,7 @@ class ReportsController < ApplicationController
       @email  = true
       @build_diff = []
 
-      @nft_trends = nil
-      if @test_session.has_nft?
-        @nft_trends = NftHistory.new(@test_session)
-      end
-
-      render :layout => "report"
+      @nft_trends = NftHistory.new(@test_session) if @test_session.has_nft?
     else
       redirect_to :action => :index
     end
@@ -150,8 +141,6 @@ class ReportsController < ApplicationController
       @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
       @no_upload_link = true
       @attachments = @test_session.attachments
-
-      render :layout => "report"
     else
       redirect_to :action => :index
     end
