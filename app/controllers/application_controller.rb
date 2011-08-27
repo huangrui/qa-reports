@@ -21,9 +21,10 @@
 #
 
 class ApplicationController < ActionController::Base
-
+  helper_method :release, :profile, :testset, :product
   before_filter :find_releases
   before_filter :find_selected_release
+
 
   #protect_from_forgery
 

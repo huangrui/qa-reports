@@ -19,9 +19,9 @@
 module IndexHelper
 
   def current_filter_path
-    path = @profile
-    path += " / #{@testset}" if @testset.present?
-    path += " / #{@product}" if @product.present?
+    path = profile
+    path += " / #{testset}" if testset.present?
+    path += " / #{product}" if product.present?
     path
   end
 
