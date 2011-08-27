@@ -44,7 +44,7 @@ module ApplicationHelper
   end
 
  def breadcrumbs
-  html = '<div id="breadcrumb"><li><a href="' + url_for(:controller=>'index', :action=>'index') + '">Home</a></li>'
+  html = '<div id="breadcrumb"><li><a href="' + root_path + '">Home</a></li>'
 
   html += ('<li> &rsaquo; ' + link_to_unless_current(@target, group_report_path(@selected_release_version, @target)) + '</li>') if @target
   html += ('<li> &rsaquo; ' + link_to_unless_current(@testset, group_report_path(@selected_release_version, @target, @testset)) + '</li>') if @testset

@@ -13,9 +13,6 @@ class MeegoTestSessionSweeper < ActionController::Caching::Sweeper
 
 
   def expire_index_for(test_session)
-    expire_page :controller => 'index', :action => :index
-    expire_page :controller => 'upload', :action => :upload_form
-
     expire_paging_action :controller => "report_groups", :action => "show", :release_version => test_session.release_version, :target => test_session.target, :testset => test_session.testset, :product => test_session.product
     expire_paging_action :controller => "report_groups", :action => "show", :release_version => test_session.release_version, :target => test_session.target, :testset => test_session.testset
     expire_paging_action :controller => "report_groups", :action => "show", :release_version => test_session.release_version, :target => test_session.target

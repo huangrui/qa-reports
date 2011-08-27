@@ -34,9 +34,16 @@ require 'report_exporter'
 class ReportsController < ApplicationController
   include CacheHelper
 
-  before_filter :authenticate_user!, :except => [:show, :print, :compare]
+  before_filter :authenticate_user!, :except => [:index, :show, :print, :compare]
   cache_sweeper :meego_test_session_sweeper, :only => [:update, :delete, :publish]
   layout :report
+
+  def index
+    @profiles = TargetLabel.targets
+    @products = Product.by_profile_by_testset(release)
+    @show_rss = true
+    render :layout => "application"
+  end
 
   def preview
     @preview_id = session[:preview_id] || params[:id]

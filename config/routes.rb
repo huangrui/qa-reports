@@ -1,7 +1,7 @@
 Meegoqa::Application.routes.draw do
   devise_for :users, :controllers => { :sessions => "users/sessions" }  , :path_names => { :sign_up => "#{DeviseRegistrationConfig::URL_TOKEN}/register" }
 
-  resources :reports,     :only => [:update, :show, :edit, :destroy]
+  resources :reports,     :only => [:index, :show, :edit, :update, :destroy]
   resources :features,    :only => [:update]
   resources :test_cases,  :only => [:update]
   resources :attachments, :only => [:destroy]
@@ -33,7 +33,7 @@ Meegoqa::Application.routes.draw do
 
   # Constraint to allow a dot (.) in release vesion
   constraints(:release_version => /[a-zA-Z0-9._-]+/, :id => /[0-9]+/) do
-    match '/:release_version' => 'index#index', :via => "get"
+    match '/:release_version'  => 'reports#index', :via => "get"
 
     match '/:release_version/:target/:testset/:product/:id'             => 'reports#show',             :via => "get", :as => :show_report
     match '/:release_version/:target/:testset/:product/:id/edit'        => 'reports#edit',             :via => "get", :as => :edit_report
@@ -51,5 +51,5 @@ Meegoqa::Application.routes.draw do
     match '/:release_version(/:target(/:testset(/:product)))'                   => 'report_groups#show',        :via => "get", :as => :group_report
   end
 
-  root :to => "index#index"
+  root :to => "reports#index"
 end

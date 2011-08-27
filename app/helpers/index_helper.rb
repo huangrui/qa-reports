@@ -18,11 +18,11 @@
 
 module IndexHelper
 
-  def current_filter_path
-    path = profile
-    path += " / #{testset}" if testset.present?
-    path += " / #{product}" if product.present?
-    path
+  def group_report_title
+    title = profile
+    title += " / #{testset}" if testset.present?
+    title + " / #{product}" if product.present?
+    title
   end
 
   def filtered_index_url(target, testset=nil, product=nil)
