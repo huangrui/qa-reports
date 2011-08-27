@@ -99,9 +99,6 @@ class ReportsController < ApplicationController
 
     @report    = @test_session
     @attachments = @test_session.attachments
-    @editing = false
-    @wizard  = false
-    
     @nft_trends = NftHistory.new(@test_session) if @test_session.has_nft?
   end
 
@@ -111,30 +108,21 @@ class ReportsController < ApplicationController
     @attachments  = @test_session.attachments
     @nft_trends   = NftHistory.new(@test_session) if @test_session.has_nft?
     @build_diff   = []
-    @editing      = false
-    @wizard       = false
     @email        = true
   end
 
   def edit
-    @editing = true
-    @wizard  = false
-    @build_diff = []
-
-    if id = params[:id].try(:to_i)
-      @test_session   = MeegoTestSession.fetch_fully(id)
-
-      @report         = @test_session
-      @release_versions = VersionLabel.all.map { |release| release.label }
-      @targets = TargetLabel.targets
-      @testsets = MeegoTestSession.release(@selected_release_version).testsets
-      @product = MeegoTestSession.release(@selected_release_version).popular_products
-      @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
-      @no_upload_link = true
-      @attachments = @test_session.attachments
-    else
-      redirect_to :action => :index
-    end
+    @test_session     = MeegoTestSession.fetch_fully(params[:id])
+    @report           = @test_session
+    @attachments      = @test_session.attachments
+    @build_diff       = []
+    @release_versions = VersionLabel.all.map { |release| release.label }
+    @targets          = TargetLabel.targets
+    @testsets         = MeegoTestSession.release(@selected_release_version).testsets
+    @product          = MeegoTestSession.release(@selected_release_version).popular_products
+    @build_id         = MeegoTestSession.release(@selected_release_version).popular_build_ids
+    @editing          = true
+    @no_upload_link   = true
   end
 
   def update
