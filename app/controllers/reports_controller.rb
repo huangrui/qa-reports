@@ -46,24 +46,17 @@ class ReportsController < ApplicationController
   end
 
   def preview
-    @preview_id = session[:preview_id] || params[:id]
-    @editing    = true
-    @wizard     = true
-    @build_diff = []
-
-    if @preview_id
-      @test_session   = MeegoTestSession.fetch_fully(@preview_id)
-      @report         = @test_session
-      @no_upload_link = true
-
-      @release_versions = VersionLabel.all.map { |release| release.label }
-      @targets = TargetLabel.targets
-      @testsets = MeegoTestSession.release(@selected_release_version).testsets
-      @product = MeegoTestSession.release(@selected_release_version).popular_products
-      @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
-    else
-      redirect_to :controller => 'upload', :action => :upload_form
-    end
+    @test_session     = MeegoTestSession.fetch_fully(params[:id])
+    @report           = @test_session
+    @release_versions = VersionLabel.all.map { |release| release.label }
+    @targets          = TargetLabel.targets
+    @testsets         = MeegoTestSession.release(@selected_release_version).testsets
+    @product          = MeegoTestSession.release(@selected_release_version).popular_products
+    @build_id         = MeegoTestSession.release(@selected_release_version).popular_build_ids
+    @build_diff       = []
+    @editing          = true
+    @wizard           = true
+    @no_upload_link   = true
   end
 
   def publish
@@ -72,12 +65,7 @@ class ReportsController < ApplicationController
 
     flash[:notice] = "Your report has been successfully published"
 
-    redirect_to :action          => 'show',
-                :id              => report,
-                :release_version => report.release,
-                :target          => report.target,
-                :testset         => report.testset,
-                :product         => report.product
+    redirect_to show_report_path(report.release.label, report.target, report.testset, report.product, report)
   end
 
   def show
