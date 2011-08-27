@@ -25,7 +25,6 @@ class ApplicationController < ActionController::Base
   before_filter :find_releases
   before_filter :find_selected_release
 
-
   #protect_from_forgery
 
   rescue_from ActiveRecord::RecordNotFound do
@@ -42,7 +41,7 @@ class ApplicationController < ActionController::Base
   end
 
   def release
-    @release ||= session[:release] = VersionLabel.find_by_label(params[:release_version]) || session[:release_version] || VersionLabel.latest
+    @release ||= session[:release] = VersionLabel.find_by_label(params[:release_version]) || session[:release] || VersionLabel.latest
   end
 
   def profile
