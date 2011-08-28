@@ -5,7 +5,7 @@
   - if action == 'compare'
     - cache_key = @compare_cache_key
   - else
-    - cache_key = "#{action}_page_#{@test_session.id}"
+    - cache_key = "#{action}_page_#{@report.id}"
 
   = yield :button_area
 
@@ -36,11 +36,11 @@
 
     = yield :result_edit_notification
 
-    - if @test_session.has_non_nft?
+    - if @report.has_non_nft?
       h2#detailed_results
         | Detailed Test Results
         small
-          a href=url_for(:controller=>'csv_export', :action=>'export_report', :release_version=>@test_session.release_version, :target=>@test_session.target, :testset=>@test_session.testset, :product=>@test_session.product, :id=>@test_session.id) Download as CSV
+          a href=url_for(:controller=>'csv_export', :action=>'export_report', :release_version=>@report.release_version, :target=>@report.target, :testset=>@report.testset, :product=>@report.product, :id=>@report.id) Download as CSV
         span.heading_actions= back_to_top
 
       table#detailed_functional_test_results.detailed_results
@@ -60,7 +60,7 @@
             th#th_result Result
             th#th_notes Notes
 
-        = render :partial => "feature", :collection => @test_session.non_nft_features
+        = render :partial => "feature", :collection => @report.non_nft_features
 
       - if @history
         table.detailed_results.history style="display:none;"
@@ -78,7 +78,7 @@
               th.th_result Current
               th#th_notes Latest notes
 
-          = render :partial => "feature_history", :collection => @test_session.non_nft_features
+          = render :partial => "feature_history", :collection => @report.non_nft_features
 
       - unless @build_diff.empty?
         table.detailed_results.build style="display:none"
@@ -92,13 +92,13 @@
                     a.see_history_button.sort_btn#detailed_case.active href="#" See history
                   a.see_the_same_build_button.sort_btn#detailed_case href="#"  See build
               = build_id_headers(@build_diff)
-              th.th_build_result *#{@test_session.build_id}
+              th.th_build_result *#{@report.build_id}
               th
                 div style="position:relative;"
 
-          = render :partial => "feature_build", :collection => @test_session.non_nft_features
+          = render :partial => "feature_build", :collection => @report.non_nft_features
 
-    - if @test_session.has_nft?
+    - if @report.has_nft?
       h2#detailed_nft_results
         | Non-functional Test Results
         span.heading_actions= back_to_top
@@ -120,7 +120,7 @@
             th.th_result Result
             th#th_notes Notes
 
-        = render :partial => "nft_feature", :collection => @test_session.nft_sets
+        = render :partial => "nft_feature", :collection => @report.nft_sets
       /! NFT history
 
       -if @history
@@ -139,12 +139,12 @@
                 '  -
                 = format_date_for_nft_history @report.tested_at
 
-          = render :partial => "nft_feature_history", :collection => @test_session.nft_sets
+          = render :partial => "nft_feature_history", :collection => @report.nft_sets
 
     = render :partial => 'editable_text', :locals => {:anchor => 'issue_summary', :title => "Issue Summary", :field => 'issue_summary'}
 
     = render :partial => 'reports/file_attachments'
 
-    = render :partial => 'reports/raw_result_files', :locals => {:result_files => @test_session.result_files}
+    = render :partial => 'reports/raw_result_files', :locals => {:result_files => @report.result_files}
 
     = yield :wizard_actions

@@ -33,14 +33,14 @@
 - content_for :wizard_actions do
   #wizard_actions
     #wizard_buttons
-      form action=report_path(@test_session) method="post"
+      form action=report_path(@report) method="post"
         input name="authenticity_token" type="hidden" value=form_authenticity_token
         input name="_method" type="hidden" value="delete"
         input#cancel-publish.big_btn.cancel type="submit" value="Cancel"
 
       form action=url_for( :controller=>'reports', :action=>'publish') method="post"
         input name="authenticity_token" type="hidden" value=form_authenticity_token
-        input name="id" type="hidden" value=@test_session.id
+        input name="id" type="hidden" value=@report.id
         input#upload_report_submit.big_btn.submit type="submit" value="Publish"
 
 - content_for :inplace_edit_templates do
@@ -52,7 +52,7 @@
 - content_for :view_specific_js do
   div style="display:none"
     span#session_id
-      #{@test_session.id}
+      #{@report.id}
 
   = javascript_include_tag 'datetime'
   = javascript_include_tag 'jquery.form.js'
@@ -60,7 +60,7 @@
 
 - content_for :category_dialog do
   #category-dialog.jqmWindow style="display:none;"
-    = form_for @test_session, :url=>{:action => "update_category"}, :html => {:id => 'upload_report', :method=>'post'} do |f|
+    = form_for @report, :url=>{:action => "update_category"}, :html => {:id => 'upload_report', :method=>'post'} do |f|
       h1 Change test category
       = render :partial => 'shared/report_form', :object => f
     form

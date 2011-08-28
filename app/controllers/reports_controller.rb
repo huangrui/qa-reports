@@ -63,8 +63,8 @@ class ReportsController < ApplicationController
 
   def show
     populate_report_fields
-    @history      = history(@test_session, 5)
-    @build_diff   = build_diff(@test_session, 4)
+    @history      = history(@report, 5)
+    @build_diff   = build_diff(@report, 4)
   end
 
   def print
@@ -123,8 +123,8 @@ class ReportsController < ApplicationController
   end
 
   def populate_report_fields
-    @test_session = @report = MeegoTestSession.fetch_fully(params[:id])
-    @nft_trends   = NftHistory.new(@test_session) if @test_session.has_nft?
+    @report = MeegoTestSession.fetch_fully(params[:id])
+    @nft_trends   = NftHistory.new(@report) if @report.has_nft?
   end
 
   def populate_edit_fields
