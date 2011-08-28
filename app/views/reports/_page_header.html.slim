@@ -16,6 +16,6 @@
 #header
   #logo
     h3
-      a href=root_path(release.label) MeeGo | QA Reports
-      a.hover href=root_path(release.label)
+      a href=release_path(release.label) MeeGo | QA Reports
+      a.hover href=release_path(release.label)
   = render :partial => "reports/upload_link"

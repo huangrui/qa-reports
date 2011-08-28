@@ -67,7 +67,7 @@ When /I view the report "([^"]*)" for build$/ do |report_string|
    {"version_labels.label" => release, :target => profile, :product => product, :testset => testset}, :include => :release,
    :order => "build_id DESC, tested_at DESC, created_at DESC")
   raise "report not found with parameters #{version}/#{target}/#{hardware}/#{test_type}!" unless report
-  visit report_path(report)
+  visit show_report_path(release, profile, testset, product, report)
 end
 
 Given /^I have created the "([^"]*)" report(?: using "([^"]*)")?(?: and optional build id is "([^"]*)")?$/ do |report_name, report_template, build_id|
