@@ -72,7 +72,6 @@ class MeegoTestSession < ActiveRecord::Base
   scope :profile,    lambda { |profile| published.where(:target => profile.downcase) }
   scope :testset,    lambda { |testset| published.where(:testset => testset.downcase) }
   scope :product_is, lambda { |product| published.where(:product => product.downcase) }
-  scope :id_is,      lambda { |id| published.where(:id => id) }
 
   RESULT_FILES_DIR = "public/reports"
   INVALID_RESULTS_DIR = "public/reports/invalid_files"

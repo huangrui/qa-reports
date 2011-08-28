@@ -29,20 +29,6 @@ module ApplicationHelper
     end
   end
 
-  def upload_full_path
-    if @product
-      url_for :controller => "/upload", :action => :upload_form, :release_version => @selected_release_version, :testset => @testset, :target => @target, :product => @product
-    elsif @target
-      url_for :controller => "/upload", :action => :upload_form,  :release_version => @selected_release_version, :testset => @testset, :target => @target
-    elsif @testset
-      url_for :controller => "/upload", :action => :upload_form, :release_version => @selected_release_version, :testset => @testset
-    elsif @selected_release_version
-      url_for :controller => "/upload", :action => :upload_form, :release_version => @selected_release_version
-    else
-      url_for :controller => "/upload", :action => :upload_form
-    end
-  end
-
  def breadcrumbs
   html = '<div id="breadcrumb"><li><a href="' + root_path + '">Home</a></li>'
 

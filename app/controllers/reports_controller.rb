@@ -116,8 +116,9 @@ class ReportsController < ApplicationController
   private
 
   def validate_path_params
-    if profile.present? && MeegoTestSession.release(release.label).profile(profile).testset(testset).product_is(product).id_is(params[:id]).count != 1
-      raise ActiveRecord::RecordNotFound
+    if params[:release_version]
+      # Raise ActiveRecord::RecordNotFound if the report doesn't exist
+      MeegoTestSession.release(release.label).profile(profile).testset(testset).product_is(product).find(params[:id])
     end
   end
 
