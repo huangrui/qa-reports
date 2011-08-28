@@ -43,10 +43,10 @@ class UploadController < ApplicationController
     @test_session.release = VersionLabel.find_by_label(new_report[:release_version]) || VersionLabel.latest
 
     @release_versions = VersionLabel.in_sort_order.map { |release| release.label }
-    @targets = TargetLabel.targets.map {|target| target.downcase}
-    @testsets = MeegoTestSession.release(@selected_release_version).testsets
-    @product = MeegoTestSession.release(@selected_release_version).popular_products
-    @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
+    @targets          = TargetLabel.targets.map {|target| target.downcase}
+    @testsets         = MeegoTestSession.release(@selected_release_version).testsets
+    @products         = MeegoTestSession.release(@selected_release_version).popular_products
+    @build_ids        = MeegoTestSession.release(@selected_release_version).popular_build_ids
 
     @no_upload_link = true
   end
@@ -92,10 +92,10 @@ class UploadController < ApplicationController
       redirect_to preview_report_path(@test_session)
     else
       @release_versions = VersionLabel.all.map { |release| release.label }
-      @targets = TargetLabel.targets
-      @testsets = MeegoTestSession.release(@selected_release_version).testsets
-      @product = MeegoTestSession.release(@selected_release_version).popular_products
-      @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
+      @targets          = TargetLabel.targets
+      @testsets         = MeegoTestSession.release(@selected_release_version).testsets
+      @products         = MeegoTestSession.release(@selected_release_version).popular_products
+      @build_ids        = MeegoTestSession.release(@selected_release_version).popular_build_ids
       render :upload_form
     end
   end

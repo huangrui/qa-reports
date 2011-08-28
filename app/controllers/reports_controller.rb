@@ -132,8 +132,8 @@ class ReportsController < ApplicationController
     @release_versions = VersionLabel.all.map { |release| release.label }
     @targets          = TargetLabel.targets
     @testsets         = MeegoTestSession.release(release.label).testsets
-    @product          = MeegoTestSession.release(release.label).popular_products
-    @build_id         = MeegoTestSession.release(release.label).popular_build_ids
+    @products         = MeegoTestSession.release(release.label).popular_products
+    @build_ids        = MeegoTestSession.release(release.label).popular_build_ids
   end
 
   protected
