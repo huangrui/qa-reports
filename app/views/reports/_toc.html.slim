@@ -17,17 +17,17 @@ ol.toc
       a href="#test_results" Result Summary
     li
       a href="#test_features" Test Results by Feature
-    - if @test_session.has_non_nft?
+    - if @report.has_non_nft?
       li
         a href="#detailed_results" Detailed Test Results
-    - if @test_session.has_nft?
+    - if @report.has_nft?
       li
         a href="#detailed_nft_results" Non-Functional Test Results
   li
     a href="#issue_summary" Issue Summary
-  - if @test_session.result_files.present? || @editing
+  - if @report.result_files.present? || @editing
     li
       a href="#attachments" Attachments
-  - if @attachments.present? || @editing
+  - if !@report.attachments.empty? || @editing
     li
       a href="#raw_result_files" Original Result Files

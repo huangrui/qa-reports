@@ -123,9 +123,7 @@ class ReportsController < ApplicationController
   end
 
   def populate_report_fields
-    @test_session = MeegoTestSession.fetch_fully(params[:id])
-    @report       = @test_session
-    @attachments  = @test_session.attachments
+    @test_session = @report = MeegoTestSession.fetch_fully(params[:id])
     @nft_trends   = NftHistory.new(@test_session) if @test_session.has_nft?
   end
 
@@ -161,9 +159,4 @@ class ReportsController < ApplicationController
         order("build_id DESC, tested_at DESC, created_at DESC").limit(cnt).
         includes([{:features => :meego_test_cases}, {:meego_test_cases => :feature}])
   end
-
-  def just_published?
-    @published
-  end
-
 end
