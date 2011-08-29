@@ -1,7 +1,7 @@
 - if @editing
   | <div class="editable_text editable_date" id="test_category">
 
-dt Test execution date and category:
+dt Test execution date, category and build id:
 dd
   span.date= format_date_to_human_readable @report.tested_at
   - if @editing
