@@ -15,7 +15,7 @@ FactoryGirl.define do
     authentication_token
   end
 
-  factory :release, :class => VersionLabel do
+  factory :release do
     label      "1.3"
     normalized "1.3"
     sort_order  0
@@ -121,7 +121,7 @@ FactoryGirl.define do
     }
     author
     editor
-    release         {VersionLabel.where(:normalized => '1.2').first}
+    release         {Release.where(:normalized => '1.2').first}
     title           "N900 NFT TEST REPORT"
     target          "Handset"
     testset         "NFT"

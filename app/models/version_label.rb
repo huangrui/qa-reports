@@ -1,4 +1,4 @@
-class VersionLabel < ActiveRecord::Base
+class Release < ActiveRecord::Base
 
   set_table_name "releases"
 

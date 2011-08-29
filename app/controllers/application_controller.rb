@@ -32,16 +32,16 @@ class ApplicationController < ActionController::Base
   end
 
   def find_releases
-    @meego_releases = VersionLabel.release_versions
+    @meego_releases = Release.release_versions
   end
 
   def find_selected_release
     @selected_release_version = session[:release_version] =
-      valid_release(params[:release_version]) || session[:release_version] || VersionLabel.latest.label
+      valid_release(params[:release_version]) || session[:release_version] || Release.latest.label
   end
 
   def release
-    @release ||= session[:release] = VersionLabel.find_by_label(params[:release_version]) || session[:release] || VersionLabel.latest
+    @release ||= session[:release] = Release.find_by_label(params[:release_version]) || session[:release] || Release.latest
   end
 
   def profile
@@ -61,7 +61,7 @@ class ApplicationController < ActionController::Base
   def valid_release release_version
     return unless release_version.present?
 
-    if VersionLabel.all.map(&:normalized).include? release_version.downcase
+    if Release.all.map(&:normalized).include? release_version.downcase
       release_version
     else
       Rails.logger.info ["Info:  Invalid release version: ", release_version]

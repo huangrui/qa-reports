@@ -52,7 +52,7 @@ class MeegoTestSession < ActiveRecord::Base
   belongs_to :author, :class_name => "User"
   belongs_to :editor, :class_name => "User"
 
-  belongs_to :release, :class_name => "VersionLabel"
+  belongs_to :release
 
   validates_presence_of :title, :target, :testset, :product
   validates_presence_of :uploaded_files #, :on => :create
@@ -486,7 +486,7 @@ class MeegoTestSession < ActiveRecord::Base
   # For encapsulating the release_version          #
   ###############################################
   def release_version=(release_version)
-    release = VersionLabel.where( :normalized => release_version.downcase)
+    release = Release.where(:normalized => release_version.downcase)
     self.release = release.first
   end
 
@@ -535,12 +535,12 @@ class MeegoTestSession < ActiveRecord::Base
   private
 
   def create_release
-    verlabel = VersionLabel.find(:first, :conditions => {:normalized => release_version.downcase})
+    verlabel = Release.find(:first, :conditions => {:normalized => release_version.downcase})
     if verlabel
       self.release = verlabel
       save
     else
-      verlabel = VersionLabel.new(:label => release_version, :normalized => release_version.downcase)
+      verlabel = Release.new(:label => release_version, :normalized => release_version.downcase)
       verlabel.save
     end
   end

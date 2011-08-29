@@ -1,18 +1,18 @@
 class AddDefaultLabels < ActiveRecord::Migration
   def self.up
-    vl = VersionLabel.find_by_label("1.2")
+    vl = Release.find_by_label("1.2")
     unless vl
-      VersionLabel.create! :label => "1.2", :normalized => "1.2", :sort_order => 0
+      Release.create! :label => "1.2", :normalized => "1.2", :sort_order => 0
     end
 
-    vl = VersionLabel.find_by_label("1.1")
+    vl = Release.find_by_label("1.1")
     unless vl
-      VersionLabel.create! :label => "1.1", :normalized => "1.1", :sort_order => 1
+      Release.create! :label => "1.1", :normalized => "1.1", :sort_order => 1
     end
 
-    vl = VersionLabel.find_by_label("1.0")
+    vl = Release.find_by_label("1.0")
     unless vl
-      VersionLabel.create! :label => "1.0", :normalized => "1.0", :sort_order => 2
+      Release.create! :label => "1.0", :normalized => "1.0", :sort_order => 2
     end
 
     tl = TargetLabel.find_by_label("Core")
@@ -42,9 +42,9 @@ class AddDefaultLabels < ActiveRecord::Migration
   end
 
   def self.down
-    VersionLabel.find(:first, :conditions => {:label => "1.2"}).destroy
-    VersionLabel.find(:first, :conditions => {:label => "1.1"}).destroy
-    VersionLabel.find(:first, :conditions => {:label => "1.0"}).destroy
+    Release.find(:first, :conditions => {:label => "1.2"}).destroy
+    Release.find(:first, :conditions => {:label => "1.1"}).destroy
+    Release.find(:first, :conditions => {:label => "1.0"}).destroy
 
     TargetLabel.find(:first, :conditions => {:label => "Core"}).destroy
     TargetLabel.find(:first, :conditions => {:label => "Handset"}).destroy
