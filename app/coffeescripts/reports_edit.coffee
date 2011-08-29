@@ -37,7 +37,7 @@ initGradingEdit = (context) ->
 
         return false
 
-    input.change ->
+    save_grading = ->
         data   = form.serialize()
         action = form.attr 'action'
         $.post action, data
@@ -47,11 +47,13 @@ initGradingEdit = (context) ->
         content.removeClass().addClass 'content'
         content.addClass grade_cls
         clickHandler()
+        return false
+
+    input.change save_grading
 
     input.blur ->
         return if context.hasClass cls
-        clickHandler()
-        return false
+        save_grading()
 
     context.click clickHandler
 
