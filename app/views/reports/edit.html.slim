@@ -28,12 +28,9 @@
 
 - content_for :view_specific_js do
   div style="display:none"
-    span#session_id
-      #{@report.id}
-    span#formatted_execute_date
-      #{@report.formatted_date}
-    span#bugzilla_uri
-      #{BUGZILLA_CONFIG['link_uri']}
+    span#session_id =@report.id
+    span#formatted_execute_date =@report.formatted_date
+    span#bugzilla_uri =BUGZILLA_CONFIG['link_uri']
 
   = javascript_include_tag 'datetime'
   = javascript_include_tag 'jquery.form.js'

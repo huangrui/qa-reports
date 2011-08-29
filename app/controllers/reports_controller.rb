@@ -129,7 +129,7 @@ class ReportsController < ApplicationController
 
   def populate_edit_fields
     @build_diff       = []
-    @release_versions = VersionLabel.all.map { |release| release.label }
+    @release_versions = VersionLabel.all.map { |release| release.label }.sort.reverse
     @targets          = TargetLabel.targets
     @testsets         = MeegoTestSession.release(release.label).testsets
     @products         = MeegoTestSession.release(release.label).popular_products
