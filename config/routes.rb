@@ -21,11 +21,6 @@ Meegoqa::Application.routes.draw do
 
   match '/download' => 'csv_export#export_report', :via => "get"
 
-  match '/ajax_update_tested_at' => 'reports#update_tested_at', :via => "post"
-  match '/ajax_update_txt' => 'reports#update_txt', :via => "post"
-  match '/ajax_update_title' => 'reports#update_title', :via => "post"
-  match '/ajax_update_category' => 'reports#update_category', :via => "post"
-
   match '/fetch_bugzilla_data' => 'bugs#fetch_bugzilla_data', :via => "get"
 
   # to test exception notifier

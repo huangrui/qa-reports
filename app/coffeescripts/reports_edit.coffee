@@ -236,7 +236,7 @@ handleResultSubmit = () ->
     $.post url, data
 
     return false
-
+###
 handleDateEdit = () ->
     $button = $(this)
     $content = $button.find('span.content').first()
@@ -289,7 +289,7 @@ handleDateEditSubmit = () ->
     $content.show()
 
     return false
-
+###
 
 handleCommentEdit = () ->
     $node = $(this)
