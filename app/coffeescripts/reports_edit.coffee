@@ -154,9 +154,9 @@ prepareCategoryUpdate = (div) ->
       $.post url, data, (data) ->
           $datespan.text(data)
 
-          $catpath.html(htmlEscape(versionval) + arrow + htmlEscape(targetval)
-                                               + arrow + htmlEscape(typeval)
-                                               + arrow + htmlEscape(hwval))
+          $catpath.html(htmlEscape(versionval) + arrow + htmlEscape(targetval) +
+                                                 arrow + htmlEscape(typeval) +
+                                                 arrow + htmlEscape(hwval))
 
           $donebtn.attr("href", "/" + encodeURI(versionval) +
                                 "/" + encodeURI(targetval) +
