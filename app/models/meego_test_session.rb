@@ -52,7 +52,7 @@ class MeegoTestSession < ActiveRecord::Base
   belongs_to :author, :class_name => "User"
   belongs_to :editor, :class_name => "User"
 
-  belongs_to :release, :class_name => "VersionLabel", :foreign_key => "version_label_id"
+  belongs_to :release, :class_name => "VersionLabel"
 
   validates_presence_of :title, :target, :testset, :product
   validates_presence_of :uploaded_files #, :on => :create
@@ -227,7 +227,7 @@ class MeegoTestSession < ActiveRecord::Base
     created = created_at || Time.now
 
     @prev_session = MeegoTestSession.find(:first, :conditions => [
-        "(tested_at < ? OR tested_at = ? AND created_at < ?) AND target = ? AND testset = ? AND product = ? AND published = ? AND version_label_id = ?", tested, tested, created, target.downcase, testset.downcase, product.downcase, true, version_label_id
+        "(tested_at < ? OR tested_at = ? AND created_at < ?) AND target = ? AND testset = ? AND product = ? AND published = ? AND release_id = ?", tested, tested, created, target.downcase, testset.downcase, product.downcase, true, release_id
     ],
                           :order => "tested_at DESC, created_at DESC", :include =>
          [{:features => :meego_test_cases}, {:meego_test_cases => :feature}])
@@ -239,7 +239,7 @@ class MeegoTestSession < ActiveRecord::Base
   def next_session
     return @next_session unless @next_session.nil? and @has_next.nil?
     @next_session = MeegoTestSession.find(:first, :conditions => [
-        "(tested_at > ? OR tested_at = ? AND created_at > ?) AND target = ? AND testset = ? AND product = ? AND published = ? AND version_label_id = ?", tested_at, tested_at, created_at, target.downcase, testset.downcase, product.downcase, true, version_label_id
+        "(tested_at > ? OR tested_at = ? AND created_at > ?) AND target = ? AND testset = ? AND product = ? AND published = ? AND release_id = ?", tested_at, tested_at, created_at, target.downcase, testset.downcase, product.downcase, true, release_id
     ],
                           :order => "tested_at ASC, created_at ASC", :include =>
          [{:features => :meego_test_cases}, {:meego_test_cases => :feature}])

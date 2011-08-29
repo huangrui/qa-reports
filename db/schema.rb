@@ -90,11 +90,11 @@ ActiveRecord::Schema.define(:version => 20110829092127) do
     t.datetime "tested_at",                                            :null => false
     t.integer  "author_id",                         :default => 0,     :null => false
     t.integer  "editor_id",                         :default => 0,     :null => false
-    t.integer  "version_label_id",                  :default => 1,     :null => false
+    t.integer  "release_id",                        :default => 1,     :null => false
     t.string   "build_id",                          :default => ""
   end
 
-  add_index "meego_test_sessions", ["version_label_id", "target", "testset", "product"], :name => "index_meego_test_sessions_key"
+  add_index "meego_test_sessions", ["release_id", "target", "testset", "product"], :name => "index_meego_test_sessions_key"
 
   create_table "releases", :force => true do |t|
     t.string  "label",      :limit => 64, :null => false
