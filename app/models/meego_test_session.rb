@@ -352,15 +352,6 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 
-  def build_id_html
-    txt = build_id_txt
-    if txt == ""
-      "No build id details filled in yet"
-    else
-      MeegoTestReport::format_txt(txt)
-    end
-  end
-
   def environment_html
     txt = environment_txt
     if txt == ""
