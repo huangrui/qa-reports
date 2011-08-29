@@ -68,7 +68,7 @@ class MeegoTestSession < ActiveRecord::Base
   before_save :force_testset_product_names
 
   scope :published,  where(:published => true)
-  scope :release,    lambda { |release| published.joins(:release).where(:version_labels => {:normalized => release.downcase}) }
+  scope :release,    lambda { |release| published.joins(:release).where(:releases => {:normalized => release.downcase}) }
   scope :profile,    lambda { |profile| published.where(:target => profile.downcase) }
   scope :testset,    lambda { |testset| published.where(:testset => testset.downcase) }
   scope :product_is, lambda { |product| published.where(:product => product.downcase) }
@@ -187,33 +187,34 @@ class MeegoTestSession < ActiveRecord::Base
     return filters_exist
   end
 
+  #TODO: Throw away and use scopes
   class << self
     def by_release_version_target_testset_product(release_version, target, testset, product, order_by = "tested_at DESC, id DESC", limit = nil)
       target    = target.downcase
       testset  = testset.downcase
       product = product.downcase
-      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testset => testset, :product => product).joins(:release).order(order_by).limit(limit)
+      published.where("releases.normalized" => release_version.downcase, :target => target, :testset => testset, :product => product).joins(:release).order(order_by).limit(limit)
     end
 
     def published_by_release_version_target_testset(release_version, target, testset, order_by = "tested_at DESC, id DESC", limit = nil)
       target   = target.downcase
       testset = testset.downcase
-      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testset => testset).joins(:release).order(order_by).limit(limit)
+      published.where("releases.normalized" => release_version.downcase, :target => target, :testset => testset).joins(:release).order(order_by).limit(limit)
     end
 
     def published_hwversion_by_release_version_target_testset(release_version, target, testset)
       target   = target.downcase
       testset = testset.downcase
-      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testset => testset).select("DISTINCT product").joins(:release).order("product")
+      published.where("releases.normalized" => release_version.downcase, :target => target, :testset => testset).select("DISTINCT product").joins(:release).order("product")
     end
 
     def published_by_release_version_target(release_version, target, order_by = "tested_at DESC, id DESC", limit = nil)
       target = target.downcase
-      published.where("version_labels.normalized" => release_version.downcase, :target => target).joins(:release).order(order_by).limit(limit)
+      published.where("releases.normalized" => release_version.downcase, :target => target).joins(:release).order(order_by).limit(limit)
     end
 
     def published_by_release_version(release_version, order_by = "tested_at DESC", limit = nil)
-      published.where("version_labels.normalized" => release_version.downcase).joins(:release).order(order_by).limit(limit)
+      published.where("releases.normalized" => release_version.downcase).joins(:release).order(order_by).limit(limit)
     end
   end
 

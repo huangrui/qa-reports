@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110817075345) do
+ActiveRecord::Schema.define(:version => 20110829092127) do
 
   create_table "features", :force => true do |t|
     t.string  "name",                  :default => ""
@@ -96,6 +96,12 @@ ActiveRecord::Schema.define(:version => 20110817075345) do
 
   add_index "meego_test_sessions", ["version_label_id", "target", "testset", "product"], :name => "index_meego_test_sessions_key"
 
+  create_table "releases", :force => true do |t|
+    t.string  "label",      :limit => 64, :null => false
+    t.string  "normalized", :limit => 64, :null => false
+    t.integer "sort_order",               :null => false
+  end
+
   create_table "report_attachments", :force => true do |t|
     t.integer  "meego_test_session_id",   :null => false
     t.datetime "created_at"
@@ -155,11 +161,5 @@ ActiveRecord::Schema.define(:version => 20110817075345) do
 
   add_index "users", ["authentication_token"], :name => "index_users_on_authentication_token", :unique => true
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
-
-  create_table "version_labels", :force => true do |t|
-    t.string  "label",      :limit => 64, :null => false
-    t.string  "normalized", :limit => 64, :null => false
-    t.integer "sort_order",               :null => false
-  end
 
 end

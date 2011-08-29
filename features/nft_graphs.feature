@@ -24,9 +24,10 @@ Feature: Check NFT graphs from the web page
     And I follow "Edit"
     Then I should not see "Date,bps"
 
-  Scenario: Should see serial history CSV data
+  #TODO: Instead of verifying that DOM contains the data, the actual view should be verified with Selenium
+  Scenario: Viewing NFT history
     When I view the report "1.2/Handset/NFT/N900"
-    Then I should see "2011-08-09,150.0"
+    Then I should see "2011-08-08,150.0"
     And I should see "2011-08-09,150.0"
 
   # Note: the Selenium cases below are based on the JavaScript code updating

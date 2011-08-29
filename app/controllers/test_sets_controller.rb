@@ -2,7 +2,7 @@ class TestSetsController < ApplicationController
 
   def index
     query_params = {}
-    query_params[:version_labels] = {:label => params[:release_version]} if params[:release_version]
+    query_params[:releases] = {:label => params[:release_version]} if params[:release_version]
     query_params[:target] = params[:target] if params[:target]
 
     @testsets = MeegoTestSession.published.joins(:release).where(query_params).testsets

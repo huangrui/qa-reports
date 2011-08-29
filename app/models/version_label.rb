@@ -1,5 +1,7 @@
 class VersionLabel < ActiveRecord::Base
 
+  set_table_name "releases"
+
   scope :in_sort_order, order("sort_order ASC")
 
   def self.release_versions

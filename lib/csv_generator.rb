@@ -9,7 +9,7 @@ module CsvGenerator
         join users as editor on (mts.editor_id = editor.id)
         join meego_test_cases as mtc on (mtc.meego_test_session_id = mts.id)
         join features as mtset on (mtc.feature_id = mtset.id)
-        join version_labels as vl on (mts.version_label_id = vl.id)
+        join releases as vl on (mts.version_label_id = vl.id)
     END
 
     conditions = []
