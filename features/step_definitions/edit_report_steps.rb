@@ -48,12 +48,16 @@ Then /^the report should not contain a detailed test results section/ do
   Then %{I should not see "Detailed Test Results"}
 end
 
+result_value = {'Pass' => '1', 'Fail' => '-1', 'N/A' => '0'}
+
 When /^I change the test case result of "([^"]*)" to "([^"]*)"$/ do |tc, result|
-  pending # express the regexp above with the code you wish you had
+  row = find_testcase_row(tc)
+  row.find('.testcase_result').click()
+  row.select(result, :from => "test_case[result]")
 end
 
 Then /^the result of test case "([^"]*)" should be "([^"]*)"$/ do |tc, result|
-  find_testcase_row.find(".testcase_result .content").should have_content result
+  find_testcase_row(tc).find(".testcase_result .content").should have_content result
 end
 
 

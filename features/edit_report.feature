@@ -101,5 +101,6 @@ Feature: Edit Report
     And I change the test case result of "SMOKE-SIM-Get_IMSI" to "Pass"
     And I press "Done"
 
-    Then The result of test case "SMOKE-SIM-Get_IMSI" should be "Pass"
+    Then show me the page
+    Then the result of test case "SMOKE-SIM-Get_IMSI" should be "Pass"
 
