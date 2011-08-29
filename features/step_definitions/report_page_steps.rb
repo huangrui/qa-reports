@@ -217,6 +217,6 @@ When /^I change grading of feature "([^"]*)" to ([^"]*)$/ do |feature_name, grad
   colors = {'red' => '1', 'yellow' => '2', 'green' => '3', 'n/a' => '0'}
   grading_area = find_feature_row(feature_name).find(".feature_record_grading")
   grading_area.click()
-  page.execute_script("$('.grading_select').val('#{colors[grading_color]}')")
+  page.execute_script("$('.feature_record:contains(#{feature_name}) .grading_select').val('#{colors[grading_color]}')")
   #grading_area.select(grading_color.capitalize, :from => "feature[grading]")
 end

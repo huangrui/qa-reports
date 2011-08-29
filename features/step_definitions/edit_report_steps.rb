@@ -1,3 +1,9 @@
+
+def find_testcase_row(tcname)
+  namecell = page.find(".testcase_name", :text => tcname)
+  namecell.find(:xpath, "ancestor::tr")
+end
+
 Given /^the report for "([^"]*)" exists on the service$/ do |file|
   Given "I am an user with a REST authentication token"
 
@@ -41,4 +47,13 @@ end
 Then /^the report should not contain a detailed test results section/ do
   Then %{I should not see "Detailed Test Results"}
 end
+
+When /^I change the test case result of "([^"]*)" to "([^"]*)"$/ do |tc, result|
+  pending # express the regexp above with the code you wish you had
+end
+
+Then /^the result of test case "([^"]*)" should be "([^"]*)"$/ do |tc, result|
+  find_testcase_row.find(".testcase_result .content").should have_content result
+end
+
 
