@@ -59,7 +59,7 @@
       td class="testcase_to_target #{result_class(m.target_result)}" =m.relative_html
 
     - if first
-      td class="testcase_result multiple_results #{result_class(testcase)} #{'edit' if @editing} #{testcase.find_change_class(@test_session.prev_session)} " rowspan=all.size
+      td class="testcase_result multiple_results #{result_class(testcase)} #{'edit' if @editing} #{testcase.find_change_class(@report.prev_session)} " rowspan=all.size
         span.content= result_html(testcase)
       / NOTE: The following is identical in _nft_testcase and _testcase_comment.
       / Partial not used here because of seriously bad performance.

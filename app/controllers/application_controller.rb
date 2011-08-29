@@ -21,11 +21,15 @@
 #
 
 class ApplicationController < ActionController::Base
-
+  helper_method :release, :profile, :testset, :product
   before_filter :find_releases
   before_filter :find_selected_release
 
   #protect_from_forgery
+
+  rescue_from ActiveRecord::RecordNotFound do
+    render :file => "#{Rails.root}/public/404.html", :status => :not_found, :layout => false
+  end
 
   def find_releases
     @meego_releases = VersionLabel.release_versions
@@ -36,8 +40,20 @@ class ApplicationController < ActionController::Base
       valid_release(params[:release_version]) || session[:release_version] || VersionLabel.latest.label
   end
 
-  def render_404
-    render :file => "#{Rails.root}/public/404.html", :status => :not_found, :layout => false
+  def release
+    @release ||= session[:release] = VersionLabel.find_by_label(params[:release_version]) || session[:release] || VersionLabel.latest
+  end
+
+  def profile
+    @profile ||= params[:target]
+  end
+
+  def testset
+    @testset ||= params[:testset]
+  end
+
+  def product
+    @product ||= params[:product]
   end
 
   private

@@ -1,3 +1,3 @@
 - unless @no_upload_link or not user_signed_in?
   #action
-    a.small_btn.add href=upload_full_path Add report +
+    a.small_btn.add href=new_report_path(release.label, profile, testset, product) Add report +

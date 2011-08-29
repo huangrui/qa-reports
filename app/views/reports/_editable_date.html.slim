@@ -8,13 +8,13 @@ dd
     span.editmarkup style="display:none;"
 
 dd.category
-  = @test_session.release_version
+  = @report.release_version
   |  &rsaquo; 
-  = @test_session.target
+  = @report.target
   |  &rsaquo; 
-  = @test_session.testset
+  = @report.testset
   |  &rsaquo; 
-  = @test_session.product
+  = @report.product
 
 - if @editing
   | </div>

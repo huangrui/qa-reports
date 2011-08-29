@@ -16,6 +16,6 @@
 #header
   #logo
     h3
-      a href=url_for(:controller=>'/index', :action=>'index', :release_version=>@selected_release_version) MeeGo | QA Reports
-      a.hover href=url_for(:controller=>'/index', :action=>'index', :release_version=>@selected_release_version)
+      a href=release_path(release.label) MeeGo | QA Reports
+      a.hover href=release_path(release.label)
   = render :partial => "reports/upload_link"

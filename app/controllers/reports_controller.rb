@@ -33,130 +33,51 @@ require 'report_exporter'
 
 class ReportsController < ApplicationController
   include CacheHelper
+  layout        'report'
+  before_filter :authenticate_user!,         :except => [:index, :show, :print, :compare]
+  before_filter :validate_path_params,       :only   => [:show, :print]
+  cache_sweeper :meego_test_session_sweeper, :only   => [:update, :delete, :publish]
 
-  before_filter :authenticate_user!, :except => ["show", "print", "compare", "redirect_by_id"]
-  cache_sweeper :meego_test_session_sweeper, :only => [:update]
+  def index
+    @profiles = TargetLabel.targets
+    @products = Product.by_profile_by_testset(release)
+    @show_rss = true
+    render :layout => "application"
+  end
 
   def preview
-    @preview_id = session[:preview_id] || params[:id]
-    @editing    = true
-    @wizard     = true
-    @build_diff = []
-
-    if @preview_id
-      @test_session   = MeegoTestSession.fetch_fully(@preview_id)
-      @report         = @test_session
-      @no_upload_link = true
-
-      @release_versions = VersionLabel.all.map { |release| release.label }
-      @targets = TargetLabel.targets
-      @testsets = MeegoTestSession.release(@selected_release_version).testsets
-      @product = MeegoTestSession.release(@selected_release_version).popular_products
-      @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
-
-      render :layout => "report"
-    else
-      redirect_to :controller => 'upload', :action => :upload_form
-    end
+    populate_report_fields
+    populate_edit_fields
+    @editing          = true
+    @wizard           = true
+    @no_upload_link   = true
   end
 
   def publish
-    report_id    = params[:report_id]
-    test_session = MeegoTestSession.fetch_fully(report_id)
-    test_session.update_attribute(:published, true)
+    report = MeegoTestSession.find(params[:id])
+    report.update_attribute(:published, true)
 
-    expire_caches_for(test_session, true)
-    expire_index_for(test_session)
-
-    redirect_to :action          => 'show',
-                :id              => report_id,
-                :release_version => test_session.release_version,
-                :target          => test_session.target,
-                :testset         => test_session.testset,
-                :product         => test_session.product
+    flash[:notice] = "Your report has been successfully published"
+    redirect_to show_report_path(report.release.label, report.target, report.testset, report.product, report)
   end
 
   def show
-    if @report_id = params[:id].try(:to_i)
-      preview_id = session[:preview_id]
-
-      if preview_id == @report_id
-        session[:preview_id] = nil
-        @published           = true
-      else
-        @published = false
-      end
-
-      @test_session = MeegoTestSession.fetch_fully(@report_id)
-
-      return render_404 unless @selected_release_version.downcase.eql? @test_session.release_version.downcase
-
-      @history = history(@test_session, 5)
-      @build_diff = build_diff(@test_session, 4)
-
-      @target    = @test_session.target
-      @testset  = @test_session.testset
-      @product = @test_session.product
-
-      @report    = @test_session
-      @attachments = @test_session.attachments
-      @editing = false
-      @wizard  = false
-
-      @nft_trends = nil
-      if @test_session.has_nft?
-        @nft_trends = NftHistory.new(@test_session)
-      end
-
-      render :layout => "report"
-    else
-      redirect_to :action => :index
-    end
+    populate_report_fields
+    @history      = history(@report, 5)
+    @build_diff   = build_diff(@report, 4)
   end
 
   def print
-    if @report_id = params[:id].try(:to_i)
-      @test_session = MeegoTestSession.fetch_fully(@report_id)
-
-      @report       = @test_session
-      @editing      = false
-      @attachments = @test_session.attachments
-      @wizard = false
-      @email  = true
-      @build_diff = []
-
-      @nft_trends = nil
-      if @test_session.has_nft?
-        @nft_trends = NftHistory.new(@test_session)
-      end
-
-      render :layout => "report"
-    else
-      redirect_to :action => :index
-    end
+    populate_report_fields
+    @build_diff   = []
+    @email        = true
   end
 
   def edit
-    @editing = true
-    @wizard  = false
-    @build_diff = []
-
-    if id = params[:id].try(:to_i)
-      @test_session   = MeegoTestSession.fetch_fully(id)
-
-      @report         = @test_session
-      @release_versions = VersionLabel.all.map { |release| release.label }
-      @targets = TargetLabel.targets
-      @testsets = MeegoTestSession.release(@selected_release_version).testsets
-      @product = MeegoTestSession.release(@selected_release_version).popular_products
-      @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
-      @no_upload_link = true
-      @attachments = @test_session.attachments
-
-      render :layout => "report"
-    else
-      redirect_to :action => :index
-    end
+    populate_report_fields
+    populate_edit_fields
+    @editing          = true
+    @no_upload_link   = true
   end
 
   def update
@@ -166,6 +87,12 @@ class ReportsController < ApplicationController
 
     #TODO: Fix templates so that normal 'head :ok' response is enough
     render :text => @report.tested_at.strftime('%d %B %Y')
+  end
+
+  def destroy
+    report = MeegoTestSession.find(params[:id])
+    report.destroy
+    redirect_to root_path
   end
 
   #TODO: This should be in comparison controller
@@ -186,28 +113,32 @@ class ReportsController < ApplicationController
     render :layout => "report"
   end
 
-  def delete
-    test_session = MeegoTestSession.find(params[:id])
+  private
 
-    expire_caches_for(test_session, true)
-    expire_index_for(test_session)
-
-    test_session.destroy
-    redirect_to :controller => :index, :action => :index
+  def validate_path_params
+    if params[:release_version]
+      # Raise ActiveRecord::RecordNotFound if the report doesn't exist
+      MeegoTestSession.release(release.label).profile(profile).testset(testset).product_is(product).find(params[:id])
+    end
   end
 
-  def redirect_by_id
-    # Shortcut for accessing the correct report using report ID only
-    begin
-      s = MeegoTestSession.find(params[:id].to_i)
-      redirect_to :controller => 'reports', :action => 'show', :release_version => s.release_version, :target => s.target, :testset => s.testset, :product => s.product, :id => s.id
-    rescue ActiveRecord::RecordNotFound
-      redirect_to :controller => :index, :action => :index
-    end
+  def populate_report_fields
+    @report = MeegoTestSession.fetch_fully(params[:id])
+    @nft_trends   = NftHistory.new(@report) if @report.has_nft?
+  end
+
+  def populate_edit_fields
+    @build_diff       = []
+    @release_versions = VersionLabel.all.map { |release| release.label }
+    @targets          = TargetLabel.targets
+    @testsets         = MeegoTestSession.release(release.label).testsets
+    @products         = MeegoTestSession.release(release.label).popular_products
+    @build_ids        = MeegoTestSession.release(release.label).popular_build_ids
   end
 
   protected
 
+  #TODO: These should be somewhere else..
   def history(s, cnt)
     MeegoTestSession.where("(tested_at < '#{s.tested_at}' OR tested_at = '#{s.tested_at}' AND created_at < '#{s.created_at}') AND target = '#{s.target.downcase}' AND testset = '#{s.testset.downcase}' AND product = '#{s.product.downcase}' AND published = 1 AND version_label_id = #{s.version_label_id}").
         order("tested_at DESC, created_at DESC").limit(cnt).
@@ -228,9 +159,4 @@ class ReportsController < ApplicationController
         order("build_id DESC, tested_at DESC, created_at DESC").limit(cnt).
         includes([{:features => :meego_test_cases}, {:meego_test_cases => :feature}])
   end
-
-  def just_published?
-    @published
-  end
-
 end

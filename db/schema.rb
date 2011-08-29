@@ -46,6 +46,16 @@ ActiveRecord::Schema.define(:version => 20110817075345) do
 
   add_index "meego_measurements", ["meego_test_case_id"], :name => "index_meego_measurements_on_meego_test_case_id"
 
+  create_table "meego_test_case_attachments", :force => true do |t|
+    t.integer  "meego_test_case_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "attachment_file_name"
+    t.string   "attachment_content_type"
+    t.integer  "attachment_file_size"
+    t.datetime "attachment_updated_at"
+  end
+
   create_table "meego_test_cases", :force => true do |t|
     t.integer "feature_id",                                               :null => false
     t.string  "name",                                                     :null => false
@@ -86,6 +96,16 @@ ActiveRecord::Schema.define(:version => 20110817075345) do
 
   add_index "meego_test_sessions", ["version_label_id", "target", "testset", "product"], :name => "index_meego_test_sessions_key"
 
+  create_table "report_attachments", :force => true do |t|
+    t.integer  "meego_test_session_id",   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "attachment_file_name"
+    t.string   "attachment_content_type"
+    t.integer  "attachment_file_size"
+    t.datetime "attachment_updated_at"
+  end
+
   create_table "serial_measurements", :force => true do |t|
     t.integer "meego_test_case_id",                :null => false
     t.string  "name",                              :null => false
@@ -107,6 +127,13 @@ ActiveRecord::Schema.define(:version => 20110817075345) do
     t.string  "normalized", :limit => 64, :null => false
     t.integer "sort_order",               :null => false
   end
+
+  create_table "test_result_files", :force => true do |t|
+    t.integer "meego_test_session_id", :null => false
+    t.string  "path"
+  end
+
+  add_index "test_result_files", ["meego_test_session_id"], :name => "index_test_result_files_on_meego_test_session_id"
 
   create_table "users", :force => true do |t|
     t.string   "email",                               :default => "", :null => false

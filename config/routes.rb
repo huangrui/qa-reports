@@ -1,7 +1,11 @@
 Meegoqa::Application.routes.draw do
   devise_for :users, :controllers => { :sessions => "users/sessions" }  , :path_names => { :sign_up => "#{DeviseRegistrationConfig::URL_TOKEN}/register" }
 
-  resources :reports,     :only => [:update]
+  resources :reports, :only => [:index, :show, :edit, :update, :destroy] do
+    get  'preview', :on => :member
+    post 'publish', :on => :member
+  end
+
   resources :features,    :only => [:update]
   resources :test_cases,  :only => [:update]
   resources :attachments, :only => [:destroy]
@@ -15,8 +19,6 @@ Meegoqa::Application.routes.draw do
   match '/api/update/:id' => 'api#update_result', :via => "post"
   match '/api/reports' => 'api#reports_by_limit_and_time', :via => "get"
 
-  match '/finalize' => 'reports#preview', :via => "get"
-  match '/publish' => 'reports#publish', :via => "post"
   match '/download' => 'csv_export#export_report', :via => "get"
 
   match '/ajax_update_tested_at' => 'reports#update_tested_at', :via => "post"
@@ -29,41 +31,27 @@ Meegoqa::Application.routes.draw do
   # to test exception notifier
   match '/raise_exception' => 'exceptions#index' unless Rails.env.production?
 
-  # Shortcut by report ID
-  match '/reports/:id' => 'reports#redirect_by_id', :via => "get"
-
   match '/reports/:id/compare/:compare_id' => 'session_comparison#show', :via => "get", :as => :session_comparison
 
   # Constraint to allow a dot (.) in release vesion
   constraints(:release_version => /[a-zA-Z0-9._-]+/, :id => /[0-9]+/) do
-    match '(/:release_version(/:target(/:testset(/:product))))/upload' => 'upload#upload_form', :via => "get", :as => :upload_form
-    match '(/:release_version(/:target(/:testset(/:product))))/product' => 'products#index', :via => "get", :as => :products
-    match '(/:release_version(/:target(/:testset(/:product))))/testset' => 'test_sets#index', :via => "get", :as => :test_types
+    match '/:release_version'  => 'reports#index', :via => "get", :as => :release
 
-    match '/:release_version/:target/:testset/:product/csv' => 'csv_export#export', :via => "get"
-    match '/:release_version/:target/:testset/csv' => 'csv_export#export', :via => "get"
-    match '/:release_version/:target/csv' => 'csv_export#export', :via => "get"
+    match '/:release_version/:target/:testset/:product/:id'             => 'reports#show',             :via => "get", :as => :show_report
+    match '/:release_version/:target/:testset/:product/:id/edit'        => 'reports#edit',             :via => "get", :as => :edit_report
+    match '/:release_version/:target/:testset/:product/:id/print'       => 'reports#print',            :via => "get", :as => :print_report
+    match '(/:release_version(/:target(/:testset(/:product))))/upload'  => 'upload#upload_form',       :via => "get", :as => :new_report
 
-    match '/:release_version/:target/:testset/:product/rss' => 'rss#rss', :via => "get"
-    match '/:release_version/:target/:testset/rss' => 'rss#rss', :via => "get"
-    match '/:release_version/:target/rss' => 'rss#rss', :via => "get"
-    match '/:release_version/rss' => 'rss#rss', :via => "get"
-
-    match '/:release_version/:target/:testset/compare/:comparetestset' => 'comparison_reports#show', :via => "get", :as => :branch_comparison
+    match '(/:release_version(/:target(/:testset(/:product))))/product' => 'products#index',           :via => "get", :as => :products
+    match '(/:release_version(/:target(/:testset(/:product))))/testset' => 'test_sets#index',          :via => "get", :as => :test_types
+    match '/:release_version/:target(/:testset(/:product))/csv'         => 'csv_export#export',        :via => "get", :as => :group_report_csv
+    match '/:release_version/:target/:testset/:product/:id/download'    => 'csv_export#export_report', :via => "get"
+    match '/:release_version/:target/:testset/compare/:comparetestset'  => 'comparison_reports#show',  :via => "get", :as => :branch_comparison
+    match '/:release_version(/:target(/:testset(/:product)))/rss'       => 'rss#rss',                  :via => "get"
 
     match '/:release_version/:target(/:testset(/:product))/report_list(/:page)' => 'report_groups#report_page', :via => "get", :as => :report_list
-
-    match '/:release_version/:target/:testset/:product/:id' => 'reports#show', :via => "get"
-    match '/:release_version/:target/:testset/:product/:id/edit' => 'reports#edit', :via => "get"
-    match '/:release_version/:target/:testset/:product/:id/download' => 'csv_export#export_report', :via => "get"
-    match '/:release_version/:target/:testset/:product/:id/delete' => 'reports#delete', :via => "post"
-    match '/:release_version/:target/:testset/:product/:id/print' => 'reports#print', :via => "get"
-
-    match '/:release_version' => 'index#index', :via => "get"
-
-    match '/:release_version(/:target(/:testset(/:product)))' => 'report_groups#show', :via => "get", :as => :group_report
+    match '/:release_version(/:target(/:testset(/:product)))'                   => 'report_groups#show',        :via => "get", :as => :group_report
   end
 
-
-  root :to => "index#index"
+    root :to => "reports#index"
 end

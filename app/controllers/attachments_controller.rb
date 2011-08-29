@@ -1,7 +1,6 @@
 class AttachmentsController < ApplicationController
   include CacheHelper
   cache_sweeper :meego_test_session_sweeper
-
   before_filter :authenticate_user!
 
   def destroy

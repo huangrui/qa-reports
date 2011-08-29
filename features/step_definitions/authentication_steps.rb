@@ -3,15 +3,17 @@ Given /^I am not logged in$/ do
 end
 
 Given /^I am viewing a test report$/ do
-  FactoryGirl.create(:test_report)
-  visit('/1.3/Hanset/Acceptance/N900/' + MeegoTestSession.first.id.to_s)
+  FactoryGirl.create(:target)
+  FactoryGirl.create(:release)
+  report = FactoryGirl.create(:test_report)
+  visit report_path(report)
 end
 
 When /^I log in with valid credentials$/ do
-  user = FactoryGirl.create(:user, 
+  user = FactoryGirl.create(:user,
     :name                  => 'Johnny Depp',
-    :email                 => 'john@meego.com', 
-    :password              => 'buzzword', 
+    :email                 => 'john@meego.com',
+    :password              => 'buzzword',
     :password_confirmation => 'buzzword')
 
   click_link_or_button  'Sign In'
@@ -21,7 +23,7 @@ When /^I log in with valid credentials$/ do
 end
 
 Then /^I should be redirected back to the report I was viewing$/ do
-  current_path.should == '/1.3/Hanset/Acceptance/N900/' + MeegoTestSession.first.id.to_s
+  current_path.should == report_path(MeegoTestSession.first)
 end
 
 Then /^I should see my username and "([^"]*)" button$/ do |arg1|

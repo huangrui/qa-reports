@@ -67,10 +67,10 @@ class MeegoTestSession < ActiveRecord::Base
 
   before_save :force_testset_product_names
 
-  scope :published, where(:published => true)
-  scope :release, lambda { |release| published.joins(:release).where(:version_labels => {:normalized => release.downcase}) }
-  scope :profile, lambda { |profile| published.where(:target => profile.downcase) }
-  scope :testset, lambda { |testset| published.where(:testset => testset.downcase) }
+  scope :published,  where(:published => true)
+  scope :release,    lambda { |release| published.joins(:release).where(:version_labels => {:normalized => release.downcase}) }
+  scope :profile,    lambda { |profile| published.where(:target => profile.downcase) }
+  scope :testset,    lambda { |testset| published.where(:testset => testset.downcase) }
   scope :product_is, lambda { |product| published.where(:product => product.downcase) }
 
   RESULT_FILES_DIR = "public/reports"
