@@ -1,6 +1,6 @@
 
 def find_testcase_row(tcname)
-  namecell = page.find(".testcase_name", :text => tcname)
+  namecell = page.find(".testcase_name p", :text => tcname)
   namecell.find(:xpath, "ancestor::tr")
 end
 

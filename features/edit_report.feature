@@ -100,7 +100,7 @@ Feature: Edit Report
     When I edit the report "1.2/Core/automated/N900"
     And I change the test case result of "SMOKE-SIM-Get_IMSI" to "Pass"
     And I press "Done"
+    And I follow "See all"
 
-    Then show me the page
     Then the result of test case "SMOKE-SIM-Get_IMSI" should be "Pass"
 
