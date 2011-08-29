@@ -8,7 +8,7 @@ h2 id=anchor
 .editcontent =@report.send(field + "_html")
 
 - if @editing
-  form.txt_form action=report_path(@test_session) method="post" style="display:none"
+  form.txt_form action=report_path(@report) method="post" style="display:none"
     .editables
       input name="_method" type="hidden" value="put"
       input name="authenticity_token" type="hidden" value=form_authenticity_token

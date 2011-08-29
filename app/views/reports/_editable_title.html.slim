@@ -4,10 +4,10 @@
 h1.clearfix.report-title
   span.editcontent= @report.title
   - if @editing
-    form.title_form action=report_path(@test_session) method="post" style="display:none"
+    form.title_form action=report_path(@report) method="post" style="display:none"
       input name="_method" type="hidden" value="put"
       input name="authenticity_token" type="hidden" value=form_authenticity_token
-      input.title_field name="report[title]" type="text" value=@test_session.title
+      input.title_field name="report[title]" type="text" value=@report.title
       input.small_btn.save type="submit" value="Save"
       input.small_btn.cancel type="button" value="Cancel"
 
