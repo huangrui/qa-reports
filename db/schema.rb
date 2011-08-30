@@ -46,16 +46,6 @@ ActiveRecord::Schema.define(:version => 20110829092127) do
 
   add_index "meego_measurements", ["meego_test_case_id"], :name => "index_meego_measurements_on_meego_test_case_id"
 
-  create_table "meego_test_case_attachments", :force => true do |t|
-    t.integer  "meego_test_case_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "attachment_file_name"
-    t.string   "attachment_content_type"
-    t.integer  "attachment_file_size"
-    t.datetime "attachment_updated_at"
-  end
-
   create_table "meego_test_cases", :force => true do |t|
     t.integer "feature_id",                                               :null => false
     t.string  "name",                                                     :null => false
@@ -100,16 +90,6 @@ ActiveRecord::Schema.define(:version => 20110829092127) do
     t.string  "label",      :limit => 64, :null => false
     t.string  "normalized", :limit => 64, :null => false
     t.integer "sort_order",               :null => false
-  end
-
-  create_table "report_attachments", :force => true do |t|
-    t.integer  "meego_test_session_id",   :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "attachment_file_name"
-    t.string   "attachment_content_type"
-    t.integer  "attachment_file_size"
-    t.datetime "attachment_updated_at"
   end
 
   create_table "serial_measurements", :force => true do |t|
