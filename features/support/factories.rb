@@ -36,6 +36,10 @@ FactoryGirl.define do
     sort_order 0
   end
 
+  factory :result_file do
+    attachment_type :result_file
+  end
+
   factory :test_report, :class => MeegoTestSession do
     after_build { |report| FactoryGirl.build(:feature, :meego_test_session => report)}
     author
@@ -47,7 +51,7 @@ FactoryGirl.define do
     product         "N900"
     published       true
     tested_at       "2011-08-06"
-    uploaded_files  "result.csv"
+    result_files    {|report| association :result_file, :attachable => report }
   end
 
   # NFT stuff
@@ -128,6 +132,6 @@ FactoryGirl.define do
     product         "N900"
     published       true
     tested_at       "2011-08-06"
-    result_files    []
+    result_files    {|report| association :result_file, :attachable => report }
   end
 end

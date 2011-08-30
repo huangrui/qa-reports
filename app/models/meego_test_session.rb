@@ -53,6 +53,7 @@ class MeegoTestSession < ActiveRecord::Base
   belongs_to :release
 
   validates_presence_of :title, :target, :testset, :product
+  validates_presence_of :result_files
   validates_presence_of :author
 
   validates :tested_at, :date_time => true
@@ -456,7 +457,7 @@ class MeegoTestSession < ActiveRecord::Base
     if filename =~ /\.csv$/i or filename =~ /\.xml$/i
       return true
     else
-      errors.add :uploaded_files, "You can only upload files with the extension .xml or .csv"
+      errors.add :result_files, "You can only upload files with the extension .xml or .csv"
       return false
     end
   end
@@ -490,7 +491,7 @@ class MeegoTestSession < ActiveRecord::Base
 
   def update_report_result(user, params, published = true)
     tmp = ReportFactory.new.build(params)
-    parsing_errors = tmp.errors[:uploaded_files]
+    parsing_errors = tmp.errors[:result_files]
 
     user.update_attribute(:default_target, self.target) if self.target.present?
     self.editor    = user

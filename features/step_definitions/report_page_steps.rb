@@ -154,7 +154,7 @@ When /^I remove the attachment from the test case "([^"]*)"$/ do |test_case|
 end
 
 When /^I attach the report "([^"]*)"$/ do |file|
-  And "attach the file \"#{Dir.getwd}/features/resources/#{file}\" to \"meego_test_session[uploaded_files][]\""
+  And "attach the file \"#{Dir.getwd}/features/resources/#{file}\" to \"meego_test_session[result_files_attributes][][file]\""
 end
 
 Given /^I select target "([^"]*)", test set "([^"]*)" and product "([^"]*)"(?: with date "([^\"]*)")?/ do |target, test_set, product, date|
