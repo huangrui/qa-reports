@@ -49,10 +49,11 @@ module CsvGenerator
 
   def self.generate_csv_report(release_version, target, testset, product, id)
     sql = <<-END
-      select mtset.name, mtc.name, mtc.comment,
+      select mtset.name, mtc.name, 
         if(mtc.result = 1,1,null) as pass,
         if(mtc.result = -1,1,null) as fail,
-        if(mtc.result = 0,1,null) as na
+        if(mtc.result = 0,1,null) as na,
+        mtc.comment
       from features as mtset
         join meego_test_cases as mtc on (mtc.feature_id = mtset.id)
         join meego_test_sessions as mts on (mtc.meego_test_session_id = mts.id)
@@ -64,11 +65,11 @@ module CsvGenerator
 
     FasterCSV.generate(:col_sep => ',') do |csv|
       csv << ["Feature",
-        "Check points",
-        "Notes (bugs)",
+        "Test Case",
         "Pass",
         "Fail",
-        "N/A"
+        "N/A",
+        "Comment"
       ]
 
       result.each do |row|
