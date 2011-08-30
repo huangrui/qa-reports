@@ -36,8 +36,7 @@ class ApplicationController < ActionController::Base
   end
 
   def find_selected_release
-    @selected_release_version = session[:release_version] =
-      valid_release(params[:release_version]) || session[:release_version] || Release.latest.label
+    @selected_release_version = release
   end
 
   def release
