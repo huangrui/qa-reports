@@ -1,7 +1,5 @@
 class Release < ActiveRecord::Base
 
-  set_table_name "releases"
-
   scope :in_sort_order, order("sort_order ASC")
 
   def self.release_versions
@@ -11,4 +9,5 @@ class Release < ActiveRecord::Base
   def self.latest
     in_sort_order.first
   end
+
 end
