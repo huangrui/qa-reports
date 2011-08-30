@@ -1,6 +1,6 @@
 # Be sure to restart your server when you modify this file.
 
-Meegoqa::Application.config.session_store :cookie_store, :key => '_meegoqa_session'
+Meegoqa::Application.config.session_store :cookie_store, :key => 'meego-qa-reports'
 
 # Use the database for sessions instead of the cookie-based default,
 # which shouldn't be used to store highly confidential information
