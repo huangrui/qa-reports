@@ -154,9 +154,9 @@ prepareCategoryUpdate = (div) ->
       $.post url, data, (data) ->
           $datespan.text(data)
 
-          $catpath.html(htmlEscape(versionval) + arrow + htmlEscape(targetval)
-                                               + arrow + htmlEscape(typeval)
-                                               + arrow + htmlEscape(hwval))
+          $catpath.html(htmlEscape(versionval) + arrow + htmlEscape(targetval) +
+                                                 arrow + htmlEscape(typeval) +
+                                                 arrow + htmlEscape(hwval))
 
           $donebtn.attr("href", "/" + encodeURI(versionval) +
                                 "/" + encodeURI(targetval) +
@@ -238,60 +238,6 @@ handleResultSubmit = () ->
     $.post url, data
 
     return false
-###
-handleDateEdit = () ->
-    $button = $(this)
-    $content = $button.find('span.content').first()
-    $raw = $content.next 'span.editmarkup'
-    return false if $content.is ":hidden"
-
-    data = $raw.text()
-    $form = $('#date_edit_form form').clone()
-    $field = $form.find '.date_field'
-    $field.val data
-    $form.data('original', $content).data('raw', $raw).data 'button', $button
-
-    $form.submit handleDateEditSubmit
-
-    $form.find('.save').click () ->
-        $form.submit()
-        return false
-
-    $form.find('.cancel').click () ->
-        $form.detach()
-        $content.show()
-        $button.addClass 'editable_text'
-        return false
-
-    $content.hide()
-    $form.insertAfter $content
-    $field.focus()
-    addDateSelector $field
-    $button.removeClass 'editable_text'
-
-    return false
-
-handleDateEditSubmit = () ->
-    $form = $(this)
-    $content = $form.data('original')
-    $raw = $form.data('raw')
-    data = $form.find('.date_field').val()
-    $raw.text(data);
-
-    data = $form.serialize()
-    action = $form.attr('action')
-
-    $button = $form.data('button')
-
-    $.post action, data, (data) ->
-        $content.text data
-
-    $button.addClass 'editable_text'
-    $form.detach()
-    $content.show()
-
-    return false
-###
 
 handleCommentEdit = () ->
     $node = $(this)
