@@ -7,7 +7,7 @@ class SessionComparisonController < ApplicationController
     @ids = [params[:id], params[:compare_id]]
     @reports = [MeegoTestSession.fetch_for_comparison(@ids[0]), 
                 MeegoTestSession.fetch_for_comparison(@ids[1])]
-    @selected_release_version = @reports[0].release_version
+    @selected_release_version = @reports.first.release.label
 
     @compare_cache_key = "compare_page_#{@ids[0]}_#{@ids[1]}"
 
