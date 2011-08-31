@@ -22,12 +22,13 @@
 class RssController < ApplicationController
 
   def rss
+    #TODO: Needs cleanup
     @target   = params[:target]
     @testset = params[:testset]
     @product = params[:product]
 
     unless MeegoTestSession.filters_exist?(@target, @testset, @product)
-      return render_404
+      return record_not_found
     end
 
     if @product
