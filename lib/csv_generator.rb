@@ -1,7 +1,7 @@
 module CsvGenerator
   def self.generate_csv(release_version, target, testset, product)
     sql = <<-END
-      select mts.tested_at, vl.label, mts.target, mts.testset, mts.product, mts.title,
+      select mts.tested_at, vl.name, mts.target, mts.testset, mts.product, mts.title,
         mtset.name, mtc.name, if(mtc.result = 1,1,0) as passes, if(mtc.result = -1,1,0) as fails,
         if(mtc.result = 0,1,0) as nas, mtc.comment, author.name, editor.name
       from meego_test_sessions mts

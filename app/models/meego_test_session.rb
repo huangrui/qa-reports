@@ -531,7 +531,7 @@ class MeegoTestSession < ActiveRecord::Base
       self.release = verlabel
       save
     else
-      verlabel = Release.new(:label => release_version, :normalized => release_version.downcase)
+      verlabel = Release.new(:name => release_version, :normalized => release_version.downcase)
       verlabel.save
     end
   end

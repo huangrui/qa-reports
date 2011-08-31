@@ -16,7 +16,7 @@ FactoryGirl.define do
   end
 
   factory :release do
-    label      "1.3"
+    name       "1.3"
     normalized "1.3"
     sort_order  0
   end

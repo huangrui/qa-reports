@@ -40,7 +40,7 @@ class UploadController < ApplicationController
     new_report[:target] ||= new_report[:target].downcase if new_report[:target]
     new_report[:target] ||= TargetLabel.targets.first.downcase
     @test_session = MeegoTestSession.new(new_report)
-    @test_session.release = Release.find_by_label(new_report[:release_version]) || Release.latest
+    @test_session.release = Release.find_by_name(new_report[:release_version]) || Release.latest
 
     @release_versions = Release.in_sort_order.map { |release| release.label }
     @targets          = TargetLabel.targets.map {|target| target.downcase}
