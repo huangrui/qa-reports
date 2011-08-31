@@ -213,6 +213,12 @@ end
 
 When /^I change grading of feature "([^"]*)" to ([^"]*)$/ do |feature_name, grading_color|
   grading_area = find_feature_row(feature_name).find(".feature_record_grading")
-  grading_area.click()
-  grading_area.find("option", :text => grading_color.capitalize).select_option()
+  grading_area.click
+
+  if RUBY_PLATFORM.downcase.include?("darwin") # is mac?
+    option = grading_area.find("option", :text => grading_color.capitalize).select_option
+  else # Select option with Capybara works correctly only on Mac. Use javascript (does not work on mac) on other platforms.
+    colors = {'red' => '1', 'yellow' => '2', 'green' => '3', 'n/a' => '0'}
+    page.execute_script("$('.feature_record:contains(#{feature_name}) .grading_select').val('#{colors[grading_color]}')")
+  end
 end
