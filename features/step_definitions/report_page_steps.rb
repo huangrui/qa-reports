@@ -214,5 +214,7 @@ end
 When /^I change grading of feature "([^"]*)" to ([^"]*)$/ do |feature_name, grading_color|
   grading_area = find_feature_row(feature_name).find(".feature_record_grading")
   grading_area.click()
-  grading_area.find("option", :text => grading_color.capitalize).select_option()
+  option = grading_area.find("option", :text => grading_color.capitalize)
+  option.click()
+  option.selected?.should == true # Selecting option did not always work with capybara for some reason.
 end
