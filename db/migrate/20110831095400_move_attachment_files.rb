@@ -13,7 +13,7 @@ class MoveAttachmentFiles < ActiveRecord::Migration
 
   def self.up
     # Do nothing if updated version of previous migration was used
-    return unless OldFileAttachment.first.file.to_file
+    return unless OldFileAttachment.first.try(:file).try(:to_file)
 
     old_attachments = OldFileAttachment.all
 
