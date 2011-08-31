@@ -19,7 +19,13 @@ namespace :db do
     run "cd #{current_path} && RAILS_ENV='#{rails_env}' bundle exec rake db:dump"
     get "#{current_path}/qa_reports_production.sql.bz2", "./qa_reports_production.sql.bz2"
     run "rm #{current_path}/qa_reports_production.sql.bz2"
-    `rsync --rsh="ssh -p #{ssh_options[:port]}" -RLrvaz #{user}@#{host}:#{current_path}/public/files/attachments public/files/attachment`
+    `rsync --rsh="ssh -p #{ssh_options[:port]}" \
+           --copy-links                         \
+           --recursive                          \
+           --verbose                            \
+           --archive                            \
+           --compress                           \
+           #{user}@#{host}:#{current_path}/public/files/attachments public/files`
   end
 
   desc "Compress and fetch files"
