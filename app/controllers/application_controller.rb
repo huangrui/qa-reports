@@ -27,21 +27,22 @@ class ApplicationController < ActionController::Base
 
   #protect_from_forgery
 
-  rescue_from ActiveRecord::RecordNotFound do
+  rescue_from ActiveRecord::RecordNotFound, :with => :record_not_found
+
+  def record_not_found
     render :file => "#{Rails.root}/public/404.html", :status => :not_found, :layout => false
   end
 
   def find_releases
-    @meego_releases = VersionLabel.release_versions
+    @meego_releases = Release.release_versions
   end
 
   def find_selected_release
-    @selected_release_version = session[:release_version] =
-      valid_release(params[:release_version]) || session[:release_version] || VersionLabel.latest.label
+    @selected_release_version = release.label
   end
 
   def release
-    @release ||= session[:release] = VersionLabel.find_by_label(params[:release_version]) || session[:release] || VersionLabel.latest
+    @release ||= session[:release] = Release.find_by_label(params[:release_version]) || session[:release] || Release.latest
   end
 
   def profile
@@ -61,7 +62,7 @@ class ApplicationController < ActionController::Base
   def valid_release release_version
     return unless release_version.present?
 
-    if VersionLabel.all.map(&:normalized).include? release_version.downcase
+    if Release.all.map(&:normalized).include? release_version.downcase
       release_version
     else
       Rails.logger.info ["Info:  Invalid release version: ", release_version]

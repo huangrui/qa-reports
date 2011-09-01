@@ -66,7 +66,7 @@ module CsvGenerator
     LEFT JOIN users              AS editor ON (mts.editor_id = editor.id)
     LEFT JOIN meego_test_cases   AS mtc    ON (mtc.meego_test_session_id = mts.id)
     LEFT JOIN features           AS mtset  ON (mtc.feature_id = mtset.id)
-    LEFT JOIN version_labels     AS vl     ON (mts.version_label_id = vl.id)
+    LEFT JOIN releases           AS vl     ON (mts.release_id = vl.id)
     LEFT JOIN meego_measurements AS mms    ON (mms.meego_test_case_id = mtc.id)
   END
 

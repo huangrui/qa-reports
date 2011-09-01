@@ -1,9 +1,13 @@
 class FileAttachment < ActiveRecord::Base
   belongs_to :attachable, :polymorphic => true
 
-  has_attached_file :file, :url => "/files/attachments/:id/:filename"
+  has_attached_file :file, :url => "/files/attachments/:attachable_id/:id/:filename"
 
   delegate :url, :to => :file
+
+  Paperclip.interpolates :attachable_id do |attachment, style|
+    attachment.instance.attachable_id
+  end
 
   def image?
     (file.url =~ /\.(jpg|jpeg|gif|png|bmp)/) if file.present?

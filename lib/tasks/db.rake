@@ -1,31 +1,8 @@
 require 'rubygems'
 
-
 namespace :db do
 
-  desc "Import production database to development environment"
-  task :import => [:dump_and_fetch_db, :import_to_db]
-
-  desc "Import production database and files to development environment"
-  task :import_all => [:import, :fetch_files, :import_files]
-
-  desc "Import production database to staging environment"
-  task :import_to_staging => [:dump_and_fetch_db, :put_and_import_to_staging]
-
-  desc "Import production database and files to staging environment"
-  task :import_all_to_staging => [:import_to_staging, :fetch_files, :put_and_import_files_to_staging]
-
-  # Internal: Fetch production database to localhost
-  task :dump_and_fetch_db do
-    `cap production db:dump`
-  end
-
-  # Internal: Fetch files from production to localhost
-  task :fetch_files do
-    `cap production db:fetch_files`
-  end
-
-  # Internal: Run by capistrano on production server
+  desc "Dump database"
   task :dump do
     db_conf = YAML.load_file('config/database.yml')[Rails.env]
     `mysqldump \
@@ -37,8 +14,8 @@ namespace :db do
         bzip2 -c > qa_reports_production.sql.bz2`
   end
 
-  # Internal: Run on localhost or staging environment by capistrano
-  task :import_to_db do
+  desc "Import production database to local environment"
+  task :import do
     if Rails.env == 'production'
       raise "ERROR: Your should not import data to production environment"
     end
@@ -53,14 +30,6 @@ namespace :db do
         < qa_reports_production.sql`
 
     `rm qa_reports_production.sql`
-  end
-
-  # Internal: Run on localhost or staging environment by capistrano
-  task :import_files do
-    if Rails.env == 'production'
-      raise "ERROR: Your should not import data to production environment"
-    end
-    `tar -xzf qa-reports-files.tar.gz && rm qa-reports-files.tar.gz`
   end
 
   # Internal: Push production database to staging

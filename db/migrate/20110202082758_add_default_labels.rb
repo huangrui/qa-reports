@@ -1,4 +1,8 @@
 class AddDefaultLabels < ActiveRecord::Migration
+
+  class VersionLabel < ActiveRecord::Base
+  end
+
   def self.up
     vl = VersionLabel.find_by_label("1.2")
     unless vl

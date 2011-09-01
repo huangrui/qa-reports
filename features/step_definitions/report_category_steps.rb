@@ -10,11 +10,11 @@ Given /^there are (\d+) reports from "([^"]*)" under "([^"]*)"$/ do |num, date, 
              :authentication_token => "dummytoken")
   user.save! unless user.persisted?
 
-  release = VersionLabel.find_by_normalized(release)
+  release = Release.find_by_normalized(release)
   num.to_i.times do |i|
     s = MeegoTestSession.new(@report_template)
     s.tested_at = DateTime.new(year.to_i, month.to_i, i % 27 + 1)
-    s.version_label_id = release.id
+    s.release_id = release.id
     s.target = profile
     s.testset = testset
     s.product = product

@@ -1,4 +1,4 @@
-class VersionLabel < ActiveRecord::Base
+class Release < ActiveRecord::Base
 
   scope :in_sort_order, order("sort_order ASC")
 
@@ -9,4 +9,5 @@ class VersionLabel < ActiveRecord::Base
   def self.latest
     in_sort_order.first
   end
+
 end

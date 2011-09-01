@@ -1,8 +1,16 @@
 - if @editing
   | <div class="editable_text editable_title">
 
-h1.clearfix
-  span.content= @report.title
+h1.clearfix.report-title
+  span.editcontent= @report.title
+  - if @editing
+    form.title_form action=report_path(@report) method="post" style="display:none"
+      input name="_method" type="hidden" value="put"
+      input name="authenticity_token" type="hidden" value=form_authenticity_token
+      input.title_field name="report[title]" type="text" value=@report.title
+      input.small_btn.save type="submit" value="Save"
+      input.small_btn.cancel type="button" value="Cancel"
+
   span.heading_actions
 
 = yield :view_in_browser_link

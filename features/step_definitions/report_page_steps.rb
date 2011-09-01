@@ -53,20 +53,18 @@ Then /I should see the imported test cases from "([^"]*)" in the exported CSV.$/
 end
 
 When /^(?:|I )(?:|return to )view the report "([^"]*)"$/ do |report_string|
-  version, target, test_set, product = report_string.downcase.split('/')
-  report = MeegoTestSession.first(:conditions =>
-   {"version_labels.normalized" => version, :target => target, :product => product, :testset => test_set}, :include => :release,
-   :order => "tested_at DESC, created_at DESC")
-  raise "report not found with parameters #{version}/#{target}/#{product}/#{test_set}!" unless report
-  visit("/#{version}/#{target}/#{test_set}/#{product}/#{report.id}")
+  release, profile, testset, product = report_string.downcase.split('/')
+  report = MeegoTestSession.release(release).profile(profile).product_is(product).testset(testset).order("tested_at DESC, created_at DESC").first
+  raise "report not found with parameters #{release}/#{profile}/#{testset}/#{product}!" unless report
+  visit show_report_path(release, profile, testset, product, report.id)
 end
 
 When /I view the report "([^"]*)" for build$/ do |report_string|
   release, profile, testset, product = report_string.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {"version_labels.label" => release, :target => profile, :product => product, :testset => testset}, :include => :release,
+   {"releases.label" => release, :target => profile, :product => product, :testset => testset}, :include => :release,
    :order => "build_id DESC, tested_at DESC, created_at DESC")
-  raise "report not found with parameters #{version}/#{target}/#{hardware}/#{test_type}!" unless report
+  raise "report not found with parameters #{release}/#{profile}/#{testset}/#{product}!" unless report
   visit show_report_path(release, profile, testset, product, report)
 end
 
@@ -190,7 +188,7 @@ end
 Then /^(?:|I )should not be able to view the report "([^"]*)"$/ do |report_string|
   version, target, test_set, product = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {"version_labels.normalized" => version, :target => target, :product => product, :testset => test_set}, :include => :release,
+   {"releases.normalized" => version, :target => target, :product => product, :testset => test_set}, :include => :release,
    :order => "tested_at DESC, created_at DESC")
   report.should == nil
 end
@@ -215,6 +213,13 @@ end
 
 When /^I change grading of feature "([^"]*)" to ([^"]*)$/ do |feature_name, grading_color|
   grading_area = find_feature_row(feature_name).find(".feature_record_grading")
-  grading_area.click()
-  grading_area.select(grading_color.capitalize, :from => "feature[grading]")
+  grading_area.click
+
+  if RUBY_PLATFORM.downcase.include?("darwin") # is mac?
+    option = grading_area.find("option", :text => grading_color.capitalize).select_option
+  else # Select option with Capybara works correctly only on Mac. Use javascript (does not work on mac) on other platforms.
+    colors = {'red' => '1', 'yellow' => '2', 'green' => '3', 'n/a' => '0'}
+    page.execute_script("$('.feature_record:contains(#{feature_name}) .grading_select').val('#{colors[grading_color]}')")
+    sleep 0.5
+  end
 end

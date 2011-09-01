@@ -22,22 +22,23 @@
 class RssController < ApplicationController
 
   def rss
+    #TODO: Needs cleanup
     @target   = params[:target]
     @testset = params[:testset]
     @product = params[:product]
 
     unless MeegoTestSession.filters_exist?(@target, @testset, @product)
-      return render_404
+      return record_not_found
     end
 
     if @product
-      @sessions = MeegoTestSession.by_release_version_target_testset_product(@selected_release_version, @target, @testset, @product, "created_at DESC", 10)
+      @sessions = MeegoTestSession.by_release_version_target_testset_product(release.label, @target, @testset, @product, "created_at DESC", 10)
     elsif @testset
-      @sessions = MeegoTestSession.published_by_release_version_target_testset(@selected_release_version, @target, @testset, "created_at DESC", 10)
+      @sessions = MeegoTestSession.published_by_release_version_target_testset(release.label, @target, @testset, "created_at DESC", 10)
     elsif @target
-      @sessions = MeegoTestSession.published_by_release_version_target(@selected_release_version, @target, "created_at DESC", 10)
+      @sessions = MeegoTestSession.published_by_release_version_target(release.label, @target, "created_at DESC", 10)
     else
-      @sessions = MeegoTestSession.published_by_release_version(@selected_release_version, "created_at DESC", 10)
+      @sessions = MeegoTestSession.published_by_release_version(release.label, "created_at DESC", 10)
     end
 
     render :layout => false

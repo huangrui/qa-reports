@@ -161,11 +161,11 @@ class ApiController < ApplicationController
   end
 
   def valid_release?(version)
-    VersionLabel.where(:normalized => version).first.present?
+    Release.where(:normalized => version).first.present?
   end
 
   def errmsg_invalid_version(version)
-    valid_versions = VersionLabel.release_versions.join(",")
+    valid_versions = Release.release_versions.join(",")
     {:release_version => "Incorrect release version '#{version}'. Valid ones are #{valid_versions}."}
   end
 

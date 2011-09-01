@@ -24,7 +24,7 @@ class NftHistory
   attr_reader :measurements, :start_date
 
   include MeasurementUtils
-  
+
   GET_START_DATE_QUERY = <<-END
     SELECT
     meego_test_sessions.tested_at AS tested_at
@@ -36,14 +36,14 @@ class NftHistory
     meego_test_sessions.testset = ? AND
     meego_test_sessions.product = ? AND
     meego_test_sessions.published = ? AND
-    meego_test_sessions.version_label_id = ? AND
+    meego_test_sessions.release_id = ? AND
     (
-     EXISTS(SELECT id 
-            FROM meego_measurements 
-            WHERE meego_test_case_id=meego_test_cases.id) 
+     EXISTS(SELECT id
+            FROM meego_measurements
+            WHERE meego_test_case_id=meego_test_cases.id)
      OR
-     EXISTS(SELECT id 
-            FROM serial_measurements 
+     EXISTS(SELECT id
+            FROM serial_measurements
             WHERE meego_test_case_id=meego_test_cases.id)
     )
     ORDER BY meego_test_sessions.tested_at ASC
@@ -64,14 +64,14 @@ class NftHistory
     meego_measurements.meego_test_case_id=meego_test_cases.id AND
     meego_test_cases.feature_id=features.id AND
     features.meego_test_session_id=meego_test_sessions.id AND
-    meego_test_sessions.version_label_id=? AND
+    meego_test_sessions.release_id=? AND
     meego_test_sessions.target=? AND
     meego_test_sessions.testset=? AND
     meego_test_sessions.product=? AND
     meego_test_sessions.tested_at <= ? AND
     meego_test_sessions.published=?
     ORDER BY
-    features.name ASC, 
+    features.name ASC,
     meego_test_cases.name ASC,
     meego_measurements.name ASC,
     meego_test_sessions.tested_at ASC
@@ -94,14 +94,14 @@ class NftHistory
     serial_measurements.meego_test_case_id=meego_test_cases.id AND
     meego_test_cases.feature_id=features.id AND
     features.meego_test_session_id=meego_test_sessions.id AND
-    meego_test_sessions.version_label_id=? AND
+    meego_test_sessions.release_id=? AND
     meego_test_sessions.target=? AND
     meego_test_sessions.testset=? AND
     meego_test_sessions.product=? AND
     meego_test_sessions.tested_at <= ? AND
     meego_test_sessions.published=?
     ORDER BY
-    features.name ASC, 
+    features.name ASC,
     meego_test_cases.name ASC,
     serial_measurements.name ASC,
     meego_test_sessions.tested_at ASC
@@ -114,7 +114,7 @@ class NftHistory
     @trend_data = nil
     @serial_trend_data = nil
   end
-  
+
   def persisted?
     false
   end
@@ -144,15 +144,15 @@ class NftHistory
                                          @session.testset,
                                          @session.product,
                                          true,
-                                         @session.version_label_id])
-    
+                                         @session.release_id])
+
     @first_nft_result_date = data[0].tested_at
   end
 
   # Get measurement trends for given session
   #
   # Read all matching measurement values from the beginning of the time until
-  # given session (included) and return the data as CSV in a multidimensional 
+  # given session (included) and return the data as CSV in a multidimensional
   # hash that has keys as follows:
   # hash[feature_name][testcase_name][measurement_name]['csv'] = CSV data
   # hash[feature_name][testcase_name][measurement_name]['json'] = array
@@ -161,7 +161,7 @@ class NftHistory
   # The keys for the figures are min, max, avg and med, correspondingly.
   def find_measurements
     data = MeegoTestSession.find_by_sql([GET_NFT_RESULTS_QUERY,
-                                         @session.version_label_id,
+                                         @session.release_id,
                                          @session.read_attribute(:target),
                                          @session.testset,
                                          @session.product,
@@ -179,7 +179,7 @@ class NftHistory
   # as in find_measurements
   def find_serial_measurements
     data = MeegoTestSession.find_by_sql([GET_SERIAL_MEASUREMENTS_QUERY,
-                                         @session.version_label_id,
+                                         @session.release_id,
                                          @session.read_attribute(:target),
                                          @session.testset,
                                          @session.product,
@@ -204,9 +204,9 @@ class NftHistory
 
     db_data.each do |db_row|
       # Start a new measurement
-      if feature != db_row.feature or 
-          testcase != db_row.test_case or 
-          measurement != db_row.measurement 
+      if feature != db_row.feature or
+          testcase != db_row.test_case or
+          measurement != db_row.measurement
 
         begin_new_measurement(hash, db_row,
                               feature, testcase, measurement,
@@ -215,30 +215,30 @@ class NftHistory
 
       # Store the data to CSV string and JSON array
       if mode == :serial
-        csv << 
-          db_row.tested_at.strftime("%Y-%m-%d") << "," << 
-          db_row.max_value.to_s << "," << 
-          db_row.avg_value.to_s << "," << 
-          db_row.med_value.to_s << "," << 
+        csv <<
+          db_row.tested_at.strftime("%Y-%m-%d") << "," <<
+          db_row.max_value.to_s << "," <<
+          db_row.avg_value.to_s << "," <<
+          db_row.med_value.to_s << "," <<
           db_row.min_value.to_s << "\n"
 
         # Only medians here, used in the small graph
         json << db_row.med_value
 
       elsif mode == :nft
-        csv << 
-          db_row.tested_at.strftime("%Y-%m-%d") << "," << 
+        csv <<
+          db_row.tested_at.strftime("%Y-%m-%d") << "," <<
           db_row.value.to_s << "\n"
 
-        json << db_row.value        
+        json << db_row.value
       end
 
     end
 
     # Last measurement data was not written in the loop above
-    add_value(hash, feature, testcase, 
+    add_value(hash, feature, testcase,
               measurement, "csv", csv) unless csv.empty?
-    add_value(hash, feature, testcase, 
+    add_value(hash, feature, testcase,
               measurement, "json", json) unless json.empty?
 
     count_key_figures(hash)
@@ -246,20 +246,20 @@ class NftHistory
     hash
   end
 
-  def begin_new_measurement(hash, db_row, 
+  def begin_new_measurement(hash, db_row,
                             feature, testcase, measurement,
                             csv, json, mode)
 
-    add_value(hash, feature, testcase, measurement, 
+    add_value(hash, feature, testcase, measurement,
               "csv", csv) unless csv.empty?
-    add_value(hash, feature, testcase, measurement, 
+    add_value(hash, feature, testcase, measurement,
               "json", json) unless json.empty?
-    
+
     unit = "Value"
     if not db_row.unit.nil?
       unit = db_row.unit
     end
-        
+
     csv.replace("")
     if mode == :serial
       csv << "Date,Max #{unit},Avg #{unit},Med #{unit},Min #{unit}\n"
@@ -268,7 +268,7 @@ class NftHistory
     end
 
     json.clear
-    
+
     feature.replace(db_row.feature)
     testcase.replace(db_row.test_case)
     measurement.replace(db_row.measurement)
@@ -276,7 +276,7 @@ class NftHistory
 
   # Construct the hash that holds all data in previously described structure
   def add_value(container, feature, testcase, measurement, format, data)
-    
+
     if not container.has_key?(feature)
       container[feature] = Hash.new
     end
@@ -288,7 +288,7 @@ class NftHistory
     if not container[feature][testcase].has_key?(measurement)
       container[feature][testcase][measurement] = Hash.new
     end
-    
+
     # Hashes for this particular measurement exist and data can be stored
     container[feature][testcase][measurement][format] = data.dup
   end
@@ -306,14 +306,14 @@ class NftHistory
       count_measurement_key_figures(measurements)
     end
   end
-  
+
   def count_measurement_key_figures(measurements)
     measurements.each do |measurement, data|
       # If we have measurement data (JSON), get/calculate the key figures
       # (min, max, avg, med) needed for Bluff graphs
       if data.has_key?('json')
         raw_data = data['json']
-        
+
         data['min'] = 'N/A'
         data['max'] = 'N/A'
         data['avg'] = 'N/A'

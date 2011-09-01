@@ -129,7 +129,7 @@ class ReportsController < ApplicationController
 
   def populate_edit_fields
     @build_diff       = []
-    @release_versions = VersionLabel.all.map { |release| release.label }
+    @release_versions = Release.in_sort_order.map { |release| release.label }
     @targets          = TargetLabel.targets
     @testsets         = MeegoTestSession.release(release.label).testsets
     @products         = MeegoTestSession.release(release.label).popular_products
@@ -140,14 +140,14 @@ class ReportsController < ApplicationController
 
   #TODO: These should be somewhere else..
   def history(s, cnt)
-    MeegoTestSession.where("(tested_at < '#{s.tested_at}' OR tested_at = '#{s.tested_at}' AND created_at < '#{s.created_at}') AND target = '#{s.target.downcase}' AND testset = '#{s.testset.downcase}' AND product = '#{s.product.downcase}' AND published = 1 AND version_label_id = #{s.version_label_id}").
+    MeegoTestSession.where("(tested_at < '#{s.tested_at}' OR tested_at = '#{s.tested_at}' AND created_at < '#{s.created_at}') AND target = '#{s.target.downcase}' AND testset = '#{s.testset.downcase}' AND product = '#{s.product.downcase}' AND published = 1 AND release_id = #{s.release_id}").
         order("tested_at DESC, created_at DESC").limit(cnt).
         includes([{:features => :meego_test_cases}, {:meego_test_cases => :feature}])
   end
 
   def build_diff(s, cnt)
     sessions = MeegoTestSession.published.profile(s.target).testset(s.testset).product_is(s.product).
-        where("version_label_id = #{s.version_label_id} AND build_id < '#{s.build_id}' AND build_id != ''").
+        where("release_id = #{s.release_id} AND build_id < '#{s.build_id}' AND build_id != ''").
         order("build_id DESC, tested_at DESC, created_at DESC")
 
     latest = []

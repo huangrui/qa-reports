@@ -52,7 +52,7 @@ class MeegoTestSession < ActiveRecord::Base
   belongs_to :author, :class_name => "User"
   belongs_to :editor, :class_name => "User"
 
-  belongs_to :release, :class_name => "VersionLabel", :foreign_key => "version_label_id"
+  belongs_to :release
 
   validates_presence_of :title, :target, :testset, :product
   validates_presence_of :uploaded_files #, :on => :create
@@ -68,7 +68,7 @@ class MeegoTestSession < ActiveRecord::Base
   before_save :force_testset_product_names
 
   scope :published,  where(:published => true)
-  scope :release,    lambda { |release| published.joins(:release).where(:version_labels => {:normalized => release.downcase}) }
+  scope :release,    lambda { |release| published.joins(:release).where(:releases => {:normalized => release.downcase}) }
   scope :profile,    lambda { |profile| published.where(:target => profile.downcase) }
   scope :testset,    lambda { |testset| published.where(:testset => testset.downcase) }
   scope :product_is, lambda { |product| published.where(:product => product.downcase) }
@@ -187,33 +187,34 @@ class MeegoTestSession < ActiveRecord::Base
     return filters_exist
   end
 
+  #TODO: Throw away and use scopes
   class << self
     def by_release_version_target_testset_product(release_version, target, testset, product, order_by = "tested_at DESC, id DESC", limit = nil)
       target    = target.downcase
       testset  = testset.downcase
       product = product.downcase
-      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testset => testset, :product => product).joins(:release).order(order_by).limit(limit)
+      published.where("releases.normalized" => release_version.downcase, :target => target, :testset => testset, :product => product).joins(:release).order(order_by).limit(limit)
     end
 
     def published_by_release_version_target_testset(release_version, target, testset, order_by = "tested_at DESC, id DESC", limit = nil)
       target   = target.downcase
       testset = testset.downcase
-      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testset => testset).joins(:release).order(order_by).limit(limit)
+      published.where("releases.normalized" => release_version.downcase, :target => target, :testset => testset).joins(:release).order(order_by).limit(limit)
     end
 
     def published_hwversion_by_release_version_target_testset(release_version, target, testset)
       target   = target.downcase
       testset = testset.downcase
-      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testset => testset).select("DISTINCT product").joins(:release).order("product")
+      published.where("releases.normalized" => release_version.downcase, :target => target, :testset => testset).select("DISTINCT product").joins(:release).order("product")
     end
 
     def published_by_release_version_target(release_version, target, order_by = "tested_at DESC, id DESC", limit = nil)
       target = target.downcase
-      published.where("version_labels.normalized" => release_version.downcase, :target => target).joins(:release).order(order_by).limit(limit)
+      published.where("releases.normalized" => release_version.downcase, :target => target).joins(:release).order(order_by).limit(limit)
     end
 
     def published_by_release_version(release_version, order_by = "tested_at DESC", limit = nil)
-      published.where("version_labels.normalized" => release_version.downcase).joins(:release).order(order_by).limit(limit)
+      published.where("releases.normalized" => release_version.downcase).joins(:release).order(order_by).limit(limit)
     end
   end
 
@@ -226,7 +227,7 @@ class MeegoTestSession < ActiveRecord::Base
     created = created_at || Time.now
 
     @prev_session = MeegoTestSession.find(:first, :conditions => [
-        "(tested_at < ? OR tested_at = ? AND created_at < ?) AND target = ? AND testset = ? AND product = ? AND published = ? AND version_label_id = ?", tested, tested, created, target.downcase, testset.downcase, product.downcase, true, version_label_id
+        "(tested_at < ? OR tested_at = ? AND created_at < ?) AND target = ? AND testset = ? AND product = ? AND published = ? AND release_id = ?", tested, tested, created, target.downcase, testset.downcase, product.downcase, true, release_id
     ],
                           :order => "tested_at DESC, created_at DESC", :include =>
          [{:features => :meego_test_cases}, {:meego_test_cases => :feature}])
@@ -238,7 +239,7 @@ class MeegoTestSession < ActiveRecord::Base
   def next_session
     return @next_session unless @next_session.nil? and @has_next.nil?
     @next_session = MeegoTestSession.find(:first, :conditions => [
-        "(tested_at > ? OR tested_at = ? AND created_at > ?) AND target = ? AND testset = ? AND product = ? AND published = ? AND version_label_id = ?", tested_at, tested_at, created_at, target.downcase, testset.downcase, product.downcase, true, version_label_id
+        "(tested_at > ? OR tested_at = ? AND created_at > ?) AND target = ? AND testset = ? AND product = ? AND published = ? AND release_id = ?", tested_at, tested_at, created_at, target.downcase, testset.downcase, product.downcase, true, release_id
     ],
                           :order => "tested_at ASC, created_at ASC", :include =>
          [{:features => :meego_test_cases}, {:meego_test_cases => :feature}])
@@ -347,15 +348,6 @@ class MeegoTestSession < ActiveRecord::Base
     txt = build_txt
     if txt == ""
       "No build details filled in yet"
-    else
-      MeegoTestReport::format_txt(txt)
-    end
-  end
-
-  def build_id_html
-    txt = build_id_txt
-    if txt == ""
-      "No build id details filled in yet"
     else
       MeegoTestReport::format_txt(txt)
     end
@@ -485,7 +477,7 @@ class MeegoTestSession < ActiveRecord::Base
   # For encapsulating the release_version          #
   ###############################################
   def release_version=(release_version)
-    release = VersionLabel.where( :normalized => release_version.downcase)
+    release = Release.where(:normalized => release_version.downcase)
     self.release = release.first
   end
 
@@ -534,12 +526,12 @@ class MeegoTestSession < ActiveRecord::Base
   private
 
   def create_release
-    verlabel = VersionLabel.find(:first, :conditions => {:normalized => release_version.downcase})
+    verlabel = Release.find(:first, :conditions => {:normalized => release_version.downcase})
     if verlabel
       self.release = verlabel
       save
     else
-      verlabel = VersionLabel.new(:label => release_version, :normalized => release_version.downcase)
+      verlabel = Release.new(:label => release_version, :normalized => release_version.downcase)
       verlabel.save
     end
   end

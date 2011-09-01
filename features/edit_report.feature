@@ -88,9 +88,28 @@ Feature: Edit Report
     And there should not be a test case "SMOKE-SIM-Get_IMSI"
 
   @selenium
-   Scenario: I delete all test cases
-     When I edit the report "1.2/Core/automated/N900"
-     And delete all test cases
+  Scenario: I delete all test cases
+    When I edit the report "1.2/Core/automated/N900"
+    And delete all test cases
 
-     Then I return to view the report "1.2/Core/automated/N900"
-     Then the report should not contain a detailed test results section
+    Then I return to view the report "1.2/Core/automated/N900"
+    Then the report should not contain a detailed test results section
+
+  @selenium
+  Scenario: I modify a test case result
+    When I edit the report "1.2/Core/automated/N900"
+    And I change the test case result of "SMOKE-SIM-Get_IMSI" to "Pass"
+    And I press "Done"
+    And I follow "See all"
+
+    Then the result of test case "SMOKE-SIM-Get_IMSI" should be "Pass"
+
+  @selenium
+  Scenario: I modify a test case comment
+    When I edit the report "1.2/Core/automated/N900"
+    And I change the test case comment of "SMOKE-SIM-Get_IMSI" to "edited comment"
+    And I press "Save"
+    And I press "Done"
+
+    Then I should see "edited comment"
+

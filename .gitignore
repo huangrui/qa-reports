@@ -21,3 +21,5 @@ rerun.txt
 .DS_Store
 *~
 *.sublime-project
+*.sublime-workspace
+qa_reports_production.sql.bz2

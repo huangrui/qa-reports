@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110817075345) do
+ActiveRecord::Schema.define(:version => 20110831095400) do
 
   create_table "features", :force => true do |t|
     t.string  "name",                  :default => ""
@@ -46,16 +46,6 @@ ActiveRecord::Schema.define(:version => 20110817075345) do
 
   add_index "meego_measurements", ["meego_test_case_id"], :name => "index_meego_measurements_on_meego_test_case_id"
 
-  create_table "meego_test_case_attachments", :force => true do |t|
-    t.integer  "meego_test_case_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "attachment_file_name"
-    t.string   "attachment_content_type"
-    t.integer  "attachment_file_size"
-    t.datetime "attachment_updated_at"
-  end
-
   create_table "meego_test_cases", :force => true do |t|
     t.integer "feature_id",                                               :null => false
     t.string  "name",                                                     :null => false
@@ -90,20 +80,16 @@ ActiveRecord::Schema.define(:version => 20110817075345) do
     t.datetime "tested_at",                                            :null => false
     t.integer  "author_id",                         :default => 0,     :null => false
     t.integer  "editor_id",                         :default => 0,     :null => false
-    t.integer  "version_label_id",                  :default => 1,     :null => false
+    t.integer  "release_id",                        :default => 1,     :null => false
     t.string   "build_id",                          :default => ""
   end
 
-  add_index "meego_test_sessions", ["version_label_id", "target", "testset", "product"], :name => "index_meego_test_sessions_key"
+  add_index "meego_test_sessions", ["release_id", "target", "testset", "product"], :name => "index_meego_test_sessions_key"
 
-  create_table "report_attachments", :force => true do |t|
-    t.integer  "meego_test_session_id",   :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "attachment_file_name"
-    t.string   "attachment_content_type"
-    t.integer  "attachment_file_size"
-    t.datetime "attachment_updated_at"
+  create_table "releases", :force => true do |t|
+    t.string  "label",      :limit => 64, :null => false
+    t.string  "normalized", :limit => 64, :null => false
+    t.integer "sort_order",               :null => false
   end
 
   create_table "serial_measurements", :force => true do |t|
@@ -121,6 +107,16 @@ ActiveRecord::Schema.define(:version => 20110817075345) do
   end
 
   add_index "serial_measurements", ["meego_test_case_id"], :name => "index_serial_measurements_on_meego_test_case_id"
+
+  create_table "sessions", :force => true do |t|
+    t.string   "session_id", :null => false
+    t.text     "data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
+  add_index "sessions", ["updated_at"], :name => "index_sessions_on_updated_at"
 
   create_table "target_labels", :force => true do |t|
     t.string  "label",      :limit => 64, :null => false
@@ -155,11 +151,5 @@ ActiveRecord::Schema.define(:version => 20110817075345) do
 
   add_index "users", ["authentication_token"], :name => "index_users_on_authentication_token", :unique => true
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
-
-  create_table "version_labels", :force => true do |t|
-    t.string  "label",      :limit => 64, :null => false
-    t.string  "normalized", :limit => 64, :null => false
-    t.integer "sort_order",               :null => false
-  end
 
 end
