@@ -118,7 +118,7 @@ module CsvGenerator
 
       result.each do |row|
         csv << [row[:tested_at], row[:release_version], row[:target], 
-                row[:target], row[:product], row[:session], row[:feature], 
+                row[:testset], row[:product], row[:session], row[:feature], 
                 row[:testcase], row[:pass], row[:fail], row[:na], 
                 row[:comment], row[:m_name], row[:m_value], row[:m_unit], 
                 row[:m_target], row[:m_failure], row[:author], row[:editor]]
