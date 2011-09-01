@@ -2,25 +2,22 @@
 class FasterCSV
   class Row
     def has_valid_headers?
-      self.headers().eql?(CSVResultFileParser::CSV_FIELDS)
+      # Check that all required headers are there
+      (self.headers() & CSVResultFileParser::REQUIRED_CSV_FIELDS).length == CSVResultFileParser::REQUIRED_CSV_FIELDS.length
     end
   end
 end
 
 class CSVResultFileParser
-  # Public since accessed from FasterCSV as well
-  CSV_FIELDS = [
+  # Public since accessed from FasterCSV as well. The code does not really
+  # require all header fields so no need to bounce otherwise perfectly 
+  # functional files.
+  REQUIRED_CSV_FIELDS = [
     :feature,
     :test_case,
     :pass,
     :fail,
-    :na,
-    :comment,
-    :measurement_name,
-    :value,
-    :unit,
-    :target,
-    :failure
+    :na
   ]
 
   def initialize
@@ -59,8 +56,10 @@ class CSVResultFileParser
     first_line = io.readline
     io.rewind
     
-    # Check the header row length - the new version has more fields
-    (first_line.split(',').length == CSV_FIELDS.length)
+    # Check the header row length - the new version has 11 columns. Later
+    # on we will not require all of those to be present, but for now
+    # there has to be some differences so we can determine the version
+    (first_line.split(',').length == 11)
   end
 
   def parse_row_version_1(row)
