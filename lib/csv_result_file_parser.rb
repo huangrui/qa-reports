@@ -93,7 +93,7 @@ class CSVResultFileParser
     raise ParseError.new("unknown"), "Incorrect file format. Check CSV headers" unless row.has_valid_headers?
 
     # Check that we have a feature, a test case and some result
-    raise ParseError.new("unknown"), "Incorrect file. Feature or test case missing, or more than one or no result set for a case" unless row.has_valid_data?
+    raise ParseError.new("unknown"), "Incorrect file format. Feature or test case missing, or more than one or no result set for a case" unless row.has_valid_data?
 
     feature  = row[:feature].toutf8.strip
     testcase = row[:test_case].toutf8.strip
