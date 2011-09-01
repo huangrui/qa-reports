@@ -21,3 +21,4 @@ rerun.txt
 .DS_Store
 *~
 *.sublime-project
+*.sublime-workspace
