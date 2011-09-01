@@ -53,10 +53,16 @@ module CsvGenerator
         if(mtc.result = 1,1,null) as pass,
         if(mtc.result = -1,1,null) as fail,
         if(mtc.result = 0,1,null) as na,
-        mtc.comment
+        mtc.comment,
+        mms.name as measurement_name,
+        mms.value,
+        mms.unit,
+        mms.target,
+        mms.failure
       from features as mtset
-        join meego_test_cases as mtc on (mtc.feature_id = mtset.id)
-        join meego_test_sessions as mts on (mtc.meego_test_session_id = mts.id)
+        left join meego_test_cases as mtc on (mtc.feature_id = mtset.id)
+        left join meego_test_sessions as mts on (mtc.meego_test_session_id = mts.id)
+        left join meego_measurements as mms on (mms.meego_test_case_id = mtc.id)
       where mts.id = '#{id}' and mtc.deleted = false
       order by mtset.id, mtc.id;
     END
@@ -69,7 +75,12 @@ module CsvGenerator
         "Pass",
         "Fail",
         "N/A",
-        "Comment"
+        "Comment",
+        "Measurement Name",
+        "Value",
+        "Unit",
+        "Target",
+        "Failure"
       ]
 
       result.each do |row|
