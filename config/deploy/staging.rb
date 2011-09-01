@@ -9,6 +9,6 @@ server "qa-reports.qa.leonidasoy.fi", :app, :web, :db, :primary => true
 namespace :db do
   desc "Import production database to staging"
   task :import, :roles => :db, :only => {:primary => true} do
-    run "cap production db:export"
+    run "cd #{current_path} && RAILS_ENV='#{rails_env}' bundle exec cap production db:export"
   end
 end

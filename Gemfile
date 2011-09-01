@@ -21,9 +21,11 @@ end
 group :development do
   gem 'watchr'
   gem 'ruby-debug'
+  gem 'capistrano'
+  gem 'capistrano-ext'
 end
 
-group :development, :staging do
+group :staging do
   gem 'capistrano'
   gem 'capistrano-ext'
 end
