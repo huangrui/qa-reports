@@ -40,7 +40,7 @@ if Rails.env == "staging" and MeegoTestSession.count < 10000 # ensure there's al
     session = MeegoTestSession.new(
       "build_txt" => "",
       "qa_summary_txt" => "",
-      "result_files_attributes" => [{:file => tmpfile_path}],
+      "result_files_attributes" => [{:file => tmpfile, :attachment_type => :result_file}],
       "testset" => "Acceptance",
       "product" => "N900",
       "environment_txt" => "",
