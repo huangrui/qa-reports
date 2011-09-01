@@ -36,7 +36,7 @@ class ApplicationController < ActionController::Base
   end
 
   def find_selected_release
-    @selected_release_version = release.label
+    @selected_release_version = release.name
   end
 
   def release

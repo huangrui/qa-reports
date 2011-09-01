@@ -10,12 +10,4 @@ class Release < ActiveRecord::Base
     in_sort_order.first
   end
 
-  def label
-    read_attribute(:name)
-  end
-
-  def label=(value)
-    write_attibute(:name, value)
-  end
-
 end

@@ -482,11 +482,7 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def release_version
-    if self.release
-      return self.release.label
-    else
-      return nil
-    end
+    self.release.nil? ? nil : self.release.name
   end
 
   def generate_file_destination_path(original_filename)
