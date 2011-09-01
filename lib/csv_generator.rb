@@ -18,7 +18,7 @@ module CsvGenerator
     conditions << "mts.product = '#{product}'" if product
     conditions << "mts.target = '#{target}'" if target
     conditions << "mts.testset = '#{testset}'" if testset
-    conditions << "vl.normalized = '#{release_version.downcase}'" if release_version
+    conditions << "vl.name = '#{release_version}'" if release_version
 
     sql += " where " + conditions.join(" and ") + ";"
 

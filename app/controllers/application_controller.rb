@@ -60,7 +60,7 @@ class ApplicationController < ActionController::Base
   def valid_release release_version
     return unless release_version.present?
 
-    if Release.all.map(&:normalized).include? release_version.downcase
+    if Release.all.map(&:name).include? release_version
       release_version
     else
       Rails.logger.info ["Info:  Invalid release version: ", release_version]

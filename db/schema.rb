@@ -88,7 +88,6 @@ ActiveRecord::Schema.define(:version => 20110831131759) do
 
   create_table "releases", :force => true do |t|
     t.string  "name",       :limit => 64, :null => false
-    t.string  "normalized", :limit => 64, :null => false
     t.integer "sort_order",               :null => false
   end
 

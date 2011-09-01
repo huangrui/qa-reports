@@ -388,7 +388,7 @@ class MeegoTestSession < ActiveRecord::Base
     if target.blank?
       errors.add :target, "can't be blank"
     else
-      label = TargetLabel.find(:first, :conditions => {:normalized => target.downcase})
+      label = TargetLabel.find(:first, :conditions => {:normalized => target})
       if not label
         valid_targets = TargetLabel.labels.join(",")
         errors.add :target, "Incorrect target '#{target}'. Valid ones are #{valid_targets}."
@@ -477,7 +477,7 @@ class MeegoTestSession < ActiveRecord::Base
   # For encapsulating the release_version          #
   ###############################################
   def release_version=(release_version)
-    release = Release.where(:normalized => release_version.downcase)
+    release = Release.where(:name => release_version)
     self.release = release.first
   end
 
@@ -526,12 +526,12 @@ class MeegoTestSession < ActiveRecord::Base
   private
 
   def create_release
-    verlabel = Release.find(:first, :conditions => {:normalized => release_version.downcase})
+    verlabel = Release.find(:first, :conditions => {:name => release_version})
     if verlabel
       self.release = verlabel
       save
     else
-      verlabel = Release.new(:name => release_version, :normalized => release_version.downcase)
+      verlabel = Release.new(:name => release_version)
       verlabel.save
     end
   end

@@ -18,12 +18,4 @@ class Release < ActiveRecord::Base
     write_attibute(:name, value)
   end
 
-  def normalized
-    read_attribute(:name).downcase
-  end
-
- def normalized=(value)
-     write_attribute(:normalized, value)
- end
-
 end

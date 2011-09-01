@@ -161,7 +161,7 @@ class ApiController < ApplicationController
   end
 
   def valid_release?(version)
-    Release.where(:normalized => version).first.present?
+    Release.where(:name => version).first.present?
   end
 
   def errmsg_invalid_version(version)
