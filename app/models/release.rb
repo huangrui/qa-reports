@@ -11,11 +11,19 @@ class Release < ActiveRecord::Base
   end
 
   def label
-    name
+    read_attribute(:name)
+  end
+
+  def label=(value)
+    write_attibute(:name, value)
   end
 
   def normalized
-    name
+    read_attribute(:name).downcase
   end
+
+ def normalized=(value)
+     write_attribute(:normalized, value)
+ end
 
 end

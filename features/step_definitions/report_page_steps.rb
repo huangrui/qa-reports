@@ -188,7 +188,7 @@ end
 Then /^(?:|I )should not be able to view the report "([^"]*)"$/ do |report_string|
   version, target, test_set, product = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {"releases.normalized" => version, :target => target, :product => product, :testset => test_set}, :include => :release,
+   {"releases.name" => version, :target => target, :product => product, :testset => test_set}, :include => :release,
    :order => "tested_at DESC, created_at DESC")
   report.should == nil
 end
