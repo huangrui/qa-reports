@@ -22,6 +22,9 @@ FactoryGirl.define do
   end
 
   factory :feature do
+    after_create { |feature| FactoryGirl.create(:test_case,
+                                              :feature => feature,
+                                              :meego_test_session => feature.meego_test_session)}
     name "Bluetooth"
   end
 
@@ -36,12 +39,12 @@ FactoryGirl.define do
     sort_order 0
   end
 
-  factory :result_file do
+  factory :result_file, :class => FileAttachment do
     attachment_type :result_file
   end
 
   factory :test_report, :class => MeegoTestSession do
-    after_build { |report| FactoryGirl.build(:feature, :meego_test_session => report)}
+    after_create { |report| FactoryGirl.create(:feature, :meego_test_session => report)}
     author
     editor
     release
@@ -51,7 +54,7 @@ FactoryGirl.define do
     product         "N900"
     published       true
     tested_at       "2011-08-06"
-    result_files    {|report| association :result_file, :attachable => report }
+    result_files    {|result_files| [result_files.association :result_file] }
   end
 
   # NFT stuff
@@ -132,6 +135,6 @@ FactoryGirl.define do
     product         "N900"
     published       true
     tested_at       "2011-08-06"
-    result_files    {|report| association :result_file, :attachable => report }
+    result_files    {|result_files| [result_files.association :result_file] }
   end
 end
