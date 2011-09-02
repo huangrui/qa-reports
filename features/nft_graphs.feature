@@ -35,7 +35,7 @@ Feature: Check NFT graphs from the web page
   # at least to some extent, the title is changed. When these tests pass it
   # does not mean that the graph functionality works since the actual graph
   # may be broken.
-  @javascript
+  @selenium
   Scenario: Open and close NFT trend window
    When I view the report "1.2/Handset/NFT/N900"
 
@@ -44,7 +44,7 @@ Feature: Check NFT graphs from the web page
 
    And I close the trend dialog
 
-  @javascript
+  @selenium
   Scenario: Open and close NFT trend window in history view
     When I view the report "1.2/Handset/NFT/N900"
 
@@ -55,7 +55,7 @@ Feature: Check NFT graphs from the web page
 
     And I close the trend dialog
 
-  @javascript
+  @selenium
   Scenario: Open and close NFT serial trend window in history view
     When I view the report "1.2/Handset/NFT/N900"
 
