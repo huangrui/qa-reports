@@ -388,7 +388,7 @@ class MeegoTestSession < ActiveRecord::Base
     if target.blank?
       errors.add :target, "can't be blank"
     else
-      label = TargetLabel.find(:first, :conditions => {:normalized => target})
+      label = TargetLabel.find(:first, :conditions => {:normalized => target.downcase})
       if not label
         valid_targets = TargetLabel.labels.join(",")
         errors.add :target, "Incorrect target '#{target}'. Valid ones are #{valid_targets}."
@@ -482,7 +482,7 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def release_version
-    self.release.nil? ? nil : self.release.name
+    self.release ? self.release.name : nil
   end
 
   def generate_file_destination_path(original_filename)
