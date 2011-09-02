@@ -102,7 +102,7 @@ Feature: Edit Report
 
     Then the result of test case "SMOKE-SIM-Get_IMSI" should be "Pass"
 
-  @javascript
+  @selenium
   Scenario: I modify a test case comment
     When I edit the report "1.2/Core/automated/N900"
     And I change the test case comment of "SMOKE-SIM-Get_IMSI" to "edited comment"
