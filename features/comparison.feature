@@ -44,7 +44,7 @@ Feature: Consolidated reports
     And I should see "2" within "#changed_from_pass"
     And I should not see values "N900" in columns of "tr.compare_testset th"
 
-  @selenium
+  @javascript
   Scenario: Toggle visibility of unchanged results
     When report files "spec/fixtures/sim1.xml,features/resources/bluetooth.xml" are uploaded to branch "Sanity" for product "N910"
     And report files "spec/fixtures/sim2.xml,features/resources/bluetooth.xml" are uploaded to branch "Sanity:Testing" for product "N910"

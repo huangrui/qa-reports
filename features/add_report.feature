@@ -143,7 +143,7 @@ Feature:
     Then I should see "Check home screen"
     And I should see "Handset" within "h1"
 
-  @selenium
+  @javascript
   Scenario: Add new report with underscore in test set and product names
     When I follow "Add report"
 
@@ -159,7 +159,7 @@ Feature:
     Then I should see "Hardware_32" within ".index_month .odd .report_name"
 
 
-  @selenium
+  @javascript
   Scenario: Add new report with default test case comment
     Given the report for "short1.csv" exists on the service
     And I upload the report "short1_changed_comments.csv" with different comments

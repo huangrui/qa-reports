@@ -37,7 +37,7 @@ Feature: Manage reports
     Then I should see "Click here to view this message in your browser or handheld device" within ".report-backlink"
     And the link "Click here" within ".report-backlink" should point to the report "1.2/Core/automated/N900"
 
-  @selenium
+  @javascript
   Scenario: Deleting a report
     When I view the report "1.2/Core/automated/N900"
     And I click to delete the report

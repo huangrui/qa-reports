@@ -4,7 +4,7 @@ Feature: Edit Report
     Given the report for "short-sim.csv" exists on the service
     And I am logged in
 
-  @selenium
+  @javascript
   Scenario: Add and view a test case attachment for existing report
     When I edit the report "1.2/Core/automated/N900"
 
@@ -17,7 +17,7 @@ Feature: Edit Report
 
     Then I should see "Content of the attachment file"
 
-  @selenium
+  @javascript
   Scenario: Add and remove a test case attachment from existing report
     When I edit the report "1.2/Core/automated/N900"
 
@@ -34,7 +34,7 @@ Feature: Edit Report
     When I click the element ".testcase_notes" for the test case "SMOKE-SIM-Get_IMSI"
     Then I should not see "short1.csv"
 
-  @selenium
+  @javascript
   Scenario: Edit title
     When I edit the report "1.2/Core/automated/N900"
     And I click the element "h1"
@@ -44,7 +44,7 @@ Feature: Edit Report
 
     Then I should see "Test title" within "h1"
 
-  @selenium
+  @javascript
   Scenario: Edit test execution date
     When I view the report "1.2/Core/automated/N900"
     And I click to edit the report
@@ -54,7 +54,7 @@ Feature: Edit Report
 
     Then I should see "01 January 2011" within "#test_category .date"
 
-  @selenium
+  @javascript
   Scenario: Edit test objective
     When I edit the report "1.2/Core/automated/N900"
     And I click the element "#test_objective"
@@ -69,7 +69,7 @@ Feature: Edit Report
     Then I should see "testing list" within ".editable_area ul li"
     And I should see "Test Header" within ".editable_area h3"
 
-  @selenium
+  @javascript
   Scenario: Create a dynamic link to bugzilla
     When I edit the report "1.2/Core/automated/N900"
     And I click the element "#test_objective"
@@ -79,7 +79,7 @@ Feature: Edit Report
 
     Then I should see "[FEA] Automatic reporting interface to MeeGo QA reports" within ".editable_area ul li"
 
-  @selenium
+  @javascript
   Scenario: I delete a test case
     When I edit the report "1.2/Core/automated/N900"
     And I delete the test case "SMOKE-SIM-Get_IMSI"
@@ -87,7 +87,7 @@ Feature: Edit Report
     Then I return to view the report "1.2/Core/automated/N900"
     And there should not be a test case "SMOKE-SIM-Get_IMSI"
 
-  @selenium
+  @javascript
   Scenario: I delete all test cases
     When I edit the report "1.2/Core/automated/N900"
     And delete all test cases
@@ -104,7 +104,7 @@ Feature: Edit Report
 
     Then the result of test case "SMOKE-SIM-Get_IMSI" should be "Pass"
 
-  @selenium
+  @javascript
   Scenario: I modify a test case comment
     When I edit the report "1.2/Core/automated/N900"
     And I change the test case comment of "SMOKE-SIM-Get_IMSI" to "edited comment"

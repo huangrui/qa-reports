@@ -7,7 +7,7 @@ Feature: Build details
     And I have created the "1.1/Core/Sanity/Aava" report using "sample_new.csv" and optional build id is "1.2.0.90.0.20050518.1"
 
 
-  @selenium
+  @javascript
   Scenario: Viewing the different build report
     When I view the report "1.1/Core/Sanity/Aava" for build
     And want to see build details

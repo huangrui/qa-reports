@@ -6,7 +6,7 @@ Feature: Test result history
     And I have created the "1.1/Core/Sanity/Aava" report using "sample.csv"
     And I have created the "1.1/Core/Sanity/Aava" report with date "2010-02-03" using "sample_new.csv"
 
-  @selenium
+  @javascript
   Scenario: Viewing the test results history and latest comment
     When I view the report "1.1/Core/Sanity/Aava"
     And click to see test results history
