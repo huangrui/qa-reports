@@ -60,4 +60,10 @@ Then /^the result of test case "([^"]*)" should be "([^"]*)"$/ do |tc, result|
   find_testcase_row(tc).find(".testcase_result .content").should have_content result
 end
 
+When /^I change the test case comment of "([^"]*)" to "([^"]*)"$/ do |tc, comment|
+  row = find_testcase_row(tc)
+  cell = row.find('.testcase_notes')
+  cell.click()
+  cell.fill_in "test_case[comment]", :with => comment
+end
 

@@ -220,5 +220,6 @@ When /^I change grading of feature "([^"]*)" to ([^"]*)$/ do |feature_name, grad
   else # Select option with Capybara works correctly only on Mac. Use javascript (does not work on mac) on other platforms.
     colors = {'red' => '1', 'yellow' => '2', 'green' => '3', 'n/a' => '0'}
     page.execute_script("$('.feature_record:contains(#{feature_name}) .grading_select').val('#{colors[grading_color]}')")
+    sleep 0.5
   end
 end
