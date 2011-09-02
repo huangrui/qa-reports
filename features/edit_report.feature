@@ -64,7 +64,6 @@ Feature: Edit Report
       * testing list
       """
     And I press "Save"
-    And I wait until all Ajax requests are complete
 
     Then I should see "testing list" within ".editable_area ul li"
     And I should see "Test Header" within ".editable_area h3"
@@ -75,7 +74,6 @@ Feature: Edit Report
     And I click the element "#test_objective"
     And fill in "report[objective_txt]" with "* [[9353]]" within ".editable_area"
     And I press "Save"
-    And I wait until all Ajax requests are complete
 
     Then I should see "[FEA] Automatic reporting interface to MeeGo QA reports" within ".editable_area ul li"
 

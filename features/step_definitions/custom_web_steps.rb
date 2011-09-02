@@ -24,14 +24,14 @@ When /^I wait for (\d+)s$/ do |n|
 end
 
 Then /^I should really see "([^\"]*)"(?: within "([^\"]*)")?$/ do |text, locator| #"
-  if Capybara.current_driver == :selenium
+  if Capybara.current_driver == :selenium or Capybara.current_driver == :webkit
     wait_until do
       script = <<-eos
-      function () {
+      (function () {
         var containsText = $('#{locator} :contains(#{text}), #{locator}:contains(#{text})');
         var leaves = containsText.not(containsText.parents()).filter(':visible');
         return leaves.filter(function() {return !$(this).parents().is(':hidden');}).length > 0;
-      }();
+      })();
       eos
       page.evaluate_script(script).should be_true
     end
@@ -43,14 +43,14 @@ Then /^I should really see "([^\"]*)"(?: within "([^\"]*)")?$/ do |text, locator
 end
 
 Then /^I really should not see "([^\"]*)"(?: within "([^\"]*)")?$/ do |text, locator| #"
-  if Capybara.current_driver == :selenium
+  if Capybara.current_driver == :selenium or Capybara.current_driver == :webkit
     wait_until do
       script = <<-eos
-      function () {
+      (function () {
         var containsText = $('#{locator} :contains(#{text}), #{locator}:contains(#{text})');
         var leaves = containsText.not(containsText.parents()).filter(':visible');
         return leaves.filter(function() {return !$(this).parents().is(':hidden');}).length > 0;
-      }();
+      })();
       eos
       page.evaluate_script(script).should be_false
     end
