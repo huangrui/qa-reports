@@ -29,6 +29,7 @@ group :development, :test do
   gem 'rspec', '~>2.6.0'
   gem 'rspec-core','2.6.0'
   gem 'rspec-rails', '2.6.1'
+  gem 'capybara-webkit'  
   gem 'capybara', '1.0.1'
   gem 'cucumber'
   gem 'rcov', :require => false
