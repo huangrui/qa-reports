@@ -95,7 +95,7 @@ Feature: Edit Report
     Then I return to view the report "1.2/Core/automated/N900"
     Then the report should not contain a detailed test results section
 
-  @selenium
+  @javascript
   Scenario: I modify a test case result
     When I edit the report "1.2/Core/automated/N900"
     And I change the test case result of "SMOKE-SIM-Get_IMSI" to "Pass"

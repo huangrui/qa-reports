@@ -30,7 +30,7 @@ Feature: automatically calculating the pass percentage for each features.
 
     Then I should see "This comment is saved"
 
-  @selenium
+  @javascript
   Scenario: Editing feature result grading
     When I edit the report "1.2/Core/automated/N900"
     And I change grading of feature "Contacts" to red
