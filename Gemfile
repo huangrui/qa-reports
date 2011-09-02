@@ -19,9 +19,15 @@ group :production do
 end
 
 group :development do
+  gem 'watchr'
+  gem 'ruby-debug'
   gem 'capistrano'
   gem 'capistrano-ext'
-  gem 'watchr'
+end
+
+group :staging do
+  gem 'capistrano'
+  gem 'capistrano-ext'
 end
 
 group :development, :test do

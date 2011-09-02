@@ -5,7 +5,7 @@ class ReportGroupsController < ApplicationController
   def show
     @show_rss = true
 
-    @group_report = ReportGroupViewModel.new(release.label, profile, testset, product)
+    @group_report = ReportGroupViewModel.new(release.name, profile, testset, product)
     respond_to { |format| format.html }
   end
 
@@ -14,7 +14,7 @@ class ReportGroupsController < ApplicationController
     @page = [1, params[:page].to_i].max rescue 1
     @page_index = @page - 1
 
-    @group_report = ReportGroupViewModel.new(release.label, profile, testset, product)
+    @group_report = ReportGroupViewModel.new(release.name, profile, testset, product)
     offset = @reports_per_page * @page_index
     @report_range = (offset..offset + @reports_per_page - 1)
 

@@ -38,11 +38,11 @@ class ApplicationController < ActionController::Base
   end
 
   def find_selected_release
-    @selected_release_version = release.label
+    @selected_release_version = release.name
   end
 
   def release
-    @release ||= session[:release] = Release.find_by_label(params[:release_version]) || session[:release] || Release.latest
+    @release ||= session[:release] = Release.find_by_name(params[:release_version]) || session[:release] || Release.latest
   end
 
   def profile
@@ -62,7 +62,7 @@ class ApplicationController < ActionController::Base
   def valid_release release_version
     return unless release_version.present?
 
-    if Release.all.map(&:normalized).include? release_version.downcase
+    if Release.all.map(&:name).include? release_version
       release_version
     else
       Rails.logger.info ["Info:  Invalid release version: ", release_version]

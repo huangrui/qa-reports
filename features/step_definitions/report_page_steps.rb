@@ -62,7 +62,7 @@ end
 When /I view the report "([^"]*)" for build$/ do |report_string|
   release, profile, testset, product = report_string.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {"releases.label" => release, :target => profile, :product => product, :testset => testset}, :include => :release,
+   {"releases.name" => release, :target => profile, :product => product, :testset => testset}, :include => :release,
    :order => "build_id DESC, tested_at DESC, created_at DESC")
   raise "report not found with parameters #{release}/#{profile}/#{testset}/#{product}!" unless report
   visit show_report_path(release, profile, testset, product, report)
@@ -188,7 +188,7 @@ end
 Then /^(?:|I )should not be able to view the report "([^"]*)"$/ do |report_string|
   version, target, test_set, product = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {"releases.normalized" => version, :target => target, :product => product, :testset => test_set}, :include => :release,
+   {"releases.name" => version, :target => target, :product => product, :testset => test_set}, :include => :release,
    :order => "tested_at DESC, created_at DESC")
   report.should == nil
 end

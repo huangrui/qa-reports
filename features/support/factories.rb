@@ -16,8 +16,7 @@ FactoryGirl.define do
   end
 
   factory :release do
-    label      "1.3"
-    normalized "1.3"
+    name       "1.3"
     sort_order  0
   end
 
@@ -121,7 +120,7 @@ FactoryGirl.define do
     }
     author
     editor
-    release         {Release.where(:normalized => '1.2').first}
+    release         {Release.where(:name => '1.2').first}
     title           "N900 NFT TEST REPORT"
     target          "Handset"
     testset         "NFT"

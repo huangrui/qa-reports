@@ -4,13 +4,13 @@ td
 
       - testset_base = testset.split(":")[0]
       - comparetype = testset_base + ":Testing"
-      - compare = TestSet.has_comparison?(release.label, profile.downcase, testset_base)
+      - compare = TestSet.has_comparison?(release.name, profile.downcase, testset_base)
 
       strong
-        = link_to testset, group_report_path(release.label, profile, testset)
+        = link_to testset, group_report_path(release.name, profile, testset)
       - if compare then
-        a.compare href=branch_comparison_path(release.label, profile, testset_base, comparetype) compare
+        a.compare href=branch_comparison_path(release.name, profile, testset_base, comparetype) compare
       ul
         - products.each do |product|
           li
-            = link_to product, group_report_path(release.label, profile, testset, product)
+            = link_to product, group_report_path(release.name, profile, testset, product)

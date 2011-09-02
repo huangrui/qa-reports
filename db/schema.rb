@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110831095400) do
+ActiveRecord::Schema.define(:version => 20110831131759) do
 
   create_table "features", :force => true do |t|
     t.string  "name",                  :default => ""
@@ -87,8 +87,7 @@ ActiveRecord::Schema.define(:version => 20110831095400) do
   add_index "meego_test_sessions", ["release_id", "target", "testset", "product"], :name => "index_meego_test_sessions_key"
 
   create_table "releases", :force => true do |t|
-    t.string  "label",      :limit => 64, :null => false
-    t.string  "normalized", :limit => 64, :null => false
+    t.string  "name",       :limit => 64, :null => false
     t.integer "sort_order",               :null => false
   end
 

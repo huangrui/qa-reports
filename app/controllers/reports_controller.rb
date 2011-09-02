@@ -58,7 +58,7 @@ class ReportsController < ApplicationController
     report.update_attribute(:published, true)
 
     flash[:notice] = "Your report has been successfully published"
-    redirect_to show_report_path(report.release.label, report.target, report.testset, report.product, report)
+    redirect_to show_report_path(report.release.name, report.target, report.testset, report.product, report)
   end
 
   def show
@@ -118,7 +118,7 @@ class ReportsController < ApplicationController
   def validate_path_params
     if params[:release_version]
       # Raise ActiveRecord::RecordNotFound if the report doesn't exist
-      MeegoTestSession.release(release.label).profile(profile).testset(testset).product_is(product).find(params[:id])
+      MeegoTestSession.release(release.name).profile(profile).testset(testset).product_is(product).find(params[:id])
     end
   end
 
@@ -129,11 +129,11 @@ class ReportsController < ApplicationController
 
   def populate_edit_fields
     @build_diff       = []
-    @release_versions = Release.in_sort_order.map { |release| release.label }
+    @release_versions = Release.in_sort_order.map { |release| release.name }
     @targets          = TargetLabel.targets
-    @testsets         = MeegoTestSession.release(release.label).testsets
-    @products         = MeegoTestSession.release(release.label).popular_products
-    @build_ids        = MeegoTestSession.release(release.label).popular_build_ids
+    @testsets         = MeegoTestSession.release(release.name).testsets
+    @products         = MeegoTestSession.release(release.name).popular_products
+    @build_ids        = MeegoTestSession.release(release.name).popular_build_ids
   end
 
   protected

@@ -6,7 +6,7 @@ class ReportGroupViewModel
 
   def initialize(release, target, testset, product)
     @params = {
-      :release_id => Release.find_by_label(release),
+      :release_id => Release.find_by_name(release),
       :target => target,
       :testset => testset,
       :product => product
