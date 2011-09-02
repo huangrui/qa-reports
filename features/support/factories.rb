@@ -17,6 +17,13 @@ FactoryGirl.define do
 
   factory :release do
     name       "1.3"
+    normalized { label.downcase }
+    sort_order  0
+  end
+
+  factory :profile do
+    label      "Core"
+    normalized { label.downcase }
     sort_order  0
   end
 

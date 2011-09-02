@@ -19,7 +19,16 @@ group :production do
 end
 
 group :development do
-  gem 'watchr'
+  gem 'guard-rspec'
+  gem 'guard-rails'
+  gem 'guard-cucumber'
+  gem 'guard-bundler'
+  gem 'guard-spork'
+  gem 'spork', '~> 0.9.0.rc'
+  gem 'rb-fsevent',   :require => false unless RUBY_PLATFORM =~ /darwin/i
+  gem 'growl_notify', :require => false unless RUBY_PLATFORM =~ /darwin/i
+  gem 'rb-inotify',   :require => false unless RUBY_PLATFORM =~ /linux/i
+  gem 'libnotify',    :require => false unless RUBY_PLATFORM =~ /linux/i
   gem 'ruby-debug'
   gem 'capistrano'
   gem 'capistrano-ext'
