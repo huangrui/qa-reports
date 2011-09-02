@@ -4,12 +4,62 @@ linkEditButtons = () ->
 
     initInplaceEdit '.editable_title', '.editcontent', '.title_field', false
 
+
     $('.testcase').each (i, node) ->
         linkTestCaseButtons node
 
+
     $('.feature_record').each (i, node) ->
         initInplaceEdit $(node).find('.feature_record_notes'), '.content', '.comment_field', true
-        initGradingEdit $(node).find('.feature_record_grading')
+        initSelectionEdit $(node).find('.feature_record_grading'), false,
+            "1": 'grading_red'
+            "2": 'grading_yellow'
+            "3": 'grading_green'
+
+###
+initTestCaseResultEdit = (context) ->
+    context = $(context)
+
+    content = context.find 'span.content'
+    form    = context.find 'form'
+    input   = form.find 'select'
+    cls     = 'edit'
+
+    grading_classes =
+        "-1": 'fail'
+        "0": 'na'
+        "1": 'pass'
+
+    clickHandler = () ->
+        form.toggle()
+        if context.hasClass cls
+            context.unbind 'click'
+            undo = input.val()
+            input.focus()
+        else
+            context.click clickHandler
+        context.toggleClass cls
+        content.toggle()
+
+        return false
+
+    save_result = ->
+        data   = form.serialize()
+        action = form.attr 'action'
+        $.post action, data
+
+        content.removeClass().addClass 'content'
+        content.addClass grading_classes[input.val()]
+        clickHandler()
+        return false
+
+    input.change save_grading
+
+    input.blur ->
+        return if context.hasClass cls
+        save_grading()
+
+    context.click clickHandler
 
 initGradingEdit = (context) ->
     context = $(context)
@@ -56,7 +106,49 @@ initGradingEdit = (context) ->
         save_grading()
 
     context.click clickHandler
+###
 
+initSelectionEdit = (context, replace_txt, cls_mapping) ->
+    context = $(context)
+
+    content = context.find 'span.content'
+    form    = context.find 'form'
+    input   = form.find 'select'
+    cls     = 'edit'
+
+    clickHandler = () ->
+        form.toggle()
+        if context.hasClass cls
+            context.unbind 'click'
+            undo = input.val()
+            input.focus()
+        else
+            context.click clickHandler
+        context.toggleClass cls
+        content.toggle()
+
+        return false
+
+    save_selection = ->
+        console.log "saving"
+        data   = form.serialize()
+        action = form.attr 'action'
+        $.post action, data
+
+        content.removeClass().addClass 'content'
+        content.addClass cls_mapping[input.val()]
+        if replace_txt
+            content.text input.find('[selected]').text()
+        clickHandler()
+        return false
+
+    input.change save_selection
+
+    input.blur ->
+        return if context.hasClass cls
+        save_selection()
+
+    context.click clickHandler
 
 initInplaceEdit = (context, contentSelector, inputSelector, hasMarkup) ->
     context = $(context)
@@ -166,7 +258,7 @@ prepareCategoryUpdate = (div) ->
 
       $div.jqmHide()
       return false
-
+###
 handleResultEdit = () ->
     $node = $(this)
     $span = $node.find 'span'
@@ -238,7 +330,7 @@ handleResultSubmit = () ->
     $.post url, data
 
     return false
-
+###
 handleCommentEdit = () ->
     $node = $(this)
     $div = $node.find 'div.content'
@@ -418,7 +510,12 @@ linkTestCaseButtons = (node) ->
     $comment = $node.find '.testcase_notes'
     $result = $node.find '.testcase_result'
 
-    $result.click handleResultEdit
+    #$result.click handleResultEdit
+    initSelectionEdit $result, true,
+        "-1": 'fail'
+        "0": 'na'
+        "1": 'pass'
+
     $comment.click handleCommentEdit
 
 $(document).ready () ->
