@@ -167,26 +167,6 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 
-  def self.filters_exist?(target, testset, product)
-    return true if target.blank? and testset.blank? and product.blank?
-
-    filters_exist = false
-
-    if target.present?
-      filters_exist = find_by_target(target.downcase).present?
-
-      if testset.present?
-        filters_exist &= find_by_testset(testset.downcase).present?
-      end
-
-      if testset.present? && product.present?
-        filters_exist &= find_by_product(product.downcase).present?
-      end
-    end
-
-    return filters_exist
-  end
-
   #TODO: Throw away and use scopes
   class << self
     def by_release_version_target_testset_product(release_version, target, testset, product, order_by = "tested_at DESC, id DESC", limit = nil)
