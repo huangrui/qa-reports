@@ -1,4 +1,6 @@
 Before do
+  load "#{Rails.root}/db/seeds.rb"
+
   @default_api_opts = {
     "auth_token"      => "foobar",
     "release_version" => "1.2",
