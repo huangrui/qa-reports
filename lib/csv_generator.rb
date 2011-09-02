@@ -1,7 +1,7 @@
 module CsvGenerator
   def self.generate_csv(release_version, target, testset, product)
     sql = <<-END
-      select mts.tested_at, vl.name, mts.target, mts.testset, mts.product, mts.title,
+      select mts.tested_at, r.name, mts.target, mts.testset, mts.product, mts.title,
         mtset.name, mtc.name, if(mtc.result = 1,1,0) as passes, if(mtc.result = -1,1,0) as fails,
         if(mtc.result = 0,1,0) as nas, mtc.comment, author.name, editor.name
       from meego_test_sessions mts
@@ -9,7 +9,7 @@ module CsvGenerator
         join users as editor on (mts.editor_id = editor.id)
         join meego_test_cases as mtc on (mtc.meego_test_session_id = mts.id)
         join features as mtset on (mtc.feature_id = mtset.id)
-        join releases as vl on (mts.release_id = vl.id)
+        join releases as r on (mts.release_id = r.id)
     END
 
     conditions = []
@@ -18,7 +18,7 @@ module CsvGenerator
     conditions << "mts.product = '#{product}'" if product
     conditions << "mts.target = '#{target}'" if target
     conditions << "mts.testset = '#{testset}'" if testset
-    conditions << "vl.name = '#{release_version}'" if release_version
+    conditions << "r.name = '#{release_version}'" if release_version
 
     sql += " where " + conditions.join(" and ") + ";"
 
