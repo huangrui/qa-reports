@@ -15,12 +15,8 @@ tr class="testcase #{result_class(testcase, 'result_')}" id="testcase-#{testcase
       input name="_method" type="hidden" value="put"
       div.float_above
         select name="test_case[result]"
-          option value="1" Pass
-          option value="-1" Fail
-          option value="0" N/A
-          
-          /- (-1..1).each do |s|
-          /  | <option value="#{s}" #{testcase.result == s ? 'selected=selected' : ''}>#{result_to_txt(s)}</option>
+          - (-1..1).each do |s|
+            option selected="#{testcase.result == s ? 'selected' : ''}" value="#{s}" =result_to_txt(s)
 
   / NOTE: if changed, update also _nft_testcase and _testcase_comment. DRY violated because of seriously bad partial rendering performance.
   td class="testcase_notes #{'edit' if @editing}" rowspan="#{testcase.all_measurements.size if testcase.has_measurements? }"

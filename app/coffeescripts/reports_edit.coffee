@@ -11,7 +11,6 @@ linkEditButtons = () ->
 
     $('.feature_record').each (i, node) ->
         initInplaceEdit $(node).find('.feature_record_notes'), '.content', '.comment_field', true
-        #initGradingEdit $(node).find('.feature_record_grading')
 
         ctx = $(node).find('.feature_record_grading')
         initSelectionEdit ctx, 'span.content', false,
@@ -45,7 +44,6 @@ initSelectionEdit = (context, cls_elem, replace_txt, cls_mapping) ->
         if context.hasClass cls
             context.unbind 'click'
             [k,c] = find_val()
-            input.val k
             context.removeClass c
         else
             context.click clickHandler
