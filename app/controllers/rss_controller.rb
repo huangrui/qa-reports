@@ -20,17 +20,18 @@
 # 02110-1301 USA
 
 class RssController < ApplicationController
+  layout false
+
   def rss
    filter = {
         :release_id => Release.find_by_name(release.name),
-        :target => profile,
-        :testset => testset,
-        :product => product
+        :target     => profile,
+        :testset    => testset,
+        :product    => product
       }.delete_if { |key, value| value.nil? }
 
     @sessions = MeegoTestSession.published.where(filter).order("created_at DESC").limit(10)
 
-    render :layout => false
     response.headers["Content-Type"] = "application/xml; charset=utf-8"
   end
 end
