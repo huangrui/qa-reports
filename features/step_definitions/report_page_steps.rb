@@ -53,10 +53,12 @@ Then /I should see the imported test cases from "([^"]*)" in the exported CSV.$/
 end
 
 When /^(?:|I )(?:|return to )view the report "([^"]*)"$/ do |report_string|
-  release, profile, testset, product = report_string.downcase.split('/')
-  report = MeegoTestSession.release(release).profile(profile).product_is(product).testset(testset).order("tested_at DESC, created_at DESC").first
-  raise "report not found with parameters #{release}/#{profile}/#{testset}/#{product}!" unless report
-  visit show_report_path(release, profile, testset, product, report.id)
+  release, profile, testset, product = report_string.split('/')
+
+  #TODO: Navigate through UI
+  visit root_path
+  click_link_or_button profile
+  visit report_path(MeegoTestSession.last)
 end
 
 When /I view the report "([^"]*)" for build$/ do |report_string|

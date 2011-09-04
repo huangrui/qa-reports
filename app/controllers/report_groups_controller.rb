@@ -5,7 +5,7 @@ class ReportGroupsController < ApplicationController
   def show
     @show_rss = true
 
-    @group_report = ReportGroupViewModel.new(release.name, profile, testset, product)
+    @group_report = ReportGroupViewModel.new(release, profile, testset, product)
     respond_to { |format| format.html }
   end
 

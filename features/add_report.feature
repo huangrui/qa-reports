@@ -158,13 +158,3 @@ Feature:
     Then I should see "Test_set" within ".index_month .odd .report_name"
     Then I should see "Hardware_32" within ".index_month .odd .report_name"
 
-
-  @selenium
-  Scenario: Add new report with default test case comment
-    Given the report for "short1.csv" exists on the service
-    And I upload the report "short1_changed_comments.csv" with different comments
-
-    When I follow "See all"
-    Then the testcase "Description One" should have the new comment
-    And the testcase "Description Two" should have the comment from the previous report
-
