@@ -43,7 +43,7 @@ module CsvGenerator
   CSV_QUERY = <<-END
     SELECT 
     mts.tested_at           AS tested_at, 
-    r.label                AS release_version,
+    r.name                  AS release_version,
     mts.target              AS target,
     mts.testset             AS testset,
     mts.product             AS product,
@@ -96,7 +96,7 @@ module CsvGenerator
   def self.generate_csv(release_version, target, testset, product)
     # Construct conditions
     conds = ["mts.published = ?", "mtc.deleted = ?"]
-    conds << "r.normalized = ?" if release_version
+    conds << "r.name = ?" if release_version
     conds << "mts.target = ?" if target
     conds << "mts.testset = ?" if testset
     conds << "mts.product = ?" if product
