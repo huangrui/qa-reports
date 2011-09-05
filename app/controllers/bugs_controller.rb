@@ -28,20 +28,29 @@ class BugsController < ApplicationController
     end
 
     @http.use_ssl = BUGZILLA_CONFIG['use_ssl']
-    @http.start() {|http|
+    @http.start() do |http|
       req = Net::HTTP::Get.new(uri)
       if not BUGZILLA_CONFIG['http_username'].nil?
         req.basic_auth BUGZILLA_CONFIG['http_username'], BUGZILLA_CONFIG['http_password']
       end
       response = http.request(req)
       content = response.body
-    }
+    end
 
     # XXX: bugzilla seems to encode its exported csv to utf-8 twice
     # so we convert from utf-8 to iso-8859-1, which is then interpreted
     # as utf-8
-    data = Iconv.iconv("iso-8859-1", "utf-8", content)
-    render :json => FasterCSV.parse(data.join '\n')
+    begin
+      data = Iconv.iconv("iso-8859-1", "utf-8", content)
+      json = FasterCSV.parse(data.join '\n')
+      # TODO: Should render json instead of CSV
+      render :json => json
+    rescue FasterCSV::MalformedCSVError => e
+      logger.error e.message
+      logger.info  "ERROR: MALFORMED BUGZILLA DATA"
+      logger.info  data
+      head :not_found
+    end
   end
 
   protected
