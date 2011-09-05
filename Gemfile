@@ -24,10 +24,10 @@ group :development do
   gem 'guard-cucumber'
   gem 'guard-bundler'
   gem 'guard-spork'
-  gem 'rb-fsevent',   :require => false unless RUBY_PLATFORM =~ /darwin/i
-  gem 'growl_notify', :require => false unless RUBY_PLATFORM =~ /darwin/i
-  gem 'rb-inotify',   :require => false unless RUBY_PLATFORM =~ /linux/i
-  gem 'libnotify',    :require => false unless RUBY_PLATFORM =~ /linux/i
+  gem 'rb-fsevent'   if RUBY_PLATFORM =~ /darwin/i
+  gem 'growl_notify' if RUBY_PLATFORM =~ /darwin/i
+  gem 'rb-inotify'   if RUBY_PLATFORM =~ /linux/i
+  gem 'libnotify'    if RUBY_PLATFORM =~ /linux/i
   gem 'ruby-debug'
   gem 'capistrano'
   gem 'capistrano-ext'
@@ -43,7 +43,7 @@ group :development, :test do
   gem 'rspec', '~>2.6.0'
   gem 'rspec-core','2.6.0'
   gem 'rspec-rails', '2.6.1'
-  gem 'capybara-webkit'  
+  gem 'capybara-webkit'
   gem 'capybara', '1.0.1'
   gem 'spork', '~> 0.9.0.rc'
   gem 'cucumber'
