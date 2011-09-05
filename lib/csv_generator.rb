@@ -43,7 +43,7 @@ module CsvGenerator
   CSV_QUERY = <<-END
     SELECT 
     mts.tested_at           AS tested_at, 
-    vl.label                AS release_version,
+    r.label                AS release_version,
     mts.target              AS target,
     mts.testset             AS testset,
     mts.product             AS product,
@@ -66,7 +66,7 @@ module CsvGenerator
     LEFT JOIN users              AS editor ON (mts.editor_id = editor.id)
     LEFT JOIN meego_test_cases   AS mtc    ON (mtc.meego_test_session_id = mts.id)
     LEFT JOIN features           AS mtset  ON (mtc.feature_id = mtset.id)
-    LEFT JOIN releases           AS vl     ON (mts.release_id = vl.id)
+    LEFT JOIN releases           AS r      ON (mts.release_id = r.id)
     LEFT JOIN meego_measurements AS mms    ON (mms.meego_test_case_id = mtc.id)
   END
 
@@ -96,7 +96,7 @@ module CsvGenerator
   def self.generate_csv(release_version, target, testset, product)
     # Construct conditions
     conds = ["mts.published = ?", "mtc.deleted = ?"]
-    conds << "vl.normalized = ?" if release_version
+    conds << "r.normalized = ?" if release_version
     conds << "mts.target = ?" if target
     conds << "mts.testset = ?" if testset
     conds << "mts.product = ?" if product

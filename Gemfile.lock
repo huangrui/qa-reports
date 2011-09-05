@@ -69,7 +69,9 @@ GEM
       rack-test (>= 0.5.4)
       selenium-webdriver (~> 2.0)
       xpath (~> 0.1.4)
-    childprocess (0.2.1)
+    capybara-webkit (0.6.1)
+      capybara (~> 1.0.0)
+    childprocess (0.2.2)
       ffi (~> 1.0.6)
     chronic (0.5.0)
     churn (0.0.13)
@@ -221,7 +223,7 @@ GEM
     ruby_parser (2.0.6)
       sexp_processor (~> 3.0)
     rubyzip (0.9.4)
-    selenium-webdriver (2.4.0)
+    selenium-webdriver (2.5.0)
       childprocess (>= 0.2.1)
       ffi (>= 1.0.7)
       json_pure
@@ -254,6 +256,7 @@ DEPENDENCIES
   capistrano
   capistrano-ext
   capybara (= 1.0.1)
+  capybara-webkit
   coffee-script
   cucumber
   cucumber-rails (~> 0.3.2)

@@ -13,9 +13,9 @@ if Rails.env == "development" or Rails.env == "staging"
 end
 
 
-Release.create! :label => "1.2", :normalized => "1.2", :sort_order => 0
-Release.create! :label => "1.1", :normalized => "1.1", :sort_order => 1
-Release.create! :label => "1.0", :normalized => "1.0", :sort_order => 2
+Release.create! :name => "1.2", :sort_order => 0
+Release.create! :name => "1.1", :sort_order => 1
+Release.create! :name => "1.0", :sort_order => 2
 
 TargetLabel.create! :label => "Core", :normalized => "core", :sort_order => 0
 TargetLabel.create! :label => "Handset", :normalized => "handset", :sort_order => 1

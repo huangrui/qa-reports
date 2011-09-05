@@ -20,29 +20,18 @@
 # 02110-1301 USA
 
 class RssController < ApplicationController
+  layout false
 
   def rss
-    #TODO: Needs cleanup
-    @target   = params[:target]
-    @testset = params[:testset]
-    @product = params[:product]
+   filter = {
+        :release_id => Release.find_by_name(release.name),
+        :target     => profile,
+        :testset    => testset,
+        :product    => product
+      }.delete_if { |key, value| value.nil? }
 
-    unless MeegoTestSession.filters_exist?(@target, @testset, @product)
-      return record_not_found
-    end
+    @sessions = MeegoTestSession.published.where(filter).order("created_at DESC").limit(10)
 
-    if @product
-      @sessions = MeegoTestSession.by_release_version_target_testset_product(release.label, @target, @testset, @product, "created_at DESC", 10)
-    elsif @testset
-      @sessions = MeegoTestSession.published_by_release_version_target_testset(release.label, @target, @testset, "created_at DESC", 10)
-    elsif @target
-      @sessions = MeegoTestSession.published_by_release_version_target(release.label, @target, "created_at DESC", 10)
-    else
-      @sessions = MeegoTestSession.published_by_release_version(release.label, "created_at DESC", 10)
-    end
-
-    render :layout => false
     response.headers["Content-Type"] = "application/xml; charset=utf-8"
   end
-
 end

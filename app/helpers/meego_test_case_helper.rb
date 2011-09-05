@@ -1,17 +1,14 @@
 module MeegoTestCaseHelper
 
+  RESULTS = {-1 => "Fail", 0 => "N/A", 1 => "Pass"}
+
+  def result_to_txt(result)
+    RESULTS[result] or "N/A"
+  end
+
   def result_html(model)
-    if model==nil
-      return "N/A"
-    end
-    case model.result
-      when 1
-        "Pass"
-      when -1
-        "Fail"
-      else
-        "N/A"
-    end
+    return "N/A" unless model
+    result_to_txt(model.result)
   end
 
   def hide_passing(model)

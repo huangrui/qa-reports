@@ -15,7 +15,7 @@
     - if user_signed_in?
       a#delete-button.small_btn.cancel href="#" Delete
       a#edit-button.small_btn href=url_for( :controller=>'reports', :action=>'edit', :id=>@report.id) Edit
-    a#print-button.small_btn href=print_report_path(@report.release.label, @report.target, @report.testset, @report.product, @report.id) Print
+    a#print-button.small_btn href=print_report_path(@report.release.name, @report.target, @report.testset, @report.product, @report.id) Print
 
 - content_for :table_of_contents do
   = render :partial => "toc"
