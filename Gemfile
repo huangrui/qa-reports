@@ -24,10 +24,6 @@ group :development do
   gem 'guard-cucumber'
   gem 'guard-bundler'
   gem 'guard-spork'
-  gem 'rb-fsevent',   :require => false if RUBY_PLATFORM =~ /darwin/i
-  gem 'growl_notify', :require => false if RUBY_PLATFORM =~ /darwin/i
-  gem 'rb-inotify',   :require => false if RUBY_PLATFORM =~ /linux/i
-  gem 'libnotify',    :require => false if RUBY_PLATFORM =~ /linux/i
   gem 'ruby-debug'
   gem 'capistrano'
   gem 'capistrano-ext'
