@@ -24,6 +24,7 @@ group :development do
   gem 'guard-cucumber'
   gem 'guard-bundler'
   gem 'guard-spork'
+  gem 'guard-migrate'
   gem 'ruby-debug'
   gem 'capistrano'
   gem 'capistrano-ext'
