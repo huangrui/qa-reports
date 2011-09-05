@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'report_comparison'
 
 describe ReportComparison do
 

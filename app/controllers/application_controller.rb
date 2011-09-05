@@ -42,7 +42,9 @@ class ApplicationController < ActionController::Base
   end
 
   def release
-    @release ||= session[:release] = Release.find_by_name(params[:release_version]) || session[:release] || Release.latest
+    @release ||= Release.find_by_name(params[:release_version]) || Release.find_by_id(session[:release_id]) || Release.latest
+    session[:release_id] = @release.id
+    @release
   end
 
   def profile

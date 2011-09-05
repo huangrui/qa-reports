@@ -19,7 +19,11 @@ group :production do
 end
 
 group :development do
-  gem 'watchr'
+  gem 'guard-rspec'
+  gem 'guard-rails'
+  gem 'guard-cucumber'
+  gem 'guard-bundler'
+  gem 'guard-spork'
   gem 'ruby-debug'
   gem 'capistrano'
   gem 'capistrano-ext'
@@ -35,7 +39,9 @@ group :development, :test do
   gem 'rspec', '~>2.6.0'
   gem 'rspec-core','2.6.0'
   gem 'rspec-rails', '2.6.1'
+  gem 'capybara-webkit'
   gem 'capybara', '1.0.1'
+  gem 'spork', '~> 0.9.0.rc'
   gem 'cucumber'
   gem 'rcov', :require => false
   gem 'cucumber-rails', '~> 0.3.2' #newer ones fail

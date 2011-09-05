@@ -22,7 +22,7 @@ Feature: automatically calculating the pass percentage for each features.
     And I should see feature "Audio" graded as red
     And I should see feature "Dialer" graded as red
 
-  @selenium
+  @javascript
   Scenario: Editing feature result comments
     When I edit the report "1.2/Core/automated/N900"
     And I change comment of feature "Contacts" to "This comment is saved"
@@ -30,7 +30,7 @@ Feature: automatically calculating the pass percentage for each features.
 
     Then I should see "This comment is saved"
 
-  @selenium
+  @javascript
   Scenario: Editing feature result grading
     When I edit the report "1.2/Core/automated/N900"
     And I change grading of feature "Contacts" to red
@@ -38,7 +38,7 @@ Feature: automatically calculating the pass percentage for each features.
 
     Then I should see feature "Contacts" graded as red
 
-  @selenium
+  @javascript
   Scenario: Undoing feature result comment edit
     When I edit the report "1.2/Core/automated/N900"
     And I fill in comment "This comment is cancelled" for feature "Audio"

@@ -6,10 +6,10 @@ class ReportGroupViewModel
 
   def initialize(release, target, testset, product)
     @params = {
-      :release_id => Release.find_by_name(release),
-      :target => target,
-      :testset => testset,
-      :product => product
+      :release_id => release,
+      :target     => target,
+      :testset    => testset,
+      :product    => product
     }.delete_if { |key, value| value.nil? }
 
     raise ActiveRecord::RecordNotFound if MeegoTestSession.published.where(@params).count == 0

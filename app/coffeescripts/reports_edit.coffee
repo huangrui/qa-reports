@@ -4,59 +4,71 @@ linkEditButtons = () ->
 
     initInplaceEdit '.editable_title', '.editcontent', '.title_field', false
 
+
     $('.testcase').each (i, node) ->
         linkTestCaseButtons node
 
+
     $('.feature_record').each (i, node) ->
         initInplaceEdit $(node).find('.feature_record_notes'), '.content', '.comment_field', true
-        initGradingEdit $(node).find('.feature_record_grading')
 
-initGradingEdit = (context) ->
-    context = $(context)
+        ctx = $(node).find('.feature_record_grading')
+        initSelectionEdit ctx, 'span.content', false,
+            "1": 'grading_red'
+            "2": 'grading_yellow'
+            "3": 'grading_green'
+
+initSelectionEdit = (context, cls_elem, replace_txt, cls_mapping) ->
+    context  = $(context)
+    if cls_elem?
+        cls_elem = context.find cls_elem
+    else
+        cls_elem = context
 
     content = context.find 'span.content'
     form    = context.find 'form'
     input   = form.find 'select'
     cls     = 'edit'
 
-    grading_classes =
-        "1": 'grading_red'
-        "2": 'grading_yellow'
-        "3": 'grading_green'
+    reverse = (val) ->
+        for k,v of cls_mapping
+            return k if v == val
+
+    find_val = () ->
+        for c in cls_elem.attr("class").split(" ")
+            k = reverse c
+            return [k,c] if k?
 
     clickHandler = () ->
         form.toggle()
         if context.hasClass cls
             context.unbind 'click'
-            undo = input.val()
-            input.focus()
+            [k,c] = find_val()
+            context.removeClass c
         else
             context.click clickHandler
         context.toggleClass cls
         content.toggle()
 
-        return false
-
-    save_grading = ->
+    save_selection = ->
+        return if context.hasClass cls
         data   = form.serialize()
         action = form.attr 'action'
         $.post action, data
 
-        grade_cls = grading_classes[input.val()] ? 'grading_white'
-
-        content.removeClass().addClass 'content'
-        content.addClass grade_cls
+        if replace_txt
+            content.text input.find('[selected]').text()
+        cls_elem.addClass cls_mapping[input.val()]
         clickHandler()
         return false
 
-    input.change save_grading
+    input.change save_selection
 
     input.blur ->
         return if context.hasClass cls
-        save_grading()
+        save_selection()
 
     context.click clickHandler
-
 
 initInplaceEdit = (context, contentSelector, inputSelector, hasMarkup) ->
     context = $(context)
@@ -166,78 +178,6 @@ prepareCategoryUpdate = (div) ->
 
       $div.jqmHide()
       return false
-
-handleResultEdit = () ->
-    $node = $(this)
-    $span = $node.find 'span'
-    return false if $span.is ":hidden"
-
-    $testcase = $node.closest '.testcase'
-    id = $testcase.attr('id').replace 'testcase-', ''
-    $form = $('#result_edit_form form').clone()
-    $form.attr('action', "/test_cases/#{id}")
-    $select = $form.find 'select'
-
-    result = $span.text()
-
-    code = switch result
-        when 'Pass' then '1'
-        when 'Fail' then '-1'
-        else '0'
-
-    $select.find('option[selected="selected"]').removeAttr "selected"
-    $select.find('option[value="' + code + '"]').attr "selected", "selected"
-
-    $node.unbind 'click'
-    $node.removeClass 'edit'
-
-    $form.submit handleResultSubmit
-    $select.change () ->
-        $select.unbind 'blur'
-        if $select.val() == code
-            $form.detach()
-            $span.show()
-            $node.addClass 'edit'
-            $node.click handleResultEdit
-        else
-            $form.submit()
-
-    $select.blur () ->
-        $form.detach()
-        $span.show()
-        $node.addClass 'edit'
-        $node.click handleResultEdit
-
-    $span.hide()
-    $form.insertAfter $span
-    $select.focus()
-
-    return false
-
-handleResultSubmit = () ->
-    $form = $(this)
-
-    data = $form.serialize()
-    url = $form.attr 'action'
-
-    $node = $form.closest 'td'
-    $node.addClass('edit').removeClass('pass fail na').click handleResultEdit
-
-    $span = $node.find 'span'
-    result = $form.find('select').val()
-
-    [cls,txt] = switch result
-        when '1'  then ['pass', 'Pass']
-        when '-1' then ['fail', 'Fail']
-        else ['na', 'N/A']
-    $node.addClass cls
-    $span.text txt
-
-    $form.detach()
-    $span.show()
-    $.post url, data
-
-    return false
 
 handleCommentEdit = () ->
     $node = $(this)
@@ -418,7 +358,12 @@ linkTestCaseButtons = (node) ->
     $comment = $node.find '.testcase_notes'
     $result = $node.find '.testcase_result'
 
-    $result.click handleResultEdit
+    for r in $result
+        initSelectionEdit r, null, true,
+            "-1": 'fail'
+            "0": 'na'
+            "1": 'pass'
+
     $comment.click handleCommentEdit
 
 $(document).ready () ->
