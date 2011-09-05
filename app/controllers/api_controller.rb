@@ -29,7 +29,6 @@ class ApiController < ApplicationController
   def import_data
     data = request.query_parameters.merge(request.request_parameters)
     data.delete(:auth_token)
-
     errors = []
 
     data[:uploaded_files] = collect_files(data, "report", errors)
@@ -49,7 +48,9 @@ class ApiController < ApplicationController
 
     error_msgs = {}
 
-    error_msgs.merge! errmsg_invalid_version data[:release_version] if not valid_release? data[:release_version]
+    release_version = data.delete(:release_version) if data.key?(:release_version)
+    data[:release] = Release.find_by_name(release_version)
+    error_msgs.merge! errmsg_invalid_version release_version if not data[:release]
 
     return render :json => {:ok => '0', :errors => error_msgs} if !error_msgs.empty?
 
@@ -70,7 +71,7 @@ class ApiController < ApplicationController
     begin
       @test_session.save!
 
-      report_url = url_for :controller => 'reports', :action => 'show', :release_version => data[:release_version], :target => data[:target], :testset => data[:testset], :product => data[:product], :id => @test_session.id
+      report_url = url_for :controller => 'reports', :action => 'show', :release_version => data[:release][:name], :target => data[:target], :testset => data[:testset], :product => data[:product], :id => @test_session.id
       render :json => {:ok => '1', :url => report_url}
     rescue ActiveRecord::RecordInvalid => invalid
       error_messages = {}
@@ -158,10 +159,6 @@ class ApiController < ApplicationController
       results << collect_file(parameters, key, errors)
     }
     results.compact
-  end
-
-  def valid_release?(version)
-    Release.where(:name => version).first.present?
   end
 
   def errmsg_invalid_version(version)

@@ -32,15 +32,16 @@ class UploadController < ApplicationController
 
   def upload_form
     new_report = {}
-    [:release_version, :target, :testset, :product].each do |key|
+    [:target, :testset, :product].each do |key|
       new_report[key] = params[key] if params[key]
     end
 
     new_report[:release] = new_report[:release].downcase if new_report[:release]
     new_report[:target] ||= new_report[:target].downcase if new_report[:target]
     new_report[:target] ||= TargetLabel.targets.first.downcase
-    @test_session = MeegoTestSession.new(new_report)
-    @test_session.release = Release.find_by_name(new_report[:release_version]) || Release.latest
+
+    @test_session         = MeegoTestSession.new(new_report)
+    @test_session.release = Release.find_by_name(params[:release_version]) || Release.latest
 
     @release_versions = Release.in_sort_order.map { |release| release.name }
     @targets          = TargetLabel.targets.map {|target| target.downcase}
@@ -85,6 +86,7 @@ class UploadController < ApplicationController
     params[:meego_test_session][:uploaded_files] += handle_ajax_uploads(params[:drag_n_drop_attachments])
 
     @test_session = ReportFactory.new.build(params[:meego_test_session])
+    @test_session.release = Release.find_by_name params[:release][:name]
     @test_session.author = current_user
     @test_session.editor = current_user
 

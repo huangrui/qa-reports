@@ -40,7 +40,6 @@ Before do
     :name => "dummy feature", :meego_test_cases_attributes => [@testcase_template]
   }
   @report_template = {
-    :release_version => "1.2",
     :target => "Core",
     :testset => "Sanity",
     :product => "N900",

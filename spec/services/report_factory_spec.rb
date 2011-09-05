@@ -24,7 +24,6 @@ describe ReportFactory do
       @result_file2.stub!(:path).and_return("/var/tmp/wlan.csv")
 
       @report_attributes = {
-        :release_version => "1.2",
         :target => "Core",
         :testset => "Sanity",
         :product => "N900",

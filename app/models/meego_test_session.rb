@@ -473,18 +473,6 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 
-  ###############################################
-  # For encapsulating the release_version          #
-  ###############################################
-  def release_version=(release_version)
-    release = Release.where(:name => release_version)
-    self.release = release.first
-  end
-
-  def release_version
-    self.release ? self.release.name : nil
-  end
-
   def generate_file_destination_path(original_filename)
     datepart = Time.now.strftime("%Y%m%d")
     dir      = File.join(RESULT_FILES_DIR, datepart)
@@ -522,12 +510,12 @@ class MeegoTestSession < ActiveRecord::Base
   private
 
   def create_release
-    verlabel = Release.find(:first, :conditions => {:name => release_version})
+    verlabel = Release.find(:first, :conditions => {:name => release.name})
     if verlabel
       self.release = verlabel
       save
     else
-      verlabel = Release.new(:name => release_version)
+      verlabel = Release.new(:name => release.name)
       verlabel.save
     end
   end

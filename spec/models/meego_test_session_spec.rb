@@ -24,7 +24,6 @@ describe MeegoTestSession do
   it "should create test sets and test cases" do
     params = {
       :title => "Dummy test report",
-      :release_version => "1.2",
       :product => "N900",
       :target => "Core",
       :testset => "Sanity",
@@ -74,7 +73,7 @@ describe MeegoTestSession do
     it "should fail if target is not found" do
       @testset = 'SomeTestSet'
       @product = 'Someproduct'
-      MeegoTestSession.stub!(:find_by_target).and_return(nil)      
+      MeegoTestSession.stub!(:find_by_target).and_return(nil)
       MeegoTestSession.filters_exist?(@target, @testset, @product).should be_false
     end
 

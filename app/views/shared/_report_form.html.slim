@@ -3,8 +3,8 @@
 .field
   label for="report_meego_version" MeeGo release:
   - @release_versions.each do |release_version|
-    = f.radio_button :release_version, release_version, :class => "version"
-    = f.label :release_version, release_version, :value => release_version, :class => "inline_label"
+    = radio_button :release, :name, release_version, :class => "version"
+    = label :release, :name, release_version, :value => release_version, :class => "inline_label"
 
 .field
   label for="report_test_target" Target profile:
@@ -36,7 +36,7 @@
   = form_ajax_error_msg "product"
 
 .field
-  label for="report_test_build_id" 
+  label for="report_test_build_id"
     | Build id:
     .help_tag optional
   = f.text_field :build_id, :id => "report_test_build_id", :class => "text build_id", :tabindex => 5
