@@ -3,11 +3,11 @@ class FasterCSV
   class Row
     def has_valid_headers?
       # Check that all required headers are there
-      (self.headers() & CSVResultFileParser::REQUIRED_CSV_FIELDS).length == CSVResultFileParser::REQUIRED_CSV_FIELDS.length
+      @valid_headers ||= (self.headers() & CSVResultFileParser::REQUIRED_CSV_FIELDS).length == CSVResultFileParser::REQUIRED_CSV_FIELDS.length
     end
 
     def has_valid_data?
-      (self[:feature] && 
+      (self[:feature] &&
        self[:test_case] &&
        self.fields(:pass, :fail, :na).count("1") == 1)
     end
@@ -16,7 +16,7 @@ end
 
 class CSVResultFileParser
   # Public since accessed from FasterCSV as well. The code does not really
-  # require all header fields so no need to bounce otherwise perfectly 
+  # require all header fields so no need to bounce otherwise perfectly
   # functional files.
   REQUIRED_CSV_FIELDS = [
     :feature,
@@ -51,7 +51,7 @@ class CSVResultFileParser
   RESULT_MAPPING = [
     MeegoTestCase::PASS,
     MeegoTestCase::FAIL,
-    MeegoTestCase::NA 
+    MeegoTestCase::NA
   ]
 
   ############################################################################
@@ -61,7 +61,7 @@ class CSVResultFileParser
   def is_new_format?(io)
     first_line = io.readline
     io.rewind
-    
+
     # Check the header row length - the new version has 11 columns. Later
     # on we will not require all of those to be present, but for now
     # there has to be some differences so we can determine the version
@@ -75,7 +75,7 @@ class CSVResultFileParser
     feature   = row[0].toutf8.strip
     test_case = row[1].toutf8.strip
     comment   = row[2].try(:toutf8).try(:strip) || ""
-    
+
     raise "Invalid test case result" if row.fields(:pass, :fail, :na).count("1") != 1
     result    = RESULT_MAPPING[row.fields(:pass, :fail, :na).index("1")]
 
@@ -118,8 +118,8 @@ class CSVResultFileParser
          :unit    => row[:unit].try(:toutf8).try(:strip) || "",
          :target  => row[:target].try(:to_f) || 0,
          :failure => row[:failure].try(:to_f) || 0,
-         
-         # => TODO: Throw away and order by id 
+
+         # => TODO: Throw away and order by id
          # (comment from xml result file parser)
          :sort_index => 0
        }]
