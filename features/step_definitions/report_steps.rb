@@ -1,8 +1,8 @@
-Given /^there's an existign report$/ do
+Given /^there's an existing report$/ do
   report = FactoryGirl.build(:test_report_wo_features, :tested_at => '2011-09-01')
   report.features << FactoryGirl.build(:feature_wo_test_cases)
-  report.features.first.meego_test_cases << 
-    FactoryGirl.build(:test_case, :name => 'Test Case 1', :result => MeegoTestCase::PASS, :comment => 'This comment should be used as a template') << 
+  report.features.first.meego_test_cases <<
+    FactoryGirl.build(:test_case, :name => 'Test Case 1', :result => MeegoTestCase::PASS, :comment => 'This comment should be used as a template') <<
     FactoryGirl.build(:test_case, :name => 'Test Case 2', :result => MeegoTestCase::PASS, :comment => 'This comment should be overwritten with empty comment')
 
   report.save!
