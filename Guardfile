@@ -7,6 +7,10 @@ guard 'bundler' do
   # watch(/^.+\.gemspec/)
 end
 
+guard 'migrate' do
+  watch(%r{^db/migrate/(\d+).+\.rb})
+end
+
 guard 'rails' do
   watch('Gemfile.lock')
   watch(%r{^(config|lib)/.*})
