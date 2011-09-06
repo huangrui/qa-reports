@@ -38,17 +38,15 @@ Then /I should see the imported data from "([^"]*)" and "([^"]*)" in the exporte
   result = FasterCSV.parse(page.text, {:col_sep => ';'}).drop(1)
   result.count.should == input.count
 
-  mapped_result = result.map{ |item| [item[6], item[7], item[8], item[9], item[10], item[11]] }
+  mapped_result = result.map{ |item| (6..11).map{|field| item[field]}}
   (input - mapped_result).should be_empty
-
-
 end
 
 Then /I should see the imported test cases from "([^"]*)" in the exported CSV.$/ do |file|
   input = FasterCSV.read('features/resources/' + file).drop(1)
   result = FasterCSV.parse(page.text, {:col_sep => ','}).drop(1)
   result.count.should == input.count
-  mapped_result = result.map{ |item| [item[0], item[1], item[2], item[3], item[4], item[5]] }
+  mapped_result = result.map{ |item| (0..5).map{|field| item[field]}}
   (input - mapped_result).should be_empty
 end
 
