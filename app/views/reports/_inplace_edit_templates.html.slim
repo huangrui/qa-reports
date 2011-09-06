@@ -13,13 +13,3 @@
           input#testcase_attachment type="file" name="test_case[attachment_attributes][file]"
       input.small_btn.save type="submit" value="Save"
       input.small_btn.cancel.last type="button" value="Cancel"
-
-  #result_edit_form
-    form.result_form.float_container action="" method="post"
-      input name="authenticity_token" type="hidden" value=form_authenticity_token
-      input name="_method" type="hidden" value="put"
-      div.float_above
-        select name="test_case[result]"
-          option value="1" Pass
-          option value="-1" Fail
-          option value="0" N/A

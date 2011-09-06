@@ -63,6 +63,12 @@ class ApiController < ApplicationController
       return
     end
 
+    # Check the errors
+    if @test_session.errors.length > 0
+      render :json => {:ok => '0', :errors => @test_session.errors}
+      return
+    end
+
     begin
       @test_session.save!
 
@@ -159,7 +165,7 @@ class ApiController < ApplicationController
   end
 
   def valid_release?(version)
-    Release.where(:normalized => version).first.present?
+    Release.where(:name => version).first.present?
   end
 
   def errmsg_invalid_version(version)

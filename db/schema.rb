@@ -87,8 +87,7 @@ ActiveRecord::Schema.define(:version => 20110831141133) do
   add_index "meego_test_sessions", ["release_id", "target", "testset", "product"], :name => "index_meego_test_sessions_key"
 
   create_table "releases", :force => true do |t|
-    t.string  "label",      :limit => 64, :null => false
-    t.string  "normalized", :limit => 64, :null => false
+    t.string  "name",       :limit => 64, :null => false
     t.integer "sort_order",               :null => false
   end
 

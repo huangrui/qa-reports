@@ -24,22 +24,14 @@ xml.instruct!
 xml.rss "version" => "2.0" do
   xml.channel do
 
-    route = "" << @selected_release_version
-    if @target:
-        route << "/" << @target
-      if @testset
-        route << "/" << @testset
-        if @product
-          route << "/" << @product
-        end
-      end
-    end
-    
+    route = [release.name, profile, testset, product].compact.join('/')
+
     xml.title route + " QA reports"
     xml.link root_url
-    xml.description "MeeGo QA reports for " << route
+    xml.description "MeeGo QA reports for #{route}"
     xml.generator "MeeGo QA Reports"
     xml.language "en-us"
+
     if @sessions.length > 0
       xml.pubDate @sessions[0].created_at.rfc822
 
@@ -48,8 +40,8 @@ xml.rss "version" => "2.0" do
           xml.title session.title
           xml.pubDate session.created_at.rfc822
           xml.description "Pass rate of total " << session.total_pass_rate << ", run rate " << session.run_rate
-          xml.link url_for :only_path => false, :controller => 'reports', :action => 'show', :release_version => @selected_release_version, :target => session.target, :testset => session.testset, :product => session.product, :id => session.id
-          xml.guid url_for :only_path => false, :controller => 'reports', :action => 'show', :release_version => @selected_release_version, :target => session.target, :testset => session.testset, :product => session.product, :id => session.id
+          xml.link show_report_url(session.release.name, session.target, session.testset, session.product, session.id)
+          xml.guid show_report_url(session.release.name, session.target, session.testset, session.product, session.id)
         end
       end
     end

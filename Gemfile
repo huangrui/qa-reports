@@ -19,10 +19,20 @@ group :production do
 end
 
 group :development do
+  gem 'guard-rspec'
+  gem 'guard-rails'
+  gem 'guard-cucumber'
+  gem 'guard-bundler'
+  gem 'guard-spork'
+  gem 'guard-migrate'
+  gem 'ruby-debug'
   gem 'capistrano'
   gem 'capistrano-ext'
-  gem 'watchr'
-  gem 'ruby-debug'
+end
+
+group :staging do
+  gem 'capistrano'
+  gem 'capistrano-ext'
 end
 
 group :development, :test do
@@ -30,7 +40,9 @@ group :development, :test do
   gem 'rspec', '~>2.6.0'
   gem 'rspec-core','2.6.0'
   gem 'rspec-rails', '2.6.1'
+  gem 'capybara-webkit'
   gem 'capybara', '1.0.1'
+  gem 'spork', '~> 0.9.0.rc'
   gem 'cucumber'
   gem 'rcov', :require => false
   gem 'cucumber-rails', '~> 0.3.2' #newer ones fail

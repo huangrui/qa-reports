@@ -143,6 +143,28 @@ Feature:
     Then I should see "Check home screen"
     And I should see "Handset" within "h1"
 
+  Scenario: Add a CSV report with only NFT test cases
+    When I follow "Add report"
+
+    And I select target "Handset", test set "CSV NFT" and product "N965" with date "2011-08-31"
+    And I attach the report "csv_with_only_nft_cases.csv"
+    And submit the form at "upload_report_submit"
+
+    Then I should see "Non-functional Test Results"
+    And I should see "Throughput"
+    And I should not see "Detailed Test Results"
+
+  Scenario: Add a CSV report with both NFT and Functional cases
+    When I follow "Add report"
+
+    And I select target "Handset", test set "CSV MIXED" and product "N965" with date "2011-08-31"
+    And I attach the report "csv_with_both_fute_and_nft_cases.csv"
+    And submit the form at "upload_report_submit"
+
+    Then I should see "Non-functional Test Results"
+    And I should see "Throughput"
+    And I should see "Detailed Test Results"
+
   @selenium
   Scenario: Add new report with underscore in test set and product names
     When I follow "Add report"
@@ -157,14 +179,4 @@ Feature:
 
     Then I should see "Test_set" within ".index_month .odd .report_name"
     Then I should see "Hardware_32" within ".index_month .odd .report_name"
-
-
-  @selenium
-  Scenario: Add new report with default test case comment
-    Given the report for "short1.csv" exists on the service
-    And I upload the report "short1_changed_comments.csv" with different comments
-
-    When I follow "See all"
-    Then the testcase "Description One" should have the new comment
-    And the testcase "Description Two" should have the comment from the previous report
 

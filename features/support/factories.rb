@@ -16,16 +16,22 @@ FactoryGirl.define do
   end
 
   factory :release do
-    label      "1.3"
-    normalized "1.3"
+    name       "1.3"
     sort_order  0
   end
 
-  factory :feature do
-    after_create { |feature| FactoryGirl.create(:test_case,
-                                              :feature => feature,
-                                              :meego_test_session => feature.meego_test_session)}
+  factory :target, :aliases => [:profile], :class => TargetLabel do
+    label      "Handset"
+    normalized "handset"
+    sort_order 0
+  end
+
+  factory :feature_wo_test_cases, :class => Feature do
     name "Bluetooth"
+
+    factory :feature do
+      after_build { |feature| feature.meego_test_cases << FactoryGirl.build(:test_case, :feature => feature) }
+    end
   end
 
   factory :test_case, :class => MeegoTestCase do
@@ -33,18 +39,11 @@ FactoryGirl.define do
     result MeegoTestCase::PASS
   end
 
-  factory :target, :class => TargetLabel do
-    label      "Handset"
-    normalized "handset"
-    sort_order 0
-  end
-
   factory :result_file, :class => FileAttachment do
     attachment_type :result_file
   end
 
-  factory :test_report, :class => MeegoTestSession do
-    after_create { |report| FactoryGirl.create(:feature, :meego_test_session => report)}
+  factory :test_report_wo_features, :class => MeegoTestSession do
     author
     editor
     release
@@ -55,6 +54,10 @@ FactoryGirl.define do
     published       true
     tested_at       "2011-08-06"
     result_files    {|result_files| [result_files.association :result_file] }
+
+    factory :test_report, :class => MeegoTestSession do
+      after_build { |report| report.features << FactoryGirl.build(:feature, :meego_test_session => report) }
+    end
   end
 
   # NFT stuff
@@ -128,7 +131,7 @@ FactoryGirl.define do
     }
     author
     editor
-    release         {Release.where(:normalized => '1.2').first}
+    release         {Release.where(:name => '1.2').first}
     title           "N900 NFT TEST REPORT"
     target          "Handset"
     testset         "NFT"
