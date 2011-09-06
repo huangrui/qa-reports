@@ -71,9 +71,6 @@ class MeegoTestSession < ActiveRecord::Base
   scope :testset,    lambda { |testset| published.where(:testset => testset.downcase) }
   scope :product_is, lambda { |product| published.where(:product => product.downcase) }
 
-  RESULT_FILES_DIR = "public/reports"
-  INVALID_RESULTS_DIR = "public/reports/invalid_files"
-
   include ReportSummary
 
   def meego_test_session
@@ -452,17 +449,6 @@ class MeegoTestSession < ActiveRecord::Base
 
   def release_version
     self.release ? self.release.name : nil
-  end
-
-  def generate_file_destination_path(original_filename)
-    datepart = Time.now.strftime("%Y%m%d")
-    dir      = File.join(RESULT_FILES_DIR, datepart)
-    dir      = File.join(INVALID_RESULTS_DIR, datepart) if !errors.empty? #store invalid results data for debugging purposes
-
-    FileUtils.mkdir_p(dir)
-
-    filename     = ("%06i-" % Time.now.usec) + sanitize_filename(original_filename)
-    path_to_file = File.join(dir, filename)
   end
 
   def update_report_result(user, params, published = true)
