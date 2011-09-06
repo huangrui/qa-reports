@@ -46,10 +46,10 @@ class ReportFactory
     params[:result_files].each do |result_attachment|
       file = result_attachment.file.to_file
       if result_attachment.filename =~ /.csv$/i
-        new_features = CSVResultFileParser.new.parse(file.read)
+        new_features = CSVResultFileParser.new.parse(file)
       elsif result_attachment.filename =~ /.xml$/i
         begin
-          new_features = XMLResultFileParser.new.parse(file.read)
+          new_features = XMLResultFileParser.new.parse(file)
         rescue Nokogiri::XML::SyntaxError => e
           raise ParseError.new(result_attachment.filename), result_attachment.filename + ": " + e.message
         end
