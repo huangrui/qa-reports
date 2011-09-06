@@ -15,8 +15,9 @@ Bluetooth,Test Case 2,,0,1,0'
 
   tmp = Tempfile.new('result_file')
   tmp << RESULT_CSV
+  file = ActionDispatch::Http::UploadedFile.new(:tempfile => tmp, :filename => 'result.csv')
   report_attributes = MeegoTestSession.first.attributes.merge(:tested_at => '2011-09-02')
-  report_attributes[:uploaded_files] = [ActionDispatch::Http::UploadedFile.new(:tempfile => tmp, :filename => 'result.csv')]
+  report_attributes[:result_files_attributes] = [{:file => file, :attachment_type => :result_file}]
 
   report = ReportFactory.new.build(report_attributes)
   report.save!
