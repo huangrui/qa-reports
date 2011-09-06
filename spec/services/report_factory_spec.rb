@@ -3,19 +3,11 @@ require 'report_factory'
 
 describe ReportFactory do
 
-  class ResultFile
-
-    # .'open' calls Kernel.sleep, which makes it a bit painful to stub with rspec
-    def read
-      StringIO.new("foobar")
-    end
-  end
-
   describe "a report build with valid attributes" do
     before(:each) do
 
-      @result_file1 = ResultFile.new
-      @result_file2 = ResultFile.new
+      @result_file1 = Object.new
+      @result_file2 = Object.new
 
       @result_file1.stub!(:original_filename).and_return("bluetooth.xml")
       @result_file2.stub!(:original_filename).and_return("wlan.csv")
