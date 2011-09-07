@@ -53,6 +53,13 @@ h2#test_results
             strong= @report.executed_pass_rate
           td class=@report.executed_pass_rate_change_class
             em= @report.executed_pass_rate_change
+        - if @report.has_nft?
+          tr.odd
+            td NFT Index
+            td
+              strong FOO
+            td class="bar"
+              em BUU
 
     h3#test_features Test Results by Feature
 
