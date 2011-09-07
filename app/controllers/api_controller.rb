@@ -166,8 +166,7 @@ class ApiController < ApplicationController
   end
 
   def errmsg_invalid_version(version)
-    valid_versions = Release.release_versions.join(",")
-    {:release_version => "Incorrect release version '#{version}'. Valid ones are #{valid_versions}."}
+    {:release_version => "Incorrect release version '#{version}'. Valid ones are #{Release.names.join(',')}."}
   end
 
 end

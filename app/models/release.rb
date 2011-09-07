@@ -2,8 +2,8 @@ class Release < ActiveRecord::Base
 
   scope :in_sort_order, order("sort_order ASC")
 
-  def self.release_versions
-    find(:all, :order => "sort_order ASC", :select => "name").map(&:name)
+  def self.names
+    in_sort_order.map(&:name)
   end
 
   def self.latest

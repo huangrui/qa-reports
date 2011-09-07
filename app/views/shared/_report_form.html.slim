@@ -2,7 +2,7 @@
 
 .field
   label for="report_meego_version" MeeGo release:
-  - @release_versions.each do |release_version|
+  - Release.names.each do |release_version|
     = radio_button :release, :name, release_version, :class => "version"
     = label :release, :name, release_version, :value => release_version, :class => "inline_label"
 

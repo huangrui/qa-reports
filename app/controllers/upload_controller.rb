@@ -43,7 +43,7 @@ class UploadController < ApplicationController
     @test_session         = MeegoTestSession.new(new_report)
     @test_session.release = Release.find_by_name(params[:release_version]) || Release.latest
 
-    @release_versions = Release.in_sort_order.map { |release| release.name }
+    @release_versions = Release.names
     @targets          = TargetLabel.targets.map {|target| target.downcase}
     @testsets         = MeegoTestSession.release(@selected_release_version).testsets
     @products         = MeegoTestSession.release(@selected_release_version).popular_products
@@ -85,7 +85,7 @@ class UploadController < ApplicationController
     if @test_session.errors.empty? and @test_session.save
       redirect_to preview_report_path(@test_session)
     else
-      @release_versions = Release.all.map { |release| release.name }
+      @release_versions = Release.names
       @targets          = TargetLabel.targets
       @testsets         = MeegoTestSession.release(@selected_release_version).testsets
       @products         = MeegoTestSession.release(@selected_release_version).popular_products
