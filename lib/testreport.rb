@@ -188,7 +188,7 @@ module ReportSummary
     @nft_index = if indices.count == 0 then
       0
     else
-      indices.inject{|sum, m| sum + m} / indices.count * 100
+      indices.inject(:+) / indices.count * 100
     end
   end
 
