@@ -129,7 +129,6 @@ class ReportsController < ApplicationController
 
   def populate_edit_fields
     @build_diff       = []
-    @release_versions = Release.names
     @targets          = TargetLabel.targets
     @testsets         = MeegoTestSession.release(release.name).testsets
     @products         = MeegoTestSession.release(release.name).popular_products
