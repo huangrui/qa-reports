@@ -5,7 +5,22 @@
 #index_page
   table#report_navigation
     thead
-      tr
-        = render :partial => "title", :collection => @profiles, :as => :profile
+      tr.profiles
+        th.profile
+          span.name
     tr
       = render :partial => "profile", :collection => @profiles
+
+script
+  | profile_names = #{{@profiles.to_json}}
+
+coffee:
+  # In the future:
+  $('th.profile').render(profile_names)
+  # $('tr.profile').render(indexModel.profiles)
+
+  # parent   = $('.profiles')
+  # template = $('.profile').remove()
+
+  # $.each profiles, (index, element) ->
+  #   template.clone().appendTo(parent).text element
