@@ -65,15 +65,20 @@ class MeegoMeasurement < ActiveRecord::Base
   end
 
   def relative_html
-    return "" if target.nil?
-    rel = if target < failure
-      return "" if value == 0
-      target/value
+    return "" if relative().nil?
+    html(@relative, "%")
+  end
+
+  def relative
+    return @relative unless @relative.nil? and not target.nil?
+
+    @relative = if target < failure
+      (target/value * 100) unless value == 0
     else
-      return "" if target == 0
-      value/target
+      (value/target * 100) unless target == 0
     end
-    return html(rel*100, "%")
+
+    @relative
   end
   
   def target_result
