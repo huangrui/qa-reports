@@ -150,7 +150,7 @@ module ReportSummary
     if nft_index_value == 0
       "n/a"
     else
-      "%i%%" % nft_index_value
+      "%.0f%%" % nft_index_value
     end
   end
 
@@ -324,7 +324,7 @@ module ReportSummary
     if not prev_summary or nft_index_value == prev_summary.nft_index_value
       ""
     else
-      "%+i%%" % (nft_index_value - prev_summary.nft_index_value)
+      "%+.0f%%" % (nft_index_value - prev_summary.nft_index_value)
     end
   end
 
