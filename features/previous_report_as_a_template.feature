@@ -5,6 +5,6 @@ Feature: Previous report as a template
 
   @javascript
   Scenario: Same test case results
-    Given there's an existign report
+    Given there's an existing report
     And   I create a new test report with same test cases
     Then  I should see the test case comments from the previous test report if the result hasn't changed

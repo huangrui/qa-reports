@@ -28,7 +28,7 @@ describe MeegoTestSession do
       :target => "Core",
       :testset => "Sanity",
       :tested_at => "2011-12-30 23:45:59",
-      :uploaded_files => "foo.csv"
+      :result_files => [FileAttachment.create]
     }
 
     mts = MeegoTestSession.new(params)
