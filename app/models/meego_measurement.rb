@@ -77,8 +77,6 @@ class MeegoMeasurement < ActiveRecord::Base
     else
       value/target unless target == 0
     end
-
-    @relative
   end
 
   # NFT index may be at most 100%, thus limiting the value.
