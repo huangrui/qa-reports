@@ -44,7 +44,7 @@ module ApplicationHelper
   def release_version_navigation(current_version, target='', testset='', product='')
     html = '<ul class="clearfix">'
     link_text = ''
-    @meego_releases.each do |release|
+    Release.names.each do |release|
       if release =~ /\d+\.\d+/
         if release == current_version
             html += '<li class="current">'

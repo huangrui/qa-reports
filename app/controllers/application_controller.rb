@@ -22,7 +22,6 @@
 
 class ApplicationController < ActionController::Base
   helper_method :release, :profile, :testset, :product
-  before_filter :find_releases
   before_filter :find_selected_release
 
   #protect_from_forgery
@@ -31,10 +30,6 @@ class ApplicationController < ActionController::Base
 
   def record_not_found
     render :file => "#{Rails.root}/public/404.html", :status => :not_found, :layout => false
-  end
-
-  def find_releases
-    @meego_releases = Release.release_versions
   end
 
   def find_selected_release
