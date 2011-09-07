@@ -38,17 +38,15 @@ Then /I should see the imported data from "([^"]*)" and "([^"]*)" in the exporte
   result = FasterCSV.parse(page.text, {:col_sep => ';'}).drop(1)
   result.count.should == input.count
 
-  mapped_result = result.map{ |item| [item[6], item[7], item[11], item[8], item[9], item[10]] }
+  mapped_result = result.map{ |item| (6..11).map{|field| item[field]}}
   (input - mapped_result).should be_empty
-
-
 end
 
 Then /I should see the imported test cases from "([^"]*)" in the exported CSV.$/ do |file|
   input = FasterCSV.read('features/resources/' + file).drop(1)
   result = FasterCSV.parse(page.text, {:col_sep => ','}).drop(1)
   result.count.should == input.count
-  mapped_result = result.map{ |item| [item[0], item[1], item[2], item[3], item[4], item[5]] }
+  mapped_result = result.map{ |item| (0..5).map{|field| item[field]}}
   (input - mapped_result).should be_empty
 end
 
@@ -104,7 +102,7 @@ Given /^there exists a report for "([^"]*)"$/ do |report_name|
     :password_confirmation => "password")
 
   session = MeegoTestSession.new(:target => target, :product => product,
-    :testset => test_set, :uploaded_files => [testfile],
+    :testset => test_set, :result_files_attributes => [{:file => testfile}],
     :tested_at => Time.now, :author => user, :editor => user, :release_version => version
   )
   session.generate_defaults! # Is this necessary, or could we just say create! above?
@@ -156,7 +154,7 @@ When /^I remove the attachment from the test case "([^"]*)"$/ do |test_case|
 end
 
 When /^I attach the report "([^"]*)"$/ do |file|
-  And "attach the file \"#{Dir.getwd}/features/resources/#{file}\" to \"meego_test_session[uploaded_files][]\""
+  And "attach the file \"#{Dir.getwd}/features/resources/#{file}\" to \"meego_test_session[result_files_attributes][][file]\""
 end
 
 Given /^I select target "([^"]*)", test set "([^"]*)" and product "([^"]*)"(?: with date "([^\"]*)")?/ do |target, test_set, product, date|

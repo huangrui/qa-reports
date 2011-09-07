@@ -68,7 +68,7 @@ Feature: Edit Report
     Then I should see "testing list" within ".editable_area ul li"
     And I should see "Test Header" within ".editable_area h3"
 
-  @javascript
+  @selenium
   Scenario: Create a dynamic link to bugzilla
     When I edit the report "1.2/Core/automated/N900"
     And I click the element "#test_objective"

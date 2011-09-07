@@ -39,6 +39,10 @@ FactoryGirl.define do
     result MeegoTestCase::PASS
   end
 
+  factory :result_file, :class => FileAttachment do
+    attachment_type :result_file
+  end
+
   factory :test_report_wo_features, :class => MeegoTestSession do
     author
     editor
@@ -49,7 +53,7 @@ FactoryGirl.define do
     product         "N900"
     published       true
     tested_at       "2011-08-06"
-    uploaded_files  "result.csv"
+    result_files    {|result_files| [result_files.association :result_file] }
 
     factory :test_report, :class => MeegoTestSession do
       after_build { |report| report.features << FactoryGirl.build(:feature, :meego_test_session => report) }
@@ -134,6 +138,6 @@ FactoryGirl.define do
     product         "N900"
     published       true
     tested_at       "2011-08-06"
-    uploaded_files  "result.csv"
+    result_files    {|result_files| [result_files.association :result_file] }
   end
 end

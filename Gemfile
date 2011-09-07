@@ -24,11 +24,7 @@ group :development do
   gem 'guard-cucumber'
   gem 'guard-bundler'
   gem 'guard-spork'
-  gem 'spork', '~> 0.9.0.rc'
-  gem 'rb-fsevent',   :require => false unless RUBY_PLATFORM =~ /darwin/i
-  gem 'growl_notify', :require => false unless RUBY_PLATFORM =~ /darwin/i
-  gem 'rb-inotify',   :require => false unless RUBY_PLATFORM =~ /linux/i
-  gem 'libnotify',    :require => false unless RUBY_PLATFORM =~ /linux/i
+  gem 'guard-migrate'
   gem 'ruby-debug'
   gem 'capistrano'
   gem 'capistrano-ext'
@@ -44,8 +40,9 @@ group :development, :test do
   gem 'rspec', '~>2.6.0'
   gem 'rspec-core','2.6.0'
   gem 'rspec-rails', '2.6.1'
-  gem 'capybara-webkit'  
+  gem 'capybara-webkit'
   gem 'capybara', '1.0.1'
+  gem 'spork', '~> 0.9.0.rc'
   gem 'cucumber'
   gem 'rcov', :require => false
   gem 'cucumber-rails', '~> 0.3.2' #newer ones fail
