@@ -70,7 +70,7 @@ class MeegoMeasurement < ActiveRecord::Base
   end
 
   def relative
-    return @relative unless @relative.nil? and not target.nil?
+    return @relative unless @relative.nil? and not target.nil? and not failure.nil?
 
     @relative = if target < failure
       target/value unless value == 0
