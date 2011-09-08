@@ -21,12 +21,12 @@
         a#upload_button.small_btn + Add report (or drag here)
 
         small
-          | See example 
+          | See example
           a href="/example.xml" xml
-          | , 
+          | ,
           a href="/example.csv" csv
-          |  and 
-          a href="http://meego.gitorious.org/meego-quality-assurance/test-definition/blobs/master/src/data/testdefinition-results.xsd"  dataset specification 
+          |  and
+          a href="http://meego.gitorious.org/meego-quality-assurance/test-definition/blobs/master/src/data/testdefinition-results.xsd"  dataset specification
           | for reference
         = f.error_message_on :result_files
         - if Rails.env.test?
@@ -34,7 +34,7 @@
 
     #wizard_actions
       #wizard_buttons
-        input.big_btn.cancel onclick="location.href='/#{@selected_release_version}'" type="button" value="Cancel"
+        input.big_btn.cancel onclick="location.href='/#{release.name}'" type="button" value="Cancel"
         = f.submit :id=>"upload_report_submit", :value=>"Next", :class=>"big_btn next", :tabindex => "7"
       p.next_step
         | next step:

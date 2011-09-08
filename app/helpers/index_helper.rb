@@ -26,7 +26,7 @@ module IndexHelper
   end
 
   def filtered_index_url(target, testset=nil, product=nil)
-    url_for(:controller=>'ReportGroupsController', :action=>'show', :release_version=>@selected_release_version, :target=>target, :testset=>testset, :product=>product)
+    url_for(:controller=>'ReportGroupsController', :action=>'show', :release_version=>release.name, :target=>target, :testset=>testset, :product=>product)
   end
 
 end

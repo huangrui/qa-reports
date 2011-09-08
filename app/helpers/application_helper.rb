@@ -32,9 +32,10 @@ module ApplicationHelper
  def breadcrumbs
   html = '<div id="breadcrumb"><li><a href="' + root_path + '">Home</a></li>'
 
-  html += ('<li> &rsaquo; ' + link_to_unless_current(@profile, group_report_path(@selected_release_version, @profile)) + '</li>') if @profile
-  html += ('<li> &rsaquo; ' + link_to_unless_current(@testset, group_report_path(@selected_release_version, @profile, @testset)) + '</li>') if @testset
-  html += ('<li> &rsaquo; ' + link_to_unless_current(@product, group_report_path(@selected_release_version, @profile, @testset, @product)) + '</li>') if @product
+
+  html += ('<li> &rsaquo; ' + link_to_unless_current(@profile, group_report_path(release.name, @profile)) + '</li>') if @profile
+  html += ('<li> &rsaquo; ' + link_to_unless_current(@testset, group_report_path(release.name, @profile, @testset)) + '</li>') if @testset
+  html += ('<li> &rsaquo; ' + link_to_unless_current(@product, group_report_path(release.name, @profile, @testset, @product)) + '</li>') if @product
   html += ('<li> &rsaquo; ' + @test_session.title + '</li>') if @test_session
   html += '</div>'
   html.html_safe
