@@ -9,18 +9,60 @@
         th.profile
           span.name
     tr
-      = render :partial => "profile", :collection => @profiles
+      td
+        div.testset
+          / TODO: Use css instead of strong tag
+          strong
+            a.name
+          ul.products
+            li
+              a.name
 
-script
-  | profile_names = #{{@profiles.to_json}}
+javascript:
+  profile_names = #{{@profiles.to_json}}
+  products      = #{{Hash[@products.map {|key, val_hash| [key, val_hash.keys]}].to_json}}
 
 coffee:
-  # In the future:
+  profiles = [
+    name: "Core"
+    testsets: [ 
+      name: "Sanity"
+      products: [
+        name: "N900"
+      ,
+        name: "lenovo"
+      ]
+    ,
+      name: "Acceptance"
+      products: [
+        name: "Netbook"
+      ,
+        name: "Pinetrail"
+      ]
+    ]
+  ,
+    name: "Handset"
+  ]
+
+  testsets =
+    Core: [
+      name: "Sanity"
+      products: [
+        name: "N900"
+      ,
+        name: "lenovo"
+      ]
+    ,
+      name: "Acceptance"
+      products: [
+        name: "Netbook"
+      ,
+        name: "Pinetrail"
+      ]
+    ]
+
+  coreTestSets = testsets["Core"]
+
   $('th.profile').render(profile_names)
-  # $('tr.profile').render(indexModel.profiles)
+  $('.testset').render(coreTestSets)
 
-  # parent   = $('.profiles')
-  # template = $('.profile').remove()
-
-  # $.each profiles, (index, element) ->
-  #   template.clone().appendTo(parent).text element
