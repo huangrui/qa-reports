@@ -44,25 +44,6 @@ coffee:
     name: "Handset"
   ]
 
-  testsets =
-    Core: [
-      name: "Sanity"
-      products: [
-        name: "N900"
-      ,
-        name: "lenovo"
-      ]
-    ,
-      name: "Acceptance"
-      products: [
-        name: "Netbook"
-      ,
-        name: "Pinetrail"
-      ]
-    ]
-
-  coreTestSets = testsets["Core"]
-
   $('th.profile').render(profile_names)
-  $('.testset').render(coreTestSets)
+  $('.testset').render(profiles[0]["testsets"])
 
