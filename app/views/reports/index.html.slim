@@ -9,41 +9,60 @@
         th.profile
           span.name
     tr
-      td
-        div.testset
-          / TODO: Use css instead of strong tag
-          strong
-            a.name
-          ul.products
-            li
+      td.profile_columns
+        div.testsets
+          div
+            / TODO: Use css instead of strong tag
+            strong
               a.name
+            ul.products
+              li
+                a.name
 
 javascript:
-  profile_names = #{{@profiles.to_json}}
+  // profile_names = #{{@profiles.to_json}}
   products      = #{{Hash[@products.map {|key, val_hash| [key, val_hash.keys]}].to_json}}
 
 coffee:
   profiles = [
     name: "Core"
     testsets: [ 
-      name: "Sanity"
+      name: "Core Sanity"
       products: [
-        name: "N900"
+        name: "Core Sanity N900"
       ,
-        name: "lenovo"
+        name: "Core Sanity Lenovo"
       ]
     ,
-      name: "Acceptance"
+      name: "Core Acceptance"
       products: [
-        name: "Netbook"
+        name: "Core Acceptance Netbook"
       ,
-        name: "Pinetrail"
+        name: "Core Acceptance Pinetrail"
       ]
     ]
   ,
     name: "Handset"
+    testsets: [ 
+      name: "Handset Sanity"
+      products: [
+        name: "Handset Sanity N900"
+      ,
+        name: "Handset Sanity Lenovo"
+      ]
+    ,
+      name: "Acceptance"
+      products: [
+        name: "Handset Acceptance Netbook"
+      ,
+        name: "Handset Acceptance Pinetrail"
+      ]
+    ]
   ]
 
+  profile_names = for data in profiles
+    (name: data.name)
+
   $('th.profile').render(profile_names)
-  $('.testset').render(profiles[0]["testsets"])
+  $('.profile_columns').render(profiles)
 
