@@ -86,12 +86,12 @@ class MeegoMeasurement < ActiveRecord::Base
   end
   
   def target_result
-    res = if target.nil? or failure.nil?
+    res = if relative.nil?
       0
-    elsif target < failure and value < target
-      1
-    else
+    elsif relative < 1
       -1
+    else
+      1
     end
     TargetResultWrapper.new(res)
   end
