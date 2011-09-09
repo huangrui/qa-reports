@@ -45,7 +45,7 @@ class CSVResultFileParser
         FasterCSV.parse(io, @FCSV_settings) {|row| parse_row_version_1(row) }
       end
     rescue NoMethodError
-      raise ParseError.new("unknown"), "Incorrect file - parsing failed."
+      raise ParseError.new("unknown"), "Incorrect file format"
     end
 
     @features
