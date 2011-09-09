@@ -76,7 +76,7 @@ class CSVResultFileParser
     test_case = row[1].toutf8.strip
     comment   = row[2].try(:toutf8).try(:strip) || ""
 
-    raise "Invalid test case result" if row.fields(:pass, :fail, :na).count("1") != 1
+    raise ParseError.new("unknown"), "Invalid test case result" if row.fields(:pass, :fail, :na).count("1") != 1
     result    = RESULT_MAPPING[row.fields(:pass, :fail, :na).index("1")]
 
     @features[feature] ||= {}
