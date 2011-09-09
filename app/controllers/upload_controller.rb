@@ -36,13 +36,12 @@ class UploadController < ApplicationController
       new_report[key] = params[key] if params[key]
     end
 
-    new_report[:release] = new_report[:release].downcase if new_report[:release]
     new_report[:target] ||= new_report[:target].downcase if new_report[:target]
     new_report[:target] ||= TargetLabel.targets.first.downcase
 
     @test_session = MeegoTestSession.new(new_report)
-
-    set_release_and_suggestions release
+    @test_session.release = Release.find_by_name(params[:release_version])
+    set_suggestions
 
     @targets  = TargetLabel.targets.map {|target| target.downcase}
 
@@ -74,11 +73,12 @@ class UploadController < ApplicationController
   def upload
     params[:meego_test_session][:result_files] = FileAttachment.where(:id => params.delete(:drag_n_drop_attachments))
 
+    params[:meego_test_session][:release_version] = params[:release][:name]
     @test_session = ReportFactory.new.build(params[:meego_test_session])
     @test_session.author = current_user
     @test_session.editor = current_user
 
-    set_release_and_suggestions( Release.find_by_name params[:release][:name] )
+    set_suggestions
 
     if @test_session.errors.empty? and @test_session.save
       redirect_to preview_report_path(@test_session)
@@ -90,9 +90,8 @@ class UploadController < ApplicationController
 
   private
 
-  def set_release_and_suggestions(selected_release)
-    @test_session.release = selected_release
-    scope      = MeegoTestSession.release(selected_release.name)
+  def set_suggestions
+    scope      = MeegoTestSession.release(@test_session.release.name)
     @testsets  = scope.testsets
     @products  = scope.popular_products
     @build_ids = scope.popular_build_ids

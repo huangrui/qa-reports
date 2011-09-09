@@ -25,6 +25,7 @@ describe ReportFactory do
       @result_attachment2.stub!(:filename).and_return(@result_file2.original_filename)
 
       @report_attributes = {
+        :release_version => "1.1",
         :target => "Core",
         :testset => "Sanity",
         :product => "N900",
@@ -74,6 +75,10 @@ describe ReportFactory do
 
       it "should have title 'Core Test Report: N900 Sanity 2011-12-30" do
         @report.title.should == "Core Test Report: N900 Sanity 2011-12-30"
+      end
+
+      it "should have release '1.1" do
+        @report.release.name == "1.1"
       end
 
       it "should have environment '* Hardware: N900'" do

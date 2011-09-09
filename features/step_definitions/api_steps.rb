@@ -294,7 +294,7 @@ end
 Then /^the REST result "([^"]*)" is "([^"]*)"$/ do |key, value|
   json = ActiveSupport::JSON.decode(@response.body)
   key.split('|').each { |item| json = json[item] }
-  json.should == value
+  json.should eql(value), (key.downcase == "ok" and value == "1") ? ActiveSupport::JSON.decode(@response.body)['errors'] : nil
 end
 
 def get_testsessionid(file)

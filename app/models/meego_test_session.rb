@@ -55,6 +55,7 @@ class MeegoTestSession < ActiveRecord::Base
   validates_presence_of :title, :target, :testset, :product
   validates_presence_of :result_files
   validates_presence_of :author
+  validates_presence_of :release
 
   validates :tested_at, :date_time => true
 
@@ -460,34 +461,6 @@ class MeegoTestSession < ActiveRecord::Base
       self.meego_test_cases = tmp.meego_test_cases
       return nil
     end
-  end
-
-  private
-
-  def create_release
-    verlabel = Release.find(:first, :conditions => {:name => release.name})
-    if verlabel
-      self.release = verlabel
-      save
-    else
-      verlabel = Release.new(:name => release.name)
-      verlabel.save
-    end
-  end
-
-  def create_target_label
-    tarlabel = TargetLabel.find(:first, :conditions => {:normalized => target.downcase})
-    if tarlabel
-      self.target = tarlabel.label
-      save
-    else
-      tarlabel = TargetLabel.new(:label => target, :normalized => target.downcase)
-      tarlabel.save
-    end
-  end
-
-  def create_labels
-    create_release && create_target_label
   end
 
 end

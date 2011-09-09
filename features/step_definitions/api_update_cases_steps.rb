@@ -21,6 +21,7 @@ end
 
 When "I have sent a file with NFT results" do
   When %{the client sends file "features/resources/serial_result.xml" via the REST API}
+  And %{the upload succeeds}
 end
 
 When "I have sent a basic result file" do

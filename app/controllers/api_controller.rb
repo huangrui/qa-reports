@@ -46,19 +46,13 @@ class ApiController < ApplicationController
     data.delete(:testtype)
     data.delete(:hardware)
 
-    error_msgs = {}
-
-    release_version = data.delete(:release_version) if data.key?(:release_version)
-    data[:release] = Release.find_by_name(release_version)
-    error_msgs.merge! errmsg_invalid_version release_version if not data[:release]
-
-    return render :json => {:ok => '0', :errors => error_msgs} if !error_msgs.empty?
-
     begin
-      @test_session = ReportFactory.new.build(data)
+      @test_session = ReportFactory.new.build(data.clone)
+      return render :json => {:ok => '0', :errors => errmsg_invalid_version(data[:release_version])} if not @test_session.release
       @test_session.author = current_user
       @test_session.editor = current_user
       @test_session.published = true
+
     rescue ActiveRecord::UnknownAttributeError => error
       render :json => {:ok => '0', :errors => error.message}
       return
@@ -73,7 +67,7 @@ class ApiController < ApplicationController
     begin
       @test_session.save!
 
-      report_url = url_for :controller => 'reports', :action => 'show', :release_version => data[:release][:name], :target => data[:target], :testset => data[:testset], :product => data[:product], :id => @test_session.id
+      report_url = url_for :controller => 'reports', :action => 'show', :release_version => @test_session.release.name, :target => data[:target], :testset => data[:testset], :product => data[:product], :id => @test_session.id
       render :json => {:ok => '1', :url => report_url}
     rescue ActiveRecord::RecordInvalid => invalid
       error_messages = {}
