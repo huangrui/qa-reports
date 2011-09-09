@@ -49,7 +49,6 @@ class MeegoTestSession < ActiveRecord::Base
 
   belongs_to :author, :class_name => "User"
   belongs_to :editor, :class_name => "User"
-
   belongs_to :release
 
   validates_presence_of :title, :target, :testset, :product
