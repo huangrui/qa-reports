@@ -37,12 +37,17 @@ class CSVResultFileParser
   end
 
   def parse(io)
-    # TODO: Remove check when dropping support for version 1
-    if is_new_format?(io) then
-      FasterCSV.parse(io, @FCSV_settings) {|row| parse_row(row) }
-    else
-      FasterCSV.parse(io, @FCSV_settings) {|row| parse_row_version_1(row) }
+    begin
+      # TODO: Remove check when dropping support for version 1
+      if is_new_format?(io) then
+        FasterCSV.parse(io, @FCSV_settings) {|row| parse_row(row) }
+      else
+        FasterCSV.parse(io, @FCSV_settings) {|row| parse_row_version_1(row) }
+      end
+    rescue NoMethodError
+      raise ParseError.new("unknown"), "Incorrect file - parsing failed."
     end
+
     @features
   end
 
