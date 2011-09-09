@@ -151,7 +151,7 @@ When /^I remove the attachment from the test case "([^"]*)"$/ do |test_case|
   And "I submit the comment for the test case \"#{test_case}\""
 end
 
-When /^I attach the report "([^"]*)"$/ do |file|
+When /^(?:|I )attach the report "([^"]*)"$/ do |file|
   And "attach the file \"#{Dir.getwd}/features/resources/#{file}\" to \"meego_test_session[result_files_attributes][][file]\""
 end
 

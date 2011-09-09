@@ -67,6 +67,14 @@ Feature:
 
     Then I should see "You can only upload files with the extension .xml or .csv"
 
+  Scenario: Add new CSV report with missing header value
+    When I follow "Add report"
+    And I select target "Core", test set "Smokey" and product "n990" with date "2010-11-22"
+    And attach the report "invalid_missing_header_value.csv"
+    And submit the form at "upload_report_submit"
+
+    Then I should see "Incorrect file format"
+
   Scenario: Add new CSV report with invalid content
 
     When I follow "Add report"
