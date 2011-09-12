@@ -45,6 +45,7 @@ class ApiController < ApplicationController
     data.delete(:hwproduct)
     data.delete(:testtype)
     data.delete(:hardware)
+    data[:build_id] ||= data.delete(:build_id_txt) if data[:build_id_txt]
 
     begin
       @test_session = ReportFactory.new.build(data.clone)

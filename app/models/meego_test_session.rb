@@ -123,14 +123,6 @@ class MeegoTestSession < ActiveRecord::Base
     read_attribute(:target).try(:capitalize)
   end
 
-  def build_id_txt=(build_id)
-    write_attribute(:build_id, build_id)
-  end
-
-  def build_id_txt
-    s = read_attribute(:build_id)
-  end
-
   def self.popular_build_ids(limit=3)
     published.select("build_id as build_id").order("COUNT(build_id) DESC").
       group(:build_id).limit(limit).map { |row| row.build_id.humanize }
