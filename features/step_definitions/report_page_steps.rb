@@ -54,7 +54,7 @@ When /^(?:|I )(?:|return to )view the report "([^"]*)"$/ do |report_string|
   release, profile, testset, product = report_string.split('/')
   report = MeegoTestSession.release(release).profile(profile).testset(testset).product_is(product).last
   raise "report not found with parameters #{release}/#{profile}/#{testset}/#{product}!" unless report
-  visit report_path(report)
+  visit show_report_path(release, profile, testset, product, report)
 end
 
 When /I view the report "([^"]*)" for build$/ do |report_string|
