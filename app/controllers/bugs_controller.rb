@@ -16,7 +16,8 @@ class BugsController < ApplicationController
       @http = Net::HTTP.new(BUGZILLA_CONFIG['server'], BUGZILLA_CONFIG['port'])
     end
 
-    @http.use_ssl = BUGZILLA_CONFIG['use_ssl']
+    @http.use_ssl     = BUGZILLA_CONFIG['use_ssl']
+    @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
     @http.start() do |http|
       req = Net::HTTP::Get.new(uri)
       if not BUGZILLA_CONFIG['http_username'].nil?
