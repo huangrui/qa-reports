@@ -1,7 +1,7 @@
 Meegoqa::Application.routes.draw do
   devise_for :users, :controllers => { :sessions => "users/sessions" }  , :path_names => { :sign_up => "#{DeviseRegistrationConfig::URL_TOKEN}/register" }
 
-  resources :reports, :only => [:index, :show, :edit, :update, :destroy] do
+  resources :reports, :only => [:index, :show, :update, :destroy] do
     get  'preview', :on => :member
     post 'publish', :on => :member
   end
