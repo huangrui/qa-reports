@@ -50,13 +50,4 @@ class ApplicationController < ActionController::Base
     @product ||= params[:product]
   end
 
-  private
-
-  def valid_release release_version
-    return unless release_version.present?
-    return release_version if Release.all.map(&:name).include? release_version
-    Rails.logger.info ["Info:  Invalid release version: ", release_version]
-    nil
-  end
-
 end
