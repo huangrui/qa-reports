@@ -200,7 +200,7 @@ class NftHistory
 
     db_data.each do |db_row|
       # Start a new measurement
-      if [feature, testcase, measurement] != [db_row.feature, db_row.testcase, db_row.measurement]
+      if [feature, testcase, measurement] != [db_row.feature, db_row.test_case, db_row.measurement]
         # The method creates a FasterCSV and returns it to us
         csv = begin_new_measurement(hash, db_row,
                                     feature, testcase, measurement,
