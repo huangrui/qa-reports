@@ -20,6 +20,8 @@
 # 02110-1301 USA
 #
 
+require 'fastercsv'
+
 class NftHistory
   attr_reader :measurements, :start_date
 
@@ -188,7 +190,8 @@ class NftHistory
     feature     = ""
     testcase    = ""
     measurement = ""
-    csv         = ""
+    csv         = nil
+    csvstr      = ""
     json        = []
 
     # This will contain the actual structural measurement data and is
@@ -200,28 +203,27 @@ class NftHistory
       if feature     != db_row.feature or
          testcase    != db_row.test_case or
          measurement != db_row.measurement
-
-        begin_new_measurement(hash, db_row,
-                              feature, testcase, measurement,
-                              csv, json, mode)
+        
+        # The method creates a FasterCSV and returns it to us
+        csv = begin_new_measurement(hash, db_row,
+                                    feature, testcase, measurement,
+                                    csvstr, json, mode)
       end
 
       # Store the data to CSV string and JSON array
       if mode == :serial
-        csv <<
-          db_row.tested_at.strftime("%Y-%m-%d") << "," <<
-          db_row.max_value.to_s << "," <<
-          db_row.avg_value.to_s << "," <<
-          db_row.med_value.to_s << "," <<
-          db_row.min_value.to_s << "\n"
+        csv << [db_row.tested_at.strftime("%Y-%m-%d"),
+                db_row.max_value.to_s,
+                db_row.avg_value.to_s,
+                db_row.med_value.to_s,
+                db_row.min_value.to_s]
 
         # Only medians here, used in the small graph
         json << db_row.med_value
 
       elsif mode == :nft
-        csv <<
-          db_row.tested_at.strftime("%Y-%m-%d") << "," <<
-          db_row.value.to_s << "\n"
+        csv << [db_row.tested_at.strftime("%Y-%m-%d"),
+                db_row.value.to_s]
 
         json << db_row.value
       end
@@ -229,10 +231,8 @@ class NftHistory
     end
 
     # Last measurement data was not written in the loop above
-    add_value(hash, feature, testcase,
-              measurement, "csv", csv) unless csv.empty?
-    add_value(hash, feature, testcase,
-              measurement, "json", json) unless json.empty?
+    add_value(hash, feature, testcase, measurement, "csv", csvstr)
+    add_value(hash, feature, testcase, measurement, "json", json)
 
     count_key_figures(hash)
 
@@ -241,23 +241,27 @@ class NftHistory
 
   def begin_new_measurement(hash, db_row,
                             feature, testcase, measurement,
-                            csv, json, mode)
+                            csvstr, json, mode)
 
-    add_value(hash, feature, testcase, measurement,
-              "csv", csv) unless csv.empty?
-    add_value(hash, feature, testcase, measurement,
-              "json", json) unless json.empty?
+    add_value(hash, feature, testcase, measurement, "csv", csvstr)
+    add_value(hash, feature, testcase, measurement, "json", json)
 
     unit = "Value"
     if not db_row.unit.nil?
       unit = db_row.unit.strip
     end
 
-    csv.replace("")
+    # Clear the output buffer
+    csvstr.replace("")
+    csv = FCSV.new(csvstr, :col_sep => ',')
     if mode == :serial
-      csv << "Date,Max #{unit},Avg #{unit},Med #{unit},Min #{unit}\n"
+      csv << ["Date",
+              "Max #{unit}",
+              "Avg #{unit}",
+              "Med #{unit}",
+              "Min #{unit}"]
     else
-      csv << "Date,#{unit}\n"
+      csv << ["Date", unit]
     end
 
     json.clear
@@ -265,10 +269,14 @@ class NftHistory
     feature.replace(db_row.feature)
     testcase.replace(db_row.test_case)
     measurement.replace(db_row.measurement)
+
+    csv
   end
 
   # Construct the hash that holds all data in previously described structure
   def add_value(container, feature, testcase, measurement, format, data)
+    return if data.empty?
+
     container[feature] ||= Hash.new
     container[feature][testcase] ||= Hash.new
     container[feature][testcase][measurement] ||= Hash.new
