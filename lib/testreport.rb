@@ -183,7 +183,7 @@ module ReportSummary
 
     # Select measurements for which nft_index can be calculated
     # and map those calculated indices into an array
-    indices = MeegoMeasurement.where(:meego_test_case_id => meego_test_cases).select{|m| m if not m.nft_index.nil?}.map{|m| m.nft_index}
+    indices = MeegoMeasurement.where(:meego_test_case_id => meego_test_cases).select{|m| m.nft_index.present?}.map &:nft_index
 
     @nft_index = if indices.count == 0 then
       0
