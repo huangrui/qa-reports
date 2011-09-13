@@ -34,7 +34,7 @@ class NftHistory
     meego_test_sessions, meego_test_cases
     WHERE
     meego_test_cases.meego_test_session_id = meego_test_sessions.id AND
-    meego_test_sessions.target             = ? AND 
+    meego_test_sessions.target             = ? AND
     meego_test_sessions.testset            = ? AND
     meego_test_sessions.product            = ? AND
     meego_test_sessions.published          = ? AND
@@ -200,10 +200,7 @@ class NftHistory
 
     db_data.each do |db_row|
       # Start a new measurement
-      if feature     != db_row.feature or
-         testcase    != db_row.test_case or
-         measurement != db_row.measurement
-        
+      if [feature, testcase, measurement] != [db_row.feature, db_row.testcase, db_row.measurement]
         # The method creates a FasterCSV and returns it to us
         csv = begin_new_measurement(hash, db_row,
                                     feature, testcase, measurement,
@@ -246,10 +243,7 @@ class NftHistory
     add_value(hash, feature, testcase, measurement, "csv", csvstr)
     add_value(hash, feature, testcase, measurement, "json", json)
 
-    unit = "Value"
-    if not db_row.unit.nil?
-      unit = db_row.unit.strip
-    end
+    unit = (db_row.unit || "Value").strip
 
     # Clear the output buffer
     csvstr.replace("")
@@ -292,7 +286,7 @@ class NftHistory
     # (min, max, avg, med) needed for Bluff graphs
     if data.has_key?('json')
       raw_data = data['json']
-      
+
       data['min'] = 'N/A'
       data['max'] = 'N/A'
       data['avg'] = 'N/A'
@@ -306,7 +300,7 @@ class NftHistory
         elsif size > 0
           median = raw_data[size/2]
         end
-        
+
         data['max'] = format_value(raw_data.max, 3)
         data['min'] = format_value(raw_data.min, 3)
         data['med'] = format_value(median, 3)
