@@ -6,7 +6,8 @@
   table#report_navigation
     thead
       tr.profiles
-        th.name
+        th
+          a.name href="#"
     tbody
       tr.profiles
         td.testsets
@@ -22,4 +23,15 @@ javascript:
   index_model = #{{@index_model.to_json}}
 
 coffee:
-  $('#report_navigation').render(index_model)
+  profile_path = ""
+  testset_path = ""
+
+  directives =
+    profiles:
+      'name@href':    -> profile_path = "/#{index_model.release}/#{this.name}"
+      testsets:
+        'name@href':  -> testset_path = profile_path + "/#{this.name}"
+        products:
+         'name@href': -> testset_path + "/#{this.name}"
+
+  $('#report_navigation').render(index_model, directives)
