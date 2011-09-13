@@ -248,7 +248,7 @@ class NftHistory
 
     unit = "Value"
     if not db_row.unit.nil?
-      unit = db_row.unit
+      unit = db_row.unit.strip
     end
 
     csv.replace("")
