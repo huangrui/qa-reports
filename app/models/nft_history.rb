@@ -109,10 +109,6 @@ class NftHistory
 
   def initialize(session)
     @session = session
-    @first_nft_result_date = nil
-
-    @trend_data = nil
-    @serial_trend_data = nil
   end
 
   def persisted?
@@ -146,7 +142,7 @@ class NftHistory
                                          true,
                                          @session.release_id])
 
-    @first_nft_result_date = data[0].tested_at
+    data[0].tested_at
   end
 
   # Get measurement trends for given session
@@ -168,11 +164,7 @@ class NftHistory
                                          @session.tested_at,
                                          true])
 
-    @trend_data = Hash.new
-    handle_db_measurements(@trend_data, data, :nft)
-
-    @trend_data
-
+    handle_db_measurements(data, :nft)
   end
 
   # Get serial measurement trends for given session. Output format the same
@@ -186,21 +178,20 @@ class NftHistory
                                          @session.tested_at,
                                          true])
 
-    @serial_trend_data = Hash.new
-    handle_db_measurements(@serial_trend_data, data, :serial)
-
-    @serial_trend_data
+    handle_db_measurements(data, :serial)
   end
 
   # Go through the results of the DB queries. The serial and NFT versions
   # have only minor differences in handling the results
-  def handle_db_measurements(hash, db_data, mode)
+  def handle_db_measurements(db_data, mode)
 
     feature = ""
     testcase = ""
     measurement = ""
     csv = ""
     json = []
+    # This will contain the actual structural measurement data
+    hash = Hash.new
 
     db_data.each do |db_row|
       # Start a new measurement
