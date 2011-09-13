@@ -65,24 +65,33 @@ class MeegoMeasurement < ActiveRecord::Base
   end
 
   def relative_html
-    return "" if target.nil?
-    rel = if target < failure
-      return "" if value == 0
-      target/value
-    else
-      return "" if target == 0
-      value/target
-    end
-    return html(rel*100, "%")
+    return "" if relative.nil?
+    html(relative * 100, "%")
   end
-  
-  def target_result
-    res = if target.nil? or failure.nil?
-      0
-    elsif target < failure and value < target
-      1
+
+  def relative
+    return @relative unless @relative.nil? and target.present? and failure.present?
+
+    @relative = if target < failure
+      target/value unless value == 0
     else
+      value/target unless target == 0
+    end
+  end
+
+  # NFT index may be at most 100%, thus limiting the value.
+  def nft_index
+    return nil if relative.nil?
+    [1, relative].min
+  end
+
+  def target_result
+    res = if relative.nil?
+      0
+    elsif relative < 1
       -1
+    else
+      1
     end
     TargetResultWrapper.new(res)
   end
