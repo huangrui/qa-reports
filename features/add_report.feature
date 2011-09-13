@@ -9,9 +9,7 @@ Feature:
   @smoke
   Scenario: The front page should show the add report link
     When I am on the front page
-
     Then I should not see "Sign In"
-
     And I should see "Add report"
 
   Scenario: Should see publish notification
@@ -35,11 +33,9 @@ Feature:
 
   Scenario Outline: Add new report with valid data
     When I follow "Add report"
-
     And I select target "Handset", test set "Smokey" and product "N990" with date "2010-11-22"
     And I select build id "1.2.0.90.0.20110517.1"
-    And I attach the report "<attachment>"
-
+    And attach the report "<attachment>"
     And submit the form at "upload_report_submit"
 
     Then I should see "<expected text>"
@@ -59,75 +55,63 @@ Feature:
 
   Scenario: Add new report with invalid filename extension
     When I follow "Add report"
-
     And I select target "Core", test set "Smokey" and product "n990" with date "2010-11-22"
-    And I attach the report "invalid_ext.txt"
-
+    And attach the report "invalid_ext.txt"
     And submit the form at "upload_report_submit"
 
     Then I should see "You can only upload files with the extension .xml or .csv"
 
-  Scenario: Add new CSV report with invalid content
-
+  Scenario: Add new CSV report with missing header value
     When I follow "Add report"
-
     And I select target "Core", test set "Smokey" and product "n990" with date "2010-11-22"
-    And I attach the report "invalid.csv"
-
+    And attach the report "invalid_missing_header_value.csv"
     And submit the form at "upload_report_submit"
 
     Then I should see "Incorrect file format"
 
+  Scenario: Add new CSV report with invalid content
+    When I follow "Add report"
+    And I select target "Core", test set "Smokey" and product "n990" with date "2010-11-22"
+    And attach the report "invalid.csv"
+    And submit the form at "upload_report_submit"
+
+    Then I should see "Incorrect file format"
 
   Scenario: Add new CSV report with no test cases
-
     When I follow "Add report"
-
     And I select target "Core", test set "Smokey" and product "n990" with date "2010-11-22"
-    And I attach the report "empty.csv"
-
+    And attach the report "empty.csv"
     And submit the form at "upload_report_submit"
 
     Then I should see "didn't contain any valid test cases"
 
   Scenario: Add new XML report with no test cases
-
     When I follow "Add report"
-
     And I select target "Core", test set "Smokey" and product "n990"
-    And I attach the report "empty.xml"
-
+    And attach the report "empty.xml"
     And submit the form at "upload_report_submit"
 
     Then I should see "didn't contain any valid test cases"
 
-
   Scenario: Add new XML report with invalid content
-
     When I follow "Add report"
-
     And I select target "Core", test set "Smokey" and product "n990"
-    And I attach the report "invalid.xml"
-
+    And attach the report "invalid.xml"
     And submit the form at "upload_report_submit"
 
     Then I should see "invalid.xml: Opening and ending tag mismatch: site line 3 and suite"
 
   Scenario: Try to submit without uploading a file
-
     When I follow "Add report"
-
     And I select target "Core", test set "Smokey" and product "n990"
-
     And submit the form at "upload_report_submit"
 
     Then I should see "be blank"
 
   Scenario: Add new report with saved default target
     When I follow "Add report"
-
     And I select target "Handset", test set "Smokey" and product "n990" with date "2010-02-12"
-    And I attach the report "sample.csv"
+    And attach the report "sample.csv"
     And submit the form at "upload_report_submit"
     And submit the form at "upload_report_submit"
 
@@ -136,8 +120,7 @@ Feature:
 
     When I follow "Add report"
     And I select test set "Smokey" and product "n990" with date "2010-02-12"
-
-    And I attach the report "sample.csv"
+    And attach the report "sample.csv"
     And submit the form at "upload_report_submit"
 
     Then I should see "Check home screen"
@@ -147,7 +130,7 @@ Feature:
     When I follow "Add report"
 
     And I select target "Handset", test set "CSV NFT" and product "N965" with date "2011-08-31"
-    And I attach the report "csv_with_only_nft_cases.csv"
+    And attach the report "csv_with_only_nft_cases.csv"
     And submit the form at "upload_report_submit"
 
     Then I should see "Non-functional Test Results"
@@ -158,7 +141,7 @@ Feature:
     When I follow "Add report"
 
     And I select target "Handset", test set "CSV MIXED" and product "N965" with date "2011-08-31"
-    And I attach the report "csv_with_both_fute_and_nft_cases.csv"
+    And attach the report "csv_with_both_fute_and_nft_cases.csv"
     And submit the form at "upload_report_submit"
 
     Then I should see "Non-functional Test Results"
@@ -168,9 +151,8 @@ Feature:
   @selenium
   Scenario: Add new report with underscore in test set and product names
     When I follow "Add report"
-
     And I select target "Handset", test set "Test_set" and product "Hardware_32" with date "2010-02-12"
-    And I attach the report "sample.csv"
+    And attach the report "sample.csv"
     And submit the form at "upload_report_submit"
     And I press "Publish"
 

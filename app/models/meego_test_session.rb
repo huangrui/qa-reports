@@ -49,12 +49,12 @@ class MeegoTestSession < ActiveRecord::Base
 
   belongs_to :author, :class_name => "User"
   belongs_to :editor, :class_name => "User"
-
   belongs_to :release
 
   validates_presence_of :title, :target, :testset, :product
   validates_presence_of :result_files
   validates_presence_of :author
+  validates_presence_of :release
 
   validates :tested_at, :date_time => true
 
@@ -121,14 +121,6 @@ class MeegoTestSession < ActiveRecord::Base
 
   def target
     read_attribute(:target).try(:capitalize)
-  end
-
-  def build_id_txt=(build_id)
-    write_attribute(:build_id, build_id)
-  end
-
-  def build_id_txt
-    s = read_attribute(:build_id)
   end
 
   def self.popular_build_ids(limit=3)
@@ -439,18 +431,6 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 
-  ###############################################
-  # For encapsulating the release_version          #
-  ###############################################
-  def release_version=(release_version)
-    release = Release.where(:name => release_version)
-    self.release = release.first
-  end
-
-  def release_version
-    self.release ? self.release.name : nil
-  end
-
   def update_report_result(user, params, published = true)
     tmp = ReportFactory.new.build(params)
     parsing_errors = tmp.errors[:result_files]
@@ -472,34 +452,6 @@ class MeegoTestSession < ActiveRecord::Base
       self.meego_test_cases = tmp.meego_test_cases
       return nil
     end
-  end
-
-  private
-
-  def create_release
-    verlabel = Release.find(:first, :conditions => {:name => release_version})
-    if verlabel
-      self.release = verlabel
-      save
-    else
-      verlabel = Release.new(:name => release_version)
-      verlabel.save
-    end
-  end
-
-  def create_target_label
-    tarlabel = TargetLabel.find(:first, :conditions => {:normalized => target.downcase})
-    if tarlabel
-      self.target = tarlabel.label
-      save
-    else
-      tarlabel = TargetLabel.new(:label => target, :normalized => target.downcase)
-      tarlabel.save
-    end
-  end
-
-  def create_labels
-    create_release && create_target_label
   end
 
 end

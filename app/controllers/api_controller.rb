@@ -29,7 +29,6 @@ class ApiController < ApplicationController
   def import_data
     data = request.query_parameters.merge(request.request_parameters)
     data.delete(:auth_token)
-
     errors = []
 
     data[:result_files] = collect_files(data, "report", errors)
@@ -46,18 +45,15 @@ class ApiController < ApplicationController
     data.delete(:hwproduct)
     data.delete(:testtype)
     data.delete(:hardware)
-
-    error_msgs = {}
-
-    error_msgs.merge! errmsg_invalid_version data[:release_version] if not valid_release? data[:release_version]
-
-    return render :json => {:ok => '0', :errors => error_msgs} if !error_msgs.empty?
+    data[:build_id] ||= data.delete(:build_id_txt) if data[:build_id_txt]
 
     begin
-      @test_session = ReportFactory.new.build(data)
+      @test_session = ReportFactory.new.build(data.clone)
+      return render :json => {:ok => '0', :errors => errmsg_invalid_version(data[:release_version])} if not @test_session.release
       @test_session.author = current_user
       @test_session.editor = current_user
       @test_session.published = true
+
     rescue ActiveRecord::UnknownAttributeError => error
       render :json => {:ok => '0', :errors => error.message}
       return
@@ -72,7 +68,7 @@ class ApiController < ApplicationController
     begin
       @test_session.save!
 
-      report_url = url_for :controller => 'reports', :action => 'show', :release_version => data[:release_version], :target => data[:target], :testset => data[:testset], :product => data[:product], :id => @test_session.id
+      report_url = url_for :controller => 'reports', :action => 'show', :release_version => @test_session.release.name, :target => data[:target], :testset => data[:testset], :product => data[:product], :id => @test_session.id
       render :json => {:ok => '1', :url => report_url}
     rescue ActiveRecord::RecordInvalid => invalid
       error_messages = {}
@@ -164,13 +160,8 @@ class ApiController < ApplicationController
     results.compact
   end
 
-  def valid_release?(version)
-    Release.where(:name => version).first.present?
-  end
-
   def errmsg_invalid_version(version)
-    valid_versions = Release.release_versions.join(",")
-    {:release_version => "Incorrect release version '#{version}'. Valid ones are #{valid_versions}."}
+    {:release_version => "Incorrect release version '#{version}'. Valid ones are #{Release.names.join(',')}."}
   end
 
 end

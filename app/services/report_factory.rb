@@ -8,6 +8,8 @@ class ReportFactory
   def build(params)
     @errors = {}
 
+    params[:release] ||= Release.find_by_name params.delete(:release_version) if params[:release_version]
+
     begin
       generate_title(params)
       parse_result_files(params)

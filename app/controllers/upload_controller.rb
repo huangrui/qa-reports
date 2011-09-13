@@ -32,21 +32,18 @@ class UploadController < ApplicationController
 
   def upload_form
     new_report = {}
-    [:release_version, :target, :testset, :product].each do |key|
+    [:target, :testset, :product].each do |key|
       new_report[key] = params[key] if params[key]
     end
 
-    new_report[:release] = new_report[:release].downcase if new_report[:release]
     new_report[:target] ||= new_report[:target].downcase if new_report[:target]
     new_report[:target] ||= TargetLabel.targets.first.downcase
-    @test_session = MeegoTestSession.new(new_report)
-    @test_session.release = Release.find_by_name(new_report[:release_version]) || Release.latest
 
-    @release_versions = Release.in_sort_order.map { |release| release.name }
-    @targets          = TargetLabel.targets.map {|target| target.downcase}
-    @testsets         = MeegoTestSession.release(@selected_release_version).testsets
-    @products         = MeegoTestSession.release(@selected_release_version).popular_products
-    @build_ids        = MeegoTestSession.release(@selected_release_version).popular_build_ids
+    @test_session = MeegoTestSession.new(new_report)
+    @test_session.release = Release.find_by_name(params[:release_version])
+    set_suggestions
+
+    @targets  = TargetLabel.targets.map {|target| target.downcase}
 
     @no_upload_link = true
   end
@@ -76,23 +73,29 @@ class UploadController < ApplicationController
   def upload
     params[:meego_test_session][:result_files] = FileAttachment.where(:id => params.delete(:drag_n_drop_attachments))
 
+    params[:meego_test_session][:release_version] = params[:release][:name]
     @test_session = ReportFactory.new.build(params[:meego_test_session])
     @test_session.author = current_user
     @test_session.editor = current_user
 
+    set_suggestions
+
     if @test_session.errors.empty? and @test_session.save
       redirect_to preview_report_path(@test_session)
     else
-      @release_versions = Release.all.map { |release| release.name }
-      @targets          = TargetLabel.targets
-      @testsets         = MeegoTestSession.release(@selected_release_version).testsets
-      @products         = MeegoTestSession.release(@selected_release_version).popular_products
-      @build_ids        = MeegoTestSession.release(@selected_release_version).popular_build_ids
+      @targets = TargetLabel.targets
       render :upload_form
     end
   end
 
   private
+
+  def set_suggestions
+    scope      = MeegoTestSession.release(@test_session.release.name)
+    @testsets  = scope.testsets
+    @products  = scope.popular_products
+    @build_ids = scope.popular_build_ids
+  end
 
   def filestream_from_qq_param
     if request['qqfile'].respond_to? 'original_filename'

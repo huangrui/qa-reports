@@ -19,14 +19,11 @@
 module IndexHelper
 
   def group_report_title
-    title = profile
-    title += " / #{testset}" if testset.present?
-    title + " / #{product}" if product.present?
-    title
+    [profile, testset, product].compact.join(' / ')
   end
 
   def filtered_index_url(target, testset=nil, product=nil)
-    url_for(:controller=>'ReportGroupsController', :action=>'show', :release_version=>@selected_release_version, :target=>target, :testset=>testset, :product=>product)
+    url_for(:controller=>'ReportGroupsController', :action=>'show', :release_version=>release.name, :target=>target, :testset=>testset, :product=>product)
   end
 
 end

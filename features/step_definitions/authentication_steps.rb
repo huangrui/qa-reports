@@ -6,7 +6,7 @@ Given /^I am viewing a test report$/ do
   FactoryGirl.create(:target)
   FactoryGirl.create(:release)
   report = FactoryGirl.create(:test_report)
-  visit report_path(report)
+  visit show_report_path(report.release.name, report.target, report.testset, report.product, report)
 end
 
 When /^I log in with valid credentials$/ do
@@ -23,7 +23,8 @@ When /^I log in with valid credentials$/ do
 end
 
 Then /^I should be redirected back to the report I was viewing$/ do
-  current_path.should == report_path(MeegoTestSession.first)
+  report = MeegoTestSession.first
+  current_path.should == show_report_path(report.release.name, report.target, report.testset, report.product, report)
 end
 
 Then /^I should see my username and "([^"]*)" button$/ do |arg1|

@@ -12,7 +12,7 @@ class MigrateReleaseVersionToVersionLabelIdInMeegoTestSession < ActiveRecord::Mi
     targets = VersionLabel.find(:all)
     sessions.each do |s|
       targets.each do |t|
-        if s.release_version == t.label
+        if s.release.normalized == t.label.downcase
           s.version_label_id = t.id
         end
       end
@@ -31,7 +31,7 @@ class MigrateReleaseVersionToVersionLabelIdInMeegoTestSession < ActiveRecord::Mi
     sessions.each do |s|
       targets.each do |t|
         if s.version_label_id == t.id
-          s.release_version = t.label
+          s.release = Release.find_by_normalized(t.label.downcase)
         end
       end
       s.save()

@@ -52,18 +52,16 @@ end
 
 When /^(?:|I )(?:|return to )view the report "([^"]*)"$/ do |report_string|
   release, profile, testset, product = report_string.split('/')
-
-  #TODO: Navigate through UI
-  visit root_path
-  click_link_or_button profile
-  visit report_path(MeegoTestSession.last)
+  report = MeegoTestSession.release(release).profile(profile).testset(testset).product_is(product).last
+  raise "report not found with parameters #{release}/#{profile}/#{testset}/#{product}!" unless report
+  visit show_report_path(release, profile, testset, product, report)
 end
 
 When /I view the report "([^"]*)" for build$/ do |report_string|
   release, profile, testset, product = report_string.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {"releases.name" => release, :target => profile, :product => product, :testset => testset}, :include => :release,
-   :order => "build_id DESC, tested_at DESC, created_at DESC")
+    {"releases.name" => release, :target => profile, :product => product, :testset => testset}, :include => :release,
+    :order => "build_id DESC, tested_at DESC, created_at DESC")
   raise "report not found with parameters #{release}/#{profile}/#{testset}/#{product}!" unless report
   visit show_report_path(release, profile, testset, product, report)
 end
@@ -153,7 +151,7 @@ When /^I remove the attachment from the test case "([^"]*)"$/ do |test_case|
   And "I submit the comment for the test case \"#{test_case}\""
 end
 
-When /^I attach the report "([^"]*)"$/ do |file|
+When /^(?:|I )attach the report "([^"]*)"$/ do |file|
   And "attach the file \"#{Dir.getwd}/features/resources/#{file}\" to \"meego_test_session[result_files_attributes][][file]\""
 end
 
