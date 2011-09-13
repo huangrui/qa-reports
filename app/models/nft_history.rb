@@ -31,20 +31,20 @@ class NftHistory
     FROM
     meego_test_sessions, meego_test_cases
     WHERE
-    meego_test_cases.meego_test_session_id=meego_test_sessions.id AND
-    meego_test_sessions.target = ? AND
-    meego_test_sessions.testset = ? AND
-    meego_test_sessions.product = ? AND
-    meego_test_sessions.published = ? AND
-    meego_test_sessions.release_id = ? AND
+    meego_test_cases.meego_test_session_id = meego_test_sessions.id AND
+    meego_test_sessions.target             = ? AND 
+    meego_test_sessions.testset            = ? AND
+    meego_test_sessions.product            = ? AND
+    meego_test_sessions.published          = ? AND
+    meego_test_sessions.release_id         = ? AND
     (
      EXISTS(SELECT id
-            FROM meego_measurements
-            WHERE meego_test_case_id=meego_test_cases.id)
+            FROM   meego_measurements
+            WHERE  meego_test_case_id=meego_test_cases.id)
      OR
      EXISTS(SELECT id
-            FROM serial_measurements
-            WHERE meego_test_case_id=meego_test_cases.id)
+            FROM   serial_measurements
+            WHERE  meego_test_case_id=meego_test_cases.id)
     )
     ORDER BY meego_test_sessions.tested_at ASC
     LIMIT 1
@@ -52,24 +52,24 @@ class NftHistory
 
   GET_NFT_RESULTS_QUERY = <<-END
     SELECT
-    features.name AS feature,
-    meego_test_cases.name AS test_case,
-    meego_measurements.name AS measurement,
-    meego_measurements.unit AS unit,
-    meego_measurements.value AS value,
+    features.name                 AS feature,
+    meego_test_cases.name         AS test_case,
+    meego_measurements.name       AS measurement,
+    meego_measurements.unit       AS unit,
+    meego_measurements.value      AS value,
     meego_test_sessions.tested_at AS tested_at
     FROM
     meego_measurements, meego_test_cases, features, meego_test_sessions
     WHERE
-    meego_measurements.meego_test_case_id=meego_test_cases.id AND
-    meego_test_cases.feature_id=features.id AND
-    features.meego_test_session_id=meego_test_sessions.id AND
-    meego_test_sessions.release_id=? AND
-    meego_test_sessions.target=? AND
-    meego_test_sessions.testset=? AND
-    meego_test_sessions.product=? AND
-    meego_test_sessions.tested_at <= ? AND
-    meego_test_sessions.published=?
+    meego_measurements.meego_test_case_id = meego_test_cases.id AND
+    meego_test_cases.feature_id           = features.id AND
+    features.meego_test_session_id        = meego_test_sessions.id AND
+    meego_test_sessions.release_id        = ? AND
+    meego_test_sessions.target            = ? AND
+    meego_test_sessions.testset           = ? AND
+    meego_test_sessions.product           = ? AND
+    meego_test_sessions.tested_at        <= ? AND
+    meego_test_sessions.published         = ?
     ORDER BY
     features.name ASC,
     meego_test_cases.name ASC,
@@ -79,27 +79,27 @@ class NftHistory
 
   GET_SERIAL_MEASUREMENTS_QUERY = <<-END
     SELECT
-    features.name AS feature,
-    meego_test_cases.name AS test_case,
-    serial_measurements.name AS measurement,
-    serial_measurements.unit AS unit,
-    serial_measurements.min_value AS min_value,
-    serial_measurements.max_value AS max_value,
-    serial_measurements.avg_value AS avg_value,
+    features.name                    AS feature,
+    meego_test_cases.name            AS test_case,
+    serial_measurements.name         AS measurement,
+    serial_measurements.unit         AS unit,
+    serial_measurements.min_value    AS min_value,
+    serial_measurements.max_value    AS max_value,
+    serial_measurements.avg_value    AS avg_value,
     serial_measurements.median_value AS med_value,
-    meego_test_sessions.tested_at AS tested_at
+    meego_test_sessions.tested_at    AS tested_at
     FROM
     serial_measurements, meego_test_cases, features, meego_test_sessions
     WHERE
-    serial_measurements.meego_test_case_id=meego_test_cases.id AND
-    meego_test_cases.feature_id=features.id AND
-    features.meego_test_session_id=meego_test_sessions.id AND
-    meego_test_sessions.release_id=? AND
-    meego_test_sessions.target=? AND
-    meego_test_sessions.testset=? AND
-    meego_test_sessions.product=? AND
-    meego_test_sessions.tested_at <= ? AND
-    meego_test_sessions.published=?
+    serial_measurements.meego_test_case_id = meego_test_cases.id AND
+    meego_test_cases.feature_id            = features.id AND
+    features.meego_test_session_id         = meego_test_sessions.id AND
+    meego_test_sessions.release_id         = ? AND
+    meego_test_sessions.target             = ? AND
+    meego_test_sessions.testset            = ? AND
+    meego_test_sessions.product            = ? AND
+    meego_test_sessions.tested_at         <= ? AND
+    meego_test_sessions.published          = ?
     ORDER BY
     features.name ASC,
     meego_test_cases.name ASC,
@@ -185,19 +185,21 @@ class NftHistory
   # have only minor differences in handling the results
   def handle_db_measurements(db_data, mode)
 
-    feature = ""
-    testcase = ""
+    feature     = ""
+    testcase    = ""
     measurement = ""
-    csv = ""
-    json = []
-    # This will contain the actual structural measurement data
+    csv         = ""
+    json        = []
+
+    # This will contain the actual structural measurement data and is
+    # what is eventually returned from this method.
     hash = Hash.new
 
     db_data.each do |db_row|
       # Start a new measurement
-      if feature != db_row.feature or
-          testcase != db_row.test_case or
-          measurement != db_row.measurement
+      if feature     != db_row.feature or
+         testcase    != db_row.test_case or
+         measurement != db_row.measurement
 
         begin_new_measurement(hash, db_row,
                               feature, testcase, measurement,
