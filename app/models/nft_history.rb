@@ -276,64 +276,44 @@ class NftHistory
 
   # Construct the hash that holds all data in previously described structure
   def add_value(container, feature, testcase, measurement, format, data)
-
-    if not container.has_key?(feature)
-      container[feature] = Hash.new
-    end
-
-    if not container[feature].has_key?(testcase)
-      container[feature][testcase] = Hash.new
-    end
-
-    if not container[feature][testcase].has_key?(measurement)
-      container[feature][testcase][measurement] = Hash.new
-    end
-
-    # Hashes for this particular measurement exist and data can be stored
+    container[feature] ||= Hash.new
+    container[feature][testcase] ||= Hash.new
+    container[feature][testcase][measurement] ||= Hash.new
     container[feature][testcase][measurement][format] = data.dup
   end
 
   # Count the key figures that are shown below the small Bluff graphs
   # in history view (min, max, avg, med) and add them to the hash given.
-  def count_key_figures(container)
-    container.each do |feature, testcases|
-      count_testcase_key_figures(testcases)
-    end
-  end
+  def count_key_figures(data)
+    return if data.nil?
 
-  def count_testcase_key_figures(testcases)
-    testcases.each do |testcase, measurements|
-      count_measurement_key_figures(measurements)
-    end
-  end
+    # If we have measurement data (JSON), get/calculate the key figures
+    # (min, max, avg, med) needed for Bluff graphs
+    if data.has_key?('json')
+      raw_data = data['json']
+      
+      data['min'] = 'N/A'
+      data['max'] = 'N/A'
+      data['avg'] = 'N/A'
+      data['med'] = 'N/A'
 
-  def count_measurement_key_figures(measurements)
-    measurements.each do |measurement, data|
-      # If we have measurement data (JSON), get/calculate the key figures
-      # (min, max, avg, med) needed for Bluff graphs
-      if data.has_key?('json')
-        raw_data = data['json']
-
-        data['min'] = 'N/A'
-        data['max'] = 'N/A'
-        data['avg'] = 'N/A'
-        data['med'] = 'N/A'
-
-        size = raw_data.size
-        if (size > 0)
-          # Count the median value
-          if (size % 2) == 0
-            median = (raw_data[size/2] + raw_data[size/2-1])/2.0
-          elsif size > 0
-            median = raw_data[size/2]
-          end
-
-          data['max'] = format_value(raw_data.max, 3)
-          data['min'] = format_value(raw_data.min, 3)
-          data['med'] = format_value(median, 3)
-          data['avg'] = format_value(raw_data.inject{|sum,el| sum + el}.to_f / size, 3)
+      size = raw_data.size
+      if (size > 0)
+        # Count the median value
+        if (size % 2) == 0
+          median = (raw_data[size/2] + raw_data[size/2-1])/2.0
+        elsif size > 0
+          median = raw_data[size/2]
         end
+        
+        data['max'] = format_value(raw_data.max, 3)
+        data['min'] = format_value(raw_data.min, 3)
+        data['med'] = format_value(median, 3)
+        data['avg'] = format_value(raw_data.inject{|sum,el| sum + el}.to_f / size, 3)
       end
+    else
+      # Keep going until the level where the key figures are is found
+      data.each do |m, h| count_key_figures(h) end
     end
   end
 
