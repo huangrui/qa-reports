@@ -7,7 +7,7 @@ class Product
     profiles = profiles.map do |profile, testsets|
       {
         :name     => profile.capitalize,
-        :testsets => testsets.map do |testset, products| 
+        :testsets => testsets.map do |testset, products|
           {
             :name     => testset,
             :products => products.map do |product|

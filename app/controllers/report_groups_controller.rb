@@ -6,6 +6,7 @@ class ReportGroupsController < ApplicationController
     @show_rss = true
 
     @group_report = ReportGroupViewModel.new(release, profile, testset, product)
+    @monthly_data = @group_report.report_range_by_month(0..39).to_json
     respond_to { |format| format.html }
   end
 
@@ -19,9 +20,9 @@ class ReportGroupsController < ApplicationController
     @report_range = (offset..offset + @reports_per_page - 1)
 
     unless @group_report.reports_by_range(@report_range).empty?
-      render :partial=>'report', :collection=>@group_report.reports_by_range(@report_range)
+      render :json => @group_report.report_range_by_month(@report_range)
     else
-      render :text=>''
+      render :text => ''
     end
   end
 

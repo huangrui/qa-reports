@@ -63,27 +63,28 @@ $(window).load ->
   previousMonth = null
   currentMonthTable = null
 
+  #TODO:remove
+  max_cases = 100
+
+  report_path = ->
+    [null,@release,@target,@testset,@product,@id].join '/'
+
+  directives =
+    reports:
+      'name@href': report_path
+      htmlgraph:
+        'passed@style': -> "width:#{this.passes/max_cases*100}%"
+        'failed@style': -> "width:#{this.fails/max_cases*100}%"
+        'na@style':     -> "width:#{this.nas/max_cases*100}%"
+        'passed@title': -> "passed #{this.passes}"
+        'failed@title': -> "failed #{this.fails}"
+        'na@title':     -> "na #{this.nas}"
+
   $(resultTableName).bind 'infinitescroll.finish', ->
-    rows = $(resultTableName + ' tr')
-
-    for row in rows
-      row = $(row)
-      year = row.children('.year').first().text()
-      month = parseInt(row.children('.date').first().text().split('.').pop(), 10)
-
-
-      if previousYear != year || previousMonth != month
-        monthTable = $('table.month_template').clone()
-        monthTable.removeClass('month_template').addClass('month')
-        monthTable.find('.month').text(monthNames[month - 1] + ' ' + year)
-        monthTable.show()
-        monthTable.appendTo('.index_month')
-        currentMonthTable = monthTable
-
-      row.appendTo(currentMonthTable)
-      previousYear = year
-      previousMonth = month
-
+    data = JSON.parse $(resultTableName).text()
+    $(resultTableName).empty()
+    $('.month_template').clone().appendTo('#reports_by_month').show().render(data, directives)
+    $('.reports tr:even').addClass('even')
 
   $(window).trigger('infinitescroll.scrollpage', 1)
 
