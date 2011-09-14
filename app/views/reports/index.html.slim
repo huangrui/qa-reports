@@ -5,14 +5,42 @@
 #index_page
   table#report_navigation
     thead
-      tr
-        = render :partial => "title", :collection => @profiles, :as => :profile
-    tr
-      = render :partial => "profile", :collection => @profiles
-  a#home_edit_link href='#'
-  a#home_edit_done_link.small_btn href='#' Done
+      tr.profiles
+        th
+          a.name href="#"
+    tbody
+      tr.profiles
+        td.testsets
+          div
+            / TODO: Use css instead of strong tag
+            strong
+              a.name
+              a.compare
+            ul.products
+              li
+                a.name
+
+javascript:
+  index_model = #{{@index_model.to_json}}
 
 coffee:
+
+  group_report_path = (data) ->
+    if data.parent_ and data.parent_.name
+      group_report_path(data.parent_) + "/#{data.name}"
+    else
+      "/#{index_model.release}/#{data.name}"
+
+  directives =
+    profiles:
+      'name@href':    -> group_report_path(this)
+      testsets:
+        'name@href':  -> group_report_path(this)
+        products:
+         'name@href': -> group_report_path(this)
+
+
+  $('#report_navigation').render(index_model, directives)
 
   $('#home_edit_link').click () ->
     $('#index_page').addClass 'editing'

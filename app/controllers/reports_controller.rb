@@ -39,8 +39,9 @@ class ReportsController < ApplicationController
   cache_sweeper :meego_test_session_sweeper, :only   => [:update, :delete, :publish]
 
   def index
-    @profiles = TargetLabel.targets
-    @products = Product.by_profile_by_testset(release)
+    @index_model = {}
+    @index_model['release']  = release.name
+    @index_model['profiles'] = Product.by_profile_by_testset(release)
     @show_rss = true
     render :layout => "application"
   end
@@ -129,6 +130,7 @@ class ReportsController < ApplicationController
 
   def populate_edit_fields
     @build_diff       = []
+    @release_versions = Release.in_sort_order.map { |release| release.name }
     @targets          = TargetLabel.targets
     @testsets         = MeegoTestSession.release(release.name).testsets
     @products         = MeegoTestSession.release(release.name).popular_products
