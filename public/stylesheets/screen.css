@@ -2215,7 +2215,7 @@ div.field.last {
     font-weight: bold;
     background: transparent url('../images/home_edit_icon.png') no-repeat right 0px;
     display: block;
-    padding-right: 22px;
+    width: 16px;
     height: 16px;
     line-height: 14px;
 }

@@ -9,7 +9,7 @@
         = render :partial => "title", :collection => @profiles, :as => :profile
     tr
       = render :partial => "profile", :collection => @profiles
-  a#home_edit_link href='#' Edit
+  a#home_edit_link href='#'
   a#home_edit_done_link.small_btn href='#' Done
 
 coffee:
@@ -20,7 +20,7 @@ coffee:
 
   $('#home_edit_done_link').click () ->
     $('#index_page').removeClass 'editing'
-    $('#index_page.editing #report_navigation strong a, #index_page.editing #report_navigation ul li a').removeClass 'editable_text'
+    $('#report_navigation strong a, #report_navigation ul li a').removeClass 'editable_text'
 
   $('#index_page.editing #report_navigation strong a, #index_page.editing #report_navigation ul li a').live 'click', () ->
     alert 'In-place edit tähän'
@@ -29,7 +29,6 @@ coffee:
   $('#index_page.editing #report_navigation ul li a').live 'mouseover', () ->
     hw_name = $(this).text()
     $('#index_page.editing #report_navigation ul li a').filter(() ->
-      console.log this
       return $(this).text() == hw_name
     ).addClass('to_be_edited')
 
