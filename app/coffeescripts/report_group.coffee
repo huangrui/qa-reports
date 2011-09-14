@@ -58,16 +58,11 @@ $(window).load ->
     triggerAt: 800,
     page: 1
 
-  monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-  previousYear = null
-  previousMonth = null
-  currentMonthTable = null
-
-  #TODO:remove
-  max_cases = 100
-
   report_path = ->
     [null,@release,@target,@testset,@product,@id].join '/'
+
+  title_of = (table) ->
+    table.find('.index_month_title .name').text() unless table.length == 0
 
   directives =
     reports:
@@ -83,8 +78,15 @@ $(window).load ->
   $(resultTableName).bind 'infinitescroll.finish', ->
     data = JSON.parse $(resultTableName).text()
     $(resultTableName).empty()
-    $('.month_template').clone().appendTo('#reports_by_month').show().render(data, directives)
-    $('.reports tr:even').addClass('even')
+    $contents = $('.month_template').clone()
+      .render(data, directives).children()
+
+    $contents.find('.reports tr:even').addClass('even')
+    $contents.appendTo('#reports_by_month').show()
+    $first_child = $contents.first()
+    $previous_month = $first_child.prev()
+    if title_of($previous_month) == title_of($first_child)
+        $first_child.remove().find('.reports tr').appendTo($previous_month.find('.reports'))
 
   $(window).trigger('infinitescroll.scrollpage', 1)
 

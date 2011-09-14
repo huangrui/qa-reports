@@ -47,8 +47,7 @@
             a.compare href=compare_latest_to_previous_url See detailed comparison
             = render :partial => "shared/report_comparison_summary", :locals => {:comparison => @group_report.comparison}
 
-        #reports_by_month
-        .index_month
+        #reports_by_month.index_month
 
   div style="display:none"
     span#report_list_url #{{report_list_path(release.name, profile, testset, product)}}
@@ -65,56 +64,5 @@
   = javascript_include_tag "report_group.js"
 
 javascript:
-  months = #{{@monthly_data}};
-  console.log(months);
-
   max_cases = #{{@group_report.max_cases}}
-
-coffee:
-  report_path = ->
-    [null,@release,@target,@testset,@product,@id].join '/'
-
-  #months = 
-  #  month_template: [ 
-  #    release: '1.2'
-  #    name: 'January 2011'
-  #    reports: [
-  #      date: '03.01'
-  #      name: 'Test Report'
-  #      htmlgraph:
-  #        passes: 15
-  #        fails: 8
-  #        nas:     7 
-  #      year: '2011'
-  #      target: 'Sdk'
-  #      testset: 'Sanity'
-  #      product: 'N900'
-  #      id: '3306'
-  #    ,
-  #      date: '03.01'
-  #      name: 'Test Eport'
-  #      htmlgraph: 
-  #        passes: 12
-  #        fails: 9
-  #        nas:     3 
-  #      year: '2011'
-  #      target: 'Sdk'
-  #      testset: 'Sanity'
-  #      product: 'N950'
-  #      id: '3306'
-  #    ]
-  #  ]
-
-  directives =
-    reports: 
-      'name@href': report_path
-      htmlgraph:
-        'passed@style': -> "width:#{this.passes/max_cases*100}%"
-        'failed@style': -> "width:#{this.fails/max_cases*100}%"
-        'na@style':     -> "width:#{this.nas/max_cases*100}%"
-        'passed@title': -> "passed #{this.passes}"
-        'failed@title': -> "failed #{this.fails}"
-        'na@title':     -> "na #{this.nas}"
-
-  #$('.month_template').clone().appendTo('#reports_by_month').show().render(months, directives)
-  #$('.reports tr:even').addClass('even')
+ 
