@@ -6,7 +6,8 @@
   table#report_navigation
     thead
       tr.profiles
-        th.name
+        th
+          a.name href="#"
     tbody
       tr.profiles
         td.testsets
@@ -14,6 +15,7 @@
             / TODO: Use css instead of strong tag
             strong
               a.name
+              a.compare
             ul.products
               li
                 a.name
@@ -22,4 +24,19 @@ javascript:
   index_model = #{{@index_model.to_json}}
 
 coffee:
-  $('#report_navigation').render(index_model)
+
+  group_report_path = (data) ->
+    if data.parent_ and data.parent_.name
+      group_report_path(data.parent_) + "/#{data.name}"
+    else
+      "/#{index_model.release}/#{data.name}"
+
+  directives =
+    profiles:
+      'name@href':    -> group_report_path(this)
+      testsets:
+        'name@href':  -> group_report_path(this)
+        products:
+         'name@href': -> group_report_path(this)
+
+  $('#report_navigation').render(index_model, directives)

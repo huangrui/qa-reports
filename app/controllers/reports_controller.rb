@@ -40,6 +40,7 @@ class ReportsController < ApplicationController
 
   def index
     @index_model = {}
+    @index_model['release']  = release.name
     @index_model['profiles'] = Product.by_profile_by_testset(release)
     @show_rss = true
     render :layout => "application"
