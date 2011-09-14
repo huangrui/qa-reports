@@ -15,6 +15,7 @@
             / TODO: Use css instead of strong tag
             strong
               a.name
+              a.compare
             ul.products
               li
                 a.name
@@ -23,15 +24,19 @@ javascript:
   index_model = #{{@index_model.to_json}}
 
 coffee:
-  profile_path = ""
-  testset_path = ""
+
+  group_report_path = (data) ->
+    if data.parent_ and data.parent_.name
+      group_report_path(data.parent_) + "/#{data.name}"
+    else
+      "/#{index_model.release}/#{data.name}"
 
   directives =
     profiles:
-      'name@href':    -> profile_path = "/#{index_model.release}/#{this.name}"
+      'name@href':    -> group_report_path(this)
       testsets:
-        'name@href':  -> testset_path = profile_path + "/#{this.name}"
+        'name@href':  -> group_report_path(this)
         products:
-         'name@href': -> testset_path + "/#{this.name}"
+         'name@href': -> group_report_path(this)
 
   $('#report_navigation').render(index_model, directives)
