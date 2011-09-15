@@ -1,7 +1,7 @@
 Feature: View several reports under a category
 
   Background:
-    And there are 2 reports from "2011/1" under "1.2/Core/Automated/N900"
+    Given there are 2 reports from "2011/1" under "1.2/Core/Automated/N900"
     And there are 4 reports from "2011/3" under "1.2/Core/Automated/N900"
 
   @selenium
