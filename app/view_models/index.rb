@@ -1,22 +1,5 @@
 class Index
 
-  # Output
-  # view_model =
-  #   "release":"1.2"
-  #   "profiles":[
-  #     "name":"Handset"
-  #     "testsets":[
-  #       "name":"Sanity - Automated"
-  #       "products":[
-  #         "name":"N900"
-  #       ]
-  #       "name":"Acceptance"
-  #       "products":[
-  #         "name":"N900"
-  #       ]
-  #     ]
-  #   ]
-
   def self.find_by_release(release)
     model = {} 
     model[:release]  = release.name
