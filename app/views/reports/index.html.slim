@@ -12,10 +12,8 @@
       tr.profiles
         td.testsets
           div
-            / TODO: Use css instead of strong tag
-            strong
-              a.name
-              a.compare
+            a.name
+            a.compare
             ul.products
               li
                 a.name
@@ -44,16 +42,25 @@ coffee:
 
   $('#report_navigation').render(index_model, directives)
 
+
+  $('#report_navigation tbody a.name').each () ->
+    $i = $('<input>').addClass('inplace-edit')
+      .hide()
+    $i.insertAfter $(this)
+
   $('#home_edit_link').click () ->
     $('#index_page').addClass 'editing'
-    $('#index_page.editing #report_navigation strong a, #index_page.editing #report_navigation ul li a').addClass 'editable_text'
+    $('#index_page.editing #report_navigation tbody a.name').addClass 'editable_text'
+    $('a.compare').hide()
 
   $('#home_edit_done_link').click () ->
     $('#index_page').removeClass 'editing'
-    $('#report_navigation strong a, #report_navigation ul li a').removeClass 'editable_text'
+    $('#report_navigation tbody a.name').removeClass 'editable_text'
+    $('a.compare').show()
 
-  $('#index_page.editing #report_navigation strong a, #index_page.editing #report_navigation ul li a').live 'click', () ->
-    alert 'In-place edit tähän'
+  $('#index_page.editing #report_navigation tbody a.name').live 'click', () ->
+    $(this).hide()
+    $(this).next('input.inplace-edit').show()
     return false
 
   $('#index_page.editing #report_navigation ul li a').live 'mouseover', () ->
@@ -64,3 +71,4 @@ coffee:
 
   $('#index_page.editing #report_navigation ul li a').live 'mouseout', () ->
     $('#index_page.editing #report_navigation ul li a').removeClass('to_be_edited')
+

@@ -1342,6 +1342,14 @@ th.filtered:last-child {
 #report_navigation ul {
     padding-left: 20px; }
 
+#report_navigation a.name {
+    font-weight: bold;
+}
+
+#report_navigation ul a.name {
+    font-weight: normal;
+}
+
 th.filtered {
     padding-top: 30px;
     padding-bottom: 14px;
