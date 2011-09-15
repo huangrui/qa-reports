@@ -1,9 +1,8 @@
 class Index
 
   def self.find_by_release(release)
-    model = {} 
-    model[:release]  = release.name
-    model[:profiles] = TargetLabel.select("label AS name").order("sort_order ASC").map do |profile|
+    {
+      :profiles => TargetLabel.select("label AS name").order("sort_order ASC").map do |profile|
       {
         :name     => profile.name,
         :url      => "#{release.name}/#{profile.name}",
@@ -23,7 +22,6 @@ class Index
           end
       }
     end
-
-    model
+    }
   end
 end
