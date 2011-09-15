@@ -2,6 +2,7 @@ class Index
 
   # Output
   # view_model =
+  #   "release":"1.2"
   #   "profiles":[
   #     "name":"Handset"
   #     "testsets":[
@@ -17,14 +18,26 @@ class Index
   #   ]
 
   def find(release)
-    {
-      :profiles => [
-        {
-          :name => "Core"
-        }
-      ]
+    reports = MeegoTestSession.find_by_sql("
+      SELECT DISTINCT profiles.label AS profile, reports.testset, reports.product 
+      FROM meego_test_sessions AS reports
+      JOIN target_labels AS profiles ON reports.target = profiles.normalized
+      WHERE reports.release_id = #{release.id}
+      ORDER BY profiles.sort_order ASC, testset, product
+    ")
+
+    model = {
+      :release  => release.name,
+      :profiles => []
     }
-    #Qlabels = TargetLabel.find(:all, :select => "normalized").map(&:normalized)
+
+    profiles = reports.to_nested_hash [:profile, :testset], :map => :product, :unique => false
+
+    reports.map(&:profile).each do | profile_name |
+      model[:profiles] << {:name => profile_name}
+    end
+
+    model
   end
 
 end
