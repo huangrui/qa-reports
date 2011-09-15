@@ -18,14 +18,6 @@ class Index
   #   ]
 
   def find(release)
-    reports = MeegoTestSession.find_by_sql("
-      SELECT DISTINCT profiles.label AS profile, reports.testset, reports.product 
-      FROM meego_test_sessions AS reports
-      JOIN target_labels AS profiles ON reports.target = profiles.normalized
-      WHERE reports.release_id = #{release.id}
-      ORDER BY profiles.sort_order ASC, testset, product
-    ")
-
     model = {
       :release  => release.name,
       :profiles => []
