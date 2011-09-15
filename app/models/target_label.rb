@@ -1,7 +1,7 @@
 class TargetLabel < ActiveRecord::Base
 
   def self.targets
-    order("sort_order ASC").select(:label).map(&:label)
+    order("sort_order ASC").select(:label).map { |profile| profile.label }
   end  
     
   def self.labels
