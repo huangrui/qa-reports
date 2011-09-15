@@ -25,18 +25,12 @@ javascript:
 
 coffee:
 
-  group_report_path = (data) ->
-    if data.parent_ and data.parent_.name
-      group_report_path(data.parent_) + "/#{data.name}"
-    else
-      "/#{index_model.release}/#{data.name}"
-
   directives =
     profiles:
-      'name@href':    -> group_report_path(this)
+      'name@href':    -> this.url
       testsets:
-        'name@href':  -> group_report_path(this)
+        'name@href':  -> this.url
         products:
-         'name@href': -> group_report_path(this)
+         'name@href': -> this.url
 
   $('#report_navigation').render(index_model, directives)

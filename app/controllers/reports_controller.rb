@@ -39,9 +39,7 @@ class ReportsController < ApplicationController
   cache_sweeper :meego_test_session_sweeper, :only   => [:update, :delete, :publish]
 
   def index
-    @index_model = {}
-    @index_model['release']  = release.name
-    @index_model['profiles'] = Product.by_profile_by_testset(release)
+    @index_model = Index.find_by_release(release)
     @show_rss = true
     render :layout => "application"
   end
