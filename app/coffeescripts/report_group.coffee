@@ -50,11 +50,11 @@ $(window).load ->
     draw_abs_graph()
 
 
-  resultTableName = 'table#infinite_scroll_results'
+  $resultTable = $('table#infinite_scroll_results')
 
   $(window).infinitescroll
     url: $('#report_list_url').text().trim(),
-    appendTo: resultTableName,
+    appendTo: $resultTable,
     triggerAt: 800,
     page: 1
 
@@ -75,13 +75,14 @@ $(window).load ->
         'failed@title': -> "failed #{this.fails}"
         'na@title':     -> "na #{this.nas}"
 
-  $(resultTableName).bind 'infinitescroll.finish', ->
-    data = JSON.parse $(resultTableName).text()
-    $(resultTableName).empty()
+  $resultTable.bind 'infinitescroll.finish', ->
+    data = JSON.parse $resultTable.text()
+    $resultTable.empty()
     $contents = $('.month_template').clone()
       .render(data, directives).children()
 
-    $contents.find('.reports tr:even').addClass('even')
+    $contents.find('.reports tr:even').addClass('odd') #jQuery uses 0-based indexing (1st, 3rd.. are even)
+    $contents.find('.reports tr:odd').addClass('even')
     $contents.appendTo('#reports_by_month').show()
     $first_child = $contents.first()
     $previous_month = $first_child.prev()
