@@ -31,10 +31,12 @@ class Index
       :profiles => []
     }
 
-    profiles = reports.to_nested_hash [:profile, :testset], :map => :product, :unique => false
-
-    reports.map(&:profile).each do | profile_name |
-      model[:profiles] << {:name => profile_name}
+    profiles = TargetLabel.select("label AS name").order("sort_order ASC").all
+    profiles.each do |profile|
+      profile_hash = profile.attributes
+      testsets = MeegoTestSession.release(release.name).profile(profile.name).select("DISTINCT testset AS name").order(:testset)
+      profile_hash[:testsets] = testsets.map &:attributes
+      model[:profiles] << profile_hash
     end
 
     model
