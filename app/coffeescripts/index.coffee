@@ -6,4 +6,4 @@ directives =
       products:
        'name@href': -> this.url
 
-$('#report_navigation').render(index_model, directives)
+$('#report_navigation').render index_model, directives

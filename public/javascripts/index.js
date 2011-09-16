@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Thu, 15 Sep 2011 14:29:24 GMT from
+/* DO NOT MODIFY. This file was compiled Thu, 15 Sep 2011 18:40:50 GMT from
  * /Users/pyykkis/work/qa-reports/app/coffeescripts/index.coffee
  */
 
