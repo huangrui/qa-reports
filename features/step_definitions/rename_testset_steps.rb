@@ -1,8 +1,8 @@
 When /^I have uploaded reports with profile "([^"]*)" having testset "([^"]*)"$/ do |profile, testset|
   FactoryGirl.create(:profile, :label => profile, :normalized => profile.downcase)
   FactoryGirl.create_list(:test_report, 2,
-    :release => Release.find_by_name("1.2"),
-    :target  => profile,
+    :release => Release.in_sort_order.first,
+    :target  => profile.downcase,
     :testset => testset)
 end
 
