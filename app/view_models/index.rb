@@ -4,7 +4,7 @@ class Index
     { :profiles => find_profiles(release) }
   end
 
-  private 
+  private
 
   def self.find_profiles(release)
     TargetLabel.find_by_sql("
