@@ -15,9 +15,12 @@ directives =
 $('#report_navigation').render index_model, directives
 
 $('#report_navigation tbody a.name').each () ->
+  input_id = 'input-' + $(this).attr('id')
+  $form = $(this).next('form')
   $i = $('<input>').addClass('inplace-edit')
-    .hide().val($(this).text())
-  $i.insertAfter $(this)
+    .attr('name', 'category_edit_input').attr('id', input_id)
+    .val($(this).text())
+  $form.find('.editables').append($i)
 
 $('#home_edit_link').click () ->
   $('#index_page').addClass 'editing'
@@ -30,17 +33,17 @@ $('#home_edit_done_link').click () ->
   $('#report_navigation tbody a.name').css 'display', 'inline'
   $('a.compare').show()
 
+# In-place edit
 $editables = null
-
-# In-place edit with real-time update to similar hardware
-
 $('#index_page.editing #report_navigation tbody a.name').live 'click', () ->
-  hw_name = $(this).text()
-  $editables = $('#report_navigation ul li a').filter () ->
-    return $(this).text() == hw_name
+  $clicked = $(this)
+  $clicked.hide()
+  $clicked.next('form').show().find('input.inplace-edit').focus()
+
+  # set editables for real-time update to similar products
+  $editables = $('.products a').not($clicked).filter () ->
+    return $(this).text() == $clicked.text()
   $editables.addClass 'being_edited'
-  $(this).hide()
-  $(this).next('input.inplace-edit').show().focus()
   return false
 
 $('#report_navigation ul input.inplace-edit').keyup () ->
@@ -48,9 +51,13 @@ $('#report_navigation ul input.inplace-edit').keyup () ->
   $editables.each () ->
     $(this).text(hw_name)
 
+# Canceling the edit
 $('#report_navigation input.inplace-edit').blur () ->
-  $(this).hide()
-  $(this).prev('a.name').show()
+  $form = $(this).closest('form')
+  $form.hide()
+  $link = $form.prev('a.name').show()
+  $(this).val $link.text() # revert back to orig val after cancel
+  $editables.text $link.text() # revert text in similar products
   $editables.removeClass 'being_edited'
   $editables = null
   return false
