@@ -61,6 +61,8 @@ $('#report_navigation input.inplace-edit').blur () ->
   $editables = null
   return false
 
+$('#report_navigation input.inplace-edit').keyup (key) ->
+  $(this).trigger('blur') if (key.keyCode == 27) # esc triggers cancel
 
 # Hover hilight for products
 $('#index_page.editing .products a').live 'mouseover', () ->
