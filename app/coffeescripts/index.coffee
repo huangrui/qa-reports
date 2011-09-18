@@ -1,10 +1,16 @@
+url2id = (url) ->
+  url.replace(/\//g,'-').replace(/\s/g,'_')
+
 directives =
   profiles:
-    'name@href':    -> this.url
+    'name@href':    -> @url
+    'name@id':      -> url2id(@url)
     testsets:
-      'name@href':  -> this.url
+      'name@href':  -> @url
+      'name@id':    -> url2id(@url)
       products:
-       'name@href': -> this.url
+       'name@href': -> @url
+       'name@id':   -> url2id(@url)
 
 $('#report_navigation').render index_model, directives
 
