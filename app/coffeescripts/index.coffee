@@ -46,10 +46,9 @@ $('#index_page.editing #report_navigation tbody a.name').live 'click', () ->
   $editables.addClass 'being_edited'
   return false
 
-$('#report_navigation ul input.inplace-edit').keyup () ->
-  hw_name = $(this).val()
-  $editables.each () ->
-    $(this).text(hw_name)
+# Real-time update to similar products
+$('.products input.inplace-edit').keyup () ->
+  $editables.text $(this).val()
 
 # Canceling the edit
 $('#report_navigation input.inplace-edit').blur () ->
@@ -63,15 +62,13 @@ $('#report_navigation input.inplace-edit').blur () ->
   return false
 
 
-# Hover hilight for hardware
-
-$('#index_page.editing #report_navigation ul li a').live 'mouseover', () ->
+# Hover hilight for products
+$('#index_page.editing .products a').live 'mouseover', () ->
   if $editables == null
-    hw_name = $(this).text()
-    $('#index_page.editing #report_navigation ul li a').filter(() ->
-      return $(this).text() == hw_name
+    product_name = $(this).text()
+    $('#index_page.editing .products a').filter(() ->
+      return $(this).text() == product_name
     ).addClass('to_be_edited')
 
-$('#index_page.editing #report_navigation ul li a').live 'mouseout', () ->
-  $('#index_page.editing #report_navigation ul li a').removeClass('to_be_edited')
-
+$('#index_page.editing .products a').live 'mouseout', () ->
+  $('#index_page.editing .products a').removeClass('to_be_edited')
