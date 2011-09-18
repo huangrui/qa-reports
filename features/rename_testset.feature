@@ -4,13 +4,14 @@ Feature:
   So that I can better reorganize and manage reports
 
   Background:
+    #Given I have no target labels
     Given I have uploaded reports with profile "Core" having testset "foo"
     And I have uploaded reports with profile "Handset" having testset "foo"
     And I am on the front page
     And I am logged in
     Then show me the page
 
-#  @wip
+  @wip
   @selenium
   Scenario: Rename testset in front page
     When I click on the edit button
@@ -28,7 +29,7 @@ Feature:
     Then I should see testset "bar" for profile "Core"
     And I should see testset "foo" for profile "Handset"
 
-  @wip
+#  @wip
   Scenario: Cancel testset renaming
     When I click on the edit button
     And I edit the testset name "foo" to "bar" for profile "Core"
@@ -45,7 +46,7 @@ Feature:
     Then I should see testset "foo" for profile "Core"
     And I should see testset "foo" for profile "Handset"
 
-  @wip
+#  @wip
   Scenario: Automatic renaming of report titles when testset is renamed
     When I rename the testset "foo" under profile "Core" to "bar"
     And I view the group report for "Core/bar"
