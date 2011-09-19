@@ -3,6 +3,7 @@ Feature: Consolidated reports
   I want to compare reports of different hardware versions between branches
   So that I can decide if it's safe to create new release
 
+  @javascript
   Scenario: Comparing results between two branches with differences
     When report files "spec/fixtures/sim1.xml,features/resources/bluetooth.xml" are uploaded to branch "Sanity" for product "N900"
     And report files "spec/fixtures/sim1.xml,features/resources/bluetooth.xml" are uploaded to branch "Sanity" for product "N910"
@@ -32,6 +33,7 @@ Feature: Consolidated reports
     And I should see "SMOKE-SIM-Get_IMSI" within "#test_case_5 .testcase_name"
     And I should see values "Pass,Pass,Pass,Fail" in columns of "#test_case_5 td"
 
+  @javascript
   Scenario: Comparing results between two branches where data is missing for one device
     When report files "spec/fixtures/sim1.xml,features/resources/bluetooth.xml" are uploaded to branch "Sanity" for product "N900"
     And report files "spec/fixtures/sim1.xml,features/resources/bluetooth.xml" are uploaded to branch "Sanity" for product "N910"
@@ -44,7 +46,7 @@ Feature: Consolidated reports
     And I should see "2" within "#changed_from_pass"
     And I should not see values "N900" in columns of "tr.compare_testset th"
 
-  @selenium
+  @javascript
   Scenario: Toggle visibility of unchanged results
     When report files "spec/fixtures/sim1.xml,features/resources/bluetooth.xml" are uploaded to branch "Sanity" for product "N910"
     And report files "spec/fixtures/sim2.xml,features/resources/bluetooth.xml" are uploaded to branch "Sanity:Testing" for product "N910"
