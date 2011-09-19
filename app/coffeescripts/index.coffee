@@ -14,7 +14,6 @@ $(document).ready ->
          'name@id':   -> url2id(@url)
 
   $('#report_navigation').empty().append( $('#report_navigation_template').clone().render(index_model, directives).children() )
-  console.log $('#report_navigation_template').children()
 
   $('#report_navigation tbody a.name').each () ->
     input_id = 'input-' + $(this).attr('id')
@@ -36,7 +35,9 @@ $(document).ready ->
     $('a.compare').show()
 
   # In-place edit
+  $inputs    = $('#report_navigation input.inplace-edit')
   $editables = null
+
   $('#index_page.editing #report_navigation tbody a.name').live 'click', () ->
     $clicked = $(this)
     $clicked.hide()
@@ -53,7 +54,7 @@ $(document).ready ->
     $editables.text $(this).val()
 
   # Canceling the edit
-  $('#report_navigation input.inplace-edit').blur () ->
+  $inputs.blur () ->
     $form = $(this).closest('form')
     $form.hide()
     $link = $form.prev('a.name').show()
@@ -64,12 +65,12 @@ $(document).ready ->
       $editables = null
     return false
 
-  $('#report_navigation input.inplace-edit').keyup (key) ->
+  $inputs.keyup (key) ->
     $(this).trigger('blur') if (key.keyCode == 27) # esc triggers cancel
 
   # Hover hilight for products
   $('#index_page.editing .products a').live 'mouseover', () ->
-    if $editables == null
+    if not $editables?
       product_name = $(this).text()
       $('#index_page.editing .products a').filter(() ->
         return $(this).text() == product_name
