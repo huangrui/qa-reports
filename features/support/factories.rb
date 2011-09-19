@@ -20,7 +20,7 @@ FactoryGirl.define do
     sort_order  0
   end
 
-  factory :target, :aliases => [:profile], :class => TargetLabel do
+  factory :target, :aliases => [:profile], :class => Profile do
     label      "Handset"
     normalized "handset"
     sort_order 0

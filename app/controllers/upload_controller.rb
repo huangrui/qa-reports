@@ -37,13 +37,13 @@ class UploadController < ApplicationController
     end
 
     new_report[:target] ||= new_report[:target].downcase if new_report[:target]
-    new_report[:target] ||= TargetLabel.targets.first.downcase
+    new_report[:target] ||= Profile.targets.first.downcase
 
     @test_session = MeegoTestSession.new(new_report)
     @test_session.release = Release.find_by_name(params[:release_version])
     set_suggestions
 
-    @targets  = TargetLabel.targets.map {|target| target.downcase}
+    @targets  = Profile.targets.map {|target| target.downcase}
 
     @no_upload_link = true
   end
@@ -83,7 +83,7 @@ class UploadController < ApplicationController
     if @test_session.errors.empty? and @test_session.save
       redirect_to preview_report_path(@test_session)
     else
-      @targets = TargetLabel.targets
+      @targets = Profile.targets
       render :upload_form
     end
   end

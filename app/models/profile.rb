@@ -1,9 +1,8 @@
-class TargetLabel < ActiveRecord::Base
-
+class Profile < ActiveRecord::Base
   def self.targets
     order("sort_order ASC").select(:label).map(&:label)
-  end  
-    
+  end
+
   def self.labels
     find(:all, :select => "normalized").map(&:normalized)
   end

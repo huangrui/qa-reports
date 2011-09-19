@@ -19,29 +19,29 @@ class AddDefaultLabels < ActiveRecord::Migration
       VersionLabel.create! :label => "1.0", :normalized => "1.0", :sort_order => 2
     end
 
-    tl = TargetLabel.find_by_label("Core")
+    tl = Profile.find_by_label("Core")
     unless tl
-      TargetLabel.create! :label => "Core", :normalized => "core", :sort_order => 0
+      Profile.create! :label => "Core", :normalized => "core", :sort_order => 0
     end
 
-    tl = TargetLabel.find_by_label("Handset")
+    tl = Profile.find_by_label("Handset")
     unless tl
-      TargetLabel.create! :label => "Handset", :normalized => "handset", :sort_order => 1
+      Profile.create! :label => "Handset", :normalized => "handset", :sort_order => 1
     end
 
-    tl = TargetLabel.find_by_label("Netbook")
+    tl = Profile.find_by_label("Netbook")
     unless tl
-      TargetLabel.create! :label => "Netbook", :normalized => "netbook", :sort_order => 2
+      Profile.create! :label => "Netbook", :normalized => "netbook", :sort_order => 2
     end
 
-    tl = TargetLabel.find_by_label("IVI")
+    tl = Profile.find_by_label("IVI")
     unless tl
-      TargetLabel.create! :label => "IVI", :normalized => "ivi", :sort_order => 3
+      Profile.create! :label => "IVI", :normalized => "ivi", :sort_order => 3
     end
 
-    tl = TargetLabel.find_by_label("SDK")
+    tl = Profile.find_by_label("SDK")
     unless tl
-      TargetLabel.create! :label => "SDK", :normalized => "sdk", :sort_order => 4
+      Profile.create! :label => "SDK", :normalized => "sdk", :sort_order => 4
     end
   end
 
@@ -50,11 +50,11 @@ class AddDefaultLabels < ActiveRecord::Migration
     VersionLabel.find(:first, :conditions => {:label => "1.1"}).destroy
     VersionLabel.find(:first, :conditions => {:label => "1.0"}).destroy
 
-    TargetLabel.find(:first, :conditions => {:label => "Core"}).destroy
-    TargetLabel.find(:first, :conditions => {:label => "Handset"}).destroy
-    TargetLabel.find(:first, :conditions => {:label => "Netbook"}).destroy
-    TargetLabel.find(:first, :conditions => {:label => "IVI"}).destroy
-    TargetLabel.find(:first, :conditions => {:label => "SDK"}).destroy
+    Profile.find(:first, :conditions => {:label => "Core"}).destroy
+    Profile.find(:first, :conditions => {:label => "Handset"}).destroy
+    Profile.find(:first, :conditions => {:label => "Netbook"}).destroy
+    Profile.find(:first, :conditions => {:label => "IVI"}).destroy
+    Profile.find(:first, :conditions => {:label => "SDK"}).destroy
   end
 
 end

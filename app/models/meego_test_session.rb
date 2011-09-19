@@ -346,9 +346,9 @@ class MeegoTestSession < ActiveRecord::Base
     if target.blank?
       errors.add :target, "can't be blank"
     else
-      label = TargetLabel.find(:first, :conditions => {:normalized => target.downcase})
+      label = Profile.find(:first, :conditions => {:normalized => target.downcase})
       if not label
-        valid_targets = TargetLabel.labels.join(",")
+        valid_targets = Profile.labels.join(",")
         errors.add :target, "Incorrect target '#{target}'. Valid ones are #{valid_targets}."
       end
     end
