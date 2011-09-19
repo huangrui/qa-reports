@@ -12,7 +12,8 @@ directives =
        'name@href': -> @url
        'name@id':   -> url2id(@url)
 
-$('#report_navigation').render index_model, directives
+$('#report_navigation').empty().append( $('#report_navigation_template').clone().render(index_model, directives).children() )
+console.log $('#report_navigation_template').children()
 
 $('#report_navigation tbody a.name').each () ->
   input_id = 'input-' + $(this).attr('id')
