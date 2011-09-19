@@ -58,9 +58,10 @@ $(document).ready ->
     $form.hide()
     $link = $form.prev('a.name').show()
     $(this).val $link.text() # revert back to orig val after cancel
-    $editables.text $link.text() # revert text in similar products
-    $editables.removeClass 'being_edited'
-    $editables = null
+    if $editables?
+      $editables.text $link.text() # revert text in similar products
+      $editables.removeClass 'being_edited'
+      $editables = null
     return false
 
   $('#report_navigation input.inplace-edit').keyup (key) ->
