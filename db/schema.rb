@@ -82,6 +82,7 @@ ActiveRecord::Schema.define(:version => 20110919100205) do
     t.integer  "editor_id",                                            :null => false
     t.integer  "release_id",                                           :null => false
     t.string   "build_id",                          :default => ""
+    t.integer  "profile_id",                                           :null => false
   end
 
   add_index "meego_test_sessions", ["release_id", "target", "testset", "product"], :name => "index_meego_test_sessions_key"

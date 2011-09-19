@@ -63,7 +63,7 @@ class MeegoTestSession < ActiveRecord::Base
 
   accepts_nested_attributes_for :features, :result_files
 
-  before_save :force_testset_product_names
+  before_save :force_testset_product_names, :set_profile_id_from_target
 
   scope :published,  where(:published => true)
   scope :release,    lambda { |release| published.joins(:release).where(:releases => {:name => release}) }
@@ -72,6 +72,11 @@ class MeegoTestSession < ActiveRecord::Base
   scope :product_is, lambda { |product| published.where(:product => product.downcase) }
 
   include ReportSummary
+
+  def set_profile_id_from_target
+    return unless profile_id.nil?
+    update_attribute(:profile_id, Profile.find_by_normalized(target).id)
+  end
 
   def meego_test_session
     self
