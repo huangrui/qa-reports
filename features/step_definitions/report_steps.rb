@@ -8,6 +8,23 @@ Given /^there's an existing report$/ do
   report.save!
 end
 
+Given /^I view a report with results: (\d+) Passed, (\d+) Failed, (\d+) N\/A$/ do |passed, failed, na|
+  report = FactoryGirl.build(:test_report_wo_features)
+  report.features << FactoryGirl.build(:feature_wo_test_cases)
+  report.features.first.meego_test_cases << FactoryGirl.build_list(:test_case, passed.to_i, :result =>  MeegoTestCase::PASS)
+  report.features.first.meego_test_cases << FactoryGirl.build_list(:test_case, failed.to_i, :result =>  MeegoTestCase::FAIL)
+  report.features.first.meego_test_cases << FactoryGirl.build_list(:test_case, na.to_i, :result =>  MeegoTestCase::NA)
+  report.save!
+end
+
+Then /^I should see Result Summary:$/ do |table|
+  visit report_path MeegoTestSession.first
+  result_summary = find("#test_result_overview")
+  table.hashes.each do |hash|
+    result_summary.find(:xpath, "//tr[td='#{hash[:Title]}']").find(":nth-child(2)").text.should == hash[:Result]
+  end
+end
+
 Given /^I create a new test report with same test cases$/ do
   RESULT_CSV = 'Category,Check points,Notes (bugs),Pass,Fail,N A
 Bluetooth,Test Case 1,,1,0,0

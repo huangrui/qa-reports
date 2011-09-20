@@ -4,20 +4,7 @@ As a QA Team Leader,
 I want to see pass, fail and N/A totals. Additionally, I want to see run rate, pass rate and NFT index.
 
   Scenario: Result Summary for Functional Test Report
-    Given I view a report with results: 5 pass, 4 fail, 2 na
-      | Result         |
-      | N/A            |
-      | N/A            |
-      | Fail           |
-      | Fail           |
-      | Fail           |
-      | Fail           |
-      | Pass           |
-      | Pass           |
-      | Pass           |
-      | Pass           |
-      | Pass           |
-
+    Given I view a report with results: 5 Passed, 4 Failed, 2 N/A
     Then  I should see Result Summary:
       | Title                 | Result | [Explanation]                        |
       | Total test cases      |    11  |                                      |
