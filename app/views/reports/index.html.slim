@@ -5,7 +5,7 @@
 #index_page
   table#report_navigation
   / template
-  table#report_navigation_template style="display:none"
+  table#report_navigation_template style="display:none;"
     thead
       tr.profiles
         th
@@ -15,21 +15,18 @@
         td.testsets
           div
             a.name
-            form.txt_form action="testset_rename_path" method="post" style="display:none"
-              .editables
-                input name="_method" type="hidden" value="put"
-                input name="authenticity_token" type="hidden" value=form_authenticity_token
+            input.inplace-edit name="testset-edit-input" style="display:none;"
             a.compare
             ul.products
               li
                 a.name
-                form.txt_form action="product_rename_path" method="post" style="display:none"
-                  .editables
-                    input name="_method" type="hidden" value="put"
-                    input name="authenticity_token" type="hidden" value=form_authenticity_token
+                input.inplace-edit name="product-edit-input" style="display:none;"
 
   a#home_edit_link href='#'
   a#home_edit_done_link.small_btn href='#' Done
+
+input#post_method name="_method" type="hidden" value="put"
+input#auth_token name="authenticity_token" type="hidden" value=form_authenticity_token
 
 - content_for :view_specific_js do
   javascript:

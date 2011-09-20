@@ -6,23 +6,99 @@ $(document).ready ->
     profiles:
       'name@href':    -> @url
       'name@id':      -> url2id(@url)
+      'inplace-edit@id': -> "input-" + url2id(@url)
       testsets:
         'name@href':  -> @url
         'name@id':    -> url2id(@url)
+        'inplace-edit@id': -> "input-" + url2id(@url)
         products:
-         'name@href': -> @url
-         'name@id':   -> url2id(@url)
+          'name@href': -> @url
+          'name@id':   -> url2id(@url)
+          'inplace-edit@id': -> "input-" + url2id(@url)
 
   $('#report_navigation').empty().append( $('#report_navigation_template').clone().render(index_model, directives).children() )
 
-  $('#report_navigation tbody a.name').each () ->
-    input_id = 'input-' + $(this).attr('id')
-    $form = $(this).next('form')
-    $i = $('<input>').addClass('inplace-edit')
-      .attr('name', 'category_edit_input').attr('id', input_id)
-      .val($(this).text())
-    $form.find('.editables').append($i)
+  $inputs    = $('#report_navigation input.inplace-edit')
+  $editables = null
 
+  resetInputValue = (input) ->
+    $input = $(input)
+    $link  = $input.prev('a.name')
+    $input.val $link.text()
+    $editables.text($link.text()) if $editables? # revert text for similar products
+    return false
+
+  writeInputValue = (input) ->
+    $input = $(input)
+    value  = $input.val()
+    $link  = $input.prev('a.name')
+    $link.text value
+    if $editables?
+      $editables.text value  # write text for similar products
+      $editables.next('input.inplace-edit').val value
+    return false
+
+  editHandler = (link) ->
+    $link = $(link)
+    $link.hide()
+    $link.next('input.inplace-edit').show().focus()
+    # set editables for real-time update to similar products
+    $editables = $('.products a').not($link).filter () ->
+      return $(this).text() == $link.text()
+    $editables.addClass 'being_edited'
+    return false
+
+  cancelHandler = (input) ->
+    $input = $(input)
+    resetInputValue($input)
+    $input.hide()
+    $input.prev('a.name').show()
+    $editables.removeClass 'being_edited' if $editables?
+    $editables = null
+    return false
+
+  submitHandler = (input) ->
+    $input = $(input)
+    writeInputValue($input)
+    $input.hide()
+    $input.prev('a.name').show()
+    $editables.removeClass 'being_edited' if $editables?
+    $editables = null
+    doPost(input)
+    return false
+
+  doPost = (input) ->
+    $input    = $(input)
+    data = $(input).clone().append('#post_method').append('#auth_token').serialize()
+    #console.log data
+    #$.post action, data
+
+
+  initInplaceEdit = ->
+    # Reset input fields
+    $inputs.each () -> $(this).val $(this).prev('a.name').text()
+
+    # Edit events
+    $('#index_page.editing #report_navigation tbody a.name').live 'click', () -> editHandler this
+    $inputs.blur -> cancelHandler this
+    $inputs.keyup (key) -> cancelHandler this if (key.keyCode == 27) # esc
+    $inputs.keyup (key) -> submitHandler this if (key.keyCode == 13) # enter
+
+    # Real-time update to similar products
+    $('.products input.inplace-edit').keyup -> $editables.text $(this).val() if $editables?
+
+     # Hover hilight for products
+    $('#index_page.editing .products a').live 'mouseover', () ->
+      if not $editables?
+        product_name = $(this).text()
+        $('#index_page.editing .products a').filter(() ->
+          return $(this).text() == product_name
+        ).addClass('to_be_edited')
+    $('#index_page.editing .products a').live 'mouseout', () ->
+      $('#index_page.editing .products a').removeClass('to_be_edited')
+    return false
+
+  # View mode / Edit mode
   $('#home_edit_link').click () ->
     $('#index_page').addClass 'editing'
     $('#index_page.editing #report_navigation tbody a.name').addClass('editable_text').css 'display', 'block'
@@ -34,47 +110,4 @@ $(document).ready ->
     $('#report_navigation tbody a.name').css 'display', 'inline'
     $('a.compare').show()
 
-  # In-place edit
-  $inputs    = $('#report_navigation input.inplace-edit')
-  $editables = null
-
-  $('#index_page.editing #report_navigation tbody a.name').live 'click', () ->
-    $clicked = $(this)
-    $clicked.hide()
-    $clicked.next('form').show().find('input.inplace-edit').focus()
-
-    # set editables for real-time update to similar products
-    $editables = $('.products a').not($clicked).filter () ->
-      return $(this).text() == $clicked.text()
-    $editables.addClass 'being_edited'
-    return false
-
-  # Real-time update to similar products
-  $('.products input.inplace-edit').keyup () ->
-    $editables.text $(this).val()
-
-  # Canceling the edit
-  $inputs.blur () ->
-    $form = $(this).closest('form')
-    $form.hide()
-    $link = $form.prev('a.name').show()
-    $(this).val $link.text() # revert back to orig val after cancel
-    if $editables?
-      $editables.text $link.text() # revert text in similar products
-      $editables.removeClass 'being_edited'
-      $editables = null
-    return false
-
-  $inputs.keyup (key) ->
-    $(this).trigger('blur') if (key.keyCode == 27) # esc triggers cancel
-
-  # Hover hilight for products
-  $('#index_page.editing .products a').live 'mouseover', () ->
-    if not $editables?
-      product_name = $(this).text()
-      $('#index_page.editing .products a').filter(() ->
-        return $(this).text() == product_name
-      ).addClass('to_be_edited')
-
-  $('#index_page.editing .products a').live 'mouseout', () ->
-    $('#index_page.editing .products a').removeClass('to_be_edited')
+  initInplaceEdit()
