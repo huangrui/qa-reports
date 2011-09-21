@@ -35,6 +35,11 @@ class BugsController < ApplicationController
       json = FasterCSV.parse(data.join '\n')
       # TODO: Should render json instead of CSV
       render :json => json
+    rescue Iconv::IllegalSequence
+      # Better to return something than nothing if conversion fails,
+      # so just return the original response in whatever charset it is
+      json = FasterCSV.parse(content)
+      render :json => json
     rescue FasterCSV::MalformedCSVError => e
       logger.error e.message
       logger.info  "ERROR: MALFORMED BUGZILLA DATA"
