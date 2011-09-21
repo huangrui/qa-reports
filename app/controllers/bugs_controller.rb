@@ -31,14 +31,15 @@ class BugsController < ApplicationController
     # so we convert from utf-8 to iso-8859-1, which is then interpreted
     # as utf-8
     begin
-      data = Iconv.iconv("iso-8859-1", "utf-8", content)
-      json = FasterCSV.parse(data.join '\n')
-      # TODO: Should render json instead of CSV
-      render :json => json
+      content = Iconv.iconv("iso-8859-1", "utf-8", content).join '\n'
     rescue Iconv::IllegalSequence
       # Better to return something than nothing if conversion fails,
-      # so just return the original response in whatever charset it is
+      # so just handle the original response in whatever charset it is
+    end
+
+    begin
       json = FasterCSV.parse(content)
+      # TODO: Should render json instead of CSV
       render :json => json
     rescue FasterCSV::MalformedCSVError => e
       logger.error e.message
