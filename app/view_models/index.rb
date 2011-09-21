@@ -10,7 +10,8 @@ class Index
     TargetLabel.find_by_sql("
       SELECT DISTINCT profiles.label AS profile, reports.testset, reports.product AS name
       FROM target_labels AS profiles
-      LEFT JOIN meego_test_sessions AS reports ON profiles.normalized = reports.target AND reports.release_id = #{release.id} AND reports.published = TRUE
+      LEFT JOIN meego_test_sessions AS reports ON profiles.normalized = reports.target AND reports.release_id = #{release.id}
+      WHERE reports.published = true
       ORDER BY profiles.sort_order ASC, testset, product
     ").group_by(&:profile).map do |profile, testsets|
       {
