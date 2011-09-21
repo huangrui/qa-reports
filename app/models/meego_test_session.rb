@@ -454,4 +454,9 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 
+  def run_rate
+    return 0 if meego_test_cases.count == 0
+    return (passed.count + failed.count).to_f / meego_test_cases.count
+  end
+
 end

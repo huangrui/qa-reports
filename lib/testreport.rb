@@ -126,10 +126,6 @@ module ReportSummary
     total_passed + total_failed
   end
 
-  def run_rate
-    "%i%%" % run_rate_value
-  end
-
   def total_pass_rate
     if total_cases == 0
       "n/a"
@@ -151,14 +147,6 @@ module ReportSummary
       "n/a"
     else
       "%.0f%%" % nft_index_value
-    end
-  end
-
-  def run_rate_value
-    if total_cases > 0
-      (total_executed*100.0/total_cases)
-    else
-      0
     end
   end
 
