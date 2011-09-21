@@ -19,14 +19,6 @@ Feature: Import API
     Then I should see names of the two features
     And I should see the uploaded attachments
 
-  Scenario: Adding a report with tests that do not belong to any feature
-    When the client sends a report with tests without features
-    Then the upload succeeds
-    And I should be able to view the created report
-
-    Then I should see an unnamed feature section
-    And I should see the correct amount of test cases without a feature
-
   Scenario: Adding a report with deprecated parameters
     When the client sends a basic test result file with deprecated parameters
     Then the upload succeeds
