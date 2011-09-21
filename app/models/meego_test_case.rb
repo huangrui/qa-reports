@@ -14,9 +14,10 @@ class MeegoTestCase < ActiveRecord::Base
 
   accepts_nested_attributes_for :measurements, :serial_measurements, :attachment
 
-  PASS =  1
-  FAIL = -1
-  NA   =  0
+  MEASURED =  2
+  PASS     =  1
+  NA       =  0
+  FAIL     = -1
 
   def self.by_name(name)
     where(:name => name).first
