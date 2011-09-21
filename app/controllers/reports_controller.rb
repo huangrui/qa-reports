@@ -64,6 +64,7 @@ class ReportsController < ApplicationController
     populate_report_fields
     @history      = history(@report, 5)
     @build_diff   = build_diff(@report, 4)
+    @report_show  = ReportShow.new(MeegoTestSession.find(params[:id]))
   end
 
   def print

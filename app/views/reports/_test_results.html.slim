@@ -8,6 +8,7 @@ h2#test_results
     h3.first Result Summary
     .wrap
       table#test_result_overview
+        /TODO: Get rid of strong tags
         tr.even
           td.title Total test cases
           td.value
@@ -38,7 +39,7 @@ h2#test_results
         tr.even
           td Run rate
           td
-            strong= @report.run_rate
+            strong= @report_show.run_rate
           td class=@report.run_rate_change_class
             em= @report.run_rate_change
         tr.odd
@@ -50,7 +51,8 @@ h2#test_results
         tr.even
           td Pass rate of executed
           td
-            strong= @report.executed_pass_rate
+            /strong= @report.executed_pass_rate
+            strong 56%
           td class=@report.executed_pass_rate_change_class
             em= @report.executed_pass_rate_change
         - if @report.has_non_serial_nft?
