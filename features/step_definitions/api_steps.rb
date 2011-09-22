@@ -171,7 +171,7 @@ end
 When /^I view the latest report "([^"]*)"/ do |report_string|
   #TODO: Use scopes
   version, target, test_type, product = report_string.downcase.split('/')
-  report = MeegoTestSession.joins(:release).where(:releases => {:name => version}, :target => target, :product => product, :testset => test_type).order("created_at DESC").first
+  report = MeegoTestSession.joins(:release).where(:releases => {:name => version}, :profile_id => Pofile.find_by_label(target).id, :product => product, :testset => test_type).order("created_at DESC").first
   raise "report not found with parameters #{version}/#{target}/#{product}/#{test_type}!" unless report
   visit("/#{version}/#{target}/#{test_type}/#{product}/#{report.id}")
 end

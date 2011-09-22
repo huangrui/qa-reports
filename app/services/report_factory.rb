@@ -9,6 +9,7 @@ class ReportFactory
     @errors = {}
 
     params[:release] ||= Release.find_by_name params.delete(:release_version) if params[:release_version]
+    params[:profile] ||= Profile.find_by_label params.delete(:target) if params[:target]
 
     begin
       generate_title(params)
@@ -32,7 +33,7 @@ class ReportFactory
     params[:tested_at] = Time.now.to_s unless params[:tested_at].present?
 
     tested_at = DateTime.parse(params[:tested_at]).strftime('%Y-%m-%d')
-    title_values = [params[:target], params[:product], params[:testset], tested_at]
+    title_values = [params[:profile][:label], params[:product], params[:testset], tested_at]
     params[:title] ||= "%s Test Report: %s %s %s" % title_values
   end
 

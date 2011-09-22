@@ -67,7 +67,6 @@ ActiveRecord::Schema.define(:version => 20110919100205) do
     t.string   "environment",                       :default => ""
     t.string   "product",                           :default => ""
     t.string   "title",                                                :null => false
-    t.string   "target",                            :default => ""
     t.string   "testset",                           :default => ""
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -85,7 +84,7 @@ ActiveRecord::Schema.define(:version => 20110919100205) do
     t.integer  "profile_id",                                           :null => false
   end
 
-  add_index "meego_test_sessions", ["release_id", "target", "testset", "product"], :name => "index_meego_test_sessions_key"
+  add_index "meego_test_sessions", ["release_id", "testset", "product"], :name => "index_meego_test_sessions_key"
 
   create_table "profiles", :force => true do |t|
     t.string  "label",      :limit => 64, :null => false

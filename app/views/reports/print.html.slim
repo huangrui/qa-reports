@@ -3,6 +3,6 @@
 
 - content_for :view_in_browser_link do
   .report-backlink
-    = link_to "Click here", show_report_path(@report.release.name, @report.target, @report.testset, @report.product, @report.id)
+    = link_to "Click here", show_report_path(@report.release.name, @report.profile.label, @report.testset, @report.product, @report.id)
     |  to view this message in your browser or handheld device
   br/

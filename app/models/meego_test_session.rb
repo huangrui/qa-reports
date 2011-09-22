@@ -38,45 +38,36 @@ class MeegoTestSession < ActiveRecord::Base
   include MeasurementUtils
   include CacheHelper
 
-  has_many :features, :dependent => :destroy, :order => "id DESC"
-  has_many :meego_test_cases, :autosave => false, :order => "id DESC"
-  has_many :result_files, :class_name => 'FileAttachment', :as => :attachable, :dependent => :destroy, :conditions => {:attachment_type => 'result_file'}
-  has_many :attachments,  :class_name => 'FileAttachment', :as => :attachable, :dependent => :destroy, :conditions => {:attachment_type => 'attachment'}
-
-  has_many :passed, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::PASS}"
-  has_many :failed, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::FAIL}"
-  has_many :na, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::NA}"
+  has_many :features,         :dependent => :destroy, :order => "id DESC"
+  has_many :meego_test_cases, :autosave => false,     :order => "id DESC"
+  has_many :result_files,     :class_name => 'FileAttachment', :conditions => {:attachment_type => 'result_file'}, :as => :attachable, :dependent => :destroy
+  has_many :attachments,      :class_name => 'FileAttachment', :conditions => {:attachment_type => 'attachment'},  :as => :attachable, :dependent => :destroy
+  has_many :passed,           :class_name => "MeegoTestCase",  :conditions => "result = #{MeegoTestCase::PASS}"
+  has_many :failed,           :class_name => "MeegoTestCase",  :conditions => "result = #{MeegoTestCase::FAIL}"
+  has_many :na,               :class_name => "MeegoTestCase",  :conditions => "result = #{MeegoTestCase::NA}"
 
   belongs_to :author, :class_name => "User"
   belongs_to :editor, :class_name => "User"
   belongs_to :release
+  belongs_to :profile
 
-  validates_presence_of :title, :target, :testset, :product
-  validates_presence_of :result_files
-  validates_presence_of :author
-  validates_presence_of :release
+  validates_presence_of :title, :testset, :product, :result_files, :author, :release, :profile
 
   validates :tested_at, :date_time => true
 
-  validate :validate_labels
   validate :validate_type_hw
 
   accepts_nested_attributes_for :features, :result_files
 
-  before_save :force_testset_product_names, :set_profile_id_from_target
+  before_save :force_testset_product_names
 
   scope :published,  where(:published => true)
   scope :release,    lambda { |release| published.joins(:release).where(:releases => {:name => release}) }
-  scope :profile,    lambda { |profile| published.where(:target => profile.downcase) }
+  scope :profile,    lambda { |profile| published.joins(:profile).where(:profiles => {:normalized => profile.downcase}) }
   scope :testset,    lambda { |testset| published.where(:testset => testset.downcase) }
   scope :product_is, lambda { |product| published.where(:product => product.downcase) }
 
   include ReportSummary
-
-  def set_profile_id_from_target
-    return unless profile_id.nil?
-    update_attribute(:profile_id, Profile.find_by_normalized(target).id)
-  end
 
   def meego_test_session
     self
@@ -117,15 +108,6 @@ class MeegoTestSession < ActiveRecord::Base
   def self.popular_products(limit=3)
     published.select("product as product").order("COUNT(product) DESC").
       group(:product).limit(limit).map(&:product)
-  end
-
-  def target=(target)
-    target = target.try(:downcase)
-    write_attribute(:target, target)
-  end
-
-  def target
-    read_attribute(:target).try(:capitalize)
   end
 
   def self.popular_build_ids(limit=3)
@@ -190,7 +172,7 @@ class MeegoTestSession < ActiveRecord::Base
     created = created_at || Time.now
 
     @prev_session = MeegoTestSession.find(:first, :conditions => [
-        "(tested_at < ? OR tested_at = ? AND created_at < ?) AND target = ? AND testset = ? AND product = ? AND published = ? AND release_id = ?", tested, tested, created, target.downcase, testset.downcase, product.downcase, true, release_id
+        "(tested_at < ? OR tested_at = ? AND created_at < ?) AND profile_id = ? AND testset = ? AND product = ? AND published = ? AND release_id = ?", tested, tested, created, profile.id, testset.downcase, product.downcase, true, release_id
     ],
                           :order => "tested_at DESC, created_at DESC", :include =>
          [{:features => :meego_test_cases}, {:meego_test_cases => :feature}])
@@ -202,7 +184,7 @@ class MeegoTestSession < ActiveRecord::Base
   def next_session
     return @next_session unless @next_session.nil? and @has_next.nil?
     @next_session = MeegoTestSession.find(:first, :conditions => [
-        "(tested_at > ? OR tested_at = ? AND created_at > ?) AND target = ? AND testset = ? AND product = ? AND published = ? AND release_id = ?", tested_at, tested_at, created_at, target.downcase, testset.downcase, product.downcase, true, release_id
+        "(tested_at > ? OR tested_at = ? AND created_at > ?) AND profile_id = ? AND testset = ? AND product = ? AND published = ? AND release_id = ?", tested_at, tested_at, created_at, profile.id, testset.downcase, product.downcase, true, release_id
     ],
                           :order => "tested_at ASC, created_at ASC", :include =>
          [{:features => :meego_test_cases}, {:meego_test_cases => :feature}])
@@ -343,21 +325,21 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 
-  # Check that the target and release_version given as parameters
-  # exist in label tables. Test session tables allow anything, but
-  # if using other than what's in the label tables, the results
-  # won't show up
-  def validate_labels
-    if target.blank?
-      errors.add :target, "can't be blank"
-    else
-      label = Profile.find(:first, :conditions => {:normalized => target.downcase})
-      if not label
-        valid_targets = Profile.labels.join(",")
-        errors.add :target, "Incorrect target '#{target}'. Valid ones are #{valid_targets}."
-      end
-    end
-  end
+  # # Check that the target and release_version given as parameters
+  # # exist in label tables. Test session tables allow anything, but
+  # # if using other than what's in the label tables, the results
+  # # won't show up
+  # def validate_labels
+  #   if target.blank?
+  #     errors.add :target, "can't be blank"
+  #   else
+  #     label = Profile.find(:first, :conditions => {:normalized => target.downcase})
+  #     if not label
+  #       valid_targets = Profile.labels.join(",")
+  #       errors.add :target, "Incorrect target '#{target}'. Valid ones are #{valid_targets}."
+  #     end
+  #   end
+  # end
 
   # Validate user entered test set and hw product. If all characters are
   # allowed users may enter characters that break the functionality. Thus,
@@ -400,7 +382,7 @@ class MeegoTestSession < ActiveRecord::Base
 
   def generate_defaults!
     time                 = tested_at || Time.now
-    self.title           ||= "%s Test Report: %s %s %s" % [target, product_label, testset_label, time.strftime('%Y-%m-%d')]
+    self.title           ||= "%s Test Report: %s %s %s" % [profile.label, product_label, testset_label, time.strftime('%Y-%m-%d')]
     self.environment_txt = "* Product: " + product if self.environment_txt.empty?
   end
 
@@ -440,7 +422,7 @@ class MeegoTestSession < ActiveRecord::Base
     tmp = ReportFactory.new.build(params)
     parsing_errors = tmp.errors[:result_files]
 
-    user.update_attribute(:default_target, self.target) if self.target.present?
+    user.update_attribute(:default_target, self.profile.label) if self.profile.label.present?
     self.editor    = user
     self.published = published
 

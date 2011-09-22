@@ -7,7 +7,7 @@
 - content_for :button_area do
   form#edit_report action=""
     - if user_signed_in?
-      a.edit-button.small_btn.submit href=show_report_path(@report.release.name, @report.target, @report.testset, @report.product, @report) Done
+      a.edit-button.small_btn.submit href=show_report_path(@report.release.name, @report.profile.label, @report.testset, @report.product, @report) Done
 
 - content_for :table_of_contents do
   = render :partial => "toc"

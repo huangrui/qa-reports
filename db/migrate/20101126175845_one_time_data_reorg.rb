@@ -8,7 +8,7 @@ class OneTimeDataReorg < ActiveRecord::Migration
 
 #    sessions = MeegoTestSession.find(:all, :conditions => {:target => 'handset', :testtype => 'dataflow', :hwproduct => 'n900'})
 #    sessions.each do |s|
-#      s.target = 'Core'
+#      s.profile.label = 'Core'
 #      s.save
 #    end
 
