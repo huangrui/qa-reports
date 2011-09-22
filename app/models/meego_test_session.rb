@@ -44,10 +44,10 @@ class MeegoTestSession < ActiveRecord::Base
 
   has_many :features,         :dependent => :destroy, :order => "id DESC"
   has_many :meego_test_cases, :autosave => false,     :order => "id DESC"
-  has_many :passed,           :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::PASS}"
-  has_many :failed,           :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::FAIL}"
-  has_many :na,               :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::NA}"
-  has_many :measured,         :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::MEASURED}"
+  has_many :passed,           :class_name => "MeegoTestCase", :conditions => { :result => MeegoTestCase::PASS     }
+  has_many :failed,           :class_name => "MeegoTestCase", :conditions => { :result => MeegoTestCase::FAIL     }
+  has_many :na,               :class_name => "MeegoTestCase", :conditions => { :result => MeegoTestCase::NA       }
+  has_many :measured,         :class_name => "MeegoTestCase", :conditions => { :result => MeegoTestCase::MEASURED }
 
   has_many :result_files,     :class_name => 'FileAttachment', :as => :attachable, :dependent => :destroy, :conditions => {:attachment_type => 'result_file'}
   has_many :attachments,      :class_name => 'FileAttachment', :as => :attachable, :dependent => :destroy, :conditions => {:attachment_type => 'attachment'}
