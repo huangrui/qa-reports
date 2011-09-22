@@ -21,7 +21,8 @@ Then /^I should see Result Summary:$/ do |table|
   visit report_path MeegoTestSession.first
   result_summary = find("#test_result_overview")
   table.hashes.each do |hash|
-    result_summary.find(:xpath, "//tr[td='#{hash[:Title]}']").find(":nth-child(2)").text.should == hash[:Result]
+    actual = result_summary.find(:xpath, "//tr[td='#{hash[:Title]}']").find(":nth-child(2)").text
+    actual.should eql(hash[:Result]), "Expected '#{hash[:Title]}' to be #{hash[:Result]}\nGot #{actual}\n"
   end
 end
 
