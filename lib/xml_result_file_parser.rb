@@ -17,7 +17,7 @@ class XMLResultFileParser
       features[feature].merge! parse_test_cases(set)
     end
 
-    features
+    features.delete_if {|feature, test_cases| test_cases.empty? }
   end
 
   def parse_test_cases(set)
