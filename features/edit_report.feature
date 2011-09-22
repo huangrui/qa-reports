@@ -102,6 +102,15 @@ Feature: Edit Report
 
     Then the result of test case "SMOKE-SIM-Get_IMSI" should be "Pass"
 
+  @javascript
+  Scenario: I modify a NFT test case result
+    When I edit the report "1.2/Core/automated/N900"
+    And I change the test case result of "Phone Connection time" to "Pass"
+    And I press "Done"
+    And I follow "See all"
+
+    Then the result of test case "Phone Connection time" should be "Pass"
+
   @selenium
   Scenario: I modify a test case comment
     When I edit the report "1.2/Core/automated/N900"
