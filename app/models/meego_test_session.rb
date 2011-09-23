@@ -145,30 +145,6 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 
-  #TODO: Throw away and use scopes
-  class << self
-    def published_by_release_version_target_testset(release_version, target, testset, order_by = "tested_at DESC, id DESC", limit = nil)
-      target   = target.downcase
-      testset = testset.downcase
-      published.where("releases.name" => release_version, :target => target, :testset => testset).joins(:release).order(order_by).limit(limit)
-    end
-
-    def published_hwversion_by_release_version_target_testset(release_version, target, testset)
-      target   = target.downcase
-      testset = testset.downcase
-      published.where("releases.name" => release_version, :target => target, :testset => testset).select("DISTINCT product").joins(:release).order("product")
-    end
-
-    def published_by_release_version_target(release_version, target, order_by = "tested_at DESC, id DESC", limit = nil)
-      target = target.downcase
-      published.where("releases.name" => release_version, :target => target).joins(:release).order(order_by).limit(limit)
-    end
-
-    def published_by_release_version(release_version, order_by = "tested_at DESC", limit = nil)
-      published.where("releases.name" => release_version).joins(:release).order(order_by).limit(limit)
-    end
-  end
-
   ###############################################
   # Test session navigation                     #
   ###############################################
@@ -408,19 +384,6 @@ class MeegoTestSession < ActiveRecord::Base
       -1
     else
       0
-    end
-  end
-
-  def sanitize_filename(filename)
-    filename.gsub(/[^\w\.\_\-]/, '_')
-  end
-
-  def valid_filename_extension?(filename)
-    if filename =~ /\.csv$/i or filename =~ /\.xml$/i
-      return true
-    else
-      errors.add :result_files, "You can only upload files with the extension .xml or .csv"
-      return false
     end
   end
 
