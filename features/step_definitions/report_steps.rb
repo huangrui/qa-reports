@@ -28,6 +28,6 @@ Then /^I should see the test case comments from the previous test report if the 
   report = MeegoTestSession.find_by_tested_at('2011-09-02')
   visit report_path(report)
   click_link_or_button('+ see 1 passing tests')
-  find(:xpath, "//tr[td[@class='testcase_name'][p='Test Case 1']]").should have_content('This comment should be used as a template')
-  find(:xpath, "//tr[td[@class='testcase_name'][p='Test Case 2']]").should have_no_content('This comment should be overwritten with empty comment')
+  find_testcase_row("Test Case 1").should have_content("This comment should be used as a template")
+  find_testcase_row("Test Case 2").should have_no_content("This comment should be overwritten with empty comment")
 end

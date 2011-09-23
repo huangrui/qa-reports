@@ -5,7 +5,22 @@
 #index_page
   table#report_navigation
     thead
-      tr
-        = render :partial => "title", :collection => @profiles, :as => :profile
-    tr
-      = render :partial => "profile", :collection => @profiles
+      tr.profiles
+        th
+          a.name href="#"
+    tbody
+      tr.profiles
+        td.testsets
+          div
+            / TODO: Use css instead of strong tag
+            strong
+              a.name
+            a.compare compare
+            ul.products
+              li
+                a.name
+
+- content_for :view_specific_js do
+  javascript:
+    index_model = #{{@index_model.to_json}}
+  = javascript_include_tag 'index'

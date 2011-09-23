@@ -39,8 +39,7 @@ class ReportsController < ApplicationController
   cache_sweeper :meego_test_session_sweeper, :only   => [:update, :delete, :publish]
 
   def index
-    @profiles = Profile.names
-    @products = Product.by_profile_by_testset(release)
+    @index_model = Index.find_by_release(release)
     @show_rss = true
     render :layout => "application"
   end
@@ -105,8 +104,8 @@ class ReportsController < ApplicationController
     @compare_cache_key = "compare_page_#{@release_version}_#{@target}_#{@testset}_#{@comparison_testset}"
 
     MeegoTestSession.published_hwversion_by_release_version_target_testset(@release_version, @target, @testset).each{|product|
-        left = MeegoTestSession.by_release_version_target_testset_product(@release_version, @target, @testset, product.product).first
-        right = MeegoTestSession.by_release_version_target_testset_product(@release_version, @target, @comparison_testset, product.product).first
+        left  = MeegoTestSession.release(@release_version).profile(@target).testset(@testset).product(product.product).first
+        right = MeegoTestSession.release(@release_version).profile(@target).testset(@comparison_testset).product(product.product).first
         @comparison.add_pair(product.product, left, right)
     }
     @groups = @comparison.groups
@@ -130,6 +129,7 @@ class ReportsController < ApplicationController
   def populate_edit_fields
     @build_diff       = []
     @profiles         = Profile.names
+    @release_versions = Release.in_sort_order.map { |release| release.name } 
     @testsets         = MeegoTestSession.release(release.name).testsets
     @products         = MeegoTestSession.release(release.name).popular_products
     @build_ids        = MeegoTestSession.release(release.name).popular_build_ids
