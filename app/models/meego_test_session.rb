@@ -147,13 +147,6 @@ class MeegoTestSession < ActiveRecord::Base
 
   #TODO: Throw away and use scopes
   class << self
-    def by_release_version_target_testset_product(release_version, target, testset, product, order_by = "tested_at DESC, id DESC", limit = nil)
-      target    = target.downcase
-      testset  = testset.downcase
-      product = product.downcase
-      published.where("releases.name" => release_version, :target => target, :testset => testset, :product => product).joins(:release).order(order_by).limit(limit)
-    end
-
     def published_by_release_version_target_testset(release_version, target, testset, order_by = "tested_at DESC, id DESC", limit = nil)
       target   = target.downcase
       testset = testset.downcase
