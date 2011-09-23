@@ -6,8 +6,8 @@ class ReportGroupViewModel
 
   def initialize(release, target, testset, product)
     @params = {
-      :release_id => release,
-      :target     => target,
+      :release_id => release.id,
+      :profile_id => target.id,
       :testset    => testset,
       :product    => product
     }.delete_if { |key, value| value.nil? }

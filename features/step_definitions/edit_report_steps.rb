@@ -16,7 +16,7 @@ end
 When /^(?:|I )edit the report "([^"]*)"$/ do |report_string|
   version, target, test_type, product = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {"releases.name" => version, :target => target, :product => product, :testset => test_type}, :include => :release,
+   {"releases.name" => version, "profiles.label" => target, :product => product, :testset => test_type}, :include => [:release, :profile],
    :order => "tested_at DESC, created_at DESC")
   raise "report not found with parameters #{version}/#{target}/#{product}/#{test_type}!" unless report
   visit("/#{version}/#{target}/#{test_type}/#{product}/#{report.id}/edit")

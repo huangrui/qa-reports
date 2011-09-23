@@ -37,8 +37,8 @@ class UploadController < ApplicationController
     end
 
     @test_session = MeegoTestSession.new(new_report)
-    @test_session.release   = Release.find_by_name(params[:release_version])
-    @test_session.profile   = Profile.find_by_label(params[:target]) || Profile.first
+    @test_session.release = Release.find_by_name(params[:release_version])
+    @test_session.profile = profile || Profile.first
 
     set_suggestions
 

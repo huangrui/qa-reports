@@ -138,24 +138,24 @@ class MeegoTestSession < ActiveRecord::Base
       target    = target.downcase
       testset  = testset.downcase
       product = product.downcase
-      published.where("releases.name" => release_version, :target => target, :testset => testset, :product => product).joins(:release).order(order_by).limit(limit)
+      published.where("releases.name" => release_version, "profiles.label" => target, :testset => testset, :product => product).joins([:release, :profile]).order(order_by).limit(limit)
     end
 
     def published_by_release_version_target_testset(release_version, target, testset, order_by = "tested_at DESC, id DESC", limit = nil)
       target   = target.downcase
       testset = testset.downcase
-      published.where("releases.name" => release_version, :target => target, :testset => testset).joins(:release).order(order_by).limit(limit)
+      published.where("releases.name" => release_version, "profiles.label" => target, :testset => testset).joins([:release, :profile]).order(order_by).limit(limit)
     end
 
     def published_hwversion_by_release_version_target_testset(release_version, target, testset)
       target   = target.downcase
       testset = testset.downcase
-      published.where("releases.name" => release_version, :target => target, :testset => testset).select("DISTINCT product").joins(:release).order("product")
+      published.where("releases.name" => release_version, "profiles.label" => target, :testset => testset).select("DISTINCT product").joins([:release, :profile]).order("product")
     end
 
     def published_by_release_version_target(release_version, target, order_by = "tested_at DESC, id DESC", limit = nil)
       target = target.downcase
-      published.where("releases.name" => release_version, :target => target).joins(:release).order(order_by).limit(limit)
+      published.where("releases.name" => release_version, "profiles.label" => target).joins([:release, :profile]).order(order_by).limit(limit)
     end
 
     def published_by_release_version(release_version, order_by = "tested_at DESC", limit = nil)

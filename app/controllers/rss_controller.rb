@@ -24,10 +24,10 @@ class RssController < ApplicationController
 
   def rss
    filter = {
-        :release[:name]  => release.name,
-        :profile[:label] => profile,
-        :testset         => testset,
-        :product         => product
+        :release_id => release.id,
+        :profile_id => Profile.find_by_label(params[:target]).try(:id),
+        :testset    => testset,
+        :product    => product
       }.delete_if { |key, value| value.nil? }
 
     @sessions = MeegoTestSession.published.where(filter).order("created_at DESC").limit(10)

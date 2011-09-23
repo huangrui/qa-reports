@@ -160,7 +160,7 @@ class NftHistory
   def find_measurements
     data = MeegoTestSession.find_by_sql([GET_NFT_RESULTS_QUERY,
                                          @session.release_id,
-                                         @session.profile.label,
+                                         @session.profile.id,
                                          @session.testset,
                                          @session.product,
                                          @session.tested_at,
@@ -174,7 +174,7 @@ class NftHistory
   def find_serial_measurements
     data = MeegoTestSession.find_by_sql([GET_SERIAL_MEASUREMENTS_QUERY,
                                          @session.release_id,
-                                         @session.profile.label,
+                                         @session.profile.id,
                                          @session.testset,
                                          @session.product,
                                          @session.tested_at,

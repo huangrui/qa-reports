@@ -24,7 +24,7 @@ xml.instruct!
 xml.rss "version" => "2.0" do
   xml.channel do
 
-    route = [release.name, profile, testset, product].compact.join('/')
+    route = [release.name, profile.label, testset, product].compact.join('/')
 
     xml.title route + " QA reports"
     xml.link root_url

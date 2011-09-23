@@ -121,6 +121,7 @@ Feature:
     Then I follow "Add report"
     And I should see profile "Handset" as selected
 
+
     Then I select test set "Smokey" and product "n990" with date "2010-02-12"
     And attach the report "sample.csv"
     And submit the form at "upload_report_submit"
