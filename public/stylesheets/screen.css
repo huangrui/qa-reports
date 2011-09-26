@@ -1403,6 +1403,12 @@ margin-top: 0;
 h2 .compare {
 	font-size: 0.6em;
 	font-weight:normal;}
+
+h2 .see_categories {
+        position: absolute;
+        right: 8px;
+        top: 8px;
+}
 /* @end */
 
 

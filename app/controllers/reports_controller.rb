@@ -44,6 +44,12 @@ class ReportsController < ApplicationController
     render :layout => "application"
   end
 
+  def index_latest
+    @index_model = Index.find_by_lateset_release(release)
+    @show_rss = true
+    render :layout => "application"
+  end
+
   def preview
     populate_report_fields
     populate_edit_fields

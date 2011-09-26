@@ -4,6 +4,10 @@ class Index
     { :profiles => find_profiles(release) }
   end
 
+  def self.find_by_lateset_release(release)
+    { :profiles => find_profiles_latest_month(release) }
+  end
+
   private
 
   def self.find_profiles(release)
