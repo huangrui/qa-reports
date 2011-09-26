@@ -141,7 +141,7 @@ class MeegoTestSession < ActiveRecord::Base
     created = created_at || Time.now
 
     @prev_session = MeegoTestSession.find(:first, :conditions => [
-        "(tested_at < ? OR tested_at = ? AND created_at < ?) AND profile_id = ? AND testset = ? AND product = ? AND published = ? AND release_id = ?", tested, tested, created, profile.id, testset.downcase, product.downcase, true, release_id
+        "(tested_at < ? OR tested_at = ? AND created_at < ?) AND profile_id = ? AND testset = ? AND product = ? AND published = ? AND release_id = ?", tested, tested, created, profile.try(:id), testset.downcase, product.downcase, true, release_id
     ],
                           :order => "tested_at DESC, created_at DESC", :include =>
          [{:features => :meego_test_cases}, {:meego_test_cases => :feature}])
@@ -153,7 +153,7 @@ class MeegoTestSession < ActiveRecord::Base
   def next_session
     return @next_session unless @next_session.nil? and @has_next.nil?
     @next_session = MeegoTestSession.find(:first, :conditions => [
-        "(tested_at > ? OR tested_at = ? AND created_at > ?) AND profile_id = ? AND testset = ? AND product = ? AND published = ? AND release_id = ?", tested_at, tested_at, created_at, profile.id, testset.downcase, product.downcase, true, release_id
+        "(tested_at > ? OR tested_at = ? AND created_at > ?) AND profile_id = ? AND testset = ? AND product = ? AND published = ? AND release_id = ?", tested_at, tested_at, created_at, profile.try(:id), testset.downcase, product.downcase, true, release_id
     ],
                           :order => "tested_at ASC, created_at ASC", :include =>
          [{:features => :meego_test_cases}, {:meego_test_cases => :feature}])
@@ -295,8 +295,6 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def validate_profile_testset_and_product
-    errors.add :target, "Incorrect target '#{target}'. Valid ones are #{TargetLabel.labels.join(',')}." if target.present? and not TargetLabel.find_by_normalized(target.downcase)
-
     # \A and \z instead of ^ and $ cause multiline strings to fail validation.
     # And for the record: at least these characters break the navigation:
     # . % \ / (yes, dot is there as well for some oddball reason)
