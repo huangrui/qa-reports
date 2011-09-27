@@ -51,8 +51,7 @@ h2#test_results
         tr.even
           td Pass rate of executed
           td
-            /strong= @report.executed_pass_rate
-            strong 56%
+            strong= @report_show.pass_rate_executed
           td class=@report.executed_pass_rate_change_class
             em= @report.executed_pass_rate_change
         - if @report.has_non_serial_nft?

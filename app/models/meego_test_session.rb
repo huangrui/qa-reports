@@ -456,4 +456,13 @@ class MeegoTestSession < ActiveRecord::Base
     return (passed.count + failed.count + measured.count).to_f / meego_test_cases.count
   end
 
+  def pass_rate
+    return 0 if meego_test_cases.count == 0
+    return passed.count.to_f / (meego_test_cases.count - measured.count)
+  end
+
+  def pass_rate_executed
+    return 0 if meego_test_cases.count == 0
+    return passed.count.to_f / (meego_test_cases.count - measured.count - na.count)
+  end
 end

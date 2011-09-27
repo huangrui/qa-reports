@@ -12,11 +12,14 @@ I want to see pass, fail and N/A totals. Additionally, I want to see run rate, p
       | Failed                |     4  |                                      |
       | N/A                   |     2  |                                      |
       | Run rate              |    82% | (Passed + Failed) / Total test cases |
-      | Pass rate of total    |    45% | Passed / Total test cases - Measured |
+      | Pass rate of total    |    45% | Passed / Total test cases            |
       | Pass rate of executed |    56% | Passed / (Total test cases - N/A)    |
+    #And I should not see in Result Summary:
+    #  | Title                 |
+    #  | Measured              |
+    #  | NFT Index             |
 
-
-  Scenario: Result Summary for NFT Test Report
+ Scenario: Result Summary for NFT Test Report
     Given I view a report with results:
       | Result         | Value   | Target  | Fail limit | [Explanation]                                 |
       | N/A            |         |   5 ms  |            | NFT Index:                             =   0% |
@@ -33,7 +36,7 @@ I want to see pass, fail and N/A totals. Additionally, I want to see run rate, p
       | Failed                |     2  |                                                      |
       | N/A                   |     1  |                                                      |
       | Measured              |     1  |                                                      |
-      | Run rate              |    83% | (Passed + Failed + Measured) / Total test cases      |
+      | Run rate              |    83% | (Total test cases - N/A) / Total test cases          |
       | Pass rate of total    |    40% | Passed / (Total test cases - Measured)               |
       | Pass rate of executed |    56% | Passed / (Total test cases - Measured - N/A)         |
       | NFT Index             |    69% | Sum(Test Case NFT Index) / Test Cases with NFT index |

@@ -6,10 +6,21 @@ class ReportShow
   end
 
   def run_rate
-    "%0.f%%" % ( @report.run_rate * 100 )
+    format_percentage(@report.run_rate)
   end
 
   def pass_rate
-    "45%"
+    format_percentage(@report.pass_rate)
   end
+
+  def pass_rate_executed
+    format_percentage(@report.pass_rate_executed)
+  end
+
+  private
+
+  def format_percentage(value)
+    "%0.f%%" % ( value * 100 )
+  end
+
 end
