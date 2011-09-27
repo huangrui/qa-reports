@@ -86,8 +86,9 @@ class MeegoMeasurement < ActiveRecord::Base
   end
 
   def nft_index2
-    return 1.0 if target.to_f >= value
-    return target.to_f/value unless value == 0
+    return nil if target.nil?
+    return 0.0 if value.nil?
+    return [1.0, target.to_f/value].min unless value == 0
     0.0
   end
 

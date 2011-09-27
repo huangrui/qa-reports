@@ -22,6 +22,16 @@ describe MeegoMeasurement do
       measurement = FactoryGirl.build(:meego_measurement, :unit => "fbar", :value => 0, :target => -1, :failure => nil)
       measurement.nft_index2.should == 0.0
     end
+
+    it "should return nil nft index if there is no target" do
+      measurement = FactoryGirl.build(:meego_measurement, :unit => "fbar", :value => 0, :target => nil, :failure => nil)
+      measurement.nft_index2.should be_nil
+    end
+
+    it "should return 0 nft index if there is no value but there is a target (measurement has na status)" do
+      measurement = FactoryGirl.build(:meego_measurement, :unit => "fbar", :value => nil, :target => 5, :failure => nil)
+      measurement.nft_index2.should == 0.0
+    end
   end
 
 end
