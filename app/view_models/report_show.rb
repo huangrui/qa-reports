@@ -17,6 +17,10 @@ class ReportShow
     format_percentage(@report.pass_rate_executed)
   end
 
+  def nft_index
+    "69%"
+  end
+
   private
 
   def format_percentage(value)

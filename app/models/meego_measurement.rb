@@ -85,6 +85,12 @@ class MeegoMeasurement < ActiveRecord::Base
     [1, relative].min
   end
 
+  def nft_index2
+    return 1.0 if target.to_f >= value
+    return target.to_f/value unless value == 0
+    0.0
+  end
+
   def target_result
     res = if relative.nil?
       0

@@ -220,6 +220,16 @@ module ReportSummary
     end
   end
 
+  def measured_change_class
+    if not prev_summary or total_measured == prev_summary.total_measured
+      "unchanged"
+    elsif total_measured < prev_summary.total_measured
+      "dec"
+    else
+      "inc"
+    end
+  end
+
   def total_change
     if not prev_summary or total_cases == prev_summary.total_cases
       ""
@@ -249,6 +259,14 @@ module ReportSummary
       ""
     else
       "%+i" % (total_na - prev_summary.total_na)
+    end
+  end
+
+  def measured_change
+    if not prev_summary or total_measured == prev_summary.total_measured
+      ""
+    else
+      "%+i" % (total_measured - prev_summary.total_measured)
     end
   end
 

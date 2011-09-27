@@ -37,28 +37,34 @@ h2#test_results
           td class=@report.na_change_class
             em= @report.na_change
         tr.even
+          td Measured
+          td
+            strong= @report_show.measured.count
+          td class=@report.measured_change_class
+            em= @report.measured_change
+        tr.odd
           td Run rate
           td
             strong= @report_show.run_rate
           td class=@report.run_rate_change_class
             em= @report.run_rate_change
-        tr.odd
+        tr.even
           td Pass rate of total
           td
             strong= @report_show.pass_rate
           td class=@report.total_pass_rate_change_class
             em= @report.total_pass_rate_change
-        tr.even
+        tr.odd
           td Pass rate of executed
           td
             strong= @report_show.pass_rate_executed
           td class=@report.executed_pass_rate_change_class
             em= @report.executed_pass_rate_change
         - if @report.has_non_serial_nft?
-          tr.odd
+          tr.even
             td NFT Index
             td
-              strong= @report.nft_index
+              strong= @report_show.nft_index
             td class=@report.nft_index_change_class
               em= @report.nft_index_change
 

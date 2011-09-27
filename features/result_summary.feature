@@ -38,5 +38,6 @@ I want to see pass, fail and N/A totals. Additionally, I want to see run rate, p
       | Measured              |     1  |                                                      |
       | Run rate              |    83% | (Total test cases - N/A) / Total test cases          |
       | Pass rate of total    |    40% | Passed / (Total test cases - Measured)               |
-      | Pass rate of executed |    56% | Passed / (Total test cases - Measured - N/A)         |
+      | Pass rate of executed |    50% | Passed / (Total test cases - Measured - N/A)         |
       | NFT Index             |    69% | Sum(Test Case NFT Index) / Test Cases with NFT index |
+
