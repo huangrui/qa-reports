@@ -1,3 +1,14 @@
+measurement_fallback = '0'
+
+def measurement_value(measurement)
+  measurement.split.first
+end
+
+def measurement_unit(measurement)
+  'dummy'
+end
+
+
 Given /^there's an existing report$/ do
   report = FactoryGirl.build(:test_report_wo_features, :tested_at => '2011-09-01')
   report.features << FactoryGirl.build(:feature_wo_test_cases)
@@ -24,6 +35,23 @@ Then /^I should see Result Summary:$/ do |table|
     actual = result_summary.find(:xpath, "//tr[td='#{hash[:Title]}']").find(":nth-child(2)").text
     actual.should eql(hash[:Result]), "Expected '#{hash[:Title]}' to be #{hash[:Result]}\nGot #{actual}\n"
   end
+end
+
+Given /^I view a report with results:$/ do |table|
+  report = FactoryGirl.build(:test_report_wo_features)
+  report.features << FactoryGirl.build(:feature_wo_test_cases)
+
+  table.hashes.each do |hash|
+    report.features.first.meego_test_cases << FactoryGirl.build(:test_case,
+      :result =>  MeegoTestSession.map_result(hash[:Result]),
+      :measurements => [FactoryGirl.build(:meego_measurement,
+        :value   => measurement_value(hash[:Value]) || measurement_fallback,
+        :target  => measurement_value(hash[:Target]),
+        :failure => measurement_value(hash[:Fail_limit]),
+        :unit    => measurement_unit(hash[:Value]) )])
+  end
+
+  report.save!
 end
 
 Given /^I create a new test report with same test cases$/ do

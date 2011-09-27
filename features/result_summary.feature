@@ -21,7 +21,7 @@ I want to see pass, fail and N/A totals. Additionally, I want to see run rate, p
 
  Scenario: Result Summary for NFT Test Report
     Given I view a report with results:
-      | Result         | Value   | Target  | Fail limit | [Explanation]                                 |
+      | Result         | Value   | Target  | Fail_limit | [Explanation]                                 |
       | N/A            |         |   5 ms  |            | NFT Index:                             =   0% |
       | Measured       |   5 ms  |         |            | Doesn't affect to NFT Index                   |
       | Fail           |   7 ms  |   5 ms  |            | NFT Index: Target / Value              =  71% |

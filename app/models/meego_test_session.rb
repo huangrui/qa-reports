@@ -404,12 +404,15 @@ class MeegoTestSession < ActiveRecord::Base
     tested_at.strftime("%Y")
   end
 
+  #TODO: move to test case?
   def self.map_result(result)
     result = result.downcase
     if result == "pass"
       1
     elsif result == "fail"
       -1
+    elsif result == "measured"
+      2
     else
       0
     end
