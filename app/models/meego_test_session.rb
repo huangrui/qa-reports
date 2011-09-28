@@ -58,6 +58,7 @@ class MeegoTestSession < ActiveRecord::Base
   validates_presence_of :author
   validates_presence_of :release
   validates :tested_at, :date_time => true
+  validate              :validate_type_hw
 
   accepts_nested_attributes_for :features, :result_files
   before_save :force_testset_product_names
