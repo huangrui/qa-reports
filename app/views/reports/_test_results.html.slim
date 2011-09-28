@@ -9,7 +9,7 @@ h2#test_results
     .wrap
       table#test_result_overview
         /TODO: Get rid of strong tags
-        tr.even
+        tr
           td.title Total test cases
           td.value
             strong= @report_show.test_cases.count
@@ -18,50 +18,51 @@ h2#test_results
           td rowspan="8" style="background-color: white;"
             #summary_graph_wrapper
               canvas#summary_graph_canvas height="210" width="395"
-        tr.odd
+        tr
           td Passed
           td
             strong.pass= @report_show.passed.count
           td class=@report.passed_change_class
             em= @report.passed_change
-        tr.even
+        tr
           td Failed
           td
             strong.fail= @report_show.failed.count
           td class=@report.failed_change_class
             em= @report.failed_change
-        tr.odd
+        tr
           td N/A
           td
             strong= @report_show.na.count
           td class=@report.na_change_class
             em= @report.na_change
-        tr.even
-          td Measured
-          td
-            strong= @report_show.measured.count
-          td class=@report.measured_change_class
-            em= @report.measured_change
-        tr.odd
+        - if @report_show.measured.count > 0
+          tr
+            td Measured
+            td
+              strong= @report_show.measured.count
+            td class=@report.measured_change_class
+              em= @report.measured_change
+        tr
           td Run rate
           td
             strong= @report_show.run_rate
           td class=@report.run_rate_change_class
             em= @report.run_rate_change
-        tr.even
+        tr
           td Pass rate of total
           td
             strong= @report_show.pass_rate
           td class=@report.total_pass_rate_change_class
             em= @report.total_pass_rate_change
-        tr.odd
+        tr
           td Pass rate of executed
           td
             strong= @report_show.pass_rate_executed
           td class=@report.executed_pass_rate_change_class
             em= @report.executed_pass_rate_change
         - if @report.has_non_serial_nft?
-          tr.even
+          tr
             td NFT Index
             td
               strong= @report_show.nft_index

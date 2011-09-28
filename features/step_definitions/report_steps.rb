@@ -30,10 +30,20 @@ end
 
 Then /^I should see Result Summary:$/ do |table|
   visit report_path MeegoTestSession.first
-  result_summary = find("#test_result_overview")
-  table.hashes.each do |hash|
-    actual = result_summary.find(:xpath, "//tr[td='#{hash[:Title]}']").find(":nth-child(2)").text
-    actual.should eql(hash[:Result]), "Expected '#{hash[:Title]}' to be #{hash[:Result]}\nGot #{actual}\n"
+  with_scope("#test_result_overview") do
+    table.hashes.each do |hash|
+      actual = find(:xpath, "//tr[td='#{hash[:Title]}']").find(":nth-child(2)").text
+      actual.should eql(hash[:Result]), "Expected '#{hash[:Title]}' to be #{hash[:Result]}\nGot #{actual}\n"
+    end
+  end
+end
+
+And /^I should not see in Result Summary:$/ do |table|
+  #visit report_path MeegoTestSession.first
+  with_scope("#test_result_overview") do
+    table.hashes.each do |hash|
+      page.should have_no_selector(:xpath, "//tr[td='#{hash[:Title]}']"), "Expected no '#{hash[:Title]}'\nBut found one."
+    end
   end
 end
 
