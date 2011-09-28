@@ -36,6 +36,8 @@ class MeegoMeasurement < ActiveRecord::Base
 
   include MeasurementUtils
 
+  REVERSE_UNITS = ["s"]
+
   def result
     return 0 if target.nil? or failure.nil?
     return 1 if target < failure and value < failure
@@ -85,11 +87,16 @@ class MeegoMeasurement < ActiveRecord::Base
     [1, relative].min
   end
 
-  def nft_index2
-    return nil if target.nil?
-    return 0.0 if value.nil?
-    return [1.0, target.to_f/value].min unless value == 0
-    0.0
+
+
+  def index
+    if target.nil? || target == 0
+      nil
+    elsif value.nil? || value == 0
+      0.0
+    else
+      [1.0, calculate_index_ratio].min # limit index to max 1.0
+    end
   end
 
   def target_result
@@ -101,6 +108,16 @@ class MeegoMeasurement < ActiveRecord::Base
       1
     end
     TargetResultWrapper.new(res)
+  end
+
+  private
+
+  def calculate_index_ratio
+    if REVERSE_UNITS.include? unit.downcase
+      target.to_f / value
+    else
+      value / target.to_f
+    end
   end
 
 end
