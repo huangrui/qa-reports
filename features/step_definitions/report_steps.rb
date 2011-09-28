@@ -4,10 +4,11 @@ def measurement_value(measurement)
   measurement.split.first
 end
 
-def measurement_unit(measurement)
-  measurement.split.second || "dummy"
+def measurement_unit(value, target)
+  # TODO: use this after we can store null as value:
+  # value.split.second || target.split.second
+  value.split.second || "dummy"
 end
-
 
 Given /^there's an existing report$/ do
   report = FactoryGirl.build(:test_report_wo_features, :tested_at => '2011-09-01')
@@ -58,7 +59,7 @@ Given /^I view a report with results:$/ do |table|
         :value   => measurement_value(hash[:Value]) || measurement_fallback,
         :target  => measurement_value(hash[:Target]),
         :failure => measurement_value(hash[:Fail_limit]),
-        :unit    => measurement_unit(hash[:Value]) )])
+        :unit    => measurement_unit(hash[:Value], hash[:Target]) )])
   end
 
   report.save!

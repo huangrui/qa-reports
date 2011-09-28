@@ -412,18 +412,18 @@ class MeegoTestSession < ActiveRecord::Base
     tested_at.strftime("%Y")
   end
 
+  RESULT_NAMES = {"fail"     => MeegoTestCase::FAIL,
+                  "na"       => MeegoTestCase::NA,
+                  "pass"     => MeegoTestCase::PASS,
+                  "measured" => MeegoTestCase::MEASURED}
+
   #TODO: move to test case?
   def self.map_result(result)
-    result = result.downcase
-    if result == "pass"
-      1
-    elsif result == "fail"
-      -1
-    elsif result == "measured"
-      2
-    else
-      0
-    end
+    RESULT_NAMES[result.downcase] || MeegoTestCase::NA
+  end
+
+  def self.result_as_string(result)
+    RESULT_NAMES.invert[result] || RESULT_NAMES.invert(MeegoTestCase::NA)
   end
 
   def sanitize_filename(filename)

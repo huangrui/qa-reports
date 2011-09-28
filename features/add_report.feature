@@ -156,7 +156,7 @@ Feature:
     And submit the form at "upload_report_submit"
 
     Then I should see "NFT Index"
-    And I should see "38%"
+    And I should see "61%"
 
   Scenario: NFT index not shown if there are no non-serial measurements
     When I follow "Add report"

@@ -271,9 +271,9 @@ module ReportSummary
   end
 
   def run_rate_change_class
-    if not prev_summary or run_rate_value == prev_summary.run_rate_value
+    if not prev_summary or run_rate == prev_summary.run_rate
       "unchanged"
-    elsif run_rate_value < prev_summary.run_rate_value
+    elsif run_rate < prev_summary.run_rate
       "dec"
     else
       "inc"
@@ -335,10 +335,10 @@ module ReportSummary
   end
 
   def run_rate_change
-    if not prev_summary or run_rate_value == prev_summary.run_rate_value
+    if not prev_summary or run_rate == prev_summary.run_rate
       ""
     else
-      "%+i%%" % (run_rate_value - prev_summary.run_rate_value)
+      "%+i%%" % (run_rate - prev_summary.run_rate)
     end
   end
 
