@@ -1,5 +1,8 @@
 class ReportShow
-  delegate :test_cases, :passed, :failed, :na, :measured, :to => :@report
+
+  delegate :created_at, :failed,  :id,     :measured, :na,         :passed,
+           :product,    :release, :target, :title,    :test_cases, :testset,
+           :to => :@report
 
   def initialize(report)
     @report = report
