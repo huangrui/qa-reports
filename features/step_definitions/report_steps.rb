@@ -5,7 +5,7 @@ def measurement_value(measurement)
 end
 
 def measurement_unit(measurement)
-  'dummy'
+  measurement.split.second || "dummy"
 end
 
 

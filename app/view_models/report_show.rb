@@ -18,7 +18,7 @@ class ReportShow
   end
 
   def nft_index
-    "69%"
+    format_percentage(@report.nft_index)
   end
 
   private

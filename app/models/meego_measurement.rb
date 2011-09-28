@@ -36,8 +36,6 @@ class MeegoMeasurement < ActiveRecord::Base
 
   include MeasurementUtils
 
-  REVERSE_UNITS = ["s"]
-
   def result
     return 0 if target.nil? or failure.nil?
     return 1 if target < failure and value < failure
@@ -87,12 +85,10 @@ class MeegoMeasurement < ActiveRecord::Base
     [1, relative].min
   end
 
-
-
   def index
     if target.nil? || target == 0
       nil
-    elsif value.nil? || value == 0
+    elsif value.nil?
       0.0
     else
       [1.0, calculate_index_ratio].min # limit index to max 1.0
@@ -113,11 +109,17 @@ class MeegoMeasurement < ActiveRecord::Base
   private
 
   def calculate_index_ratio
-    if REVERSE_UNITS.include? unit.downcase
-      target.to_f / value
+    if reverse_calculation?
+      value == 0 ? 1.0 : target.to_f / value
     else
       value / target.to_f
     end
+  end
+
+  REVERSE_UNITS = ["s", "ms"]
+
+  def reverse_calculation?
+    failure.present? ? (failure > target) : REVERSE_UNITS.include?(unit.downcase)
   end
 
 end

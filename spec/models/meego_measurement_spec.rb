@@ -32,6 +32,11 @@ describe MeegoMeasurement do
       measurement = FactoryGirl.build(:meego_measurement, :unit => "fbar", :value => nil, :target => 5, :failure => nil)
       measurement.index.should == 0.0
     end
+
+    it "should return 0 if value is 0" do
+      measurement = FactoryGirl.build(:meego_measurement, :unit => "fbar", :value => 0, :target => 5, :failure => nil)
+      measurement.index.should == 0.0
+    end
   end
 
   describe "For certain units, like s (seconds) the index calculation is reversed. So that the index = target/value (value must be below target to success)" do
@@ -50,5 +55,22 @@ describe MeegoMeasurement do
       measurement.index.should == 10.0/13.0
     end
 
+    it "should return 1 if value is 0" do
+      measurement = FactoryGirl.build(:meego_measurement, :unit => "s", :value => 0, :target => 10, :failure => nil)
+      measurement.index.should == 1
+    end
   end
+
+  describe "Fail limit is used as the preferred method to determine how measurement index is calculated" do
+    it "should use value/target when fail limit < target (more is better)" do
+      measurement = FactoryGirl.build(:meego_measurement, :unit => "s", :value => 2, :target => 10, :failure => 6)
+      measurement.index.should == 2.0/10.0
+    end
+
+    it "should use target/value when fail limit > target (less is better)" do
+      measurement = FactoryGirl.build(:meego_measurement, :unit => "fbar", :value => 12, :target => 7, :failure => 10)
+      measurement.index.should == 7.0/12.0
+    end
+  end
+
 end
