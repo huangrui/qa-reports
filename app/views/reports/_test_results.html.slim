@@ -13,8 +13,8 @@ h2#test_results
           td.title Total test cases
           td.value
             strong= @report_show.test_cases.count
-          td class="change #{@report.change_class(:total_cases)}"
-            em= @report.count_change(:total_cases)
+          td class="change #{@report_show.change_class(:total_cases)}"
+            em= @report_show.count_change(:total_cases)
           td rowspan="8" style="background-color: white;"
             #summary_graph_wrapper
               canvas#summary_graph_canvas height="210" width="395"
@@ -22,45 +22,45 @@ h2#test_results
           td Passed
           td
             strong.pass= @report_show.passed.count
-          td class=@report.change_class(:total_passed)
-            em= @report.count_change(:total_passed)
+          td class=@report_show.change_class(:total_passed)
+            em= @report_show.count_change(:total_passed)
         tr
           td Failed
           td
             strong.fail= @report_show.failed.count
-          td class=@report.change_class(:total_failed)
-            em= @report.count_change(:total_failed)
+          td class=@report_show.change_class(:total_failed)
+            em= @report_show.count_change(:total_failed)
         tr
           td N/A
           td
             strong= @report_show.na.count
-          td class=@report.change_class(:total_na)
-            em= @report.count_change(:total_na)
+          td class=@report_show.change_class(:total_na)
+            em= @report_show.count_change(:total_na)
         - if @report_show.measured.count > 0
           tr
             td Measured
             td
               strong= @report_show.measured.count
-            td class=@report.change_class(:total_measured)
-              em= @report.count_change(:total_measured)
+            td class=@report_show.change_class(:total_measured)
+              em= @report_show.count_change(:total_measured)
         tr
           td Run rate
           td
             strong= @report_show.run_rate
-          td class=@report.change_class(:run_rate)
-            em= @report.rate_change(:run_rate)
+          td class=@report_show.change_class(:run_rate)
+            em= @report_show.rate_change(:run_rate)
         tr
           td Pass rate of total
           td
             strong= @report_show.pass_rate
-          td class=@report.change_class(:total_pass_rate_value)
-            em= @report.rate_change(:total_pass_rate_value)
+          td class=@report_show.change_class(:pass_rate)
+            em= @report_show.rate_change(:pass_rate)
         tr
           td Pass rate of executed
           td
             strong= @report_show.pass_rate_executed
-          td class=@report.executed_pass_rate_change_class
-            em= @report.rate_change(:executed_pass_rate_value)
+          td class=@report_show.executed_pass_rate_change_class
+            em= @report_show.rate_change(:pass_rate_executed)
         - if @report.has_non_serial_nft?
           tr
             td NFT Index

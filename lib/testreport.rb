@@ -122,21 +122,21 @@ module ReportSummary
     total_passed + total_failed
   end
 
-  def total_pass_rate
-    if total_cases == 0
-      "n/a"
-    else
-      "%i%%" % total_pass_rate_value
-    end
-  end
+  # def total_pass_rate
+  #   if total_cases == 0
+  #     "n/a"
+  #   else
+  #     "%i%%" % total_pass_rate_value
+  #   end
+  # end
 
-  def executed_pass_rate
-    if total_executed == 0
-      "n/a"
-    else
-      "%i%%" % executed_pass_rate_value
-    end
-  end
+  # def executed_pass_rate
+  #   if total_executed == 0
+  #     "n/a"
+  #   else
+  #     "%i%%" % executed_pass_rate_value
+  #   end
+  # end
 
   def nft_index
     if nft_index_value == 0
@@ -146,21 +146,21 @@ module ReportSummary
     end
   end
 
-  def total_pass_rate_value
-    if total_cases > 0
-      (total_passed*100.0/total_cases)
-    else
-      0
-    end
-  end
+  # def total_pass_rate_value
+  #   if total_cases > 0
+  #     (total_passed*100.0/total_cases)
+  #   else
+  #     0
+  #   end
+  # end
 
-  def executed_pass_rate_value
-    if total_executed > 0
-      (total_passed*100.0/total_executed)
-    else
-      0
-    end
-  end
+  # def executed_pass_rate_value
+  #   if total_executed > 0
+  #     (total_passed*100.0/total_executed)
+  #   else
+  #     0
+  #   end
+  # end
 
   def nft_index_value
     return @nft_index unless @nft_index.nil?
@@ -181,21 +181,19 @@ module ReportSummary
     change_class :executed_pass_rate_value
   end
 
-  def change_class(metric_name)
-    metric_change_class prev_summary.try(metric_name), send(metric_name)
+
+  def metric_change_direction(metric_name)
+    return 0 if not prev_summary
+
+    send(metric_name) <=> prev_summary.send(metric_name)
   end
 
-  def count_change(count_name)
-    formatted_change prev_summary.try(count_name), send(count_name), "%+i"
+  def change_from_previous(field_name)
+    return 0 if not prev_summary
+
+    send(field_name) - prev_summary.send(field_name)
   end
 
-  def rate_change(rate_name)
-    formatted_change prev_summary.try(rate_name), send(rate_name), "%+i%%"
-  end
-
-  def nft_index_change
-    formatted_change prev_summary.try(:nft_index_value), nft_index_value, "%+.0f%%"
-  end
 
   def total_nft
     @total_nft ||= total_non_serial_nft + total_serial_nft
@@ -258,21 +256,4 @@ module ReportSummary
     end
   end
 
-  def metric_change_class(previous, current)
-    if not previous or previous == current
-      "unchanged"
-    elsif previous > current
-      "dec"
-    else
-      "inc"
-    end
-  end
-
-  def formatted_change(previous, current, format)
-    if not previous or current == previous
-      ""
-    else
-      format % (current - previous)
-    end
-  end
 end
