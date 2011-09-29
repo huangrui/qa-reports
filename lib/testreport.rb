@@ -184,104 +184,33 @@ module ReportSummary
     end
   end
 
-  def total_change_class
-    change_class prev_summary.try(:total_cases), total_cases
+
+  def change_class(metric_name)
+    metric_change_class prev_summary.try(metric_name), send(metric_name)
   end
 
-  def passed_change_class
-    change_class prev_summary.try(:total_passed), total_passed
-  end
-
-  def failed_change_class
-    change_class prev_summary.try(:total_failed), total_failed
-  end
-
-  def na_change_class
-    change_class prev_summary.try(:total_na), total_na
-  end
-
-  def measured_change_class
-    total_measured
-    change_class prev_summary.try(:total_measured), total_measured
-  end
-
-  def total_change
-    if not prev_summary or total_cases == prev_summary.total_cases
-      ""
-    else
-      "%+i" % (total_cases - prev_summary.total_cases)
-    end
-  end
-
-  def passed_change
-    if not prev_summary or total_passed == prev_summary.total_passed
-      ""
-    else
-      "%+i" % (total_passed - prev_summary.total_passed)
-    end
-  end
-
-  def failed_change
-    if not prev_summary or total_failed == prev_summary.total_failed
-      ""
-    else
-      "%+i" % (total_failed - prev_summary.total_failed)
-    end
-  end
-
-  def na_change
-    if not prev_summary or total_na == prev_summary.total_na
-      ""
-    else
-      "%+i" % (total_na - prev_summary.total_na)
-    end
-  end
-
-  def measured_change
-    if not prev_summary or total_measured == prev_summary.total_measured
-      ""
-    else
-      "%+i" % (total_measured - prev_summary.total_measured)
-    end
-  end
-
-  def run_rate_change_class
-    change_class prev_summary.try(:run_rate), run_rate
-  end
-
-  def total_pass_rate_change_class
-     change_class prev_summary.try(:total_pass_rate_value), total_pass_rate_value
-  end
 
   def executed_pass_rate_change_class
-    if not prev_summary or total_executed == 0 or prev_summary.total_executed == 0 or executed_pass_rate_value == prev_summary.executed_pass_rate_value
-      "unchanged"
-    elsif executed_pass_rate_value < prev_summary.executed_pass_rate_value
-      "dec"
-    else
-      "inc"
-    end
+    return "unchanged" if total_executed == 0 or prev_summary.try(:total_executed) == 0
+    change_class :executed_pass_rate_value
   end
 
-  def nft_index_change_class
-    change_class prev_summary.try(:nft_index_value), nft_index_value
+  def count_change(count_name)
+    formatted_count_change prev_summary.try(count_name), send(count_name)
   end
 
   def total_pass_rate_change
-    if not prev_summary or total_pass_rate_value == prev_summary.total_pass_rate_value
-      ""
-    else
-      "%+i%%" % (total_pass_rate_value - prev_summary.total_pass_rate_value)
-    end
+    rate_change prev_summary.try(:total_pass_rate_value), total_pass_rate_value
   end
 
   def executed_pass_rate_change
-    if not prev_summary or executed_pass_rate_value == prev_summary.executed_pass_rate_value
-      ""
-    else
-      "%+i%%" % (executed_pass_rate_value - prev_summary.executed_pass_rate_value)
-    end
+    rate_change prev_summary.try(:executed_pass_rate_value), executed_pass_rate_value
   end
+
+  def run_rate_change
+    rate_change prev_summary.try(:run_rate), run_rate
+  end
+
 
   def nft_index_change
     if not prev_summary or nft_index_value == prev_summary.nft_index_value
@@ -291,13 +220,7 @@ module ReportSummary
     end
   end
 
-  def run_rate_change
-    if not prev_summary or run_rate == prev_summary.run_rate
-      ""
-    else
-      "%+i%%" % (run_rate - prev_summary.run_rate)
-    end
-  end
+
 
   def total_nft
     @total_nft ||= total_non_serial_nft + total_serial_nft
@@ -352,7 +275,7 @@ module ReportSummary
 
   private
 
-  def change_class(previous, current)
+  def metric_change_class(previous, current)
     if not previous or previous == current
       "unchanged"
     elsif previous > current
@@ -362,4 +285,19 @@ module ReportSummary
     end
   end
 
+  def formatted_count_change(previous, current)
+    if not previous or previous == current
+      ""
+    else
+      "%+i" % (current - previous)
+    end
+  end
+
+  def rate_change(previous, current)
+    if not previous or current == previous
+      ""
+    else
+      "%+i%%" % (current - previous)
+    end
+  end
 end

@@ -13,8 +13,8 @@ h2#test_results
           td.title Total test cases
           td.value
             strong= @report_show.test_cases.count
-          td class="change #{@report.total_change_class}"
-            em= @report.total_change
+          td class="change #{@report.change_class(:total_cases)}"
+            em= @report.count_change(:total_cases)
           td rowspan="8" style="background-color: white;"
             #summary_graph_wrapper
               canvas#summary_graph_canvas height="210" width="395"
@@ -22,38 +22,38 @@ h2#test_results
           td Passed
           td
             strong.pass= @report_show.passed.count
-          td class=@report.passed_change_class
-            em= @report.passed_change
+          td class=@report.change_class(:total_passed)
+            em= @report.count_change(:total_passed)
         tr
           td Failed
           td
             strong.fail= @report_show.failed.count
-          td class=@report.failed_change_class
-            em= @report.failed_change
+          td class=@report.change_class(:total_failed)
+            em= @report.count_change(:total_failed)
         tr
           td N/A
           td
             strong= @report_show.na.count
-          td class=@report.na_change_class
-            em= @report.na_change
+          td class=@report.change_class(:total_na)
+            em= @report.count_change(:total_na)
         - if @report_show.measured.count > 0
           tr
             td Measured
             td
               strong= @report_show.measured.count
-            td class=@report.measured_change_class
-              em= @report.measured_change
+            td class=@report.change_class(:total_measured)
+              em= @report.count_change(:total_measured)
         tr
           td Run rate
           td
             strong= @report_show.run_rate
-          td class=@report.run_rate_change_class
+          td class=@report.change_class(:run_rate)
             em= @report.run_rate_change
         tr
           td Pass rate of total
           td
             strong= @report_show.pass_rate
-          td class=@report.total_pass_rate_change_class
+          td class=@report.change_class(:total_pass_rate_value)
             em= @report.total_pass_rate_change
         tr
           td Pass rate of executed
@@ -66,7 +66,7 @@ h2#test_results
             td NFT Index
             td
               strong= @report_show.nft_index
-            td class=@report.nft_index_change_class
+            td class=@report.change_class(:nft_index_value)
               em= @report.nft_index_change
 
     h3#test_features Test Results by Feature
