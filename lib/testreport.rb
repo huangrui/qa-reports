@@ -196,14 +196,13 @@ module ReportSummary
 
 
   def count_change(count_name)
-    formatted_count_change prev_summary.try(count_name), send(count_name)
+    formatted_change prev_summary.try(count_name), send(count_name), "%+i"
   end
 
 
   def rate_change(rate_name)
-    formatted_rate_change prev_summary.try(rate_name), send(rate_name)
+    formatted_change prev_summary.try(rate_name), send(rate_name), "%+i%%"
   end
-
 
 
   def nft_index_change
@@ -279,19 +278,11 @@ module ReportSummary
     end
   end
 
-  def formatted_count_change(previous, current)
-    if not previous or previous == current
-      ""
-    else
-      "%+i" % (current - previous)
-    end
-  end
-
-  def formatted_rate_change(previous, current)
+  def formatted_change(previous, current, format)
     if not previous or current == previous
       ""
     else
-      "%+i%%" % (current - previous)
+      format % (current - previous)
     end
   end
 end
