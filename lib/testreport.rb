@@ -102,14 +102,6 @@ module ReportSummary
     @total_measured ||= count_results(MeegoTestCase::MEASURED)
   end
 
-  def count_results(result)
-    if new_record? || meego_test_cases.loaded?
-      meego_test_cases.to_a.count {|x| x.result == result}
-    else
-      meego_test_cases.count(:conditions => {:result => result})
-    end
-  end
-
   def total_cases=(num)
     @total_cases = num
   end
@@ -184,36 +176,26 @@ module ReportSummary
     end
   end
 
-
-  def change_class(metric_name)
-    metric_change_class prev_summary.try(metric_name), send(metric_name)
-  end
-
   def executed_pass_rate_change_class
     return "unchanged" if total_executed == 0 or prev_summary.try(:total_executed) == 0
     change_class :executed_pass_rate_value
   end
 
+  def change_class(metric_name)
+    metric_change_class prev_summary.try(metric_name), send(metric_name)
+  end
 
   def count_change(count_name)
     formatted_change prev_summary.try(count_name), send(count_name), "%+i"
   end
 
-
   def rate_change(rate_name)
     formatted_change prev_summary.try(rate_name), send(rate_name), "%+i%%"
   end
 
-
   def nft_index_change
-    if not prev_summary or nft_index_value == prev_summary.nft_index_value
-      ""
-    else
-      "%+.0f%%" % (nft_index_value - prev_summary.nft_index_value)
-    end
+    formatted_change prev_summary.try(:nft_index_value), nft_index_value, "%+.0f%%"
   end
-
-
 
   def total_nft
     @total_nft ||= total_non_serial_nft + total_serial_nft
@@ -267,6 +249,14 @@ module ReportSummary
   end
 
   private
+
+  def count_results(result)
+    if new_record? || meego_test_cases.loaded?
+      meego_test_cases.to_a.count {|x| x.result == result}
+    else
+      meego_test_cases.count(:conditions => {:result => result})
+    end
+  end
 
   def metric_change_class(previous, current)
     if not previous or previous == current
