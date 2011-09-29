@@ -48,19 +48,19 @@ h2#test_results
           td
             strong= @report_show.run_rate
           td class=@report.change_class(:run_rate)
-            em= @report.run_rate_change
+            em= @report.rate_change(:run_rate)
         tr
           td Pass rate of total
           td
             strong= @report_show.pass_rate
           td class=@report.change_class(:total_pass_rate_value)
-            em= @report.total_pass_rate_change
+            em= @report.rate_change(:total_pass_rate_value)
         tr
           td Pass rate of executed
           td
             strong= @report_show.pass_rate_executed
           td class=@report.executed_pass_rate_change_class
-            em= @report.executed_pass_rate_change
+            em= @report.rate_change(:executed_pass_rate_value)
         - if @report.has_non_serial_nft?
           tr
             td NFT Index

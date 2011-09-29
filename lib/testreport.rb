@@ -189,27 +189,21 @@ module ReportSummary
     metric_change_class prev_summary.try(metric_name), send(metric_name)
   end
 
-
   def executed_pass_rate_change_class
     return "unchanged" if total_executed == 0 or prev_summary.try(:total_executed) == 0
     change_class :executed_pass_rate_value
   end
 
+
   def count_change(count_name)
     formatted_count_change prev_summary.try(count_name), send(count_name)
   end
 
-  def total_pass_rate_change
-    rate_change prev_summary.try(:total_pass_rate_value), total_pass_rate_value
+
+  def rate_change(rate_name)
+    formatted_rate_change prev_summary.try(rate_name), send(rate_name)
   end
 
-  def executed_pass_rate_change
-    rate_change prev_summary.try(:executed_pass_rate_value), executed_pass_rate_value
-  end
-
-  def run_rate_change
-    rate_change prev_summary.try(:run_rate), run_rate
-  end
 
 
   def nft_index_change
@@ -293,7 +287,7 @@ module ReportSummary
     end
   end
 
-  def rate_change(previous, current)
+  def formatted_rate_change(previous, current)
     if not previous or current == previous
       ""
     else
