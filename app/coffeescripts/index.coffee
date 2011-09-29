@@ -1,6 +1,6 @@
 $(document).ready ->
   url2id = (url) ->
-    url.replace(/\//g,'-').replace(/\s/g,'_')
+    url.replace(/\//g,'-').replace(/\s/g,'_').replace(/\./g,'-')
 
   directives =
     profiles:
