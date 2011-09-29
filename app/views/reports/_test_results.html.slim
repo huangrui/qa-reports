@@ -89,7 +89,7 @@ h2#test_results
           th.th_notes Comments
           th.th_grading Grading
 
-      = render :partial => 'feature_summary', :collection => @report.non_empty_features, :locals => {:max_cases => @report.max_feature_cases}
+      = render :partial => 'feature_summary', :collection => @report_show.non_empty_features, :locals => {:max_cases => @report_show.max_feature_cases}
 
     - unless @build_diff.empty?
       table.feature_detailed_results_with_build_id#test_feature_build_results style="display:none"
@@ -101,11 +101,11 @@ h2#test_results
             th.th_failed Failed
             th.th_not_testable N/A
             = build_pass_rate_headers(@build_diff)
-            th.th_result.current_feature_build_result *#{@report.build_id}
+            th.th_result.current_feature_build_result *#{@report_show.build_id}
             th style="border-bottom-style: none;"
               div style="position:relative;"
 
-        = render :partial => 'feature_pass_rate_build_summary', :collection => @report.features
+        = render :partial => 'feature_pass_rate_build_summary', :collection => @report_show.features
 
 - data = @report.summary_data
 
