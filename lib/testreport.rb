@@ -98,6 +98,10 @@ module ReportSummary
     @total_na ||= count_results(MeegoTestCase::NA)
   end
 
+  def total_measured
+    @total_measured ||= count_results(MeegoTestCase::MEASURED)
+  end
+
   def count_results(result)
     if new_record? || meego_test_cases.loaded?
       meego_test_cases.to_a.count {|x| x.result == result}
@@ -181,53 +185,24 @@ module ReportSummary
   end
 
   def total_change_class
-    if not prev_summary or total_cases == prev_summary.total_cases
-      "unchanged"
-    elsif total_cases < prev_summary.total_cases
-      "dec"
-    else
-      "inc"
-    end
+    change_class prev_summary.try(:total_cases), total_cases
   end
 
   def passed_change_class
-    if not prev_summary or total_passed == prev_summary.total_passed
-      "unchanged"
-    elsif total_passed < prev_summary.total_passed
-      "dec"
-    else
-      "inc"
-    end
+    change_class prev_summary.try(:total_passed), total_passed
   end
 
   def failed_change_class
-    if not prev_summary or total_failed == prev_summary.total_failed
-      "unchanged"
-    elsif total_failed < prev_summary.total_failed
-      "dec"
-    else
-      "inc"
-    end
+    change_class prev_summary.try(:total_failed), total_failed
   end
 
   def na_change_class
-    if not prev_summary or total_na == prev_summary.total_na
-      "unchanged"
-    elsif total_na < prev_summary.total_na
-      "dec"
-    else
-      "inc"
-    end
+    change_class prev_summary.try(:total_na), total_na
   end
 
   def measured_change_class
-    if not prev_summary or total_measured == prev_summary.total_measured
-      "unchanged"
-    elsif total_measured < prev_summary.total_measured
-      "dec"
-    else
-      "inc"
-    end
+    total_measured
+    change_class prev_summary.try(:total_measured), total_measured
   end
 
   def total_change
@@ -271,23 +246,11 @@ module ReportSummary
   end
 
   def run_rate_change_class
-    if not prev_summary or run_rate == prev_summary.run_rate
-      "unchanged"
-    elsif run_rate < prev_summary.run_rate
-      "dec"
-    else
-      "inc"
-    end
+    change_class prev_summary.try(:run_rate), run_rate
   end
 
   def total_pass_rate_change_class
-    if not prev_summary or total_pass_rate_value == prev_summary.total_pass_rate_value
-      "unchanged"
-    elsif total_pass_rate_value < prev_summary.total_pass_rate_value
-      "dec"
-    else
-      "inc"
-    end
+     change_class prev_summary.try(:total_pass_rate_value), total_pass_rate_value
   end
 
   def executed_pass_rate_change_class
@@ -301,13 +264,7 @@ module ReportSummary
   end
 
   def nft_index_change_class
-    if not prev_summary or nft_index_value == prev_summary.nft_index_value
-      "unchanged"
-    elsif nft_index_value < prev_summary.nft_index_value
-      "dec"
-    else
-      "inc"
-    end
+    change_class prev_summary.try(:nft_index_value), nft_index_value
   end
 
   def total_pass_rate_change
@@ -390,6 +347,18 @@ module ReportSummary
       end
     else
       0
+    end
+  end
+
+  private
+
+  def change_class(previous, current)
+    if not previous or previous == current
+      "unchanged"
+    elsif previous > current
+      "dec"
+    else
+      "inc"
     end
   end
 
