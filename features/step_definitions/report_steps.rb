@@ -1,4 +1,3 @@
-measurement_fallback = '0'
 
 def measurement_value(measurement)
   measurement.split.first
@@ -56,7 +55,7 @@ Given /^I view a report with results:$/ do |table|
     report.features.first.meego_test_cases << FactoryGirl.build(:test_case,
       :result =>  MeegoTestSession.map_result(hash[:Result]),
       :measurements => [FactoryGirl.build(:meego_measurement,
-        :value   => measurement_value(hash[:Value]) || measurement_fallback,
+        :value   => measurement_value(hash[:Value]),
         :target  => measurement_value(hash[:Target]),
         :failure => measurement_value(hash[:Fail_limit]),
         :unit    => measurement_unit(hash[:Value], hash[:Target]) )])
