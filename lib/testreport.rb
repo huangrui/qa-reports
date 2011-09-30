@@ -123,18 +123,18 @@ module ReportSummary
   end
 
    def run_rate
-    return 0 if meego_test_cases.count == 0
-    return (passed.count + failed.count + measured.count).to_f / meego_test_cases.count
+    return 0 if total_cases == 0
+    return (total_passed + total_failed + total_measured).to_f / total_cases
   end
 
   def pass_rate
-    return 0 if meego_test_cases.count == 0
-    return passed.count.to_f / (meego_test_cases.count - measured.count)
+    return 0 if total_cases == 0
+    return total_passed.to_f / (total_cases - total_measured)
   end
 
   def pass_rate_executed
-    return 0 if meego_test_cases.count == 0
-    return passed.count.to_f / (meego_test_cases.count - measured.count - na.count)
+    return 0 if total_cases == 0
+    return total_passed.to_f / (total_cases - total_measured - total_na)
   end
 
   def nft_index
@@ -201,10 +201,10 @@ module ReportSummary
   #   end
   # end
 
-  def executed_pass_rate_change_class
-    return "unchanged" if total_executed == 0 or prev_summary.try(:total_executed) == 0
-    change_class :executed_pass_rate_value
-  end
+  # def executed_pass_rate_change_class
+  #   return "unchanged" if total_executed == 0 or prev_summary.try(:total_executed) == 0
+  #   change_class :executed_pass_rate_value
+  # end
 
 
   def metric_change_direction(metric_name)
@@ -225,7 +225,7 @@ module ReportSummary
   end
 
   def total_non_nft
-    @total_non_nft ||= meego_test_cases.count - total_nft
+    @total_non_nft ||= total_cases - total_nft
   end
 
   def total_non_serial_nft
