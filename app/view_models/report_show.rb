@@ -1,8 +1,6 @@
 class ReportShow < SummaryShow
 
-  delegate :created_at, :failed,  :id,     :measured, :na,         :passed,
-           :product,    :release, :target, :title,    :test_cases, :testset,
-           :max_feature_cases,    :build_id,
+  delegate :build_id, :created_at, :max_feature_cases, :product, :release, :target, :title,
            :to => :@report
 
   def initialize(report)

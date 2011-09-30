@@ -1,6 +1,6 @@
 class FeatureShow < SummaryShow
 
-  delegate :comments, :grading, :id, :name, :test_set_link,
+  delegate :comments, :grading, :name, :test_set_link,
            :to => :@feature
 
   def initialize(feature)

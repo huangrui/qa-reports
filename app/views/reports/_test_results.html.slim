@@ -12,7 +12,7 @@ h2#test_results
         tr
           td.title Total test cases
           td.value
-            strong= @report_show.test_cases.count
+            strong= @report_show.total_cases
           td class="change #{@report_show.change_class(:total_cases)}"
             em= @report_show.count_change(:total_cases)
           td rowspan="8" style="background-color: white;"
@@ -21,26 +21,26 @@ h2#test_results
         tr
           td Passed
           td
-            strong.pass= @report_show.passed.count
+            strong.pass= @report_show.total_passed
           td class=@report_show.change_class(:total_passed)
             em= @report_show.count_change(:total_passed)
         tr
           td Failed
           td
-            strong.fail= @report_show.failed.count
+            strong.fail= @report_show.total_failed
           td class=@report_show.change_class(:total_failed)
             em= @report_show.count_change(:total_failed)
         tr
           td N/A
           td
-            strong= @report_show.na.count
+            strong= @report_show.total_na
           td class=@report_show.change_class(:total_na)
             em= @report_show.count_change(:total_na)
-        - if @report_show.measured.count > 0
+        - if @report_show.total_measured > 0
           tr
             td Measured
             td
-              strong= @report_show.measured.count
+              strong= @report_show.total_measured
             td class=@report_show.change_class(:total_measured)
               em= @report_show.count_change(:total_measured)
         tr

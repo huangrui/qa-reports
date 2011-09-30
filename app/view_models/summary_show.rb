@@ -1,6 +1,6 @@
 class SummaryShow
 
-  delegate :total_cases, :total_passed, :total_failed, :total_na,
+  delegate :id, :total_cases, :total_measured, :total_passed, :total_failed, :total_na,
            :to => :@report
 
   def initialize(report)
@@ -41,7 +41,7 @@ class SummaryShow
   end
 
   def nft_index_change
-    formatted_change :nft_index_value, "%+.0f%%"
+    formatted_change :nft_index, "%+.0f%%"
   end
 
   def change_class(attribute)
