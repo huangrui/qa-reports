@@ -3,7 +3,8 @@ class SummaryShow
   delegate :id, :total_cases, :total_measured, :total_passed, :total_failed, :total_na,
            :to => :@report
 
-  def initialize(report)
+  def initialize(report, build_diff=[])
+    @build_diff = build_diff
     @report = report
   end
 
