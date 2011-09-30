@@ -4,7 +4,8 @@ class MeegoMeasurementValueCanBeNull < ActiveRecord::Migration
   end
 
   def self.down
-    # TODO: should existing null values be handled somehow
+    # Null values are autoconverted to zeroes. But zeroes are not autoconverted to null in self.up
+    # So running db:rollback and then db:migrate will change current null :values to zeroes.
     change_column(:meego_measurements, :value, :float, :null => false)
   end
 end
