@@ -1,6 +1,6 @@
 class ReportShow < SummaryShow
 
-  delegate :build_id, :created_at, :max_feature_cases, :product, :release, :target, :title,
+  delegate :build_id, :created_at, :max_feature_cases, :product, :release, :target, :testset, :title,
            :to => :@report
 
   def initialize(report, build_diff=[])
