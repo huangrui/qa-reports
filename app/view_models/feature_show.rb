@@ -13,7 +13,6 @@ class FeatureShow < SummaryShow
       feature = @feature.find_matching_feature report
       FeatureShow.new(feature) unless feature.nil?
     end
-
   end
 
   def graph_img_tag(max_cases)
