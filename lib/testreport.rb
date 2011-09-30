@@ -122,6 +122,29 @@ module ReportSummary
     total_passed + total_failed
   end
 
+   def run_rate
+    return 0 if meego_test_cases.count == 0
+    return (passed.count + failed.count + measured.count).to_f / meego_test_cases.count
+  end
+
+  def pass_rate
+    return 0 if meego_test_cases.count == 0
+    return passed.count.to_f / (meego_test_cases.count - measured.count)
+  end
+
+  def pass_rate_executed
+    return 0 if meego_test_cases.count == 0
+    return passed.count.to_f / (meego_test_cases.count - measured.count - na.count)
+  end
+
+  def nft_index
+    # Select measurements which affect to nft_index and map those calculated indices into an array
+    indices = MeegoMeasurement.where(:meego_test_case_id => meego_test_cases).select{|m| m.index.present?}.map &:index
+
+    return 0 if indices.count == 0
+    indices.inject(:+) / indices.count
+  end
+
   # def total_pass_rate
   #   if total_cases == 0
   #     "n/a"
@@ -138,13 +161,15 @@ module ReportSummary
   #   end
   # end
 
-  def nft_index
-    if nft_index_value == 0
-      "n/a"
-    else
-      "%.0f%%" % nft_index_value
-    end
-  end
+  # def nft_index
+  #   if nft_index_value == 0
+  #     "n/a"
+  #   else
+  #     "%.0f%%" % nft_index_value
+  #   end
+  # end
+
+
 
   # def total_pass_rate_value
   #   if total_cases > 0
@@ -162,19 +187,19 @@ module ReportSummary
   #   end
   # end
 
-  def nft_index_value
-    return @nft_index unless @nft_index.nil?
+  # def nft_index_value
+  #   return @nft_index unless @nft_index.nil?
 
-    # Select measurements for which nft_index can be calculated
-    # and map those calculated indices into an array
-    indices = MeegoMeasurement.where(:meego_test_case_id => meego_test_cases).select{|m| m.nft_index.present?}.map &:nft_index
+  #   # Select measurements for which nft_index can be calculated
+  #   # and map those calculated indices into an array
+  #   indices = MeegoMeasurement.where(:meego_test_case_id => meego_test_cases).select{|m| m.nft_index.present?}.map &:nft_index
 
-    @nft_index = if indices.count == 0 then
-      0
-    else
-      indices.inject(:+) / indices.count * 100
-    end
-  end
+  #   @nft_index = if indices.count == 0 then
+  #     0
+  #   else
+  #     indices.inject(:+) / indices.count * 100
+  #   end
+  # end
 
   def executed_pass_rate_change_class
     return "unchanged" if total_executed == 0 or prev_summary.try(:total_executed) == 0
@@ -246,20 +271,7 @@ module ReportSummary
     end
   end
 
-  def run_rate
-    return 0 if meego_test_cases.count == 0
-    return (passed.count + failed.count + measured.count).to_f / meego_test_cases.count
-  end
 
-  def pass_rate
-    return 0 if meego_test_cases.count == 0
-    return passed.count.to_f / (meego_test_cases.count - measured.count)
-  end
-
-  def pass_rate_executed
-    return 0 if meego_test_cases.count == 0
-    return passed.count.to_f / (meego_test_cases.count - measured.count - na.count)
-  end
 
   private
 

@@ -224,13 +224,13 @@ class MeegoTestSession < ActiveRecord::Base
     @test_case_hash[feature_key][name] unless @test_case_hash[feature_key].nil?
   end
 
-  def nft_index
-    # Select measurements which affect to nft_index and map those calculated indices into an array
-    indices = MeegoMeasurement.where(:meego_test_case_id => meego_test_cases).select{|m| m.index.present?}.map &:index
+  # def nft_index
+  #   # Select measurements which affect to nft_index and map those calculated indices into an array
+  #   indices = MeegoMeasurement.where(:meego_test_case_id => meego_test_cases).select{|m| m.index.present?}.map &:index
 
-    return 0 if indices.count == 0
-    indices.inject(:+) / indices.count
-  end
+  #   return 0 if indices.count == 0
+  #   indices.inject(:+) / indices.count
+  # end
 
   ###############################################
   # Chart visualization methods                 #
