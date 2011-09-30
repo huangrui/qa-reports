@@ -46,28 +46,28 @@ h2#test_results
         tr
           td Run rate
           td
-            strong= @report_show.run_rate
+            strong= @report_show.percentage(:run_rate)
           td class=@report_show.change_class(:run_rate)
             em= @report_show.rate_change(:run_rate)
         tr
           td Pass rate of total
           td
-            strong= @report_show.pass_rate
+            strong= @report_show.percentage(:pass_rate)
           td class=@report_show.change_class(:pass_rate)
             em= @report_show.rate_change(:pass_rate)
         tr
           td Pass rate of executed
           td
-            strong= @report_show.pass_rate_executed
+            strong= @report_show.percentage(:pass_rate_executed)
           td class=@report_show.executed_pass_rate_change_class
             em= @report_show.rate_change(:pass_rate_executed)
         - if @report.has_non_serial_nft?
           tr
             td NFT Index
             td
-              strong= @report_show.nft_index
-            td class=@report.change_class(:nft_index_value)
-              em= @report.nft_index_change
+              strong= @report_show.percentage(:nft_index)
+            td class=@report_show.change_class(:nft_index)
+              em= @report_show.nft_index_change
 
     h3#test_features Test Results by Feature
 

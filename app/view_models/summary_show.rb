@@ -7,21 +7,25 @@ class SummaryShow
     @report = report
   end
 
-  def run_rate
-    format_percentage(@report.run_rate)
+  def percentage(attribute)
+    format_percentage(@report.send attribute)
   end
 
-  def pass_rate
-    format_percentage(@report.pass_rate)
-  end
+  # def run_rate
+  #   format_percentage(@report.run_rate)
+  # end
 
-  def pass_rate_executed
-    format_percentage(@report.pass_rate_executed)
-  end
+  # def pass_rate
+  #   format_percentage(@report.pass_rate)
+  # end
 
-  def nft_index
-    format_percentage(@report.nft_index)
-  end
+  # def pass_rate_executed
+  #   format_percentage(@report.pass_rate_executed)
+  # end
+
+  # def nft_index
+  #   format_percentage(@report.nft_index)
+  # end
 
   def executed_pass_rate_change_class
     return "unchanged" if @report.total_executed == 0 or @report.prev_summary.try(:total_executed) == 0

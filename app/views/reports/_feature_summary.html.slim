@@ -11,7 +11,7 @@ tr class="feature_record #{row_class(feature_summary_counter)}" id="feature-#{fe
   td.pass=feature_summary.total_passed
   td.fail=feature_summary.total_failed
   td.na=feature_summary.total_na
-  td.rate=feature_summary.pass_rate
+  td.rate=feature_summary.percentage(:pass_rate)
   td=feature_summary.graph_img_tag(max_cases)
 
   td class="feature_record_notes #{'edit' if @editing}"
