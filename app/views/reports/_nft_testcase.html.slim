@@ -56,7 +56,7 @@
 
       td.testcase_target= m.target_html
       td.testcase_limit= m.failure_html
-      td class="testcase_to_target #{result_class(m.target_result)}" =m.relative_html
+      td class="testcase_to_target #{result_class(m.target_result)}" =m.index_html
 
     - if first
       td class="testcase_result multiple_results #{result_class(testcase)} #{'edit' if @editing} #{testcase.find_change_class(@report.prev_session)} " rowspan=all.size

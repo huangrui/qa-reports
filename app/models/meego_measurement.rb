@@ -23,25 +23,18 @@
 
 require "nft"
 
-class TargetResultWrapper
-  attr_reader :result
-
-  def initialize(res)
-    @result = res
+  #TODO Get rid off decoration code and move to MeasurementShow (or TestCaseShow)
+  class TargetResultWrapper
+    attr_reader :result
+    def initialize(res)
+      @result = res
+    end
   end
-end
 
 class MeegoMeasurement < ActiveRecord::Base
   belongs_to :meego_test_case
 
   include MeasurementUtils
-
-  def result
-    return 0 if target.nil? or failure.nil?
-    return 1 if target < failure and value < failure
-    return 1 if target > failure and value > failure
-    return -1
-  end
 
   def is_serial?
     false
@@ -64,25 +57,9 @@ class MeegoMeasurement < ActiveRecord::Base
     "#{format_value(val, 3)}&nbsp;<span class=\"unit\">#{un}</span>".html_safe unless val.nil?
   end
 
-  def relative_html
-    return "" if relative.nil?
-    html(relative * 100, "%")
-  end
-
-  def relative
-    return @relative unless @relative.nil? and target.present? and failure.present?
-
-    @relative = if target < failure
-      target/value unless value == 0
-    else
-      value/target unless target == 0
-    end
-  end
-
-  # NFT index may be at most 100%, thus limiting the value.
-  def nft_index
-    return nil if relative.nil?
-    [1, relative].min
+  def index_html
+    return "" if index.nil?
+    html(index * 100, "%")
   end
 
   def index
@@ -96,17 +73,29 @@ class MeegoMeasurement < ActiveRecord::Base
   end
 
   def target_result
-    res = if relative.nil?
-      0
-    elsif relative < 1
-      -1
-    else
-      1
-    end
-    TargetResultWrapper.new(res)
+    TargetResultWrapper.new target_result_value
   end
 
   private
+
+  def target_result_value
+    if index.nil? or value.nil?
+       0
+    elsif index >= 1.0 or inside_fail_limit
+       1
+    else
+      -1
+    end
+  end
+
+  def inside_fail_limit
+    return false if failure.nil?
+    if reverse_calculation?
+      value <= failure
+    else
+      value >= failure
+    end
+  end
 
   def calculate_index_ratio
     if reverse_calculation?
@@ -116,7 +105,7 @@ class MeegoMeasurement < ActiveRecord::Base
     end
   end
 
-  REVERSE_UNITS = ["s", "ms"]
+  REVERSE_UNITS = ["s", "ms"] # Less is better
 
   def reverse_calculation?
     failure.present? ? (failure > target) : REVERSE_UNITS.include?(unit.downcase)

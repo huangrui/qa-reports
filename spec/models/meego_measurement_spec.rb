@@ -73,4 +73,33 @@ describe MeegoMeasurement do
     end
   end
 
+  describe "The index value status (target_result) depends of fail limit" do
+    it "should return 'passed' status if target is met" do
+      measurement = FactoryGirl.build(:meego_measurement, :unit => "s", :value => 2.0, :target => 2.0, :failure => 6)
+      measurement.target_result.result.should == 1
+    end
+
+    it "should return 'red' status if target is not met" do
+      measurement = FactoryGirl.build(:meego_measurement, :unit => "s", :value => 4.0, :target => 2.0, :failure => nil)
+      measurement.target_result.result.should == -1
+    end
+
+    it "should return 'green' status if value is inside failure limit" do
+      measurement = FactoryGirl.build(:meego_measurement, :unit => "bps", :value => 9.0, :target => 10.0, :failure => 8.5)
+      measurement.target_result.result.should == 1
+    end
+
+    it "should return 'na' status if value is null" do
+      measurement = FactoryGirl.build(:meego_measurement, :unit => "s", :value => nil, :target => 2.0, :failure => nil)
+      measurement.target_result.result.should == 0
+    end
+
+    it "should return 'na' status if target is null" do
+      measurement = FactoryGirl.build(:meego_measurement, :unit => "s", :value => 2.0, :target => nil, :failure => nil)
+      measurement.target_result.result.should == 0
+    end
+
+  end
+
+
 end
