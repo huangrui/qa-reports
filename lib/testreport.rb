@@ -122,19 +122,16 @@ module ReportSummary
     total_passed + total_failed
   end
 
-   def run_rate
-    return 0 if total_cases == 0
-    return (total_passed + total_failed + total_measured).to_f / total_cases
+  def run_rate
+    safe_div (total_passed + total_failed + total_measured).to_f, total_cases
   end
 
   def pass_rate
-    return 0 if total_cases == 0
-    return total_passed.to_f / (total_cases - total_measured)
+    safe_div total_passed.to_f, (total_cases - total_measured)
   end
 
   def pass_rate_executed
-    return 0 if total_cases == 0
-    return total_passed.to_f / (total_cases - total_measured - total_na)
+    safe_div total_passed.to_f, (total_cases - total_measured - total_na)
   end
 
   def nft_index
@@ -217,4 +214,9 @@ module ReportSummary
       meego_test_cases.count(:conditions => {:result => result})
     end
   end
+
+  def safe_div(dividend, divisor, div_by_zero=0)
+    divisor == 0 ? div_by_zero : ( dividend / divisor )
+  end
+
 end
