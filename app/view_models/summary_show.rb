@@ -9,40 +9,15 @@ class SummaryShow
   end
 
   def percentage(attribute)
-    format_percentage(@report.send attribute)
-  end
-
-  # def run_rate
-  #   format_percentage(@report.run_rate)
-  # end
-
-  # def pass_rate
-  #   format_percentage(@report.pass_rate)
-  # end
-
-  # def pass_rate_executed
-  #   format_percentage(@report.pass_rate_executed)
-  # end
-
-  # def nft_index
-  #   format_percentage(@report.nft_index)
-  # end
-
-  def executed_pass_rate_change_class
-    return "unchanged" if @report.total_executed == 0 or @report.prev_summary.try(:total_executed) == 0
-    rate_change :pass_rate_executed
+    "%i%%" % ( @report.send(attribute) * 100 ).round
   end
 
   def count_change(attribute)
-    formatted_change attribute, "%+i"
+    format_change @report.change_from_previous(attribute)
   end
 
-  def rate_change(attribute)
-    formatted_change attribute, "%+i%%"
-  end
-
-  def nft_index_change
-    formatted_change :nft_index, "%+.0f%%"
+  def percentage_change(attribute)
+    format_change( (@report.change_from_previous(attribute) * 100).round, "%" )
   end
 
   def change_class(attribute)
@@ -53,18 +28,16 @@ class SummaryShow
     end
   end
 
-  private
-
-  def format_percentage(value)
-    "%0.f%%" % ( value * 100 )
+  def executed_pass_rate_change_class
+    return "unchanged" if @report.total_executed == 0 or @report.prev_summary.try(:total_executed) == 0
+    change_class :pass_rate_executed
   end
 
-  def formatted_change(attribute, format)
-    change = @report.change_from_previous(attribute)
+  private
 
-    return "" if change == 0
-
-    format % change
+  def format_change(value, postfix="")
+    return "" if value == 0
+    ("%+i" % value) + postfix
   end
 
 end
