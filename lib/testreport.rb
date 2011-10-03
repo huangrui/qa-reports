@@ -145,68 +145,6 @@ module ReportSummary
     indices.inject(:+) / indices.count
   end
 
-  # def total_pass_rate
-  #   if total_cases == 0
-  #     "n/a"
-  #   else
-  #     "%i%%" % total_pass_rate_value
-  #   end
-  # end
-
-  # def executed_pass_rate
-  #   if total_executed == 0
-  #     "n/a"
-  #   else
-  #     "%i%%" % executed_pass_rate_value
-  #   end
-  # end
-
-  # def nft_index
-  #   if nft_index_value == 0
-  #     "n/a"
-  #   else
-  #     "%.0f%%" % nft_index_value
-  #   end
-  # end
-
-
-
-  # def total_pass_rate_value
-  #   if total_cases > 0
-  #     (total_passed*100.0/total_cases)
-  #   else
-  #     0
-  #   end
-  # end
-
-  # def executed_pass_rate_value
-  #   if total_executed > 0
-  #     (total_passed*100.0/total_executed)
-  #   else
-  #     0
-  #   end
-  # end
-
-  # def nft_index_value
-  #   return @nft_index unless @nft_index.nil?
-
-  #   # Select measurements for which nft_index can be calculated
-  #   # and map those calculated indices into an array
-  #   indices = MeegoMeasurement.where(:meego_test_case_id => meego_test_cases).select{|m| m.nft_index.present?}.map &:nft_index
-
-  #   @nft_index = if indices.count == 0 then
-  #     0
-  #   else
-  #     indices.inject(:+) / indices.count * 100
-  #   end
-  # end
-
-  # def executed_pass_rate_change_class
-  #   return "unchanged" if total_executed == 0 or prev_summary.try(:total_executed) == 0
-  #   change_class :executed_pass_rate_value
-  # end
-
-
   def metric_change_direction(metric_name)
     return 0 if not prev_summary
 
@@ -218,7 +156,6 @@ module ReportSummary
 
     send(field_name) - prev_summary.send(field_name)
   end
-
 
   def total_nft
     @total_nft ||= total_non_serial_nft + total_serial_nft
@@ -270,8 +207,6 @@ module ReportSummary
       0
     end
   end
-
-
 
   private
 
