@@ -21,13 +21,13 @@
         a#upload_button.small_btn + Add report (or drag here)
 
         small
-          | See example
+          | See example&nbsp;
           a href="/example.xml" xml
-          | ,
+          | ,&nbsp;
           a href="/example.csv" csv
-          |  and
-          a href="http://meego.gitorious.org/meego-quality-assurance/test-definition/blobs/master/src/data/testdefinition-results.xsd"  dataset specification
-          | for reference
+          |  and&nbsp;
+          a href="http://meego.gitorious.org/meego-quality-assurance/test-definition/blobs/master/src/data/testdefinition-results.xsd" dataset specification
+          |  for reference
         = f.error_message_on :result_files
         - if Rails.env.test?
           input#report_test_data.file type="file" name="meego_test_session[result_files_attributes][][file]" tabindex=6 multiple="true"

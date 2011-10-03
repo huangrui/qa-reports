@@ -1,5 +1,3 @@
-require 'test_set'
-
 class MeegoTestSessionSweeper < ActionController::Caching::Sweeper
   observe MeegoTestSession, MeegoTestCase
 
@@ -22,6 +20,7 @@ class MeegoTestSessionSweeper < ActionController::Caching::Sweeper
   	return if not test_session
     expire_fragment "show_page_#{test_session.id}"
     expire_fragment "print_page_#{test_session.id}"
+    expire_fragment "edit_page_#{test_session.id}"
   end
 
   def expire_cache(test_session)
@@ -35,8 +34,6 @@ class MeegoTestSessionSweeper < ActionController::Caching::Sweeper
 
   	next_session = next_session.try(:next_session)
   	expire_fragments_for next_session
-
-    TestSet.invalidate_cache
   end
 
 end

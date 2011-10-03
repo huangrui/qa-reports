@@ -9,6 +9,7 @@ $(document).ready ->
       'inplace-edit@id': -> "input-" + url2id(@url)
       testsets:
         'name@href':  -> @url
+        'compare@href': (element) -> if @comparison_url then @comparison_url else element.hide(); return ""
         'name@id':    -> url2id(@url)
         'inplace-edit@id': -> "input-" + url2id(@url)
         products:

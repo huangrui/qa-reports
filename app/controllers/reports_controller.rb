@@ -104,8 +104,8 @@ class ReportsController < ApplicationController
     @compare_cache_key = "compare_page_#{@release_version}_#{@target}_#{@testset}_#{@comparison_testset}"
 
     MeegoTestSession.published_hwversion_by_release_version_target_testset(@release_version, @target, @testset).each{|product|
-        left = MeegoTestSession.by_release_version_target_testset_product(@release_version, @target, @testset, product.product).first
-        right = MeegoTestSession.by_release_version_target_testset_product(@release_version, @target, @comparison_testset, product.product).first
+        left  = MeegoTestSession.release(@release_version).profile(@target).testset(@testset).product(product.product).first
+        right = MeegoTestSession.release(@release_version).profile(@target).testset(@comparison_testset).product(product.product).first
         @comparison.add_pair(product.product, left, right)
     }
     @groups = @comparison.groups

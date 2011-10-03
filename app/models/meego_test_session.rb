@@ -55,15 +55,10 @@ class MeegoTestSession < ActiveRecord::Base
   validates_presence_of :result_files
   validates_presence_of :author
   validates_presence_of :release
-
-  validates :tested_at, :date_time => true
-
-  validate :validate_labels
-  validate :validate_type_hw
+  validates             :tested_at, :date_time => true
+  validate              :validate_profile_testset_and_product
 
   accepts_nested_attributes_for :features, :result_files
-
-  before_save :force_testset_product_names
 
   scope :published,  where(:published => true)
   scope :release,    lambda { |release| published.joins(:release).where(:releases => {:name => release}) }
@@ -142,37 +137,6 @@ class MeegoTestSession < ActiveRecord::Base
       report.total_na     = result_counts[[report.id, MeegoTestCase::NA]]
       report.total_cases  = report.total_passed + report.total_failed + report.total_na
       report
-    end
-  end
-
-  #TODO: Throw away and use scopes
-  class << self
-    def by_release_version_target_testset_product(release_version, target, testset, product, order_by = "tested_at DESC, id DESC", limit = nil)
-      target    = target.downcase
-      testset  = testset.downcase
-      product = product.downcase
-      published.where("releases.name" => release_version, :target => target, :testset => testset, :product => product).joins(:release).order(order_by).limit(limit)
-    end
-
-    def published_by_release_version_target_testset(release_version, target, testset, order_by = "tested_at DESC, id DESC", limit = nil)
-      target   = target.downcase
-      testset = testset.downcase
-      published.where("releases.name" => release_version, :target => target, :testset => testset).joins(:release).order(order_by).limit(limit)
-    end
-
-    def published_hwversion_by_release_version_target_testset(release_version, target, testset)
-      target   = target.downcase
-      testset = testset.downcase
-      published.where("releases.name" => release_version, :target => target, :testset => testset).select("DISTINCT product").joins(:release).order("product")
-    end
-
-    def published_by_release_version_target(release_version, target, order_by = "tested_at DESC, id DESC", limit = nil)
-      target = target.downcase
-      published.where("releases.name" => release_version, :target => target).joins(:release).order(order_by).limit(limit)
-    end
-
-    def published_by_release_version(release_version, order_by = "tested_at DESC", limit = nil)
-      published.where("releases.name" => release_version).joins(:release).order(order_by).limit(limit)
     end
   end
 
@@ -338,60 +302,17 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 
-  # Check that the target and release_version given as parameters
-  # exist in label tables. Test session tables allow anything, but
-  # if using other than what's in the label tables, the results
-  # won't show up
-  def validate_labels
-    if target.blank?
-      errors.add :target, "can't be blank"
-    else
-      label = TargetLabel.find(:first, :conditions => {:normalized => target.downcase})
-      if not label
-        valid_targets = TargetLabel.labels.join(",")
-        errors.add :target, "Incorrect target '#{target}'. Valid ones are #{valid_targets}."
-      end
-    end
-  end
+  def validate_profile_testset_and_product
+    errors.add :target, "Incorrect target '#{target}'. Valid ones are #{TargetLabel.labels.join(',')}." if target.present? and not TargetLabel.find_by_normalized(target.downcase)
 
-  # Validate user entered test set and hw product. If all characters are
-  # allowed users may enter characters that break the functionality. Thus,
-  # restrict the allowed subset to certainly safe
-  def validate_type_hw
     # \A and \z instead of ^ and $ cause multiline strings to fail validation.
     # And for the record: at least these characters break the navigation:
     # . % \ / (yes, dot is there as well for some oddball reason)
     allowed = /\A[\w\ \-:;,\(\)]+\z/
 
-    if not testset.match(allowed)
-      errors.add :testset, "Incorrect test set. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( )"
-    end
-
-    if not product.match(allowed)
-      errors.add :product, "Incorrect product. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( )"
-    end
+    errors.add :testset, "Incorrect test set. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( )" unless testset.match(allowed)
+    errors.add :product, "Incorrect product. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( )"  unless product.match(allowed)
   end
-
-  def force_testset_product_names
-    write_attribute :testset, testset_label
-    write_attribute :product, product_label
-  end
-
-  def testset_label
-    @testset_label = self.class.persistent_label_for(:testset, testset) if @testset_label.nil? or testset.casecmp(@testset_label) != 0
-    @testset_label
-  end
-
-  def product_label
-    @product_label = self.class.persistent_label_for(:product, product) if @product_label.nil? or product.casecmp(@product_label) != 0
-    @product_label
-  end
-
-  def self.persistent_label_for(attribute, name)
-    session = MeegoTestSession.select(attribute).find(:first, :conditions => {attribute => name})
-    session.present? ? session.send(attribute) : name
-  end
-
 
   def generate_defaults!
     time                 = tested_at || Time.now
@@ -405,30 +326,6 @@ class MeegoTestSession < ActiveRecord::Base
 
   def format_year
     tested_at.strftime("%Y")
-  end
-
-  def self.map_result(result)
-    result = result.downcase
-    if result == "pass"
-      1
-    elsif result == "fail"
-      -1
-    else
-      0
-    end
-  end
-
-  def sanitize_filename(filename)
-    filename.gsub(/[^\w\.\_\-]/, '_')
-  end
-
-  def valid_filename_extension?(filename)
-    if filename =~ /\.csv$/i or filename =~ /\.xml$/i
-      return true
-    else
-      errors.add :result_files, "You can only upload files with the extension .xml or .csv"
-      return false
-    end
   end
 
   def update_report_result(user, params, published = true)
