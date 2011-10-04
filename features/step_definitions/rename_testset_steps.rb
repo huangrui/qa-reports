@@ -1,4 +1,8 @@
 focused_input = ""
+RELEASE = Release.in_sort_order.first
+def testset_selector(profile, testset)
+  return "#{Release.in_sort_order.first.name}/#{profile}/#{testset}".gsub(/\//,'-').gsub(/\s/,'-').gsub(/\./,'_')
+end
 
 Given /^I have no target labels$/ do
   TargetLabel.delete_all
@@ -17,7 +21,7 @@ When /^I click on the edit button$/ do
 end
 
 When /^I edit the testset name "([^"]*)" to "([^"]*)" for profile "([^"]*)"$/ do |orig_name, new_name, profile|
-  testset_sel       = "#{Release.in_sort_order.first.name}/#{profile}/#{orig_name}".gsub(/\//,'-').gsub(/\s/,'-').gsub(/\./,'_')
+  testset_sel       = testset_selector(profile, orig_name)
   input_testset_sel = "input-#{testset_sel}"
 
   click_on(testset_sel)
@@ -25,14 +29,13 @@ When /^I edit the testset name "([^"]*)" to "([^"]*)" for profile "([^"]*)"$/ do
   focused_input = find("##{input_testset_sel}")
 end
 
-When /^I press enter$/ do
+When /^I press enter key$/ do
   focused_input.native.send_key("\n")
 end
 
 Then /^I should see testset "([^"]*)" for profile "([^"]*)"$/ do |testset, profile|
-  puts find('.profiles')
-
-  Then %{I should see "#{testset}" within ".testsets"}
+  sel = testset_selector(profile,testset)
+  Then %{I should see "#{testset}" within "#{sel}"}
 end
 
 When /^I press done button$/ do
@@ -40,25 +43,28 @@ When /^I press done button$/ do
 end
 
 When /^I reload the front page$/ do
-  pending # express the regexp above with the code you wish you had
+  visit('/')
 end
 
-When /^I press escape button$/ do
-  pending # express the regexp above with the code you wish you had
+When /^I press escape key$/ do
+  focused_input.native.send_key("\e")
 end
 
-When /^I rename the testset "([^"]*)" under profile "([^"]*)" to "([^"]*)"$/ do |arg1, arg2, arg3|
-  pending # express the regexp above with the code you wish you had
+When /^I rename the testset "([^"]*)" under profile "([^"]*)" to "([^"]*)"$/ do |orig_name, profile, new_name|
+  Then %{I click on the edit button}
+  And %{I edit the testset name "#{orig_name}" to "#{new_name}" for profile "#{profile}"}
+  And %{I press enter key}
+  And %{I press done button}
 end
 
-When /^I view the group report for "([^"]*)"$/ do |arg1|
-  pending # express the regexp above with the code you wish you had
+When /^I view the group report for "([^"]*)"$/ do |path|
+  visit("/#{RELEASE.name}/#{path}")
 end
 
-Then /^I should see "([^"]*)" in test reports titles$/ do |arg1|
-  pending # express the regexp above with the code you wish you had
+Then /^I should see "([^"]*)" in test reports titles$/ do |title|
+  Then %{I should see "#{title}" within "#report_filtered_navigation .report_name"}
 end
 
-Then /^I should not see "([^"]*)" in test reports titles$/ do |arg1|
-  pending # express the regexp above with the code you wish you had
+Then /^I should not see "([^"]*)" in test reports titles$/ do |title|
+  Then %{I should not see "#{title}" within "#report_filtered_navigation .report_name"}
 end

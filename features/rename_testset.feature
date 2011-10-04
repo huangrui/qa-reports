@@ -15,7 +15,8 @@ Feature:
   Scenario: Rename testset in front page
     When I click on the edit button
     And I edit the testset name "foo" to "bar" for profile "Core"
-    And I press enter
+    And I press enter key
+    Then show me the page
 
     #TODO: remove once stuff goes to database
     Then I should see testset "bar" for profile "Core"
@@ -29,10 +30,11 @@ Feature:
     And I should see testset "foo" for profile "Handset"
 
 #  @wip
+  @selenium
   Scenario: Cancel testset renaming
     When I click on the edit button
     And I edit the testset name "foo" to "bar" for profile "Core"
-    And I press escape button
+    And I press escape key
 
     #TODO: remove once stuff goes to database
     Then I should see testset "foo" for profile "Core"
@@ -46,6 +48,7 @@ Feature:
     And I should see testset "foo" for profile "Handset"
 
 #  @wip
+  @selenium
   Scenario: Automatic renaming of report titles when testset is renamed
     When I rename the testset "foo" under profile "Core" to "bar"
     And I view the group report for "Core/bar"
