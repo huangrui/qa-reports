@@ -118,6 +118,11 @@ class MeegoTestSession < ActiveRecord::Base
     read_attribute(:target).try(:capitalize)
   end
 
+  def testset=(new_testset)
+    title.gsub! /#{testset}/, new_testset unless title.nil?
+    write_attribute(:testset,new_testset)
+  end
+
   def self.popular_build_ids(limit=3)
     published.select("build_id as build_id").order("COUNT(build_id) DESC").
       group(:build_id).limit(limit).map { |row| row.build_id.humanize }
