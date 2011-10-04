@@ -72,10 +72,6 @@ class Feature < ActiveRecord::Base
     end
   end
 
-  # def graph_img_tag(max_cases)
-  #   html_graph(total_passed, total_failed, total_na, max_cases)
-  # end
-
   def test_set_link
     "#test-set-%i" % id
   end
