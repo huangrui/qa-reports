@@ -191,17 +191,11 @@ module ReportSummary
   end
 
   def calculate_grading
-    if total_cases > 0
-      pass_rate = total_passed * 100 / total_cases
-      if pass_rate < 40
-        1
-      elsif pass_rate < 90
-        2
-      else
-        3
-      end
-    else
-      0
+    return 0 if total_cases - total_measured == 0
+    case pass_rate
+    when 0.9..1.0 then 3
+    when 0.4..0.9 then 2
+    else 1
     end
   end
 

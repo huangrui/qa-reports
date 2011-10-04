@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testresults>
+  <!--
+     This sample file creates a report that has 10 different measurements.
+     The "% of target"s for these are 2 x 50%, 1 x 150%, 1 x 66.6%, 3 x 0.00%.
+     For 3 measurements that value cannot be calculated. The NFT index for
+     this set is thus: (2 x 50 + 100 + 66.6) / 7 = 38%
+    -->
+  <suite name="NFT tests">
+    <set name="NFT tests" feature="NFT">
+      <case name="Measured type case 1"
+      result="MEASURED">
+  <measurement name="plain measurement 1-1"
+         unit="bps"
+         value="1200"/>
+  <measurement name="plain measurement 1-2"
+         unit="s"
+         value="5"/>
+      </case>
+      <case name="Measured type case 2"
+      result="MEASURED">
+  <measurement name="plain measurement 2-1"
+         unit="bps"
+         value="1200"/>
+  <measurement name="plain measurement 2-1"
+         unit="s"
+         value="5"/>
+      </case>
+    </set>
+  </suite>
+</testresults>
