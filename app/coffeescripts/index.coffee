@@ -18,7 +18,9 @@ $(document).ready ->
           'name@id':   -> url2id(@url)
           'inplace-edit@id': -> "input-" + url2id(@url)
 
-  $('#report_navigation').empty().append( $('#report_navigation_template').clone().render(index_model, directives).children() )
+  $('#report_navigation').empty().append( $('#report_navigation_template').clone().render(index_model, directives).children() ) unless $('#report_navigation').hasClass('rendered') #if clause is for debugging
+
+  $('#report_navigation').addClass('rendered') #debug
 
   $inputs    = $('#report_navigation input.inplace-edit')
   $editables = null
