@@ -118,6 +118,10 @@ module ReportSummary
     @total_na = num
   end
 
+  def total_measured=(num)
+    @total_measured = num
+  end
+
   def total_executed
     total_passed + total_failed
   end
