@@ -1,3 +1,5 @@
+focused_input = ""
+
 Given /^I have no target labels$/ do
   TargetLabel.delete_all
 end
@@ -15,21 +17,26 @@ When /^I click on the edit button$/ do
 end
 
 When /^I edit the testset name "([^"]*)" to "([^"]*)" for profile "([^"]*)"$/ do |orig_name, new_name, profile|
-  testset_id = "#{Release.in_sort_order.first.name}-#{profile}-#{orig_name}"
-  click_on(testset_id)
-  fill_in "input-#{testset_id}", :with => new_name
+  testset_sel       = "#{Release.in_sort_order.first.name}/#{profile}/#{orig_name}".gsub(/\//,'-').gsub(/\s/,'-').gsub(/\./,'_')
+  input_testset_sel = "input-#{testset_sel}"
+
+  click_on(testset_sel)
+  fill_in input_testset_sel, :with => new_name
+  focused_input = find("##{input_testset_sel}")
 end
 
 When /^I press enter$/ do
-  pending # express the regexp above with the code you wish you had
+  focused_input.native.send_key("\n")
 end
 
-Then /^I should see testset "([^"]*)" for profile "([^"]*)"$/ do |arg1, arg2|
-  pending # express the regexp above with the code you wish you had
+Then /^I should see testset "([^"]*)" for profile "([^"]*)"$/ do |testset, profile|
+  puts find('.profiles')
+
+  Then %{I should see "#{testset}" within ".testsets"}
 end
 
 When /^I press done button$/ do
-  pending # express the regexp above with the code you wish you had
+  click_on("#home_edit_done_link")
 end
 
 When /^I reload the front page$/ do
