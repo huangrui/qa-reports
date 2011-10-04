@@ -8,7 +8,7 @@
     -->
   <suite name="NFT tests">
     <set name="NFT tests" feature="NFT">
-      <case name="Different NFT measurements, target larger than failure" 
+      <case name="Different NFT measurements, target larger than failure"
 	    result="PASS">
 	<measurement name="all values"
 		     unit="bps"
@@ -41,7 +41,7 @@
 		     target=""
 		     failure=""/>
       </case>
-      <case name="Different NFT measurements, failure larger than target" 
+      <case name="Different NFT measurements, failure larger than target"
 	    result="PASS">
 	<measurement name="all values"
 		     unit="bps"
@@ -63,6 +63,12 @@
 		     value=""
 		     target="15"
 		     failure="20"/>
+      </case>
+      <case name="Measured type case"
+      result="MEASURED">
+  <measurement name="plain measurement"
+         unit="bps"
+         value="10"/>
       </case>
     </set>
   </suite>

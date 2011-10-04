@@ -136,6 +136,7 @@ Feature:
     Then I should see "Non-functional Test Results"
     And I should see "Throughput"
     And I should not see "Detailed Test Results"
+    And the result of test case "NFT Case 3" should be "Measured"
 
   Scenario: Add a CSV report with both NFT and Functional cases
     When I follow "Add report"
@@ -157,6 +158,7 @@ Feature:
 
     Then I should see "NFT Index"
     And I should see "61%"
+    And the result of test case "Measured type case" should be "Measured"
 
   Scenario: NFT index not shown if there are no non-serial measurements
     When I follow "Add report"
