@@ -9,7 +9,6 @@ Feature:
     And I have uploaded reports with profile "Handset" having testset "foo"
     And I am on the front page
     And I am logged in
-    Then show me the page
 
   @wip
   @selenium
