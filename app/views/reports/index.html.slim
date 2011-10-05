@@ -30,5 +30,7 @@ input#auth_token name="authenticity_token" type="hidden" value=form_authenticity
 
 - content_for :view_specific_js do
   javascript:
-    index_model = #{{@index_model.to_json}}
+    index_model = #{{@index_model.to_json}};
+    auth_token = "#{{form_authenticity_token}}";
+
   = javascript_include_tag 'index'

@@ -7,15 +7,16 @@ $(document).ready ->
     profiles:
       'name@href':    -> @url
       'name@id':      -> url2id(@url)
-      'inplace-edit@id': -> "input-" + url2id(@url)
       testsets:
         'name@href':  -> @url
         'compare@href': (element) -> if @comparison_url then @comparison_url else element.hide(); return ""
         'name@id':    -> url2id(@url)
+        'inplace-edit@data-url': -> @url
         'inplace-edit@id': -> "input-" + url2id(@url)
         products:
           'name@href': -> @url
           'name@id':   -> url2id(@url)
+          'inplace-edit@data-url': -> @url
           'inplace-edit@id': -> "input-" + url2id(@url)
 
   $('#report_navigation').empty().append( $('#report_navigation_template').clone().render(index_model, directives).children() ) unless $('#report_navigation').hasClass('rendered') #if clause is for debugging
@@ -68,15 +69,23 @@ $(document).ready ->
     $input.prev('a.name').show()
     $editables.removeClass 'being_edited' if $editables?
     $editables = null
-    doPost(input)
+    postCategoryNameUpdate(input)
     return false
 
-  doPost = (input) ->
-    $input    = $(input)
-    data = $(input).clone().append('#post_method').append('#auth_token').serialize()
-    #console.log data
-    #$.post action, data
+  postCategoryNameUpdate = (input) ->
+    $input   = $(input)
+    post_url = $input.attr('data-url')
+    val  = $input.val()
 
+    data =
+      "authenticity_token" : auth_token
+      "_method"            : "put"
+      name                 : val
+
+    console.log data
+    console.log post_url
+    $.post post_url, data, (res) ->
+      console.log res
 
   initInplaceEdit = ->
     # Reset input fields
