@@ -1,4 +1,6 @@
 $(document).ready ->
+  $navigation = $('#report_navigation')
+
   url2id = (url) ->
     url = url.substr(1) if url.charAt(0) == ('/')
     url.replace(/\//g,'-').replace(/\s/g,'-').replace(/\./g,'_')
@@ -19,12 +21,10 @@ $(document).ready ->
           'inplace-edit@data-url': -> @url
           'inplace-edit@id': -> "input-" + url2id(@url)
 
-  $('#report_navigation').empty().append( $('#report_navigation_template').clone().render(index_model, directives).children() ) unless $('#report_navigation').hasClass('rendered') #if clause is for debugging
+  $navigation.empty().append( $('#report_navigation_template').clone().render(index_model, directives).children() )
 
-  $('#report_navigation').addClass('rendered') #debug
-
-  $inputs    = $('#report_navigation input.inplace-edit')
-  $editables = null
+  $inputs            = $navigation.find 'input.inplace-edit'
+  $editables         = null
 
   resetInputValue = (input) ->
     $input = $(input)
@@ -80,7 +80,7 @@ $(document).ready ->
     data =
       "authenticity_token" : auth_token
       "_method"            : "put"
-      name                 : val
+      "new_value"          : val
 
     console.log data
     console.log post_url
@@ -114,13 +114,13 @@ $(document).ready ->
   # View mode / Edit mode
   $('#home_edit_link').click () ->
     $('#index_page').addClass 'editing'
-    $('#index_page.editing #report_navigation tbody a.name').addClass('editable_text').css 'display', 'block'
-    $('a.compare').hide()
+    $navigation.find('tbody a.name').addClass('editable_text').css 'display', 'block'
+    $navigation.find('a.compare').hide()
 
   $('#home_edit_done_link').click () ->
     $('#index_page').removeClass 'editing'
-    $('#report_navigation tbody a.name').removeClass 'editable_text'
-    $('#report_navigation tbody a.name').css 'display', 'inline'
-    $('a.compare').show()
+    $navigation.find('tbody a.name').removeClass 'editable_text'
+    $navigation.find('tbody a.name').css 'display', 'inline'
+    $navigation.find('a.compare').filter((index) -> $(this).attr('href').length > 0).show()
 
   initInplaceEdit()
