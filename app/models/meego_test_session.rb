@@ -198,41 +198,47 @@ class MeegoTestSession < ActiveRecord::Base
   ###############################################
   def summary_data
     data = Graph::Data.new
-    data.passed = passed = []
-    data.failed = failed = []
-    data.na     = na     = []
-    data.labels = labels = []
+    data.passed    = passed   = []
+    data.failed    = failed   = []
+    data.na        = na       = []
+    data.measured  = measured = []
+    data.labels    = labels   = []
 
     prev = prev_session
     if prev
       pp = prev.prev_session
       if pp
-        passed << pp.total_passed
-        failed << pp.total_failed
-        na     << pp.total_na
-        labels << pp.formatted_date
+        passed    << pp.total_passed
+        failed    << pp.total_failed
+        na        << pp.total_na
+        measured  << pp.total_measured
+        labels    << pp.formatted_date
       else
-        passed << 0
-        failed << 0
-        na     << 0
-        labels << ""
+        passed    << 0
+        failed    << 0
+        na        << 0
+        measured  << 0
+        labels    << ""
       end
 
-      passed << prev.total_passed
-      failed << prev.total_failed
-      na     << prev.total_na
-      labels << prev.formatted_date
+      passed    << prev.total_passed
+      failed    << prev.total_failed
+      na        << prev.total_na
+      measured  << prev.total_measured
+      labels    << prev.formatted_date
     else
-      passed << 0
-      failed << 0
-      na     << 0
-      labels << ""
+      passed    << 0
+      failed    << 0
+      na        << 0
+      measured  << 0
+      labels    << ""
     end
 
-    passed << total_passed
-    failed << total_failed
-    na     << total_na
-    labels << "Current"
+    passed    << total_passed
+    failed    << total_failed
+    na        << total_na
+    measured  << total_measured
+    labels    << "Current"
 
     data
   end
