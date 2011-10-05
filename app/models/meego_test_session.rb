@@ -118,9 +118,18 @@ class MeegoTestSession < ActiveRecord::Base
     read_attribute(:target).try(:capitalize)
   end
 
+  def update_title(old_label, new_label)
+    title.gsub! /#{old_label}/i, new_label unless title.nil? or not old_label.present?
+  end
+
   def testset=(new_testset)
-    title.gsub! /#{testset}/, new_testset unless title.nil?
-    write_attribute(:testset,new_testset)
+    update_title testset, new_testset
+    write_attribute :testset, new_testset
+  end
+
+  def product=(new_product)
+    update_title product, new_product
+    write_attribute :product, new_product
   end
 
   def self.popular_build_ids(limit=3)
