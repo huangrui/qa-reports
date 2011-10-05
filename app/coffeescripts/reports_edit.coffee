@@ -364,6 +364,7 @@ linkTestCaseButtons = (node) ->
             "-1": 'fail'
             "0": 'na'
             "1": 'pass'
+            "2": 'measured'
 
     $comment.click handleCommentEdit
 
