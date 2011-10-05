@@ -49,13 +49,13 @@ class MeegoTestCase < ActiveRecord::Base
   end
 
   def find_change_class(prev_session)
-    testcase = find_matching_case(prev_session)
-    return '' unless testcase
-    return case testcase.result
+    return case find_matching_case(prev_session).try(:result)
+      when nil    then ''
       when result then 'unchanged_result'
       when     -1 then 'changed_result changed_from_fail'
       when      0 then 'changed_result changed_from_na'
       when      1 then 'changed_result changed_from_pass'
+      when      2 then 'changed_result changed_from_measured'
     end
   end
 
