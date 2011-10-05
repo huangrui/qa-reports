@@ -11,4 +11,11 @@ class TestSetsController < ApplicationController
       format.json {render :json => @testsets}
     end
   end
+
+  def update
+    reports = MeegoTestSession.release(params[:release_version]).profile(params[:target]).testset(params[:testset]).readonly(false)
+    reports.find_each { |report| report.testset = params[:new_value]; report.save }
+    head :ok
+  end
+
 end

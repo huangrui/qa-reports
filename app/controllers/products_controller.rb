@@ -11,4 +11,10 @@ class ProductsController < ApplicationController
       format.json {render :json => @products}
     end
   end
+
+  def update
+    reports = MeegoTestSession.product_is(params[:product]).readonly(false)
+    reports.find_each { |report| report.product = params[:new_value]; report.save }
+    head :ok
+  end
 end
