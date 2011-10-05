@@ -28,11 +28,6 @@ class SummaryShow
     end
   end
 
-  def executed_pass_rate_change_class
-    return "unchanged" if @report.total_executed == 0 or @report.prev_summary.try(:total_executed) == 0
-    change_class :pass_rate_executed
-  end
-
   private
 
   def format_change(value, postfix="")

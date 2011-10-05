@@ -59,7 +59,7 @@ h2#test_results
           td Pass rate of executed
           td
             strong= @report_show.percentage(:pass_rate_executed)
-          td class=@report_show.executed_pass_rate_change_class
+          td class=@report_show.change_class(:pass_rate_executed)
             em= @report_show.percentage_change(:pass_rate_executed)
         - if @report.has_non_serial_nft?
           tr
