@@ -82,9 +82,8 @@ $(document).ready ->
       "_method"            : "put"
       "new_value"          : val
 
-    console.log data
-    console.log post_url
     $.post post_url, data, (res) ->
+      #TODO refresh (fetch new index_model and render)
       console.log res
 
   initInplaceEdit = ->
