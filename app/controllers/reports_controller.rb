@@ -41,7 +41,10 @@ class ReportsController < ApplicationController
   def index
     @index_model = Index.find_by_release(release)
     @show_rss = true
-    render :layout => "application"
+    respond_to do |format|
+      format.html {render :layout => "application"}
+      format.json {render :json => @index_model}
+    end
   end
 
   def preview
