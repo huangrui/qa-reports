@@ -13,7 +13,8 @@ When /^I have uploaded reports with profile "([^"]*)" having testset "([^"]*)"$/
   FactoryGirl.create_list(:test_report, 2,
     :release => Release.in_sort_order.first,
     :target  => profile.downcase,
-    :testset => testset)
+    :testset => testset,
+    :title => "#{testset} Test Report: N900 Basic Feature 2011-09-29")
 end
 
 When /^I click on the edit button$/ do
