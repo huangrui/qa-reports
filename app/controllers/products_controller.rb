@@ -15,6 +15,8 @@ class ProductsController < ApplicationController
   def update
     reports = MeegoTestSession.product_is(params[:product]).readonly(false)
     reports.find_each { |report| report.product = params[:new_value]; report.save }
+    # ensure that also invalid reports (that can't be saved properly) get changed
+    reports.update_all :product => params[:new_value]
     head :ok
   end
 end
