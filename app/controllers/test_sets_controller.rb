@@ -13,10 +13,12 @@ class TestSetsController < ApplicationController
   end
 
   def update
-    reports = MeegoTestSession.release(params[:release_version]).profile(params[:target]).testset(params[:testset]).readonly(false)
-    reports.find_each { |report| report.testset = params[:new_value]; report.save }
-    # ensure that also invalid reports (that can't be saved properly) get changed
-    reports.update_all :testset => params[:new_value]
+    release, target, testset, new_value = params.values_at :release_version, :target, :testset, :new_value
+    reports = MeegoTestSession.release(release).profile(target).testset(testset).readonly(false)
+
+    reports.update_all ["testset = ?, updated_at = ?, title = replace(title, ?, ?)",
+        new_value, DateTime.now, testset, new_value]
+
     head :ok
   end
 

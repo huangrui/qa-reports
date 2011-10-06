@@ -13,14 +13,12 @@ class ProductsController < ApplicationController
   end
 
   def update
-    product, new_value = params[:product], params[:new_value]
+    product, new_value = params.values_at :product, :new_value
     reports = MeegoTestSession.product_is(product).readonly(false)
-    #reports.find_each { |report| report.product = params[:new_value]; report.save }
-    # ensure that also invalid reports (that can't be saved properly) get changed
-    reports.update_all :title => "replace(title, '#{product}', '#{new_value}'",
-      :product => new_value, :updated_at => DateTime.now
-    #reports.update_all :product => new_value
-    #MeegoTestSession.update_
+
+    reports.update_all ["product = ?, updated_at = ?, title = replace(title, ?, ?)",
+        new_value, DateTime.now, product, new_value]
+
     head :ok
   end
 end
