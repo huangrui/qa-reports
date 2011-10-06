@@ -1,3 +1,4 @@
+
 $(document).ready ->
   $navigation = $('#report_navigation')
 
@@ -21,9 +22,11 @@ $(document).ready ->
           'inplace-edit@data-url': -> @url
           'inplace-edit@id': -> "input-" + url2id(@url)
 
-  $navigation.empty().append( $('#report_navigation_template').clone().render(index_model, directives).children() )
+  render_navigation = (model) ->
+    $navigation.empty().append( $('#report_navigation_template').clone().render(model, directives).children() )
 
-  $inputs            = $navigation.find 'input.inplace-edit'
+  render_navigation(index_model)
+
   $editables         = null
 
   resetInputValue = (input) ->
@@ -82,22 +85,43 @@ $(document).ready ->
       "_method"            : "put"
       "new_value"          : val
 
-    $.post post_url, data, (res) ->
-      #TODO refresh (fetch new index_model and render)
-      console.log res
+    $.post post_url, data, (res, status) ->
+      $.ajax
+        "url"      : "/"
+        "dataType" : "json"
+        "success"  : (data) ->
+          console.log data
+          render_navigation(data)
+          editMode()
+
+  editMode = ->
+    $('#index_page').addClass 'editing'
+    $navigation.find('tbody a.name').addClass('editable_text').css 'display', 'block'
+    $navigation.find('a.compare').hide()
+
+  viewMode = ->
+    $('#index_page').removeClass 'editing'
+    $navigation.find('tbody a.name').removeClass 'editable_text'
+    $navigation.find('tbody a.name').css 'display', 'inline'
+    $navigation.find('a.compare').filter((index) -> $(this).attr('href').length > 0).show()
 
   initInplaceEdit = ->
+    # View mode / Edit mode
+    $('#home_edit_link').click editMode
+    $('#home_edit_done_link').click viewMode
+
     # Reset input fields
-    $inputs.each () -> $(this).val $(this).prev('a.name').text()
+    $inputs = $navigation.find 'input.inplace-edit'
+    $inputs.live 'focus', () -> $(this).val $(this).prev('a.name').text()
 
     # Edit events
     $('#index_page.editing #report_navigation tbody a.name').live 'click', () -> editHandler this
-    $inputs.blur -> cancelHandler this
-    $inputs.keyup (key) -> cancelHandler this if (key.keyCode == 27) # esc
-    $inputs.keyup (key) -> submitHandler this if (key.keyCode == 13) # enter
+    $inputs.live 'blur', -> cancelHandler this
+    $inputs.live 'keyup', (key) -> cancelHandler this if (key.keyCode == 27) # esc
+    $inputs.live 'keyup', (key) -> submitHandler this if (key.keyCode == 13) # enter
 
     # Real-time update to similar products
-    $('.products input.inplace-edit').keyup -> $editables.text $(this).val() if $editables?
+    $('.products input.inplace-edit').live 'keyup', -> $editables.text $(this).val() if $editables?
 
      # Hover hilight for products
     $('#index_page.editing .products a').live 'mouseover', () ->
@@ -109,17 +133,5 @@ $(document).ready ->
     $('#index_page.editing .products a').live 'mouseout', () ->
       $('#index_page.editing .products a').removeClass('to_be_edited')
     return false
-
-  # View mode / Edit mode
-  $('#home_edit_link').click () ->
-    $('#index_page').addClass 'editing'
-    $navigation.find('tbody a.name').addClass('editable_text').css 'display', 'block'
-    $navigation.find('a.compare').hide()
-
-  $('#home_edit_done_link').click () ->
-    $('#index_page').removeClass 'editing'
-    $navigation.find('tbody a.name').removeClass 'editable_text'
-    $navigation.find('tbody a.name').css 'display', 'inline'
-    $navigation.find('a.compare').filter((index) -> $(this).attr('href').length > 0).show()
 
   initInplaceEdit()
