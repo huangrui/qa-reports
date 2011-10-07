@@ -10,6 +10,12 @@ Feature:
     And I am on the front page
     And I am logged in
 
+  Scenario: Hide edit button when not logged in
+    When I log out
+    And I am on the front page
+
+    Then I should not see the edit button
+
   @selenium
   Scenario: Rename testset in front page
     When I click on the edit button

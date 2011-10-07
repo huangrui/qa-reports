@@ -74,3 +74,7 @@ end
 Then /^I should not see "([^"]*)" in test reports titles$/ do |title|
   Then %{I should not see "#{title}" within "#report_filtered_navigation .report_name"}
 end
+
+Then /^I should not see the edit button$/ do
+  page.should have_no_link("home_edit_link")
+end
