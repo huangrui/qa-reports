@@ -1,15 +1,11 @@
 focused_input = ""
-RELEASE = Release.in_sort_order.first
+
 def category_url(*category)
   "/#{Release.in_sort_order.first.name}/#{category.join('/')}"
 end
 
 def category_selector(*category)
   "#report_navigation a.name[href='#{category_url(category)}']"
-end
-
-Given /^I have no target labels$/ do
-  TargetLabel.delete_all
 end
 
 When /^I have uploaded reports with profile "([^"]*)" having testset "([^"]*)"$/ do |profile, testset|
