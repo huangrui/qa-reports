@@ -1,6 +1,6 @@
 Feature:
   As a Meego QA engineer
-  I want to be able to rename testsets
+  I want to be able to rename testsets and products
   So that I can better reorganize and manage reports
 
   Background:
