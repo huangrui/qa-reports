@@ -1,32 +1,21 @@
-
 $(document).ready ->
   $navigation = $('#report_navigation')
-
-  url2id = (url) ->
-    url = url.substr(1) if url.charAt(0) == ('/')
-    url.replace(/\//g,'-').replace(/\s/g,'-').replace(/\./g,'_')
 
   directives =
     profiles:
       'name@href':    -> @url
-      'name@id':      -> url2id(@url)
       testsets:
         'name@href':  -> @url
         'compare@href': (element) -> if @comparison_url then @comparison_url else element.hide(); return ""
-        'name@id':    -> url2id(@url)
         'inplace-edit@data-url': -> @url
-        'inplace-edit@id': -> "input-" + url2id(@url)
         products:
           'name@href': -> @url
-          'name@id':   -> url2id(@url)
           'inplace-edit@data-url': -> @url
-          'inplace-edit@id': -> "input-" + url2id(@url)
 
   render_navigation = (model) ->
     $navigation.empty().append( $('#report_navigation_template').clone().render(model, directives).children() )
 
   render_navigation(index_model)
-
   $editables         = null
 
   resetInputValue = (input) ->
