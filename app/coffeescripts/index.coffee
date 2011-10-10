@@ -16,13 +16,13 @@ $(document).ready ->
     $navigation.render model, directives
 
   render_navigation(index_model)
-  $editables         = null
+  $editables = $()
 
   resetInputValue = (input) ->
     $input = $(input)
     $link  = $input.prev('a.name')
     $input.val $link.text()
-    $editables.text($link.text()) if $editables? # revert text for similar products
+    $editables.text($link.text()) # revert text for similar products
     return false
 
   writeInputValue = (input) ->
@@ -30,9 +30,8 @@ $(document).ready ->
     value  = $input.val()
     $link  = $input.prev('a.name')
     $link.text value
-    if $editables?
-      $editables.text value  # write text for similar products
-      $editables.next('input.inplace-edit').val value
+    $editables.text value  # write text for similar products
+    $editables.next('input.inplace-edit').val value
     return false
 
   editHandler = (link) ->
@@ -41,7 +40,7 @@ $(document).ready ->
     $link.next('input.inplace-edit').show().focus()
     # set editables for real-time update to similar products
     $editables = $('.products a').not($link).filter () ->
-      return $(this).text() == $link.text()
+      $(this).text() == $link.text()
     $editables.addClass 'being_edited'
     return false
 
@@ -50,8 +49,8 @@ $(document).ready ->
     resetInputValue($input)
     $input.hide()
     $input.prev('a.name').show()
-    $editables.removeClass 'being_edited' if $editables?
-    $editables = null
+    $editables.removeClass 'being_edited'
+    $editables = $()
     return false
 
   #TODO: combine common parts cancel submit
@@ -60,8 +59,8 @@ $(document).ready ->
     writeInputValue($input)
     $input.hide()
     $input.prev('a.name').show()
-    $editables.removeClass 'being_edited' if $editables?
-    $editables = null
+    $editables.removeClass 'being_edited'
+    $editables = $()
     postCategoryNameUpdate(input)
     return false
 
@@ -111,11 +110,11 @@ $(document).ready ->
     $inputs.live 'keyup', (key) -> submitHandler this if (key.keyCode == 13) # enter
 
     # Real-time update to similar products
-    $('.products input.inplace-edit').live 'keyup', -> $editables.text $(this).val() if $editables?
+    $('.products input.inplace-edit').live 'keyup', -> $editables.text $(this).val()
 
      # Hover hilight for products
     $('#index_page.editing .products a').live 'mouseover', () ->
-      if not $editables?
+      if $editables.length == 0
         product_name = $(this).text()
         $('#index_page.editing .products a').filter(() ->
           return $(this).text() == product_name
