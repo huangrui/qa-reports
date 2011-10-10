@@ -8,12 +8,13 @@ def category_selector(*category)
   "#report_navigation a.name[href='#{category_url(category)}']"
 end
 
-When /^I have uploaded reports with profile "([^"]*)" having testset "([^"]*)"$/ do |profile, testset|
+When /^I have uploaded reports with profile "([^"]*)" having testset "([^"]*)" and product "([^"]*)"$/ do |profile, testset, product|
 #  FactoryGirl.create(:profile, :label => profile, :normalized => profile.downcase) if TargetLabel.find_by_label(profile).nil?
   FactoryGirl.create_list(:test_report, 2,
     :release => Release.in_sort_order.first,
     :target  => profile.downcase,
     :testset => testset,
+    :product => product,
     :title => "#{testset} Test Report: N900 Basic Feature 2011-09-29")
 end
 
@@ -73,4 +74,18 @@ end
 
 Then /^I should not see the edit button$/ do
   page.should have_no_link("home_edit_link")
+end
+
+When /^I edit the product name "([^"]*)" to "([^"]*)"$/ do |old_name, new_name|
+  product = first("#report_navigation .products a", :text => old_name)
+  product.click
+  focused_input = product.find(:xpath, "../input")
+  focused_input.set new_name
+end
+
+When /^I rename the product "([^"]*)" to "([^"]*)"$/ do |old_name, new_name|
+  Then %{I click on the edit button}
+  And %{I edit the product name "#{old_name}" to "#{new_name}"}
+  And %{I press enter key}
+  And %{I press done button}
 end

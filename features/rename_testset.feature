@@ -4,8 +4,9 @@ Feature:
   So that I can better reorganize and manage reports
 
   Background:
-    Given I have uploaded reports with profile "Core" having testset "foo"
-    And I have uploaded reports with profile "Handset" having testset "foo"
+    Given I have uploaded reports with profile "Core" having testset "foo" and product "N900"
+    And I have uploaded reports with profile "Handset" having testset "foo" and product "N900"
+    And I have uploaded reports with profile "Handset" having testset "foo" and product "Pinetrail"
     And I am on the front page
     And I am logged in
 
@@ -53,3 +54,11 @@ Feature:
     Then I should see "foo" in test reports titles
     But I should not see "bar" in test reports titles
 
+  @selenium
+  Scenario: Rename product
+    When I rename the product "N900" to "N950"
+    And I press done button
+    And I reload the front page
+
+    Then I should see "N950"
+    But I should not see "N900"
