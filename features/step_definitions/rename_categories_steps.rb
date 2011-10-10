@@ -1,7 +1,12 @@
 focused_input = ""
 
+def selected_release
+  release_navi = find('#version_navi .current a')
+  release_name = release_navi[:href].split('/').last
+end
+
 def category_url(*category)
-  "/#{Release.in_sort_order.first.name}/#{category.join('/')}"
+  "/#{selected_release()}/#{category.join('/')}"
 end
 
 def category_selector(*category)
@@ -11,7 +16,7 @@ end
 When /^I have uploaded reports with profile "([^"]*)" having testset "([^"]*)" and product "([^"]*)"$/ do |profile, testset, product|
 #  FactoryGirl.create(:profile, :label => profile, :normalized => profile.downcase) if TargetLabel.find_by_label(profile).nil?
   FactoryGirl.create_list(:test_report, 2,
-    :release => Release.in_sort_order.first,
+    :release => Release.find_by_name(selected_release()),
     :target  => profile.downcase,
     :testset => testset,
     :product => product,
@@ -23,7 +28,7 @@ When /^I click on the edit button$/ do
 end
 
 When /^I edit the testset name "([^"]*)" to "([^"]*)" for profile "([^"]*)"$/ do |orig_name, new_name, profile|
-  testset   = find category_selector(profile, orig_name)
+  testset = find category_selector(profile, orig_name)
   testset.click
 
   url = category_url(profile, orig_name)
@@ -61,7 +66,7 @@ When /^I rename the testset "([^"]*)" under profile "([^"]*)" to "([^"]*)"$/ do 
 end
 
 When /^I view the group report for "([^"]*)"$/ do |path|
-  visit("/#{Release.in_sort_order.first.name}/#{path}")
+  visit("/#{selected_release}/#{path}")
 end
 
 Then /^I should see "([^"]*)" in test reports titles$/ do |title|
