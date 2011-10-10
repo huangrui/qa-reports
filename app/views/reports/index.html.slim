@@ -4,8 +4,6 @@
 
 #index_page
   table#report_navigation
-  / template
-  table#report_navigation_template style="display:none;"
     thead
       tr.profiles
         th
@@ -25,9 +23,6 @@
   - if user_signed_in?
     a#home_edit_link href='#'
     a#home_edit_done_link.small_btn href='#' Done
-
-input#post_method name="_method" type="hidden" value="put"
-input#auth_token name="authenticity_token" type="hidden" value=form_authenticity_token
 
 - content_for :view_specific_js do
   javascript:

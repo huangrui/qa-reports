@@ -13,7 +13,7 @@ $(document).ready ->
           'inplace-edit@data-url': -> @url
 
   render_navigation = (model) ->
-    $navigation.empty().append( $('#report_navigation_template').clone().render(model, directives).children() )
+    $navigation.render model, directives
 
   render_navigation(index_model)
   $editables         = null
@@ -54,6 +54,7 @@ $(document).ready ->
     $editables = null
     return false
 
+  #TODO: combine common parts cancel submit
   submitHandler = (input) ->
     $input = $(input)
     writeInputValue($input)
@@ -82,6 +83,7 @@ $(document).ready ->
           render_navigation(data)
           editMode()
 
+  #TODO try toggleclass
   editMode = ->
     $('#index_page').addClass 'editing'
     $navigation.find('tbody a.name').addClass('editable_text').css 'display', 'block'
