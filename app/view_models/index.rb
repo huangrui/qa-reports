@@ -12,25 +12,10 @@ class Index
 
   def self.find_profiles(release)
     TargetLabel.find_by_sql("
-      SELECT profile, testset, name FROM (
-        SELECT profile, testset, name, sort_order FROM (
-          SELECT DISTINCT profiles.label AS profile, reports.testset, reports.product AS name, profiles.sort_order
-          FROM target_labels AS profiles
-          LEFT JOIN meego_test_sessions AS reports ON profiles.normalized = reports.target AND reports.release_id = #{release.id}
-          WHERE reports.published = true
-          ORDER BY profiles.sort_order ASC, testset, product) AS mid_table
-        UNION
-          SELECT label as profile, NULL as testset, NULL as name, sort_order
-          FROM target_labels
-          WHERE label NOT IN (
-            SELECT profile FROM (
-              SELECT DISTINCT profiles.label AS profile, reports.testset, reports.product AS name, profiles.sort_order
-              FROM target_labels AS profiles
-              LEFT JOIN meego_test_sessions AS reports ON profiles.normalized = reports.target AND reports.release_id = #{release.id}
-              WHERE reports.published = true
-              ORDER BY profiles.sort_order ASC, testset, product) AS mid_table
-          )
-        ORDER BY sort_order) AS latest_table
+      SELECT DISTINCT profiles.label AS profile, reports.testset, reports.product AS name, profiles.sort_order
+      FROM target_labels AS profiles
+      LEFT JOIN meego_test_sessions AS reports ON profiles.normalized = reports.target AND reports.release_id = #{release.id} AND reports.published = TRUE
+      ORDER BY profiles.sort_order ASC, testset, product
     ").group_by(&:profile).map do |profile, testsets|
       {
         :name     => profile,
@@ -56,25 +41,10 @@ class Index
     last_month = 1.months.until(Time.now)
     last_month_datetime = last_month.strftime('%Y-%m-%d %H:%M:%S')
     TargetLabel.find_by_sql("
-      SELECT profile, testset, name FROM (
-        SELECT profile, testset, name, sort_order FROM (
-          SELECT DISTINCT profiles.label AS profile, reports.testset, reports.product AS name, profiles.sort_order
-          FROM target_labels AS profiles
-          LEFT JOIN meego_test_sessions AS reports ON profiles.normalized = reports.target AND reports.release_id = #{release.id}
-          WHERE reports.published = true AND created_at > '#{last_month_datetime}'
-          ORDER BY profiles.sort_order ASC, testset, product, reports.created_at desc) AS mid_table
-        UNION
-          SELECT label as profile, NULL as testset, NULL as name, sort_order
-          FROM target_labels
-          WHERE label NOT IN (
-            SELECT profile FROM (
-              SELECT DISTINCT profiles.label AS profile, reports.testset, reports.product AS name, profiles.sort_order
-              FROM target_labels AS profiles
-              LEFT JOIN meego_test_sessions AS reports ON profiles.normalized = reports.target AND reports.release_id = #{release.id}
-              WHERE reports.published = true AND created_at > '#{last_month_datetime}'
-              ORDER BY profiles.sort_order ASC, testset, product, reports.created_at desc) AS mid_table
-          )
-        ORDER BY sort_order) AS latest_table
+      SELECT DISTINCT profiles.label AS profile, reports.testset, reports.product AS name, profiles.sort_order
+      FROM target_labels AS profiles
+      LEFT JOIN meego_test_sessions AS reports ON profiles.normalized = reports.target AND reports.release_id = #{release.id} AND reports.published = TRUE AND created_at > '#{last_month_datetime}'
+      ORDER BY profiles.sort_order ASC, testset, product
     ").group_by(&:profile).map do |profile, testsets|
       {
         :name     => profile,
