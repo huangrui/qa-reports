@@ -79,7 +79,6 @@ $(document).ready ->
         "url"      : "/"
         "dataType" : "json"
         "success"  : (data) ->
-          console.log data
           render_navigation(data)
           editMode()
 
