@@ -33,7 +33,8 @@ class ApplicationController < ActionController::Base
   end
 
   def release
-    @release ||= Release.find_by_name(params[:release_version]) || Release.find_by_id(session[:release_id]) || Release.latest
+    release_name = params[:release].try(:fetch, :name) || params[:release_version]
+    @release ||= Release.find_by_name(release_name) || Release.find_by_id(session[:release_id]) || Release.latest
   end
 
   def profile

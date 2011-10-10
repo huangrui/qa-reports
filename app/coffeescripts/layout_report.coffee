@@ -30,6 +30,9 @@ on_ready_steps = ->
       modal:true
     }).jqmAddTrigger('.nft_series_history_modal_toggle').jqmAddClose('.modal_close')
 
+    $('#test_result_overview tr:odd').addClass('odd')
+    $('#test_result_overview tr:even').addClass('even')
+
 # IE hack
 if typeof G_vmlCanvasManager != 'undefined'
     $(window).load on_ready_steps

@@ -280,7 +280,7 @@ Then "the result complains about invalid release version" do
 end
 
 Then "the result complains about invalid target profile" do
-  Then %{the REST result "errors|target" is "Incorrect target 'Foo'. Valid ones are core,handset,netbook,ivi,sdk."}
+  Then %{the REST result "errors|target" is "Incorrect target 'foo'. Valid ones are Core,Handset,Netbook,IVI,SDK."}
 end
 
 Then "the result complains about invalid product" do

@@ -9,7 +9,7 @@ class FasterCSV
     def has_valid_data?
       (self[:feature] &&
        self[:test_case] &&
-       self.fields(:pass, :fail, :na).count("1") == 1)
+       self.fields(:pass, :fail, :na, :measured).count("1") == 1)
     end
   end
 end
@@ -47,7 +47,6 @@ class CSVResultFileParser
     rescue NoMethodError
       raise ParseError.new("unknown"), "Incorrect file format"
     end
-
     @features
   end
 
@@ -56,7 +55,8 @@ class CSVResultFileParser
   RESULT_MAPPING = [
     MeegoTestCase::PASS,
     MeegoTestCase::FAIL,
-    MeegoTestCase::NA
+    MeegoTestCase::NA,
+    MeegoTestCase::MEASURED
   ]
 
   ############################################################################
@@ -70,7 +70,7 @@ class CSVResultFileParser
     # Check the header row length - the new version has 11 columns. Later
     # on we will not require all of those to be present, but for now
     # there has to be some differences so we can determine the version
-    (first_line.split(',').length == 11)
+    (first_line.split(',').length >= 11)
   end
 
   def parse_row_version_1(row)
@@ -108,7 +108,7 @@ class CSVResultFileParser
       :name                    => testcase,
       :comment                 => row[:comment].try(:toutf8).try(:strip) || "",
       :measurements_attributes => parse_measurements(row) || [],
-      :result                  => RESULT_MAPPING[row.fields(:pass, :fail, :na).index("1")]
+      :result                  => RESULT_MAPPING[row.fields(:pass, :fail, :na, :measured).index("1")]
     }
   end
 
@@ -119,10 +119,10 @@ class CSVResultFileParser
       # missing, so that's what we want to do here as well
       [{
          :name    => row[:measurement_name].toutf8.strip,
-         :value   => row[:value].try(:to_f) || 0,
+         :value   => row[:value].try(:to_f),
          :unit    => row[:unit].try(:toutf8).try(:strip) || "",
-         :target  => row[:target].try(:to_f) || 0,
-         :failure => row[:failure].try(:to_f) || 0,
+         :target  => row[:target].try(:to_f),
+         :failure => row[:failure].try(:to_f),
 
          # => TODO: Throw away and order by id
          # (comment from xml result file parser)

@@ -32,14 +32,14 @@ xml.rss "version" => "2.0" do
     xml.generator "MeeGo QA Reports"
     xml.language "en-us"
 
-    if @sessions.length > 0
-      xml.pubDate @sessions[0].created_at.rfc822
+    if @report_shows.length > 0
+      xml.pubDate @report_shows[0].created_at.rfc822
 
-      @sessions.each do |session|
+      @report_shows.each do |session|
         xml.item do
           xml.title session.title
           xml.pubDate session.created_at.rfc822
-          xml.description "Pass rate of total " << session.total_pass_rate << ", run rate " << session.run_rate
+          xml.description "Pass rate of total " << session.percentage(:pass_rate) << ", run rate " << session.percentage(:run_rate)
           xml.link show_report_url(session.release.name, session.target, session.testset, session.product, session.id)
           xml.guid show_report_url(session.release.name, session.target, session.testset, session.product, session.id)
         end

@@ -53,6 +53,7 @@ class ReportsController < ApplicationController
     @editing          = true
     @wizard           = true
     @no_upload_link   = true
+    @report_show      = ReportShow.new(MeegoTestSession.find(params[:id]))
   end
 
   def publish
@@ -67,19 +68,22 @@ class ReportsController < ApplicationController
     populate_report_fields
     @history      = history(@report, 5)
     @build_diff   = build_diff(@report, 4)
+    @report_show  = ReportShow.new(MeegoTestSession.find(params[:id]), @build_diff)
   end
 
   def print
     populate_report_fields
     @build_diff   = []
     @email        = true
+    @report_show  = ReportShow.new(MeegoTestSession.find(params[:id]))
   end
 
   def edit
     populate_report_fields
     populate_edit_fields
-    @editing          = true
-    @no_upload_link   = true
+    @editing        = true
+    @no_upload_link = true
+    @report_show    = ReportShow.new(MeegoTestSession.find(params[:id]))
   end
 
   def update

@@ -3,12 +3,6 @@ require 'nft'
 class XMLResultFileParser
   include MeasurementUtils
 
-  RESULT_MAPPING = {
-    "pass" => MeegoTestCase::PASS,
-    "fail" => MeegoTestCase::FAIL,
-    "na"   => MeegoTestCase::NA
-  }
-
   def parse(io)
     features = {}
     Nokogiri::XML(io) { |config| config.strict } .css('set').each do |set|
@@ -27,7 +21,7 @@ class XMLResultFileParser
 
       {
         :name                               => test_case['name'],
-        :result                             => RESULT_MAPPING[test_case['result'].downcase] || MeegoTestCase::NA,
+        :result                             => MeegoTestSession.map_result(test_case['result']),
         :comment                            => test_case['comment'] || "",
         :source_link                        => test_case['vcsurl']  || "",
         :measurements_attributes            => test_case.xpath('./measurement').map do |measurement|

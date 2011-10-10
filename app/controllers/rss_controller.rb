@@ -30,7 +30,7 @@ class RssController < ApplicationController
         :product    => product
       }.delete_if { |key, value| value.nil? }
 
-    @sessions = MeegoTestSession.published.where(filter).order("created_at DESC").limit(10)
+    @report_shows = MeegoTestSession.published.where(filter).order("created_at DESC").limit(10).map{|report| ReportShow.new(report)}
 
     response.headers["Content-Type"] = "application/xml; charset=utf-8"
   end

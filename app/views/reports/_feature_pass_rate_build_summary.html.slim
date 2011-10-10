@@ -12,10 +12,9 @@ tr class="feature_record #{row_class(feature_pass_rate_build_summary_counter)}" 
     td.pass=feature_summary.total_passed
     td.fail=feature_summary.total_failed
     td.na=feature_summary.total_na
-    - @build_diff.reverse_each do |b|
-      - tset = feature_summary.find_matching_feature(b)
-      - if tset
-        td.test_feature_pass_rate.feature_build_result = tset.total_pass_rate
+    - feature_summary.history.reverse_each do |feature|
+      - if feature
+        td.test_feature_pass_rate.feature_build_result = feature.percentage(:pass_rate)
       - else
         td class="test_feature_pass_rate feature_build_result" -
-    td.rate.current_feature_build_result = feature_summary.total_pass_rate
+    td.rate.current_feature_build_result = feature_summary.percentage(:pass_rate)

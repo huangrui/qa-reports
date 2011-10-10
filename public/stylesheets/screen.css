@@ -83,7 +83,8 @@ a img {
   float: left;
 }
 
-.htmlgraph .na {
+.htmlgraph .na,
+.htmlgraph .measured {
   background-color: #ddd;
   float: left;
 }
@@ -1481,11 +1482,13 @@ td em {
     font-weight: normal;
     font-style: normal; }
 
-td.inc em{
-    background-image: url(../images/inc.png); }
+td.inc em {
+    background-image: url(../images/inc.png);
+    white-space:nowrap; }
 
-td.dec em{
-    background-image: url(../images/dec.png); }
+td.dec em {
+    background-image: url(../images/dec.png);
+    white-space:nowrap; }
 
 .th_feature {
     width: 30%;}
@@ -1493,6 +1496,7 @@ td.dec em{
 .th_total,
 .th_passed,
 .th_failed,
+.th_measured,
 .th_not_testable{
     width:40px;
     text-align: center;}
@@ -1503,7 +1507,8 @@ td.dec em{
 #test_results_by_feature .total,
 #test_results_by_feature .pass,
 #test_results_by_feature .fail,
-#test_results_by_feature .na {
+#test_results_by_feature .na,
+#test_results_by_feature .measured {
     text-align: center; }
 
 #test_results_by_feature .rate {
@@ -1773,7 +1778,8 @@ td.testcase_name p {
 
 .changed_from_fail,
 .changed_from_pass,
-.changed_from_na {
+.changed_from_na,
+.changed_from_measured {
 	background: transparent no-repeat left 0.8em;}
 
 .changed_from_fail {
@@ -1782,7 +1788,8 @@ td.testcase_name p {
 .changed_from_pass {
 	background-image: url(../images/changed_from_pass.png);}
 
-.changed_from_na {
+.changed_from_na,
+.changed_from_measured {
 	background-image: url(../images/changed_from_na.png);}
 
 td.testcase_result.edit:hover {
