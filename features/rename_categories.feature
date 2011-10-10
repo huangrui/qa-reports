@@ -57,7 +57,6 @@ Feature:
   @selenium
   Scenario: Rename product
     When I rename the product "N900" to "N950"
-    And I press done button
     And I reload the front page
 
     Then I should see "N950"
