@@ -4,10 +4,10 @@ Feature:
   So that I can better reorganize and manage reports
 
   Background:
-    Given I am logged in
-    And I have uploaded reports with profile "Core" having testset "foo" and product "N900"
+    Given I have uploaded reports with profile "Core" having testset "foo" and product "N900"
     And I have uploaded reports with profile "Handset" having testset "foo" and product "N900"
     And I have uploaded reports with profile "Handset" having testset "foo" and product "Pinetrail"
+    Given I am logged in
     And I am on the front page
 
   @selenium

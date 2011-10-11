@@ -1,8 +1,9 @@
 focused_input = ""
 
 def selected_release
-  release_navi = find('#version_navi .current a')
-  release_name = release_navi[:href].split('/').last
+  #release_navi = find('#version_navi .current a')
+  #release_name = release_navi[:href].split('/').last
+  Release.first.name
 end
 
 def category_url(*category)
@@ -29,14 +30,14 @@ end
 When /^I edit the testset name "([^"]*)" to "([^"]*)" for profile "([^"]*)"$/ do |orig_name, new_name, profile|
   testset = find category_selector(profile, orig_name)
   testset.click
+  #sleep 4
 
   url = category_url(profile, orig_name)
-  focused_input = find("#report_navigation input[data-url='#{url}']")
-  focused_input.set new_name
+  find("#report_navigation input", :visible => true).set new_name
 end
 
 When /^I press enter$/ do
-  focused_input.native.send_key("\n")
+  find("#report_navigation input").native.send_key("\n")
 end
 
 Then /^I should see testset "([^"]*)" for profile "([^"]*)"$/ do |testset, profile|

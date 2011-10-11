@@ -17,9 +17,9 @@ $(document).ready ->
     $input = $(input)
     $editables.text $input.data('undo')
 
-  edit = (link) ->
+  edit = (event) ->
     event.preventDefault()
-    $link = $(link)
+    $link = $(this)
     $link.hide()
     $link.next('input.inplace-edit').show().focus().val($link.text())
                                                    .data('undo', $link.text())
@@ -79,7 +79,7 @@ $(document).ready ->
     $('#home_edit_done_link').click viewMode
 
     # Edit events
-    $('#index_page.editing #report_navigation tbody a.name').live 'click', () -> edit this
+    $('#index_page.editing #report_navigation tbody a.name').live 'click', edit
     $inputs = $navigation.find 'input.inplace-edit'
     $inputs.live 'blur',        -> cancel this
     $inputs.live 'keyup', (key) -> cancel this if (key.keyCode == 27) # esc
