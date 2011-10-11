@@ -4,9 +4,9 @@ $(document).ready ->
 
   directives =
     profiles:
-      'name@href':    -> @url
+      'name@href': -> @url
       testsets:
-        'name@href':  -> @url
+        'name@href': -> @url
         'compare@href': (element) -> if @comparison_url then @comparison_url else element.hide(); return ""
         'inplace-edit@data-url': -> @url
         products:
@@ -16,18 +16,19 @@ $(document).ready ->
   render = (model) ->
     $navigation.render model, directives
 
+  # set and read undo value from input.data('undo')
   undo = (input) ->
     $input = $(input)
     $link  = $input.prev('a.name')
-    $editables.text($link.text()) # revert text for similar products
+    $editables.text $link.text() # revert text for similar products
     return false
 
-  write = (input) ->
+  apply = (input) ->
     $input = $(input)
     value  = $input.val()
     $link  = $input.prev('a.name')
     $link.text value
-    $editables.text value  # write text for similar products
+    $editables.text value  # apply text for similar products
     return false
 
   edit = (link) ->
@@ -49,17 +50,17 @@ $(document).ready ->
     return false
 
   cancel = (input) ->
-    undo(input)
-    end_edit(input)
+    undo input
+    end_edit input
     return false
 
   submit = (input) ->
-    save_to_db(input)
-    write(input)
-    end_edit(input)
+    save input
+    apply input
+    end_edit input
     return false
 
-  save_to_db = (input) ->
+  save = (input) ->
     $input   = $(input)
     post_url = $input.attr('data-url')
     val  = $input.val()
@@ -99,7 +100,7 @@ $(document).ready ->
 
     # Edit events
     $('#index_page.editing #report_navigation tbody a.name').live 'click', () -> edit this
-    $inputs.live 'blur', -> cancel this
+    $inputs.live 'blur',        -> cancel this
     $inputs.live 'keyup', (key) -> cancel this if (key.keyCode == 27) # esc
     $inputs.live 'keyup', (key) -> submit this if (key.keyCode == 13) # enter
 
