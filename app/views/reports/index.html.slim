@@ -1,6 +1,11 @@
 - content_for :version_navi do
   #version_navi
     = release_version_navigation(release.name)
+    ul#report_filters
+      li.current
+        a href="#" Recent
+      li
+        a href="#" All
 
 #index_page
   table#report_navigation

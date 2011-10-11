@@ -1292,6 +1292,10 @@ div.formError, #error, form .error {
     height: 1.0833em;
     margin-right: -1px;}
 
+#version_navi #report_filters {
+    float: right;
+}
+
 a#csv_report_link {
     padding-left: 400px;}
 /* @end */
