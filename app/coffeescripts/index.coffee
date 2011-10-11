@@ -108,15 +108,17 @@ $(document).ready ->
     $('.products input.inplace-edit').live 'keyup', -> $editables.text $(this).val()
 
      # Hover hilight for products
-    $('#index_page.editing .products a').live 'mouseover', () ->
+    product_titles = '#index_page.editing .products a'
+    $(product_titles).live 'mouseover', ->
       if $editables.length == 0
         product_name = $(this).text()
-        $('#index_page.editing .products a').filter(() ->
-          return $(this).text() == product_name
-        ).addClass('to_be_edited')
-    $('#index_page.editing .products a').live 'mouseout', () ->
-      $('#index_page.editing .products a').removeClass('to_be_edited')
+        $(product_titles).filter(-> $(this).text() == product_name)
+          .addClass('to_be_edited')
+
+    $(product_titles).live 'mouseout', ->
+      $(product_titles).removeClass('to_be_edited')
     return false
+
 
   render index_model
   initInplaceEdit()
