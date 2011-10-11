@@ -13,33 +13,19 @@ $(document).ready ->
           'name@href': -> @url
           'inplace-edit@data-url': -> @url
 
-  render = (model) ->
-    $navigation.render model, directives
-
-  # set and read undo value from input.data('undo')
   undo = (input) ->
     $input = $(input)
-    $link  = $input.prev('a.name')
-    $editables.text $link.text() # revert text for similar products
-    return false
-
-  apply = (input) ->
-    $input = $(input)
-    value  = $input.val()
-    $link  = $input.prev('a.name')
-    $link.text value
-    $editables.text value  # apply text for similar products
-    return false
+    $editables.text $input.data('undo')
 
   edit = (link) ->
+    event.preventDefault()
     $link = $(link)
     $link.hide()
-    $link.next('input.inplace-edit').show().focus()
-    # set editables for real-time update to similar products
-    $editables = $('.products a').not($link).filter () ->
-      $(this).text() == $link.text()
+    $link.next('input.inplace-edit').show().focus().val($link.text())
+                                                   .data('undo', $link.text())
+
+    $editables = $('.products a').filter(-> $(this).text() == $link.text()).add $link
     $editables.addClass 'being_edited'
-    return false
 
   end_edit = (input) ->
     $input = $(input)
@@ -47,18 +33,14 @@ $(document).ready ->
     $input.prev('a.name').show()
     $editables.removeClass 'being_edited'
     $editables = $()
-    return false
 
   cancel = (input) ->
     undo input
     end_edit input
-    return false
 
   submit = (input) ->
     save input
-    apply input
     end_edit input
-    return false
 
   save = (input) ->
     $input   = $(input)
@@ -72,18 +54,20 @@ $(document).ready ->
 
     $.post post_url, data, (res, status) ->
       $.ajax
-        "url"      : "/"
+        "url"      : window.location.href
         "dataType" : "json"
         "success"  : (data) ->
-          render data
+          $navigation.render data, directives
           editMode()
 
-  editMode = ->
+  editMode = (event) ->
+    event?.preventDefault()
     $('#index_page').addClass 'editing'
     $navigation.find('tbody a.name').addClass('editable_text').css 'display', 'block'
     $navigation.find('a.compare').hide()
 
-  viewMode = ->
+  viewMode = (event) ->
+    event.preventDefault()
     $('#index_page').removeClass 'editing'
     $navigation.find('tbody a.name').removeClass 'editable_text'
     $navigation.find('tbody a.name').css 'display', 'inline'
@@ -94,18 +78,15 @@ $(document).ready ->
     $('#home_edit_link').click editMode
     $('#home_edit_done_link').click viewMode
 
-    # Reset input fields
-    $inputs = $navigation.find 'input.inplace-edit'
-    $inputs.live 'focus', () -> $(this).val $(this).prev('a.name').text()
-
     # Edit events
     $('#index_page.editing #report_navigation tbody a.name').live 'click', () -> edit this
+    $inputs = $navigation.find 'input.inplace-edit'
     $inputs.live 'blur',        -> cancel this
     $inputs.live 'keyup', (key) -> cancel this if (key.keyCode == 27) # esc
     $inputs.live 'keyup', (key) -> submit this if (key.keyCode == 13) # enter
 
-    # Real-time update to similar products
-    $('.products input.inplace-edit').live 'keyup', -> $editables.text $(this).val()
+    # Update text in links
+    $('input.inplace-edit').live 'keyup', -> $editables.text $(this).val()
 
      # Hover hilight for products
     product_titles = '#index_page.editing .products a'
@@ -117,8 +98,7 @@ $(document).ready ->
 
     $(product_titles).live 'mouseout', ->
       $(product_titles).removeClass('to_be_edited')
-    return false
 
 
-  render index_model
+  $navigation.render index_model, directives
   initInplaceEdit()
