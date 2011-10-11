@@ -1,8 +1,4 @@
-focused_input = ""
-
 def selected_release
-  #release_navi = find('#version_navi .current a')
-  #release_name = release_navi[:href].split('/').last
   Release.first.name
 end
 
@@ -12,6 +8,11 @@ end
 
 def category_selector(*category)
   "#report_navigation a.name[href='#{category_url(category)}']"
+end
+
+def set_input_text(input, text)
+  text.length.times { input.native.send_key :backspace }
+  input.native.send_key(text)
 end
 
 When /^I have uploaded reports with profile "([^"]*)" having testset "([^"]*)" and product "([^"]*)"$/ do |profile, testset, product|
@@ -30,10 +31,8 @@ end
 When /^I edit the testset name "([^"]*)" to "([^"]*)" for profile "([^"]*)"$/ do |orig_name, new_name, profile|
   testset = find category_selector(profile, orig_name)
   testset.click
-  #sleep 4
 
-  url = category_url(profile, orig_name)
-  find("#report_navigation input", :visible => true).set new_name
+  set_input_text find("#report_navigation input"), new_name
 end
 
 When /^I press enter$/ do
@@ -56,7 +55,7 @@ When /^I reload the front page$/ do
 end
 
 When /^I press escape$/ do
-  focused_input.native.send_key("\e")
+  find("#report_navigation input").native.send_key("\e")
 end
 
 When /^I rename the testset "([^"]*)" under profile "([^"]*)" to "([^"]*)"$/ do |orig_name, profile, new_name|
@@ -85,8 +84,7 @@ end
 When /^I edit the product name "([^"]*)" to "([^"]*)"$/ do |old_name, new_name|
   product = first("#report_navigation .products a", :text => old_name)
   product.click
-  focused_input = product.find(:xpath, "../input")
-  focused_input.set new_name
+  set_input_text find("#report_navigation input"), new_name
 end
 
 When /^I rename the product "([^"]*)" to "([^"]*)"$/ do |old_name, new_name|
