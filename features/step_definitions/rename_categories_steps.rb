@@ -84,6 +84,7 @@ end
 When /^I edit the product name "([^"]*)" to "([^"]*)"$/ do |old_name, new_name|
   product = first("#report_navigation .products a", :text => old_name)
   product.click
+
   set_input_text find("#report_navigation input"), new_name
 end
 
