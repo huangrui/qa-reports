@@ -99,10 +99,6 @@ $(document).ready ->
       $(product_titles).removeClass('to_be_edited')
 
 
-  $navigation.render index_model, directives
-  initInplaceEdit()
-
-
   $('#report_filters a').click (event) ->
     link = $(this)
     event.preventDefault()
@@ -113,3 +109,4 @@ $(document).ready ->
       $('#report_navigation').show()
 
   $('#report_filters li a').first().trigger 'click'
+  initInplaceEdit()
