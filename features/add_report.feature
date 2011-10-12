@@ -33,7 +33,7 @@ Feature:
 
   Scenario Outline: Add new report with valid data
     When I follow "Add report"
-    And I select target "Handset", test set "Smokey" and product "N990"
+    And I select target "Handset", test set "Smokey" and product "N990" with date "2010-11-22"
     And I select build id "1.2.0.90.0.20110517.1"
     And attach the report "<attachment>"
     And submit the form at "upload_report_submit"
