@@ -8,7 +8,7 @@
         a href="#" All
 
 #index_page
-  table#report_navigation
+  table#report_navigation style="display:none"
     thead
       tr.profiles
         th
@@ -26,6 +26,4 @@
                 a.name
 
 - content_for :view_specific_js do
-  javascript:
-    index_model = #{{@index_model.to_json}}
   = javascript_include_tag 'index'
