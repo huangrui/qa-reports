@@ -14,16 +14,16 @@ Feature:
 
   Scenario: Should see publish notification
     When I follow "Add report"
-    And I select target "Handset", test set "Smokey" and product "N990" with date "2010-11-22"
+    And I select target "Handset", test set "Smokey" and product "N990"
     And I attach the report "sim.xml"
-    And submit the form at "upload_report_submit"
+    And I press "Next"
     And I press "Publish"
 
     Then I should see "Your report has been successfully published"
 
   Scenario: Should not see publish notification after reloading report
     When I follow "Add report"
-    And I select target "Handset", test set "Smokey" and product "N990" with date "2010-11-22"
+    And I select target "Handset", test set "Smokey" and product "N990"
     And I attach the report "sim.xml"
     And submit the form at "upload_report_submit"
     And I press "Publish"
@@ -33,7 +33,7 @@ Feature:
 
   Scenario Outline: Add new report with valid data
     When I follow "Add report"
-    And I select target "Handset", test set "Smokey" and product "N990" with date "2010-11-22"
+    And I select target "Handset", test set "Smokey" and product "N990"
     And I select build id "1.2.0.90.0.20110517.1"
     And attach the report "<attachment>"
     And submit the form at "upload_report_submit"
@@ -55,7 +55,7 @@ Feature:
 
   Scenario: Add new report with invalid filename extension
     When I follow "Add report"
-    And I select target "Core", test set "Smokey" and product "n990" with date "2010-11-22"
+    And I select target "Core", test set "Smokey" and product "n990"
     And attach the report "invalid_ext.txt"
     And submit the form at "upload_report_submit"
 
@@ -63,7 +63,7 @@ Feature:
 
   Scenario: Add new CSV report with missing header value
     When I follow "Add report"
-    And I select target "Core", test set "Smokey" and product "n990" with date "2010-11-22"
+    And I select target "Core", test set "Smokey" and product "n990"
     And attach the report "invalid_missing_header_value.csv"
     And submit the form at "upload_report_submit"
 
@@ -71,7 +71,7 @@ Feature:
 
   Scenario: Add new CSV report with invalid content
     When I follow "Add report"
-    And I select target "Core", test set "Smokey" and product "n990" with date "2010-11-22"
+    And I select target "Core", test set "Smokey" and product "n990"
     And attach the report "invalid.csv"
     And submit the form at "upload_report_submit"
 
@@ -79,7 +79,7 @@ Feature:
 
   Scenario: Add new CSV report with no test cases
     When I follow "Add report"
-    And I select target "Core", test set "Smokey" and product "n990" with date "2010-11-22"
+    And I select target "Core", test set "Smokey" and product "n990"
     And attach the report "empty.csv"
     And submit the form at "upload_report_submit"
 
@@ -110,7 +110,7 @@ Feature:
 
   Scenario: Add new report with saved default target
     When I follow "Add report"
-    And I select target "Handset", test set "Smokey" and product "n990" with date "2010-02-12"
+    And I select target "Handset", test set "Smokey" and product "n990"
     And attach the report "sample.csv"
     And submit the form at "upload_report_submit"
     And submit the form at "upload_report_submit"
@@ -119,7 +119,7 @@ Feature:
     And I should see "Handset" within "h1"
 
     When I follow "Add report"
-    And I select test set "Smokey" and product "n990" with date "2010-02-12"
+    And I select test set "Smokey" and product "n990"
     And attach the report "sample.csv"
     And submit the form at "upload_report_submit"
 
@@ -129,7 +129,7 @@ Feature:
   Scenario: Add a CSV report with only NFT test cases
     When I follow "Add report"
 
-    And I select target "Handset", test set "CSV NFT" and product "N965" with date "2011-08-31"
+    And I select target "Handset", test set "CSV NFT" and product "N965"
     And attach the report "csv_with_only_nft_cases.csv"
     And submit the form at "upload_report_submit"
 
@@ -141,7 +141,7 @@ Feature:
   Scenario: Add a CSV report with both NFT and Functional cases
     When I follow "Add report"
 
-    And I select target "Handset", test set "CSV MIXED" and product "N965" with date "2011-08-31"
+    And I select target "Handset", test set "CSV MIXED" and product "N965"
     And attach the report "csv_with_both_fute_and_nft_cases.csv"
     And submit the form at "upload_report_submit"
 
@@ -152,7 +152,7 @@ Feature:
   Scenario: NFT index calculated for an NFT report
     When I follow "Add report"
 
-    And I select target "Handset", test set "NFT report" and product "N980" with date "2011-09-07"
+    And I select target "Handset", test set "NFT report" and product "N980"
     And I attach the report "nft_measurements.xml"
     And submit the form at "upload_report_submit"
 
@@ -163,7 +163,7 @@ Feature:
   Scenario: NFT index not shown if there are no non-serial measurements
     When I follow "Add report"
 
-    And I select target "Handset", test set "NFT report" and product "N980" with date "2011-09-06"
+    And I select target "Handset", test set "NFT report" and product "N980"
     And I attach the report "sim.xml"
     And submit the form at "upload_report_submit"
 
@@ -172,7 +172,7 @@ Feature:
   @selenium
   Scenario: Add new report with underscore in test set and product names
     When I follow "Add report"
-    And I select target "Handset", test set "Test_set" and product "Hardware_32" with date "2010-02-12"
+    And I select target "Handset", test set "Test_set" and product "Hardware_32"
     And attach the report "sample.csv"
     And submit the form at "upload_report_submit"
     And I press "Publish"
