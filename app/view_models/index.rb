@@ -1,13 +1,13 @@
 class Index
 
-  def self.find_by_release(release, all)
+  def self.find_by_release(release, show_all)
     { :profiles => TargetLabel.find_by_sql("
         SELECT DISTINCT profiles.label AS profile, reports.testset, reports.product AS name
         FROM target_labels AS profiles
         LEFT JOIN meego_test_sessions AS reports ON profiles.normalized = reports.target AND
           reports.release_id = #{release.id} AND
           reports.published  = TRUE AND
-          reports.tested_at  > '#{all ? 0 : 30.days.ago}'
+          reports.tested_at  > '#{show_all ? 0 : MeegoTestSession.recent_cut_off_date}'
         ORDER BY profiles.sort_order ASC, testset, product
       ").group_by(&:profile).map do |profile, testsets|
         {
