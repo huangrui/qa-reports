@@ -10,9 +10,11 @@ $ () ->
          'name@href': -> @url
 
   $('#report_filters a').click (event) ->
+    link = $(this)
     event.preventDefault()
-    $.get $(this).attr('href'), (index_model) ->
-      $('#report_filters li').toggleClass 'current'
+    $.get link.attr('href'), (index_model) ->
+      $('#report_filters li').removeClass 'current'
+      link.parent().addClass 'current'
       $('#report_navigation').render index_model, directives
       $('#report_navigation').show()
 
