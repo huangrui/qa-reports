@@ -11,7 +11,7 @@ def category_selector(*category)
 end
 
 def set_input_text(input, text)
-  text.length.times { input.native.send_key :backspace }
+  input.value.length.times { input.native.send_key :backspace }
   input.native.send_key(text)
 end
 
