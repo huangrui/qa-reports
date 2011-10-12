@@ -34,7 +34,6 @@ require 'report_exporter'
 class ReportsController < ApplicationController
   include CacheHelper
   layout        'report'
-  layout        'application', :only => :index
   before_filter :authenticate_user!,         :except => [:index, :show, :print, :compare]
   before_filter :validate_path_params,       :only   => [:show, :print]
   cache_sweeper :meego_test_session_sweeper, :only   => [:update, :delete, :publish]
@@ -43,7 +42,7 @@ class ReportsController < ApplicationController
     @index_model = Index.find_by_release(release, params[:all])
     @show_rss = true
     respond_to do |format|
-      format.html
+      format.html { render :layout => 'application' }
       format.json { render :json => @index_model }
     end
   end
