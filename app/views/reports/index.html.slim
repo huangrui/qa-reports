@@ -1,9 +1,14 @@
 - content_for :version_navi do
   #version_navi
     = release_version_navigation(release.name)
+    ul#report_filters
+      li
+        a href="/reports.json" Recent
+      li.current
+        a href="/reports.json?show_all=true" All
 
 #index_page
-  table#report_navigation
+  table#report_navigation style="display:none"
     thead
       tr.profiles
         th
@@ -25,8 +30,4 @@
     a#home_edit_done_link.small_btn href='#' Done
 
 - content_for :view_specific_js do
-  javascript:
-    index_model = #{{@index_model.to_json}};
-    auth_token = "#{{form_authenticity_token}}";
-
   = javascript_include_tag 'index'

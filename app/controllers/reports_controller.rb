@@ -39,11 +39,11 @@ class ReportsController < ApplicationController
   cache_sweeper :meego_test_session_sweeper, :only   => [:update, :delete, :publish]
 
   def index
-    @index_model = Index.find_by_release(release)
+    @index_model = Index.find_by_release(release, params[:show_all])
     @show_rss = true
     respond_to do |format|
-      format.html {render :layout => "application"}
-      format.json {render :json => @index_model}
+      format.html { render :layout => 'application' }
+      format.json { render :json   => @index_model  }
     end
   end
 

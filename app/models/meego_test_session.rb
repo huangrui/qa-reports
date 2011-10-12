@@ -70,18 +70,18 @@ class MeegoTestSession < ActiveRecord::Base
 
   include ReportSummary
 
-  def meego_test_session
-    self
-  end
-
   def self.latest
     published.order(:tested_at).last
   end
 
+  #TODO: Throw away
   def month
     @month ||= tested_at.strftime("%B %Y")
   end
 
+  def self.recent_cut_off_date
+    30.days.ago
+  end
 
   def self.fetch_fully(id)
     find(id, :include =>
@@ -109,6 +109,10 @@ class MeegoTestSession < ActiveRecord::Base
   def self.popular_products(limit=3)
     published.select("product as product").order("COUNT(product) DESC").
       group(:product).limit(limit).map(&:product)
+  end
+
+  def meego_test_session
+    self
   end
 
   def target=(target)
