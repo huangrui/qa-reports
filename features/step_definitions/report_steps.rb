@@ -19,6 +19,19 @@ Given /^there's an existing report$/ do
   report.save!
 end
 
+Given /^there's a "([^"]*)" report created "([^"]*)" days ago$/ do |categories, count|
+  profile, testset, product = categories.split '/'
+  release = Release.first
+  profile = FactoryGirl.build(:profile, :label => profile)
+  report  = FactoryGirl.build(:test_report,
+    :release => release,
+    :target  => profile.label,
+    :testset => testset,
+    :product => product,
+    :tested_at => count.to_i.days.ago)
+  report.save!
+end
+
 Given /^I view a report with results: (\d+) Passed, (\d+) Failed, (\d+) N\/A$/ do |passed, failed, na|
   report = FactoryGirl.build(:test_report_wo_features)
   report.features << FactoryGirl.build(:feature_wo_test_cases)
