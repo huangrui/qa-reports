@@ -9,12 +9,11 @@ $ () ->
         products:
          'name@href': -> @url
 
-  $.get '/reports.json', (index_model) ->
-    $('#report_navigation').render index_model, directives
-    $('#report_navigation').show()
-
   $('#report_filters a').click (event) ->
     event.preventDefault()
     $.get $(this).attr('href'), (index_model) ->
       $('#report_filters li').toggleClass 'current'
       $('#report_navigation').render index_model, directives
+      $('#report_navigation').show()
+
+  $('#report_filters li a').first().trigger 'click'
