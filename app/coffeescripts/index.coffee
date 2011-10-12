@@ -54,8 +54,7 @@ $(document).ready ->
 
     $.post post_url, data, (res, status) ->
       $.ajax
-        "url"      : window.location.href
-        "dataType" : "json"
+        "url"      : window.location.href.replace(/\/index/, '') + '/index.json'
         "success"  : (data) ->
           $navigation.render data, directives
           editMode()
