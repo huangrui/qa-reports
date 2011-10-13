@@ -37,7 +37,7 @@ class ApplicationController < ActionController::Base
   end
 
   def profile
-    @profile ||= Profile.find_by_label(params[:target]) || Profile.find_by_label(params[:profile].try(:fetch, :label)) || Profile.first
+    @profile ||= Profile.find_by_name(params[:target]) || Profile.find_by_name(params[:profile].try(:fetch, :name)) || Profile.first
   end
 
   def testset

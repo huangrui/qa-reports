@@ -73,7 +73,7 @@ class UploadController < ApplicationController
     params[:meego_test_session][:result_files] = FileAttachment.where(:id => params.delete(:drag_n_drop_attachments))
 
     params[:meego_test_session][:release_version] = params[:release][:name]
-    params[:meego_test_session][:target] = params[:profile][:label]
+    params[:meego_test_session][:target] = params[:profile][:name]
 
     @test_session = ReportFactory.new.build(params[:meego_test_session])
     @test_session.author = current_user

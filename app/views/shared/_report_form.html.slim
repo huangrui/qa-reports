@@ -9,9 +9,9 @@
 .field
   label for="report_test_target" Target profile:
   - @profiles.each do |profile|
-    = radio_button :profile, :label, profile, :class => "target"
-    = label :profile, :label, profile.humanize, :value => profile, :class => "inline_label"
-  = error_message_on :profile, :label
+    = radio_button :profile, :name, profile, :class => "target"
+    = label :profile, :name, profile.humanize, :value => profile, :class => "inline_label"
+  = error_message_on :profile, :name
 
 .field
   label for="report_test_execution_date" Test execution date:
