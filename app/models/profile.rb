@@ -1,6 +1,6 @@
 class Profile < ActiveRecord::Base
   def self.names
-    order("sort_order ASC").select(:label).map(&:label)
+    order("sort_order ASC").select(:name).map(&:name)
   end
 
   def self.labels

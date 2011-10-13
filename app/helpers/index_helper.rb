@@ -19,7 +19,7 @@
 module IndexHelper
 
   def group_report_title
-    [profile.label, testset, product].compact.join(' / ')
+    [profile.name, testset, product].compact.join(' / ')
   end
 
   def filtered_index_url(target, testset=nil, product=nil)

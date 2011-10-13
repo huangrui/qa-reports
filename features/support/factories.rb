@@ -21,7 +21,7 @@ FactoryGirl.define do
   end
 
   factory :profile do
-    label      "Handset"
+    name       "Handset"
     normalized "handset"
     sort_order 0
   end
@@ -48,7 +48,7 @@ FactoryGirl.define do
     editor
     release
     title           "N900 Test Report"
-    profile         {Profile.find_by_label("Handset") || FactoryGirl.create(:profile)}
+    profile         {Profile.find_by_name("Handset") || FactoryGirl.create(:profile)}
     testset         "Acceptance"
     product         "N900"
     published       true
@@ -133,7 +133,7 @@ FactoryGirl.define do
     editor
     release         {Release.where(:name => '1.2').first}
     title           "N900 NFT TEST REPORT"
-    profile         {Profile.find_by_label("Handset") || FactoryGirl.create(:profile)}
+    profile         {Profile.find_by_name("Handset") || FactoryGirl.create(:profile)}
     testset         "NFT"
     product         "N900"
     published       true

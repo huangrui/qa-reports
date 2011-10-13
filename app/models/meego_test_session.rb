@@ -311,7 +311,7 @@ class MeegoTestSession < ActiveRecord::Base
 
   def generate_defaults!
     time                 = tested_at || Time.now
-    self.title           ||= "%s Test Report: %s %s %s" % [profile.label, product_label, testset_label, time.strftime('%Y-%m-%d')]
+    self.title           ||= "%s Test Report: %s %s %s" % [profile.name, product_label, testset_label, time.strftime('%Y-%m-%d')]
     self.environment_txt = "* Product: " + product if self.environment_txt.empty?
   end
 
@@ -343,7 +343,7 @@ class MeegoTestSession < ActiveRecord::Base
     tmp = ReportFactory.new.build(params)
     parsing_errors = tmp.errors[:result_files]
 
-    user.update_attribute(:default_target, self.profile.label) if self.profile.label.present?
+    user.update_attribute(:default_target, self.profile.name) if self.profile.name.present?
     self.editor    = user
     self.published = published
 

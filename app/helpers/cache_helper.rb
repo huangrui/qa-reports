@@ -1,8 +1,8 @@
 module CacheHelper
   def expire_index_for(test_session)
-    expire_paging_action :controller => "report_groups", :action => "show", :release_version => test_session.release.name, :target => test_session.profile.label, :testset => test_session.testset, :product => test_session.product
-    expire_paging_action :controller => "report_groups", :action => "show", :release_version => test_session.release.name, :target => test_session.profile.label, :testset => test_session.testset
-    expire_paging_action :controller => "report_groups", :action => "show", :release_version => test_session.release.name, :target => test_session.profile.label
+    expire_paging_action :controller => "report_groups", :action => "show", :release_version => test_session.release.name, :target => test_session.profile.name, :testset => test_session.testset, :product => test_session.product
+    expire_paging_action :controller => "report_groups", :action => "show", :release_version => test_session.release.name, :target => test_session.profile.name, :testset => test_session.testset
+    expire_paging_action :controller => "report_groups", :action => "show", :release_version => test_session.release.name, :target => test_session.profile.name
   end
 
   def expire_paging_action(args)

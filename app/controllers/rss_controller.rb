@@ -25,7 +25,7 @@ class RssController < ApplicationController
   def rss
    filter = {
         :release_id => release.id,
-        :profile_id => Profile.find_by_label(params[:target]).try(:id),
+        :profile_id => Profile.find_by_name(params[:target]).try(:id),
         :testset    => testset,
         :product    => product
       }.delete_if { |key, value| value.nil? }
