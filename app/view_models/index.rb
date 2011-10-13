@@ -1,19 +1,21 @@
 class Index
 
+  CUT_OFF_LIMIT = 30
+
   def self.find_by_release(release, show_all)
-    { :profiles => TargetLabel.find_by_sql("
+    { :profiles => Profile.find_by_sql("
         SELECT DISTINCT profiles.label AS profile, reports.testset, reports.product AS name
-        FROM target_labels AS profiles
-        LEFT JOIN meego_test_sessions AS reports ON profiles.normalized = reports.target AND
+        FROM profiles
+        LEFT JOIN meego_test_sessions AS reports ON profiles.id = reports.profile_id AND
           reports.release_id = #{release.id} AND
           reports.published  = TRUE AND
-          reports.tested_at  > '#{show_all ? 0 : MeegoTestSession.recent_cut_off_date}'
+          reports.tested_at  > '#{show_all ? 0 : CUT_OFF_LIMIT.days.ago}'
         ORDER BY profiles.sort_order ASC, testset, product
       ").group_by(&:profile).map do |profile, testsets|
         {
           :name     => profile,
           :url      => "/#{release.name}/#{profile}",
-          :testsets => testsets.first.testset.nil? ? [] : testsets.group_by(&:testset).map do |testset, products|
+          :testsets => testsets.select{|ts| ts.testset.present?}.group_by(&:testset).map do |testset, products|
               {
                 :name           => testset,
                 :url            => "/#{release.name}/#{profile}/#{testset}",

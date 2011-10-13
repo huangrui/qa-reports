@@ -33,9 +33,9 @@ module ApplicationHelper
   html = '<div id="breadcrumb"><li><a href="' + root_path + '">Home</a></li>'
 
 
-  html += ('<li> &rsaquo; ' + link_to_unless_current(@profile, group_report_path(release.name, @profile)) + '</li>') if @profile
-  html += ('<li> &rsaquo; ' + link_to_unless_current(@testset, group_report_path(release.name, @profile, @testset)) + '</li>') if @testset
-  html += ('<li> &rsaquo; ' + link_to_unless_current(@product, group_report_path(release.name, @profile, @testset, @product)) + '</li>') if @product
+  html += ('<li> &rsaquo; ' + link_to_unless_current(@profile.label, group_report_path(release.name, @profile.label)) + '</li>') if @profile
+  html += ('<li> &rsaquo; ' + link_to_unless_current(@testset, group_report_path(release.name, @profile.label, @testset)) + '</li>') if @testset
+  html += ('<li> &rsaquo; ' + link_to_unless_current(@product, group_report_path(release.name, @profile.label, @testset, @product)) + '</li>') if @product
   html += ('<li> &rsaquo; ' + @test_session.title + '</li>') if @test_session
   html += '</div>'
   html.html_safe
@@ -93,7 +93,7 @@ module ApplicationHelper
   end
 
   def report_url(s)
-      url_for :controller=>'reports',:action=>'show', :release_version=>s.release.name, :target=>s.target, :testset=>s.testset, :product=>s.product, :id=>s.id
+      url_for :controller=>'reports',:action=>'show', :release_version=>s.release.name, :target=>s.profile.label, :testset=>s.testset, :product=>s.product, :id=>s.id
   end
 
   def format_date_to_human_readable(date)

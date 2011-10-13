@@ -111,7 +111,7 @@ When "the client sends a request with invalid release version" do
 end
 
 When "the client sends a request with invalid target profile" do
-  @default_api_opts["target"] ="foo"
+  @default_api_opts["target"] ="Foo"
   api_import @default_api_opts
   response.should be_success
 end
@@ -171,7 +171,7 @@ end
 When /^I view the latest report "([^"]*)"/ do |report_string|
   #TODO: Use scopes
   version, target, test_type, product = report_string.downcase.split('/')
-  report = MeegoTestSession.joins(:release).where(:releases => {:name => version}, :target => target, :product => product, :testset => test_type).order("created_at DESC").first
+  report = MeegoTestSession.joins([:release, :profile]).where(:releases => {:name => version}, :profiles => {:label => target}, :product => product, :testset => test_type).order("created_at DESC").first
   raise "report not found with parameters #{version}/#{target}/#{product}/#{test_type}!" unless report
   visit("/#{version}/#{target}/#{test_type}/#{product}/#{report.id}")
 end
@@ -280,7 +280,7 @@ Then "the result complains about invalid release version" do
 end
 
 Then "the result complains about invalid target profile" do
-  Then %{the REST result "errors|target" is "Incorrect target 'foo'. Valid ones are Core,Handset,Netbook,IVI,SDK."}
+  Then %{the REST result "errors|target" is "Incorrect target 'Foo'. Valid ones are: Core,Handset,Netbook,IVI,SDK."}
 end
 
 Then "the result complains about invalid product" do
@@ -294,7 +294,10 @@ end
 Then /^the REST result "([^"]*)" is "([^"]*)"$/ do |key, value|
   json = ActiveSupport::JSON.decode(@response.body)
   key.split('|').each { |item| json = json[item] }
-  json.should eql(value), (key.downcase == "ok" and value == "1") ? ActiveSupport::JSON.decode(@response.body)['errors'] : nil
+  assert_msg = "Expected response '#{key}' with value \"#{value}\"\nGot value: \"#{json}\""
+  assert_msg = "Expected response '#{key}'\nGot error: '#{ActiveSupport::JSON.decode(@response.body)['errors'].map{|k,v| "#{k}=#{v}"}.join('&')}'" if (key.downcase == "ok" and value == "1" and json != value)
+
+  json.should eql(value), assert_msg
 end
 
 def get_testsessionid(file)

@@ -119,7 +119,9 @@ Feature:
     And I should see "Handset" within "h1"
 
     When I follow "Add report"
-    And I select test set "Smokey" and product "n990"
+    Then I should see profile "Handset" as selected
+
+    When I select test set "Smokey" and product "n990" with date "2010-02-12"
     And attach the report "sample.csv"
     And submit the form at "upload_report_submit"
 

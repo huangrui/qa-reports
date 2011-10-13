@@ -30,4 +30,11 @@ namespace :db do
            --compress                           \
            #{user}@#{host}:#{current_path}/public/files/attachments public/files`
   end
+
+  desc "Backup the production database to shared folder"
+  task :backup, :roles => :db, :only => {:primary => true} do
+    run "cd #{current_path} && RAILS_ENV='#{rails_env}' bundle exec rake db:dump"
+    run "mv -f #{current_path}/qa_reports_production.sql.bz2 #{shared_path}/db_dumps"
+  end
+
 end

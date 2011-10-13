@@ -41,6 +41,7 @@ class MeegoTestSession < ActiveRecord::Base
   belongs_to :author, :class_name => "User"
   belongs_to :editor, :class_name => "User"
   belongs_to :release
+  belongs_to :profile
 
   has_many :features,         :dependent => :destroy, :order => "id DESC"
   has_many :meego_test_cases, :autosave => false,     :order => "id DESC"
@@ -53,10 +54,10 @@ class MeegoTestSession < ActiveRecord::Base
   has_many :result_files,     :class_name => 'FileAttachment', :as => :attachable, :dependent => :destroy, :conditions => {:attachment_type => 'result_file'}
   has_many :attachments,      :class_name => 'FileAttachment', :as => :attachable, :dependent => :destroy, :conditions => {:attachment_type => 'attachment'}
 
-  validates_presence_of :title, :target, :testset, :product
+  validates_presence_of :title, :testset, :product
   validates_presence_of :result_files
   validates_presence_of :author
-  validates_presence_of :release
+  validates_presence_of :release, :profile
   validates             :tested_at, :date_time => true
   validate              :validate_profile_testset_and_product
 
@@ -64,7 +65,7 @@ class MeegoTestSession < ActiveRecord::Base
 
   scope :published,  where(:published => true)
   scope :release,    lambda { |release| published.joins(:release).where(:releases => {:name => release}) }
-  scope :profile,    lambda { |profile| published.where(:target => profile.downcase) }
+  scope :profile,    lambda { |profile| published.joins(:profile).where(:profiles => {:normalized => profile.downcase}) }
   scope :testset,    lambda { |testset| published.where(:testset => testset.downcase) }
   scope :product_is, lambda { |product| published.where(:product => product.downcase) }
 
@@ -77,10 +78,6 @@ class MeegoTestSession < ActiveRecord::Base
   #TODO: Throw away
   def month
     @month ||= tested_at.strftime("%B %Y")
-  end
-
-  def self.recent_cut_off_date
-    30.days.ago
   end
 
   def self.fetch_fully(id)
@@ -109,19 +106,6 @@ class MeegoTestSession < ActiveRecord::Base
   def self.popular_products(limit=3)
     published.select("product as product").order("COUNT(product) DESC").
       group(:product).limit(limit).map(&:product)
-  end
-
-  def meego_test_session
-    self
-  end
-
-  def target=(target)
-    target = target.try(:downcase)
-    write_attribute(:target, target)
-  end
-
-  def target
-    read_attribute(:target).try(:capitalize)
   end
 
   def self.popular_build_ids(limit=3)
@@ -156,7 +140,7 @@ class MeegoTestSession < ActiveRecord::Base
     created = created_at || Time.now
 
     @prev_session = MeegoTestSession.find(:first, :conditions => [
-        "(tested_at < ? OR tested_at = ? AND created_at < ?) AND target = ? AND testset = ? AND product = ? AND published = ? AND release_id = ?", tested, tested, created, target.downcase, testset.downcase, product.downcase, true, release_id
+        "(tested_at < ? OR tested_at = ? AND created_at < ?) AND profile_id = ? AND testset = ? AND product = ? AND published = ? AND release_id = ?", tested, tested, created, profile.try(:id), testset.downcase, product.downcase, true, release_id
     ],
                           :order => "tested_at DESC, created_at DESC", :include =>
          [{:features => :meego_test_cases}, {:meego_test_cases => :feature}])
@@ -168,7 +152,7 @@ class MeegoTestSession < ActiveRecord::Base
   def next_session
     return @next_session unless @next_session.nil? and @has_next.nil?
     @next_session = MeegoTestSession.find(:first, :conditions => [
-        "(tested_at > ? OR tested_at = ? AND created_at > ?) AND target = ? AND testset = ? AND product = ? AND published = ? AND release_id = ?", tested_at, tested_at, created_at, target.downcase, testset.downcase, product.downcase, true, release_id
+        "(tested_at > ? OR tested_at = ? AND created_at > ?) AND profile_id = ? AND testset = ? AND product = ? AND published = ? AND release_id = ?", tested_at, tested_at, created_at, profile.try(:id), testset.downcase, product.downcase, true, release_id
     ],
                           :order => "tested_at ASC, created_at ASC", :include =>
          [{:features => :meego_test_cases}, {:meego_test_cases => :feature}])
@@ -316,8 +300,6 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def validate_profile_testset_and_product
-    errors.add :target, "Incorrect target '#{target}'. Valid ones are #{TargetLabel.labels.join(',')}." if target.present? and not TargetLabel.find_by_normalized(target.downcase)
-
     # \A and \z instead of ^ and $ cause multiline strings to fail validation.
     # And for the record: at least these characters break the navigation:
     # . % \ / (yes, dot is there as well for some oddball reason)
@@ -329,7 +311,7 @@ class MeegoTestSession < ActiveRecord::Base
 
   def generate_defaults!
     time                 = tested_at || Time.now
-    self.title           ||= "%s Test Report: %s %s %s" % [target, product_label, testset_label, time.strftime('%Y-%m-%d')]
+    self.title           ||= "%s Test Report: %s %s %s" % [profile.label, product_label, testset_label, time.strftime('%Y-%m-%d')]
     self.environment_txt = "* Product: " + product if self.environment_txt.empty?
   end
 
@@ -361,7 +343,7 @@ class MeegoTestSession < ActiveRecord::Base
     tmp = ReportFactory.new.build(params)
     parsing_errors = tmp.errors[:result_files]
 
-    user.update_attribute(:default_target, self.target) if self.target.present?
+    user.update_attribute(:default_target, self.profile.label) if self.profile.label.present?
     self.editor    = user
     self.published = published
 

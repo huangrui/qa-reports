@@ -32,18 +32,17 @@ class UploadController < ApplicationController
 
   def upload_form
     new_report = {}
-    [:target, :testset, :product].each do |key|
+    [:testset, :product].each do |key|
       new_report[key] = params[key] if params[key]
     end
 
-    new_report[:target] ||= new_report[:target].downcase if new_report[:target]
-    new_report[:target] ||= TargetLabel.targets.first.downcase
-
     @test_session = MeegoTestSession.new(new_report)
     @test_session.release = Release.find_by_name(params[:release_version])
+    @test_session.profile = profile || Profile.first
+
     set_suggestions
 
-    @targets  = TargetLabel.targets.map {|target| target.downcase}
+    @profiles  = Profile.names
 
     @no_upload_link = true
   end
@@ -74,6 +73,8 @@ class UploadController < ApplicationController
     params[:meego_test_session][:result_files] = FileAttachment.where(:id => params.delete(:drag_n_drop_attachments))
 
     params[:meego_test_session][:release_version] = params[:release][:name]
+    params[:meego_test_session][:target] = params[:profile][:label]
+
     @test_session = ReportFactory.new.build(params[:meego_test_session])
     @test_session.author = current_user
     @test_session.editor = current_user
@@ -83,7 +84,7 @@ class UploadController < ApplicationController
     if @test_session.errors.empty? and @test_session.save
       redirect_to preview_report_path(@test_session)
     else
-      @targets = TargetLabel.targets
+      @profiles = Profile.names
       render :upload_form
     end
   end

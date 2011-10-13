@@ -6,7 +6,7 @@ Given /^there are (\d+) reports from "([^"]*)" under "([^"]*)"$/ do |num, date, 
     FactoryGirl.create(:test_report,
       :tested_at => DateTime.new(year.to_i, month.to_i, i % 27 + 1),
       :release => Release.find_by_name(release),
-      :target => target,
+      :profile => Profile.find_by_label(target),
       :testset => testset,
       :product => product)
   end

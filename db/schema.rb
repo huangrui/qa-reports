@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110929063440) do
+ActiveRecord::Schema.define(:version => 20111013104159) do
 
   create_table "features", :force => true do |t|
     t.string  "name",                  :default => ""
@@ -67,7 +67,6 @@ ActiveRecord::Schema.define(:version => 20110929063440) do
     t.string   "environment",                       :default => ""
     t.string   "product",                           :default => ""
     t.string   "title",                                                :null => false
-    t.string   "target",                            :default => ""
     t.string   "testset",                           :default => ""
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -82,9 +81,16 @@ ActiveRecord::Schema.define(:version => 20110929063440) do
     t.integer  "editor_id",                                            :null => false
     t.integer  "release_id",                                           :null => false
     t.string   "build_id",                          :default => ""
+    t.integer  "profile_id",                                           :null => false
   end
 
-  add_index "meego_test_sessions", ["release_id", "target", "testset", "product"], :name => "index_meego_test_sessions_key"
+  add_index "meego_test_sessions", ["release_id", "testset", "product"], :name => "index_meego_test_sessions_key"
+
+  create_table "profiles", :force => true do |t|
+    t.string  "label",      :limit => 64, :null => false
+    t.string  "normalized", :limit => 64, :null => false
+    t.integer "sort_order",               :null => false
+  end
 
   create_table "releases", :force => true do |t|
     t.string  "name",       :limit => 64, :null => false
@@ -116,12 +122,6 @@ ActiveRecord::Schema.define(:version => 20110929063440) do
 
   add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
   add_index "sessions", ["updated_at"], :name => "index_sessions_on_updated_at"
-
-  create_table "target_labels", :force => true do |t|
-    t.string  "label",      :limit => 64, :null => false
-    t.string  "normalized", :limit => 64, :null => false
-    t.integer "sort_order",               :null => false
-  end
 
   create_table "test_result_files", :force => true do |t|
     t.integer "meego_test_session_id", :null => false

@@ -17,11 +17,11 @@ Release.create! :name => "1.2", :sort_order => 0
 Release.create! :name => "1.1", :sort_order => 1
 Release.create! :name => "1.0", :sort_order => 2
 
-TargetLabel.create! :label => "Core", :normalized => "core", :sort_order => 0
-TargetLabel.create! :label => "Handset", :normalized => "handset", :sort_order => 1
-TargetLabel.create! :label => "Netbook", :normalized => "netbook", :sort_order => 2
-TargetLabel.create! :label => "IVI", :normalized => "ivi", :sort_order => 3
-TargetLabel.create! :label => "SDK", :normalized => "sdk", :sort_order => 4
+Profile.create! :label => "Core", :normalized => "core", :sort_order => 0
+Profile.create! :label => "Handset", :normalized => "handset", :sort_order => 1
+Profile.create! :label => "Netbook", :normalized => "netbook", :sort_order => 2
+Profile.create! :label => "IVI", :normalized => "ivi", :sort_order => 3
+Profile.create! :label => "SDK", :normalized => "sdk", :sort_order => 4
 
 if Rails.env == "staging" and MeegoTestSession.count < 10000 # ensure there's always 10000 reports on database
   testuser = User.find_by_email("test@leonidasoy.fi")
@@ -38,17 +38,17 @@ if Rails.env == "staging" and MeegoTestSession.count < 10000 # ensure there's al
 
   10000.times do
     session = MeegoTestSession.new(
-      "build_txt" => "",
-      "qa_summary_txt" => "",
-      "result_files_attributes" => [{:file => tmpfile, :attachment_type => :result_file}],
-      "testset" => "Acceptance",
-      "product" => "N900",
-      "environment_txt" => "",
-      "issue_summary_txt" => "",
-      "target" => "Core",
-      "objective_txt" => "",
-      "release_version" => "1.2"
+      :build_txt                => "",
+      :qa_summary_txt           => "",
+      :result_files_attributes  => [{:file => tmpfile, :attachment_type => :result_file}],
+      :testset                  => "Acceptance",
+      :product                  => "N900",
+      :environment_txt          => "",
+      :issue_summary_txt        => "",
+      :objective_txt            => ""
     )
+    session.release = Release.find_by_name("1.2")
+    session.profile = Profile.find_by_label("Core")
     session.generate_defaults!
     session.tested_at = Time.now
     session.author = testuser

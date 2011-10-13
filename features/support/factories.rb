@@ -20,7 +20,7 @@ FactoryGirl.define do
     sort_order  0
   end
 
-  factory :target, :aliases => [:profile], :class => TargetLabel do
+  factory :profile do
     label      "Handset"
     normalized "handset"
     sort_order 0
@@ -48,7 +48,7 @@ FactoryGirl.define do
     editor
     release
     title           "N900 Test Report"
-    target          "Handset"
+    profile         {Profile.find_by_label("Handset") || FactoryGirl.create(:profile)}
     testset         "Acceptance"
     product         "N900"
     published       true
@@ -133,7 +133,7 @@ FactoryGirl.define do
     editor
     release         {Release.where(:name => '1.2').first}
     title           "N900 NFT TEST REPORT"
-    target          "Handset"
+    profile         {Profile.find_by_label("Handset") || FactoryGirl.create(:profile)}
     testset         "NFT"
     product         "N900"
     published       true

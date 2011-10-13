@@ -14,8 +14,8 @@
   form#edit_report action=""
     - if user_signed_in?
       a#delete-button.small_btn.cancel href="#" Delete
-      a#edit-button.small_btn href=edit_report_path(@report.release.name, @report.target, @report.testset, @report.product, @report) Edit
-    a#print-button.small_btn href=print_report_path(@report.release.name, @report.target, @report.testset, @report.product, @report) Print
+      a#edit-button.small_btn href=edit_report_path(@report.release.name, @report.profile.label, @report.testset, @report.product, @report) Edit
+    a#print-button.small_btn href=print_report_path(@report.release.name, @report.profile.label, @report.testset, @report.product, @report) Print
 
 - content_for :table_of_contents do
   = render :partial => "toc"

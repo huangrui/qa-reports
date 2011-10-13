@@ -25,7 +25,7 @@ Given /^there's a "([^"]*)" report created "([^"]*)" days ago$/ do |categories, 
   profile = FactoryGirl.build(:profile, :label => profile)
   report  = FactoryGirl.build(:test_report,
     :release => release,
-    :target  => profile.label,
+    :profile => profile,
     :testset => testset,
     :product => product,
     :tested_at => count.to_i.days.ago)

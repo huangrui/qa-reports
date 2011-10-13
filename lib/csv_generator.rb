@@ -46,7 +46,7 @@ module CsvGenerator
     SELECT
     mts.tested_at           AS tested_at,
     r.name                  AS release_version,
-    mts.target              AS target,
+    p.label                 AS target,
     mts.testset             AS testset,
     mts.product             AS product,
     mts.title               AS session,
@@ -70,6 +70,7 @@ module CsvGenerator
     LEFT JOIN meego_test_cases   AS mtc    ON (mtc.meego_test_session_id = mts.id)
     LEFT JOIN features           AS mtset  ON (mtc.feature_id = mtset.id)
     LEFT JOIN releases           AS r      ON (mts.release_id = r.id)
+    LEFT JOIN profiles           AS p      ON (mts.profile_id = p.id)
     LEFT JOIN meego_measurements AS mms    ON (mms.meego_test_case_id = mtc.id)
   END
 
@@ -101,7 +102,7 @@ module CsvGenerator
     # Construct conditions
     conds = ["mts.published = ?", "mtc.deleted = ?"]
     conds << "r.name = ?" if release_version
-    conds << "mts.target = ?" if target
+    conds << "p.label = ?" if target
     conds << "mts.testset = ?" if testset
     conds << "mts.product = ?" if product
 
