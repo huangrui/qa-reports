@@ -43,33 +43,34 @@ initSelectionEdit = (context, cls_elem, replace_txt, cls_mapping) ->
     clickHandler = () ->
         form.toggle()
         if context.hasClass cls
-            context.unbind 'click'
             [k,c] = find_val()
-            context.removeClass c
-        else
-            context.click clickHandler
-        context.toggleClass cls
+            cls_elem.removeClass c
+            input.focus()
+        f = () -> context.toggleClass cls
+        setTimeout f, 1
         content.toggle()
 
     save_selection = ->
-        return if context.hasClass cls
+        return false if context.hasClass cls
         data   = form.serialize()
         action = form.attr 'action'
         $.post action, data
         if replace_txt
             content.text input.find('[selected]').text()
-        cls_elem.removeClass()
-        cls_elem.addClass "content " + cls_mapping[input.val()]
+        cls_elem.addClass cls_mapping[input.val()]
         clickHandler()
         return false
 
     input.change save_selection
 
     input.blur ->
-        return if context.hasClass cls
+        return false if context.hasClass cls
         save_selection()
 
-    context.click clickHandler
+    context.click ->
+        clickHandler() if context.hasClass cls
+        return false
+
 
 initInplaceEdit = (context, contentSelector, inputSelector, hasMarkup) ->
     context = $(context)
