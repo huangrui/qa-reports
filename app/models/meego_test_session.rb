@@ -79,10 +79,6 @@ class MeegoTestSession < ActiveRecord::Base
     @month ||= tested_at.strftime("%B %Y")
   end
 
-  def self.recent_cut_off_date
-    30.days.ago
-  end
-
   def self.fetch_fully(id)
     find(id, :include =>
          {:features =>
