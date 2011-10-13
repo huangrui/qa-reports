@@ -17,8 +17,8 @@ end
 
 When /^I have uploaded reports with profile "([^"]*)" having testset "([^"]*)" and product "([^"]*)"$/ do |profile, testset, product|
   FactoryGirl.create_list(:test_report, 2,
-    :release => Release.find_by_name(selected_release()),
-    :target  => profile.downcase,
+    :release => Release.find_by_name(selected_release),
+    :profile => Profile.find_by_label(profile),
     :testset => testset,
     :product => product,
     :title => "#{testset} Test Report: #{product} Basic Feature 2011-09-29")
