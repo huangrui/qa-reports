@@ -98,12 +98,8 @@ module ReportSummary
     @total_na ||= count_results(MeegoTestCase::NA)
   end
 
-  def count_results(result)
-    if new_record? || meego_test_cases.loaded?
-      meego_test_cases.to_a.count {|x| x.result == result}
-    else
-      meego_test_cases.count(:conditions => {:result => result})
-    end
+  def total_measured
+    @total_measured ||= count_results(MeegoTestCase::MEASURED)
   end
 
   def total_cases=(num)
@@ -122,218 +118,44 @@ module ReportSummary
     @total_na = num
   end
 
+  def total_measured=(num)
+    @total_measured = num
+  end
+
   def total_executed
     total_passed + total_failed
   end
 
   def run_rate
-    "%i%%" % run_rate_value
+    safe_div (total_passed + total_failed + total_measured).to_f, total_cases
   end
 
-  def total_pass_rate
-    if total_cases == 0
-      "n/a"
-    else
-      "%i%%" % total_pass_rate_value
-    end
+  def pass_rate
+    safe_div total_passed.to_f, (total_cases - total_measured)
   end
 
-  def executed_pass_rate
-    if total_executed == 0
-      "n/a"
-    else
-      "%i%%" % executed_pass_rate_value
-    end
+  def pass_rate_executed
+    safe_div total_passed.to_f, (total_cases - total_measured - total_na)
   end
 
   def nft_index
-    if nft_index_value == 0
-      "n/a"
-    else
-      "%.0f%%" % nft_index_value
-    end
+    # Select measurements which affect to nft_index and map those calculated indices into an array
+    indices = MeegoMeasurement.where(:meego_test_case_id => meego_test_cases).select{|m| m.index.present?}.map &:index
+
+    return 0 if indices.count == 0
+    indices.inject(:+) / indices.count
   end
 
-  def run_rate_value
-    if total_cases > 0
-      (total_executed*100.0/total_cases)
-    else
-      0
-    end
+  def metric_change_direction(metric_name)
+    return 0 if not prev_summary
+
+    send(metric_name) <=> prev_summary.send(metric_name)
   end
 
-  def total_pass_rate_value
-    if total_cases > 0
-      (total_passed*100.0/total_cases)
-    else
-      0
-    end
-  end
+  def change_from_previous(field_name)
+    return 0 if not prev_summary
 
-  def executed_pass_rate_value
-    if total_executed > 0
-      (total_passed*100.0/total_executed)
-    else
-      0
-    end
-  end
-
-  def nft_index_value
-    return @nft_index unless @nft_index.nil?
-
-    # Select measurements for which nft_index can be calculated
-    # and map those calculated indices into an array
-    indices = MeegoMeasurement.where(:meego_test_case_id => meego_test_cases).select{|m| m.nft_index.present?}.map &:nft_index
-
-    @nft_index = if indices.count == 0 then
-      0
-    else
-      indices.inject(:+) / indices.count * 100
-    end
-  end
-
-  def total_change_class
-    if not prev_summary or total_cases == prev_summary.total_cases
-      "unchanged"
-    elsif total_cases < prev_summary.total_cases
-      "dec"
-    else
-      "inc"
-    end
-  end
-
-  def passed_change_class
-    if not prev_summary or total_passed == prev_summary.total_passed
-      "unchanged"
-    elsif total_passed < prev_summary.total_passed
-      "dec"
-    else
-      "inc"
-    end
-  end
-
-  def failed_change_class
-    if not prev_summary or total_failed == prev_summary.total_failed
-      "unchanged"
-    elsif total_failed < prev_summary.total_failed
-      "dec"
-    else
-      "inc"
-    end
-  end
-
-  def na_change_class
-    if not prev_summary or total_na == prev_summary.total_na
-      "unchanged"
-    elsif total_na < prev_summary.total_na
-      "dec"
-    else
-      "inc"
-    end
-  end
-
-  def total_change
-    if not prev_summary or total_cases == prev_summary.total_cases
-      ""
-    else
-      "%+i" % (total_cases - prev_summary.total_cases)
-    end
-  end
-
-  def passed_change
-    if not prev_summary or total_passed == prev_summary.total_passed
-      ""
-    else
-      "%+i" % (total_passed - prev_summary.total_passed)
-    end
-  end
-
-  def failed_change
-    if not prev_summary or total_failed == prev_summary.total_failed
-      ""
-    else
-      "%+i" % (total_failed - prev_summary.total_failed)
-    end
-  end
-
-  def na_change
-    if not prev_summary or total_na == prev_summary.total_na
-      ""
-    else
-      "%+i" % (total_na - prev_summary.total_na)
-    end
-  end
-
-  def run_rate_change_class
-    if not prev_summary or run_rate_value == prev_summary.run_rate_value
-      "unchanged"
-    elsif run_rate_value < prev_summary.run_rate_value
-      "dec"
-    else
-      "inc"
-    end
-  end
-
-  def total_pass_rate_change_class
-    if not prev_summary or total_pass_rate_value == prev_summary.total_pass_rate_value
-      "unchanged"
-    elsif total_pass_rate_value < prev_summary.total_pass_rate_value
-      "dec"
-    else
-      "inc"
-    end
-  end
-
-  def executed_pass_rate_change_class
-    if not prev_summary or total_executed == 0 or prev_summary.total_executed == 0 or executed_pass_rate_value == prev_summary.executed_pass_rate_value
-      "unchanged"
-    elsif executed_pass_rate_value < prev_summary.executed_pass_rate_value
-      "dec"
-    else
-      "inc"
-    end
-  end
-
-  def nft_index_change_class
-    if not prev_summary or nft_index_value == prev_summary.nft_index_value
-      "unchanged"
-    elsif nft_index_value < prev_summary.nft_index_value
-      "dec"
-    else
-      "inc"
-    end
-  end
-
-  def total_pass_rate_change
-    if not prev_summary or total_pass_rate_value == prev_summary.total_pass_rate_value
-      ""
-    else
-      "%+i%%" % (total_pass_rate_value - prev_summary.total_pass_rate_value)
-    end
-  end
-
-  def executed_pass_rate_change
-    if not prev_summary or executed_pass_rate_value == prev_summary.executed_pass_rate_value
-      ""
-    else
-      "%+i%%" % (executed_pass_rate_value - prev_summary.executed_pass_rate_value)
-    end
-  end
-
-  def nft_index_change
-    if not prev_summary or nft_index_value == prev_summary.nft_index_value
-      ""
-    else
-      "%+.0f%%" % (nft_index_value - prev_summary.nft_index_value)
-    end
-  end
-
-  def run_rate_change
-    if not prev_summary or run_rate_value == prev_summary.run_rate_value
-      ""
-    else
-      "%+i%%" % (run_rate_value - prev_summary.run_rate_value)
-    end
+    send(field_name) - prev_summary.send(field_name)
   end
 
   def total_nft
@@ -341,7 +163,7 @@ module ReportSummary
   end
 
   def total_non_nft
-    @total_non_nft ||= meego_test_cases.count - total_nft
+    @total_non_nft ||= total_cases - total_nft
   end
 
   def total_non_serial_nft
@@ -373,18 +195,26 @@ module ReportSummary
   end
 
   def calculate_grading
-    if total_cases > 0
-      pass_rate = total_passed * 100 / total_cases
-      if pass_rate < 40
-        1
-      elsif pass_rate < 90
-        2
-      else
-        3
-      end
-    else
-      0
+    return 0 if total_cases - total_measured == 0
+    case pass_rate
+    when 0.9..1.0 then 3
+    when 0.4..0.9 then 2
+    else 1
     end
+  end
+
+  private
+
+  def count_results(result)
+    if new_record? || meego_test_cases.loaded?
+      meego_test_cases.to_a.count {|x| x.result == result}
+    else
+      meego_test_cases.count(:conditions => {:result => result})
+    end
+  end
+
+  def safe_div(dividend, divisor, div_by_zero=0)
+    divisor == 0 ? div_by_zero : ( dividend / divisor )
   end
 
 end

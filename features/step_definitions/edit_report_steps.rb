@@ -57,7 +57,8 @@ When /^I change the test case result of "([^"]*)" to "([^"]*)"$/ do |tc, result|
 end
 
 Then /^the result of test case "([^"]*)" should be "([^"]*)"$/ do |tc, result|
-  find_testcase_row(tc).find(".testcase_result .content").should have_content result
+  actual = find_testcase_row(tc).find(".testcase_result .content")
+  actual.should have_content(result), "Expected text case '#{tc}' result to be '#{result}'\nGot result '#{actual.text}'\n"
 end
 
 When /^I change the test case comment of "([^"]*)" to "([^"]*)"$/ do |tc, comment|

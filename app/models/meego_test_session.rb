@@ -38,19 +38,21 @@ class MeegoTestSession < ActiveRecord::Base
   include MeasurementUtils
   include CacheHelper
 
-  has_many :features, :dependent => :destroy, :order => "id DESC"
-  has_many :meego_test_cases, :autosave => false, :order => "id DESC"
-  has_many :result_files, :class_name => 'FileAttachment', :as => :attachable, :dependent => :destroy, :conditions => {:attachment_type => 'result_file'}
-  has_many :attachments,  :class_name => 'FileAttachment', :as => :attachable, :dependent => :destroy, :conditions => {:attachment_type => 'attachment'}
-
-  has_many :passed, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::PASS}"
-  has_many :failed, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::FAIL}"
-  has_many :na, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::NA}"
-
   belongs_to :author, :class_name => "User"
   belongs_to :editor, :class_name => "User"
   belongs_to :release
   belongs_to :profile
+
+  has_many :features,         :dependent => :destroy, :order => "id DESC"
+  has_many :meego_test_cases, :autosave => false,     :order => "id DESC"
+  has_many :test_cases,       :class_name => "MeegoTestCase", :autosave => false,     :order => "id DESC"
+  has_many :passed,           :class_name => "MeegoTestCase", :conditions => { :result => MeegoTestCase::PASS     }
+  has_many :failed,           :class_name => "MeegoTestCase", :conditions => { :result => MeegoTestCase::FAIL     }
+  has_many :na,               :class_name => "MeegoTestCase", :conditions => { :result => MeegoTestCase::NA       }
+  has_many :measured,         :class_name => "MeegoTestCase", :conditions => { :result => MeegoTestCase::MEASURED }
+
+  has_many :result_files,     :class_name => 'FileAttachment', :as => :attachable, :dependent => :destroy, :conditions => {:attachment_type => 'result_file'}
+  has_many :attachments,      :class_name => 'FileAttachment', :as => :attachable, :dependent => :destroy, :conditions => {:attachment_type => 'attachment'}
 
   validates_presence_of :title, :testset, :product
   validates_presence_of :result_files
@@ -69,18 +71,14 @@ class MeegoTestSession < ActiveRecord::Base
 
   include ReportSummary
 
-  def meego_test_session
-    self
-  end
-
   def self.latest
     published.order(:tested_at).last
   end
 
+  #TODO: Throw away
   def month
     @month ||= tested_at.strftime("%B %Y")
   end
-
 
   def self.fetch_fully(id)
     find(id, :include =>
@@ -124,10 +122,11 @@ class MeegoTestSession < ActiveRecord::Base
       where(:meego_test_session_id => reports).group(:meego_test_session_id, :result).count(:result)
 
     reports.map! do |report|
-      report.total_passed = result_counts[[report.id, MeegoTestCase::PASS]]
-      report.total_failed = result_counts[[report.id, MeegoTestCase::FAIL]]
-      report.total_na     = result_counts[[report.id, MeegoTestCase::NA]]
-      report.total_cases  = report.total_passed + report.total_failed + report.total_na
+      report.total_passed   = result_counts[[report.id, MeegoTestCase::PASS]]
+      report.total_failed   = result_counts[[report.id, MeegoTestCase::FAIL]]
+      report.total_na       = result_counts[[report.id, MeegoTestCase::NA]]
+      report.total_measured = result_counts[[report.id, MeegoTestCase::MEASURED]]
+      report.total_cases    = report.total_passed + report.total_failed + report.total_na + report.total_measured
       report
     end
   end
@@ -187,41 +186,47 @@ class MeegoTestSession < ActiveRecord::Base
   ###############################################
   def summary_data
     data = Graph::Data.new
-    data.passed = passed = []
-    data.failed = failed = []
-    data.na     = na     = []
-    data.labels = labels = []
+    data.passed    = passed   = []
+    data.failed    = failed   = []
+    data.na        = na       = []
+    data.measured  = measured = []
+    data.labels    = labels   = []
 
     prev = prev_session
     if prev
       pp = prev.prev_session
       if pp
-        passed << pp.total_passed
-        failed << pp.total_failed
-        na     << pp.total_na
-        labels << pp.formatted_date
+        passed    << pp.total_passed
+        failed    << pp.total_failed
+        na        << pp.total_na
+        measured  << pp.total_measured
+        labels    << pp.formatted_date
       else
-        passed << 0
-        failed << 0
-        na     << 0
-        labels << ""
+        passed    << 0
+        failed    << 0
+        na        << 0
+        measured  << 0
+        labels    << ""
       end
 
-      passed << prev.total_passed
-      failed << prev.total_failed
-      na     << prev.total_na
-      labels << prev.formatted_date
+      passed    << prev.total_passed
+      failed    << prev.total_failed
+      na        << prev.total_na
+      measured  << prev.total_measured
+      labels    << prev.formatted_date
     else
-      passed << 0
-      failed << 0
-      na     << 0
-      labels << ""
+      passed    << 0
+      failed    << 0
+      na        << 0
+      measured  << 0
+      labels    << ""
     end
 
-    passed << total_passed
-    failed << total_failed
-    na     << total_na
-    labels << "Current"
+    passed    << total_passed
+    failed    << total_failed
+    na        << total_na
+    measured  << total_measured
+    labels    << "Current"
 
     data
   end
@@ -317,6 +322,22 @@ class MeegoTestSession < ActiveRecord::Base
   def format_year
     tested_at.strftime("%Y")
   end
+
+  RESULT_NAMES = {"fail"     => MeegoTestCase::FAIL,
+                  "na"       => MeegoTestCase::NA,
+                  "pass"     => MeegoTestCase::PASS,
+                  "measured" => MeegoTestCase::MEASURED}
+
+  #TODO: move to test case?
+  def self.map_result(result)
+    RESULT_NAMES[result.downcase] || MeegoTestCase::NA
+  end
+
+  def self.result_as_string(result)
+    RESULT_NAMES.invert[result] || RESULT_NAMES.invert(MeegoTestCase::NA)
+  end
+
+
 
   def update_report_result(user, params, published = true)
     tmp = ReportFactory.new.build(params)

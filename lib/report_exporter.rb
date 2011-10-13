@@ -49,6 +49,7 @@ module ReportExporter
         "total_pass" => set.total_passed,
         "total_fail" => set.total_failed,
         "total_na" => set.total_na,
+        "total_measured" => set.total_measured,
 
         "comments" => set.comments,
 
@@ -76,6 +77,7 @@ module ReportExporter
       "total_pass" => test_session.total_passed,
       "total_fail" => test_session.total_failed,
       "total_na" => test_session.total_na,
+      "total_measured" => test_session.total_measured,
 
       "features" => sets,
     }

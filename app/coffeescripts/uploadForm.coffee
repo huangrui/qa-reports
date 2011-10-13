@@ -12,8 +12,9 @@ $(document).ready ->
     $("#report_test_type").autocomplete(source: testSetSuggestions)
     activateSuggestionLinks("div.field")
 
-  product_url = window.location.pathname.replace("upload","product")
-  testtype_url = window.location.pathname.replace("upload","testset")
+  product_url = window.location.pathname.replace(/upload(_post)?/,"product")
+  testtype_url = window.location.pathname.replace(/upload(_post)?/,"testset")
+
   $.get(product_url, updateProductSuggestions)
   $.get(testtype_url, updateTestSetSuggestions)
 

@@ -87,6 +87,8 @@ class ReportGroupViewModel
       limit(range.count).offset(range.begin).
       order("tested_at DESC, created_at DESC")
 
+    # TODO: Could reports just be wrapped in ReportShows that have the count methods?
+    #       Or use directly the association count calls e.g. passed.count.
     MeegoTestSession.load_case_counts_for_reports! reports
   end
 end

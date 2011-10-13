@@ -17,6 +17,7 @@ linkEditButtons = () ->
             "1": 'grading_red'
             "2": 'grading_yellow'
             "3": 'grading_green'
+            "0": 'grading_white'
 
 initSelectionEdit = (context, cls_elem, replace_txt, cls_mapping) ->
     context  = $(context)
@@ -55,10 +56,10 @@ initSelectionEdit = (context, cls_elem, replace_txt, cls_mapping) ->
         data   = form.serialize()
         action = form.attr 'action'
         $.post action, data
-
         if replace_txt
             content.text input.find('[selected]').text()
-        cls_elem.addClass cls_mapping[input.val()]
+        cls_elem.removeClass()
+        cls_elem.addClass "content " + cls_mapping[input.val()]
         clickHandler()
         return false
 
@@ -363,6 +364,7 @@ linkTestCaseButtons = (node) ->
             "-1": 'fail'
             "0": 'na'
             "1": 'pass'
+            "2": 'measured'
 
     $comment.click handleCommentEdit
 

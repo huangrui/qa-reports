@@ -56,7 +56,7 @@
 
       td.testcase_target= m.target_html
       td.testcase_limit= m.failure_html
-      td class="testcase_to_target #{result_class(m.target_result)}" =m.relative_html
+      td class="testcase_to_target #{result_class(m.target_result)}" =m.index_html
 
     - if first
       td class="testcase_result multiple_results #{result_class(testcase)} #{'edit' if @editing} #{testcase.find_change_class(@report.prev_session)} " rowspan=all.size
@@ -66,7 +66,7 @@
           input name="_method" type="hidden" value="put"
           div.float_above
             select name="test_case[result]"
-              - (-1..1).each do |s|
+              - (-1..2).each do |s|
                 option selected="#{testcase.result == s ? 'selected' : ''}" value="#{s}" =result_to_txt(s)
       / NOTE: The following is identical in _nft_testcase and _testcase_comment.
       / Partial not used here because of seriously bad performance.

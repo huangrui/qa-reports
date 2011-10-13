@@ -35,19 +35,24 @@ end
 Then /I should see the imported data from "([^"]*)" and "([^"]*)" in the exported CSV.$/ do |file1, file2|
   input = FasterCSV.read('features/resources/' + file1).drop(1) +
           FasterCSV.read('features/resources/' + file2).drop(1)
+  expected = input.each{|list| list.insert(4, "0")} # Add Measured result value. It is generated in export even if not given in import
   result = FasterCSV.parse(page.text, {:col_sep => ';'}).drop(1)
-  result.count.should == input.count
+  actual = result.map{ |item| (6..12).map{|field| item[field]}}
 
-  mapped_result = result.map{ |item| (6..11).map{|field| item[field]}}
-  (input - mapped_result).should be_empty
+  actual.count.should == expected.count
+
+  difference = actual - expected
+  difference.should be_empty, "Exported data does not match with the imported\nExpected: #{expected.to_yaml}\nGot: #{actual.to_yaml}\n"
 end
 
 Then /I should see the imported test cases from "([^"]*)" in the exported CSV.$/ do |file|
   input = FasterCSV.read('features/resources/' + file).drop(1)
+  expected = input.each{|list| list.insert(5, nil)} # Add Measured result value. It is generated in export even if not given in import
   result = FasterCSV.parse(page.text, {:col_sep => ','}).drop(1)
-  result.count.should == input.count
-  mapped_result = result.map{ |item| (0..5).map{|field| item[field]}}
-  (input - mapped_result).should be_empty
+  actual = result.map{ |item| (0..6).map{|field| item[field]}}
+  actual.count.should == expected.count
+  difference = actual - expected
+  difference.should be_empty, "Exported data does not match with the imported\nExpected: #{expected.to_yaml}\nGot: #{actual.to_yaml}\n"
 end
 
 When /^(?:|I )(?:|return to )view the report "([^"]*)"$/ do |report_string|

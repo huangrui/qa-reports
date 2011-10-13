@@ -15,7 +15,7 @@ Before do
     "target"          => "Core",
     "testset"         => "automated",
     "product"         => "N900",
-    "tested_at"       => "2010-1-1",
+    "tested_at"       => Date.today.to_s,
     "report.1"        => Rack::Test::UploadedFile.new("features/resources/sim.xml", "text/xml")
   }
 

@@ -264,6 +264,9 @@ END
      <measurement timestamp="2011-03-04T13:18:29.250001" value="28.000000"/>
     </series>
    </case>
+   <case name="case 4" result="MEASURED">
+    <measurement name="pure measured brigthness" value="1000" unit="lm"/>
+   </case>
   </set>
  </suite>
 </testresults>
@@ -277,8 +280,8 @@ END
       @test_cases2.keys.first.should == 'nft'
     end
 
-    it "should have three test cases" do
-     @test_cases2['nft'].keys.should == ["case 1", "case 2", "case 3"]
+    it "should have four test cases" do
+     @test_cases2['nft'].keys.should == ["case 1", "case 2", "case 3", "case 4"]
     end
 
     it "should have correct measurements" do
@@ -289,6 +292,10 @@ END
       @test_cases2['nft']['case 2'][:measurements_attributes][1].should == {
         :name => "bandwidth", :value => 100.0, :unit => "Mb/s", :target => nil, :failure => nil, :sort_index => 0
       }
+    end
+
+    it "should have Measured as result for 'case 4'" do
+      @test_cases2['nft']['case 4'][:result].should == 2
     end
 
   end

@@ -20,6 +20,7 @@ class MeegoTestSessionSweeper < ActionController::Caching::Sweeper
   	return if not test_session
     expire_fragment "show_page_#{test_session.id}"
     expire_fragment "print_page_#{test_session.id}"
+    expire_fragment "edit_page_#{test_session.id}"
   end
 
   def expire_cache(test_session)

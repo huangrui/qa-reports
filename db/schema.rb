@@ -10,7 +10,11 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(:version => 20110919100205) do
+=======
+ActiveRecord::Schema.define(:version => 20110929063440) do
+>>>>>>> master
 
   create_table "features", :force => true do |t|
     t.string  "name",                  :default => ""
@@ -38,7 +42,7 @@ ActiveRecord::Schema.define(:version => 20110919100205) do
     t.integer "meego_test_case_id"
     t.string  "name",                                            :null => false
     t.string  "unit",               :limit => 32,                :null => false
-    t.float   "value",                                           :null => false
+    t.float   "value"
     t.float   "target"
     t.float   "failure"
     t.integer "sort_index",                       :default => 0, :null => false

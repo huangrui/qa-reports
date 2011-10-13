@@ -39,9 +39,12 @@ class ReportsController < ApplicationController
   cache_sweeper :meego_test_session_sweeper, :only   => [:update, :delete, :publish]
 
   def index
-    @index_model = Index.find_by_release(release)
+    @index_model = Index.find_by_release(release, params[:show_all])
     @show_rss = true
-    render :layout => "application"
+    respond_to do |format|
+      format.html { render :layout => 'application' }
+      format.json { render :json   => @index_model  }
+    end
   end
 
   def preview
@@ -50,6 +53,7 @@ class ReportsController < ApplicationController
     @editing          = true
     @wizard           = true
     @no_upload_link   = true
+    @report_show      = ReportShow.new(MeegoTestSession.find(params[:id]))
   end
 
   def publish
@@ -64,19 +68,22 @@ class ReportsController < ApplicationController
     populate_report_fields
     @history      = history(@report, 5)
     @build_diff   = build_diff(@report, 4)
+    @report_show  = ReportShow.new(MeegoTestSession.find(params[:id]), @build_diff)
   end
 
   def print
     populate_report_fields
     @build_diff   = []
     @email        = true
+    @report_show  = ReportShow.new(MeegoTestSession.find(params[:id]))
   end
 
   def edit
     populate_report_fields
     populate_edit_fields
-    @editing          = true
-    @no_upload_link   = true
+    @editing        = true
+    @no_upload_link = true
+    @report_show    = ReportShow.new(MeegoTestSession.find(params[:id]))
   end
 
   def update
