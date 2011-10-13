@@ -1197,6 +1197,7 @@ div.formError, #error, form .error {
 #index_page,
 #error_page {
     padding-bottom: 329px;
+    position: relative;
     background: url(../images/hdiv_3.png) no-repeat 50% bottom; }
 
 /* @group header */
@@ -1345,6 +1346,14 @@ th.filtered:last-child {
 
 #report_navigation ul {
     padding-left: 20px; }
+
+#report_navigation a.name {
+    font-weight: bold;
+}
+
+#report_navigation ul a.name {
+    font-weight: normal;
+}
 
 th.filtered {
     padding-top: 30px;
@@ -2211,4 +2220,59 @@ div#drag_drop_area.indented ul input[type=checkbox] {
 div.field.last {
     padding-bottom: 30px;
     margin-bottom: -30px;
+}
+
+#home_edit_link, #home_edit_done_link {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+
+#home_edit_link {
+    color: #aaa;
+    text-decoration: none;
+    font-weight: bold;
+    background: transparent url('../images/home_edit_icon.png') no-repeat right 0px;
+    display: block;
+    width: 16px;
+    height: 16px;
+    line-height: 14px;
+}
+
+#home_edit_link:hover {
+    color: #F20089;
+    background-position: right -16px;
+}
+
+#home_edit_done_link {
+    display: none;
+}
+
+#index_page.editing #home_edit_link {
+    display: none;
+}
+
+#index_page.editing #home_edit_done_link {
+    display: block;
+}
+
+#report_navigation ul {
+    margin-right: 0;
+}
+
+#report_navigation .editable_text {
+    display: block;
+    margin: 0;
+    padding: 0;
+    background-position: right center;
+}
+
+.to_be_edited {
+    background: #fff8de;
+    color: #ed0089;
+}
+
+.being_edited {
+    background: #fff8de;
+    color: #ed0089;
 }

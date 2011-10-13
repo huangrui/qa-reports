@@ -52,7 +52,7 @@ FactoryGirl.define do
     testset         "Acceptance"
     product         "N900"
     published       true
-    tested_at       "2011-08-06"
+    tested_at       Date.today
     result_files    {|result_files| [result_files.association :result_file] }
 
     factory :test_report, :class => MeegoTestSession do

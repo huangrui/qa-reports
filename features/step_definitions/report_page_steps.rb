@@ -22,8 +22,7 @@ When /^I should see the sign in link without ability to add report$/ do
 end
 
 When /I view the group report "([^"]*)"$/ do |report_string|
-  version, target, test_set, product = report_string.downcase.split('/')
-  visit("/#{version}/#{target}/#{test_set}/#{product}")
+  visit("/#{report_string}")
 end
 
 Then /^I should see the download link for the result file "([^"]*)"$/ do |result_file|

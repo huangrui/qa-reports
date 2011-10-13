@@ -12,4 +12,17 @@ class ProductsController < ApplicationController
       format.json {render :json => @products}
     end
   end
+
+  def update
+    product, new_value = params.values_at :product, :new_value
+
+    unless new_value.blank?
+      reports = MeegoTestSession.product_is(product).readonly(false)
+
+      reports.update_all ["product = ?, updated_at = ?, title = replace(title, ?, ?)",
+          new_value, DateTime.now, product, new_value]
+    end
+
+    head :ok
+  end
 end
