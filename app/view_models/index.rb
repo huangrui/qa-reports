@@ -2,7 +2,7 @@ class Index
 
   CUT_OFF_LIMIT = 30
 
-  def self.find_profiles(release, show_all)
+  def self.find_by_release(release, show_all)
     { :profiles => Profile.find_by_sql("
         SELECT DISTINCT profiles.label AS profile, reports.testset, reports.product AS name
         FROM profiles
@@ -15,7 +15,7 @@ class Index
         {
           :name     => profile,
           :url      => "/#{release.name}/#{profile}",
-          :testsets => testsets.first.testset.nil? ? [] : testsets.group_by(&:testset).map do |testset, products|
+          :testsets => testsets.select{|ts| ts.testset.present?}.group_by(&:testset).map do |testset, products|
               {
                 :name           => testset,
                 :url            => "/#{release.name}/#{profile}/#{testset}",
