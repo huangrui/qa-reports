@@ -1349,6 +1349,8 @@ th.filtered:last-child {
 
 #report_navigation a.name {
     font-weight: bold;
+    display: inline-block;
+    width: 100%;
 }
 
 #report_navigation ul a.name {

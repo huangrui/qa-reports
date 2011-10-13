@@ -62,14 +62,14 @@ $(document).ready ->
   editMode = (event) ->
     event?.preventDefault()
     $('#index_page').addClass 'editing'
-    $navigation.find('tbody a.name').addClass('editable_text').css 'display', 'block'
+    $navigation.find('tbody a.name').addClass('editable_text').show()
     $navigation.find('a.compare').hide()
 
   viewMode = (event) ->
     event.preventDefault()
     $('#index_page').removeClass 'editing'
     $navigation.find('tbody a.name').removeClass 'editable_text'
-    $navigation.find('tbody a.name').css 'display', 'inline'
+    $navigation.find('tbody a.name').show()
     $navigation.find('a.compare').filter((index) -> $(this).attr('href').length > 0).show()
 
   initInplaceEdit = ->
