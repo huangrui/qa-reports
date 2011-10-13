@@ -37,6 +37,7 @@ end
 
 When /^I press enter$/ do
   find("#report_navigation input").native.send_key("\n")
+  And "I wait until all Ajax requests are complete"
 end
 
 Then /^I should see testset "([^"]*)" for profile "([^"]*)"$/ do |testset, profile|
@@ -62,7 +63,6 @@ When /^I rename the testset "([^"]*)" under profile "([^"]*)" to "([^"]*)"$/ do 
   Then %{I click on the edit button}
   And %{I edit the testset name "#{orig_name}" to "#{new_name}" for profile "#{profile}"}
   And %{I press enter}
-  And "I wait until all Ajax requests are complete"
   And %{I click done}
 end
 
