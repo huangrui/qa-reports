@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111013115714) do
+ActiveRecord::Schema.define(:version => 20111014095741) do
 
   create_table "features", :force => true do |t|
     t.string  "name",                  :default => ""
@@ -88,7 +88,6 @@ ActiveRecord::Schema.define(:version => 20111013115714) do
 
   create_table "profiles", :force => true do |t|
     t.string  "name",       :limit => 64, :null => false
-    t.string  "normalized", :limit => 64, :null => false
     t.integer "sort_order",               :null => false
   end
 
