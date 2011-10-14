@@ -21,11 +21,9 @@ end
 
 Given %r/^there's a "([^"]*)" report created "([^"]*)" days ago$/ do |categories, count|
   profile, testset, product = categories.split '/'
-  release = Release.first
-  profile = FactoryGirl.build(:profile, :name => profile)
   report  = FactoryGirl.build(:test_report,
-    :release => release,
-    :profile => profile,
+    :release => Release.first,
+    :profile => Profile.find_by_name(profile),
     :testset => testset,
     :product => product,
     :tested_at => count.to_i.days.ago)

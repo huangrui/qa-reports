@@ -3,8 +3,6 @@ Given %r/^I am not logged in$/ do
 end
 
 Given %r/^I am viewing a test report$/ do
-  FactoryGirl.create(:profile)
-  FactoryGirl.create(:release)
   report = FactoryGirl.create(:test_report)
   visit show_report_path(report.release.name, report.profile.name, report.testset, report.product, report)
 end
