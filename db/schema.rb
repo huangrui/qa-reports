@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111014095741) do
+ActiveRecord::Schema.define(:version => 20111014121148) do
 
   create_table "features", :force => true do |t|
     t.string  "name",                  :default => ""
@@ -91,10 +91,14 @@ ActiveRecord::Schema.define(:version => 20111014095741) do
     t.integer "sort_order",               :null => false
   end
 
+  add_index "profiles", ["name"], :name => "index_profiles_on_name", :unique => true
+
   create_table "releases", :force => true do |t|
     t.string  "name",       :limit => 64, :null => false
     t.integer "sort_order",               :null => false
   end
+
+  add_index "releases", ["name"], :name => "index_releases_on_name", :unique => true
 
   create_table "serial_measurements", :force => true do |t|
     t.integer "meego_test_case_id",                :null => false
