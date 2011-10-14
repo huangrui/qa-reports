@@ -46,7 +46,7 @@ module CsvGenerator
     SELECT
     mts.tested_at           AS tested_at,
     r.name                  AS release_version,
-    p.label                 AS target,
+    p.name                  AS target,
     mts.testset             AS testset,
     mts.product             AS product,
     mts.title               AS session,
@@ -102,7 +102,7 @@ module CsvGenerator
     # Construct conditions
     conds = ["mts.published = ?", "mtc.deleted = ?"]
     conds << "r.name = ?" if release_version
-    conds << "p.label = ?" if target
+    conds << "p.name = ?" if target
     conds << "mts.testset = ?" if testset
     conds << "mts.product = ?" if product
 

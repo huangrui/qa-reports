@@ -4,7 +4,7 @@ class Index
 
   def self.find_by_release(release, show_all)
     { :profiles => Profile.find_by_sql("
-        SELECT DISTINCT profiles.label AS profile, reports.testset, reports.product AS name
+        SELECT DISTINCT profiles.name AS profile, reports.testset, reports.product AS name
         FROM profiles
         LEFT JOIN meego_test_sessions AS reports ON profiles.id = reports.profile_id AND
           reports.release_id = #{release.id} AND

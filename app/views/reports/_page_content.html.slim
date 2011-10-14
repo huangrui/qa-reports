@@ -39,7 +39,7 @@
       h2#detailed_results
         | Detailed Test Results
         small
-          a href=url_for(:controller=>'csv_export', :action=>'export_report', :release_version=>@report.release.name, :target=>@report.profile.label, :testset=>@report.testset, :product=>@report.product, :id=>@report.id) Download as CSV
+          a href=url_for(:controller=>'csv_export', :action=>'export_report', :release_version=>@report.release.name, :target=>@report.profile.name, :testset=>@report.testset, :product=>@report.product, :id=>@report.id) Download as CSV
         span.heading_actions= back_to_top
 
       table#detailed_functional_test_results.detailed_results

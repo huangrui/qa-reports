@@ -49,7 +49,7 @@ class ApiController < ApplicationController
 
     begin
       return render :json => {:ok => '0', :errors => {:target, "can't be blank"}} if not data[:target]
-      return render :json => {:ok => '0', :errors => {:target, "Incorrect target '#{data[:target]}'. Valid ones are: #{Profile.names.join(',')}."}} if not Profile.find_by_label(data[:target])
+      return render :json => {:ok => '0', :errors => {:target, "Incorrect target '#{data[:target]}'. Valid ones are: #{Profile.names.join(',')}."}} if not Profile.find_by_name(data[:target])
       @test_session = ReportFactory.new.build(data.clone)
       return render :json => {:ok => '0', :errors => errmsg_invalid_version(data[:release_version])} if not @test_session.release
       @test_session.author = current_user

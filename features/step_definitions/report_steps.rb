@@ -22,7 +22,7 @@ end
 Given %r/^there's a "([^"]*)" report created "([^"]*)" days ago$/ do |categories, count|
   profile, testset, product = categories.split '/'
   release = Release.first
-  profile = FactoryGirl.build(:profile, :label => profile)
+  profile = FactoryGirl.build(:profile, :name => profile)
   report  = FactoryGirl.build(:test_report,
     :release => release,
     :profile => profile,

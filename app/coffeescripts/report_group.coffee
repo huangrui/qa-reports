@@ -1,4 +1,4 @@
-$(window).load ->
+$ () ->
   if $('#trend_labels').text().trim().length > 0
     trend_labels     = $('#trend_labels').text().split(',')
     trend_abs_passed = (parseInt(num) for num in $('#trend_abs_passed').text().split(','))
@@ -50,40 +50,44 @@ $(window).load ->
     draw_abs_graph()
 
 
-  resultTableName = 'table#infinite_scroll_results'
+  $resultTable = $('table#infinite_scroll_results')
 
   $(window).infinitescroll
     url: $('#report_list_url').text().trim(),
-    appendTo: resultTableName,
+    appendTo: $resultTable,
     triggerAt: 800,
     page: 1
 
-  monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-  previousYear = null
-  previousMonth = null
-  currentMonthTable = null
+  report_path = ->
+    [null,@release,@target,@testset,@product,@id].join '/'
 
-  $(resultTableName).bind 'infinitescroll.finish', ->
-    rows = $(resultTableName + ' tr')
+  title_of = (table) ->
+    table.find('.index_month_title .name').text() unless table.length == 0
 
-    for row in rows
-      row = $(row)
-      year = row.children('.year').first().text()
-      month = parseInt(row.children('.date').first().text().split('.').pop(), 10)
+  directives =
+    reports:
+      'name@href': report_path
+      htmlgraph:
+        'passed@style': -> "width:#{this.passes/max_cases*100}%"
+        'failed@style': -> "width:#{this.fails/max_cases*100}%"
+        'na@style':     -> "width:#{this.nas/max_cases*100}%"
+        'passed@title': -> "passed #{this.passes}"
+        'failed@title': -> "failed #{this.fails}"
+        'na@title':     -> "na #{this.nas}"
 
+  $resultTable.bind 'infinitescroll.finish', ->
+    data = JSON.parse $resultTable.text()
+    $resultTable.empty()
+    $contents = $('.month_template').clone()
+      .render(data, directives).children()
 
-      if previousYear != year || previousMonth != month
-        monthTable = $('table.month_template').clone()
-        monthTable.removeClass('month_template').addClass('month')
-        monthTable.find('.month').text(monthNames[month - 1] + ' ' + year)
-        monthTable.show()
-        monthTable.appendTo('.index_month')
-        currentMonthTable = monthTable
-
-      row.appendTo(currentMonthTable)
-      previousYear = year
-      previousMonth = month
-
+    $contents.find('.reports tr:even').addClass('odd') #jQuery uses 0-based indexing (1st, 3rd.. are even)
+    $contents.find('.reports tr:odd').addClass('even')
+    $contents.appendTo('#reports_by_month').show()
+    $first_child = $contents.first()
+    $previous_month = $first_child.prev()
+    if title_of($previous_month) == title_of($first_child)
+        $first_child.remove().find('.reports tr').appendTo($previous_month.find('.reports'))
 
   $(window).trigger('infinitescroll.scrollpage', 1)
 
