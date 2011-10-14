@@ -34,7 +34,7 @@ class NftHistory
     meego_test_sessions, meego_test_cases
     WHERE
     meego_test_cases.meego_test_session_id = meego_test_sessions.id AND
-    meego_test_sessions.target             = ? AND
+    meego_test_sessions.profile_id         = ? AND
     meego_test_sessions.testset            = ? AND
     meego_test_sessions.product            = ? AND
     meego_test_sessions.published          = ? AND
@@ -67,7 +67,7 @@ class NftHistory
     meego_test_cases.feature_id           = features.id AND
     features.meego_test_session_id        = meego_test_sessions.id AND
     meego_test_sessions.release_id        = ? AND
-    meego_test_sessions.target            = ? AND
+    meego_test_sessions.profile_id        = ? AND
     meego_test_sessions.testset           = ? AND
     meego_test_sessions.product           = ? AND
     meego_test_sessions.tested_at        <= ? AND
@@ -97,7 +97,7 @@ class NftHistory
     meego_test_cases.feature_id            = features.id AND
     features.meego_test_session_id         = meego_test_sessions.id AND
     meego_test_sessions.release_id         = ? AND
-    meego_test_sessions.target             = ? AND
+    meego_test_sessions.profile_id         = ? AND
     meego_test_sessions.testset            = ? AND
     meego_test_sessions.product            = ? AND
     meego_test_sessions.tested_at         <= ? AND
@@ -138,7 +138,7 @@ class NftHistory
 
   def find_start_date
     data = MeegoTestSession.find_by_sql([GET_START_DATE_QUERY,
-                                         @session.read_attribute(:target),
+                                         @session.profile.id,
                                          @session.testset,
                                          @session.product,
                                          true,
@@ -160,7 +160,7 @@ class NftHistory
   def find_measurements
     data = MeegoTestSession.find_by_sql([GET_NFT_RESULTS_QUERY,
                                          @session.release_id,
-                                         @session.read_attribute(:target),
+                                         @session.profile.id,
                                          @session.testset,
                                          @session.product,
                                          @session.tested_at,
@@ -174,7 +174,7 @@ class NftHistory
   def find_serial_measurements
     data = MeegoTestSession.find_by_sql([GET_SERIAL_MEASUREMENTS_QUERY,
                                          @session.release_id,
-                                         @session.read_attribute(:target),
+                                         @session.profile.id,
                                          @session.testset,
                                          @session.product,
                                          @session.tested_at,
@@ -197,7 +197,6 @@ class NftHistory
     # This will contain the actual structural measurement data and is
     # what is eventually returned from this method.
     hash = Hash.new
-
     db_data.each do |db_row|
       # Start a new measurement
       if [feature, testcase, measurement] != [db_row.feature, db_row.test_case, db_row.measurement]
@@ -285,7 +284,7 @@ class NftHistory
     # If we have measurement data (JSON), get/calculate the key figures
     # (min, max, avg, med) needed for Bluff graphs
     if data.has_key?('json')
-      raw_data = data['json']
+      raw_data = data['json'].select &:present?
 
       data['min'] = 'N/A'
       data['max'] = 'N/A'

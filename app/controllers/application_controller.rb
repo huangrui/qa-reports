@@ -22,7 +22,7 @@
 
 class ApplicationController < ActionController::Base
   helper_method :release, :profile, :testset, :product
-  before_filter :release
+  before_filter :update_session_data, :profile
 
   #protect_from_forgery
 
@@ -33,13 +33,11 @@ class ApplicationController < ActionController::Base
   end
 
   def release
-    @release ||= Release.find_by_name(params[:release_version]) || Release.find_by_id(session[:release_id]) || Release.latest
-    session[:release_id] = @release.id
-    @release
+    @release ||= Release.find_by_name(params[:release_version]) || Release.find_by_name(params[:release].try(:fetch, :name)) || Release.find_by_id(session[:release_id]) || Release.latest
   end
 
   def profile
-    @profile ||= params[:target]
+    @profile ||= Profile.find_by_name(params[:target]) || Profile.find_by_name(params[:profile].try(:fetch, :name)) || Profile.first
   end
 
   def testset
@@ -48,6 +46,12 @@ class ApplicationController < ActionController::Base
 
   def product
     @product ||= params[:product]
+  end
+
+private
+
+  def update_session_data
+    session[:release_id] = release.id
   end
 
 end

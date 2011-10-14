@@ -4,12 +4,12 @@ require 'graph'
 class ReportGroupViewModel
   include Graph
 
-  def initialize(release, target, testset, product)
+  def initialize(release_name, profile_name, testset, product)
     @params = {
-      :release_id => release,
-      :target     => target,
-      :testset    => testset,
-      :product    => product
+      :release_id => Release.find_by_name(release_name),
+      :profile_id => Profile.find_by_name(profile_name),
+      :testset => testset,
+      :product => product
     }.delete_if { |key, value| value.nil? }
 
     raise ActiveRecord::RecordNotFound if MeegoTestSession.published.where(@params).count == 0
@@ -105,6 +105,8 @@ class ReportGroupViewModel
       limit(range.count).offset(range.begin).
       order("tested_at DESC, created_at DESC")
 
+    # TODO: Could reports just be wrapped in ReportShows that have the count methods?
+    #       Or use directly the association count calls e.g. passed.count.
     MeegoTestSession.load_case_counts_for_reports! reports
   end
 end

@@ -17,6 +17,7 @@ linkEditButtons = () ->
             "1": 'grading_red'
             "2": 'grading_yellow'
             "3": 'grading_green'
+            "0": 'grading_white'
 
 initSelectionEdit = (context, cls_elem, replace_txt, cls_mapping) ->
     context  = $(context)
@@ -42,20 +43,18 @@ initSelectionEdit = (context, cls_elem, replace_txt, cls_mapping) ->
     clickHandler = () ->
         form.toggle()
         if context.hasClass cls
-            context.unbind 'click'
             [k,c] = find_val()
-            context.removeClass c
-        else
-            context.click clickHandler
-        context.toggleClass cls
+            cls_elem.removeClass c
+            input.focus()
+        f = () -> context.toggleClass cls
+        setTimeout f, 1
         content.toggle()
 
     save_selection = ->
-        return if context.hasClass cls
+        return false if context.hasClass cls
         data   = form.serialize()
         action = form.attr 'action'
         $.post action, data
-
         if replace_txt
             content.text input.find('[selected]').text()
         cls_elem.addClass cls_mapping[input.val()]
@@ -65,10 +64,13 @@ initSelectionEdit = (context, cls_elem, replace_txt, cls_mapping) ->
     input.change save_selection
 
     input.blur ->
-        return if context.hasClass cls
+        return false if context.hasClass cls
         save_selection()
 
-    context.click clickHandler
+    context.click ->
+        clickHandler() if context.hasClass cls
+        return false
+
 
 initInplaceEdit = (context, contentSelector, inputSelector, hasMarkup) ->
     context = $(context)
@@ -363,6 +365,7 @@ linkTestCaseButtons = (node) ->
             "-1": 'fail'
             "0": 'na'
             "1": 'pass'
+            "2": 'measured'
 
     $comment.click handleCommentEdit
 

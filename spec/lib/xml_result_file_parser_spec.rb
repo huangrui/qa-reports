@@ -264,6 +264,9 @@ END
      <measurement timestamp="2011-03-04T13:18:29.250001" value="28.000000"/>
     </series>
    </case>
+   <case name="case 4" result="MEASURED">
+    <measurement name="pure measured brigthness" value="1000" unit="lm"/>
+   </case>
   </set>
  </suite>
 </testresults>
@@ -277,8 +280,8 @@ END
       @test_cases2.keys.first.should == 'nft'
     end
 
-    it "should have three test cases" do
-     @test_cases2['nft'].keys.should == ["case 1", "case 2", "case 3"]
+    it "should have four test cases" do
+     @test_cases2['nft'].keys.should == ["case 1", "case 2", "case 3", "case 4"]
     end
 
     it "should have correct measurements" do
@@ -291,6 +294,104 @@ END
       }
     end
 
+    it "should have Measured as result for 'case 4'" do
+      @test_cases2['nft']['case 4'][:result].should == 2
+    end
+
+  end
+
+  describe "Parsing two test sets with same feature" do
+
+    before(:each) do
+
+      xml_nft_result_file = <<-END
+<?xml version="1.0" encoding="UTF-8"?>
+<testresults environment="hardware" hwproduct="N900" hwbuild="unknown" version="0.1">
+ <suite name="nft-suite" timeout="90" manual="false" insignificant="false">
+  <set name="Set 1" feature="Feature 1" description="Example test definition" timeout="90" manual="false" insignificant="false" environment="hardware">
+   <case name="case 1" timeout="90" manual="false" insignificant="false" result="PASS">
+    <step manual="false" command="sleep 2" result="PASS">
+     <expected_result>0</expected_result>
+     <return_code>0</return_code>
+     <start>2011-03-04 15:58:43</start>
+     <end>2011-03-04 15:58:45</end>
+     <stdout></stdout>
+     <stderr></stderr>
+    </step>
+   </case>
+  </set>
+ </suite>
+ <suite name="nft-suite" timeout="90" manual="false" insignificant="false">
+  <set name="Set 2" feature="Feature 1" description="Example test definition" timeout="90" manual="false" insignificant="false" environment="hardware">
+   <case name="case 2" timeout="90" manual="false" insignificant="false" result="PASS">
+    <step manual="false" command="sleep 2" result="PASS">
+     <expected_result>0</expected_result>
+     <return_code>0</return_code>
+     <start>2011-03-04 15:58:43</start>
+     <end>2011-03-04 15:58:45</end>
+     <stdout></stdout>
+     <stderr></stderr>
+    </step>
+   </case>
+  </set>
+ </suite>
+</testresults>
+END
+
+      # Usage: @test_cases["Feature"]["Testcase"][:field]
+      @test_cases2 = XMLResultFileParser.new.parse(StringIO.new(xml_nft_result_file))
+    end
+
+    it "should have 'Feature 1' feature" do
+      @test_cases2.keys.count.should == 1
+      @test_cases2.keys.first.should == 'Feature 1'
+    end
+
+    it "should have two test cases" do
+     @test_cases2['Feature 1'].keys.should == ["case 1", "case 2"]
+    end
+  end
+
+  describe "Parsing two test sets with same feature" do
+
+    before(:each) do
+
+      xml_nft_result_file = <<-END
+<?xml version="1.0" encoding="UTF-8"?>
+<testresults environment="hardware" hwproduct="N900" hwbuild="unknown" version="0.1">
+ <suite name="nft-suite" timeout="90" manual="false" insignificant="false">
+  <set name="Set 1" feature="Feature 1" description="Example test definition" timeout="90" manual="false" insignificant="false" environment="hardware">
+   <case name="case 1" timeout="90" manual="false" insignificant="false" result="PASS">
+    <step manual="false" command="sleep 2" result="PASS">
+     <expected_result>0</expected_result>
+     <return_code>0</return_code>
+     <start>2011-03-04 15:58:43</start>
+     <end>2011-03-04 15:58:45</end>
+     <stdout></stdout>
+     <stderr></stderr>
+    </step>
+   </case>
+  </set>
+ </suite>
+ <suite name="nft-suite" timeout="90" manual="false" insignificant="false">
+  <set name="Set 2" feature="Feature 2" description="Example test definition" timeout="90" manual="false" insignificant="false" environment="hardware">
+  </set>
+ </suite>
+</testresults>
+END
+
+      # Usage: @test_cases["Feature"]["Testcase"][:field]
+      @test_cases2 = XMLResultFileParser.new.parse(StringIO.new(xml_nft_result_file))
+    end
+
+    it "should have 'Feature 1' feature" do
+      @test_cases2.keys.count.should == 1
+      @test_cases2.keys.first.should == 'Feature 1'
+    end
+
+    it "should have two test cases" do
+     @test_cases2['Feature 1'].keys.should == ["case 1"]
+    end
   end
 
 end

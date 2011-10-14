@@ -27,8 +27,3 @@ guard 'rspec', :cli => '--drb', :version => 2 do
   watch(%r{^spec/support/(.+)\.rb$})                  { "spec/" }
   watch('spec/spec_helper.rb')                        { "spec/" }
 end
-
-guard 'rails' do
-  watch('Gemfile.lock')
-  watch(%r{^(config|lib)/.*})
-end

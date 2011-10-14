@@ -16,6 +16,14 @@ module WithinHelpers
 end
 World(WithinHelpers)
 
+def assert_checked(label)
+  find_field(label)['checked'].should_not be_nil, "Expected '#{label}' to be checked.\nWell, it is not.\n"
+end
+
+def assert_not_checked(label)
+  find_field(label)['checked'].should be_nil, "Expected '#{label}' to not be selected.\nWell, it is selected.\n"
+end
+
 Given /^(?:|I )am on (.+)$/ do |page_name|
   visit path_to(page_name)
 end
@@ -186,25 +194,13 @@ Then /^the "([^"]*)" field(?: within "([^"]*)")? should not contain "([^"]*)"$/ 
   end
 end
 
-Then /^the "([^"]*)" checkbox(?: within "([^"]*)")? should be checked$/ do |label, selector|
-  with_scope(selector) do
-    field_checked = find_field(label)['checked']
-    if field_checked.respond_to? :should
-      field_checked.should be_true
-    else
-      assert field_checked
-    end
-  end
+Then /^I should( not)? see profile "([^"]*)" as selected$/ do |negation, profile|
+  negation ? assert_not_checked(profile) : assert_checked(profile)
 end
 
-Then /^the "([^"]*)" checkbox(?: within "([^"]*)")? should not be checked$/ do |label, selector|
+Then /^I should( not)? see "([^"]*)" as selected(?: within "([^"]*)")?$/ do |negation, label, selector|
   with_scope(selector) do
-    field_checked = find_field(label)['checked']
-    if field_checked.respond_to? :should
-      field_checked.should be_false
-    else
-      assert !field_checked
-    end
+    negation ? assert_not_checked(label) : assert_checked(label)
   end
 end
 

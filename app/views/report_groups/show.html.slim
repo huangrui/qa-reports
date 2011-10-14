@@ -3,7 +3,7 @@
 
   - content_for :version_navi do
     #version_navi
-     = release_version_navigation(release.name, profile, testset, product)
+     = release_version_navigation(release.name, profile.name, testset, product)
 
   / Template for new month tables
   div.month_template style="display:none"
@@ -14,7 +14,7 @@
             strong.name Month 2020
       tbody.reports
         tr
-          td.date 
+          td.date
           td.report_name
             a.name
           td.graph
@@ -40,7 +40,7 @@
               canvas#trend_graph_abs height="250" width="700"
             a#abs_button.ui_btn.inactive Absolute values
             a#rel_button.ui_btn Relative %
-            a#csv_report_link href=group_report_csv_path(release.name, profile, testset, product) Download as CSV
+            a#csv_report_link href=group_report_csv_path(release.name, profile.name, testset, product) Download as CSV
 
         - if @group_report.comparison
           .index_section
@@ -50,7 +50,7 @@
         #reports_by_month.index_month
 
   div style="display:none"
-    span#report_list_url #{{report_list_path(release.name, profile, testset, product)}}
+    span#report_list_url #{{report_list_path(release.name, profile.name, testset, product)}}
     - if @group_report.trend_graph_data_abs and @group_report.trend_graph_data_rel
       span#trend_abs_passed  #{@group_report.trend_graph_data_abs.passed.join(',')}
       span#trend_abs_failed  #{@group_report.trend_graph_data_abs.failed.join(',')}
@@ -65,4 +65,3 @@
 
 javascript:
   max_cases = #{{@group_report.max_cases}}
- 

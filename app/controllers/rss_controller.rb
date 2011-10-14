@@ -24,13 +24,13 @@ class RssController < ApplicationController
 
   def rss
    filter = {
-        :release_id => Release.find_by_name(release.name),
-        :target     => profile,
+        :release_id => release.id,
+        :profile_id => Profile.find_by_name(params[:target]).try(:id),
         :testset    => testset,
         :product    => product
       }.delete_if { |key, value| value.nil? }
 
-    @sessions = MeegoTestSession.published.where(filter).order("created_at DESC").limit(10)
+    @report_shows = MeegoTestSession.published.where(filter).order("created_at DESC").limit(10).map{|report| ReportShow.new(report)}
 
     response.headers["Content-Type"] = "application/xml; charset=utf-8"
   end

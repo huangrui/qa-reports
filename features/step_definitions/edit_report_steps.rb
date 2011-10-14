@@ -1,6 +1,6 @@
 
 def find_testcase_row(tcname)
-  namecell = page.find(".testcase_name p", :text => tcname)
+  namecell = page.find(".testcase_name", :text => tcname)
   namecell.find(:xpath, "ancestor::tr")
 end
 
@@ -16,7 +16,7 @@ end
 When /^(?:|I )edit the report "([^"]*)"$/ do |report_string|
   version, target, test_type, product = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {"releases.name" => version, :target => target, :product => product, :testset => test_type}, :include => :release,
+   {"releases.name" => version, "profiles.name" => target, :product => product, :testset => test_type}, :include => [:release, :profile],
    :order => "tested_at DESC, created_at DESC")
   raise "report not found with parameters #{version}/#{target}/#{product}/#{test_type}!" unless report
   visit("/#{version}/#{target}/#{test_type}/#{product}/#{report.id}/edit")
@@ -57,7 +57,8 @@ When /^I change the test case result of "([^"]*)" to "([^"]*)"$/ do |tc, result|
 end
 
 Then /^the result of test case "([^"]*)" should be "([^"]*)"$/ do |tc, result|
-  find_testcase_row(tc).find(".testcase_result .content").should have_content result
+  actual = find_testcase_row(tc).find(".testcase_result .content")
+  actual.should have_content(result), "Expected text case '#{tc}' result to be '#{result}'\nGot result '#{actual.text}'\n"
 end
 
 When /^I change the test case comment of "([^"]*)" to "([^"]*)"$/ do |tc, comment|

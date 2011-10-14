@@ -1,21 +1,13 @@
 Before do
   load "#{Rails.root}/db/seeds.rb"
 
-  # ['1.1', '1.2', '1.3'].each do |release|
-  #   FactoryGirl.create(:release, :label => release)
-  # end
-
-  # ['Core', 'Handset', 'Netbook', 'IVI', 'SDK'].each do |profile|
-  #   FactoryGirl.create(:profile, :label => profile)
-  # end
-
   @default_api_opts = {
     "auth_token"      => "foobar",
     "release_version" => "1.2",
     "target"          => "Core",
     "testset"         => "automated",
     "product"         => "N900",
-    "tested_at"       => "2010-1-1",
+    "tested_at"       => Date.today.to_s,
     "report.1"        => Rack::Test::UploadedFile.new("features/resources/sim.xml", "text/xml")
   }
 

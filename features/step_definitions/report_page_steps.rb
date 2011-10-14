@@ -22,8 +22,7 @@ When /^I should see the sign in link without ability to add report$/ do
 end
 
 When /I view the group report "([^"]*)"$/ do |report_string|
-  version, target, test_set, product = report_string.downcase.split('/')
-  visit("/#{version}/#{target}/#{test_set}/#{product}")
+  visit("/#{report_string}")
 end
 
 Then /^I should see the download link for the result file "([^"]*)"$/ do |result_file|
@@ -35,19 +34,24 @@ end
 Then /I should see the imported data from "([^"]*)" and "([^"]*)" in the exported CSV.$/ do |file1, file2|
   input = FasterCSV.read('features/resources/' + file1).drop(1) +
           FasterCSV.read('features/resources/' + file2).drop(1)
+  expected = input.each{|list| list.insert(4, "0")} # Add Measured result value. It is generated in export even if not given in import
   result = FasterCSV.parse(page.text, {:col_sep => ';'}).drop(1)
-  result.count.should == input.count
+  actual = result.map{ |item| (6..12).map{|field| item[field]}}
 
-  mapped_result = result.map{ |item| (6..11).map{|field| item[field]}}
-  (input - mapped_result).should be_empty
+  actual.count.should == expected.count
+
+  difference = actual - expected
+  difference.should be_empty, "Exported data does not match with the imported\nExpected: #{expected.to_yaml}\nGot: #{actual.to_yaml}\n"
 end
 
 Then /I should see the imported test cases from "([^"]*)" in the exported CSV.$/ do |file|
   input = FasterCSV.read('features/resources/' + file).drop(1)
+  expected = input.each{|list| list.insert(5, nil)} # Add Measured result value. It is generated in export even if not given in import
   result = FasterCSV.parse(page.text, {:col_sep => ','}).drop(1)
-  result.count.should == input.count
-  mapped_result = result.map{ |item| (0..5).map{|field| item[field]}}
-  (input - mapped_result).should be_empty
+  actual = result.map{ |item| (0..6).map{|field| item[field]}}
+  actual.count.should == expected.count
+  difference = actual - expected
+  difference.should be_empty, "Exported data does not match with the imported\nExpected: #{expected.to_yaml}\nGot: #{actual.to_yaml}\n"
 end
 
 When /^(?:|I )(?:|return to )view the report "([^"]*)"$/ do |report_string|
@@ -60,7 +64,7 @@ end
 When /I view the report "([^"]*)" for build$/ do |report_string|
   release, profile, testset, product = report_string.split('/')
   report = MeegoTestSession.first(:conditions =>
-    {"releases.name" => release, :target => profile, :product => product, :testset => testset}, :include => :release,
+    {"releases.name" => release, "profiles.name" => profile, :product => product, :testset => testset}, :include => [:release, :profile],
     :order => "build_id DESC, tested_at DESC, created_at DESC")
   raise "report not found with parameters #{release}/#{profile}/#{testset}/#{product}!" unless report
   visit show_report_path(release, profile, testset, product, report)
@@ -99,10 +103,11 @@ Given /^there exists a report for "([^"]*)"$/ do |report_name|
     :password => "password",
     :password_confirmation => "password")
 
-  session = MeegoTestSession.new(:target => target, :product => product,
+  session = MeegoTestSession.new(:product => product,
     :testset => test_set, :result_files_attributes => [{:file => testfile}],
     :tested_at => Time.now, :author => user, :editor => user, :release_version => version
   )
+  session.profile = Profile.find_by_name(target)
   session.generate_defaults! # Is this necessary, or could we just say create! above?
   session.save!
 end
@@ -186,7 +191,7 @@ end
 Then /^(?:|I )should not be able to view the report "([^"]*)"$/ do |report_string|
   version, target, test_set, product = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {"releases.name" => version, :target => target, :product => product, :testset => test_set}, :include => :release,
+   {"releases.name" => version, "profiles.name" => target, :product => product, :testset => test_set}, :include => [:release, :profile],
    :order => "tested_at DESC, created_at DESC")
   report.should == nil
 end

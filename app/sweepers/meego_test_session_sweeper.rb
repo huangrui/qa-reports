@@ -1,5 +1,3 @@
-require 'test_set'
-
 class MeegoTestSessionSweeper < ActionController::Caching::Sweeper
   observe MeegoTestSession, MeegoTestCase
 
@@ -13,15 +11,16 @@ class MeegoTestSessionSweeper < ActionController::Caching::Sweeper
 
 
   def expire_index_for(test_session)
-    expire_paging_action :controller => "report_groups", :action => "show", :release_version => test_session.release.name, :target => test_session.target, :testset => test_session.testset, :product => test_session.product
-    expire_paging_action :controller => "report_groups", :action => "show", :release_version => test_session.release.name, :target => test_session.target, :testset => test_session.testset
-    expire_paging_action :controller => "report_groups", :action => "show", :release_version => test_session.release.name, :target => test_session.target
+    expire_paging_action :controller => "report_groups", :action => "show", :release_version => test_session.release.name, :target => test_session.profile.name, :testset => test_session.testset, :product => test_session.product
+    expire_paging_action :controller => "report_groups", :action => "show", :release_version => test_session.release.name, :target => test_session.profile.name, :testset => test_session.testset
+    expire_paging_action :controller => "report_groups", :action => "show", :release_version => test_session.release.name, :target => test_session.profile.name
   end
 
   def expire_fragments_for(test_session)
   	return if not test_session
     expire_fragment "show_page_#{test_session.id}"
     expire_fragment "print_page_#{test_session.id}"
+    expire_fragment "edit_page_#{test_session.id}"
   end
 
   def expire_cache(test_session)
@@ -35,8 +34,6 @@ class MeegoTestSessionSweeper < ActionController::Caching::Sweeper
 
   	next_session = next_session.try(:next_session)
   	expire_fragments_for next_session
-
-    TestSet.invalidate_cache
   end
 
 end

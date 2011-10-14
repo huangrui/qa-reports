@@ -20,8 +20,8 @@ FactoryGirl.define do
     sort_order  0
   end
 
-  factory :target, :aliases => [:profile], :class => TargetLabel do
-    label      "Handset"
+  factory :profile do
+    name       "Handset"
     normalized "handset"
     sort_order 0
   end
@@ -48,11 +48,11 @@ FactoryGirl.define do
     editor
     release
     title           "N900 Test Report"
-    target          "Handset"
+    profile         {Profile.find_by_name("Handset") || FactoryGirl.create(:profile)}
     testset         "Acceptance"
     product         "N900"
     published       true
-    tested_at       "2011-08-06"
+    tested_at       Date.today
     result_files    {|result_files| [result_files.association :result_file] }
 
     factory :test_report, :class => MeegoTestSession do
@@ -133,7 +133,7 @@ FactoryGirl.define do
     editor
     release         {Release.where(:name => '1.2').first}
     title           "N900 NFT TEST REPORT"
-    target          "Handset"
+    profile         {Profile.find_by_name("Handset") || FactoryGirl.create(:profile)}
     testset         "NFT"
     product         "N900"
     published       true

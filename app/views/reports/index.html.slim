@@ -1,9 +1,14 @@
 - content_for :version_navi do
   #version_navi
     = release_version_navigation(release.name)
+    ul#report_filters
+      li
+        a href="/reports.json" Recent
+      li.current
+        a href="/reports.json?show_all=true" All
 
 #index_page
-  table#report_navigation
+  table#report_navigation style="display:none"
     thead
       tr.profiles
         th
@@ -12,31 +17,19 @@
       tr.profiles
         td.testsets
           div
-            / TODO: Use css instead of strong tag
-            strong
-              a.name
-              a.compare
+            a.name
+            input.inplace-edit style="display:none;"
+            a.compare compare
             ul.products
               li
                 a.name
+                input.inplace-edit style="display:none;"
 
-javascript:
-  index_model = #{{@index_model.to_json}}
+  - if user_signed_in?
+    a#home_edit_link href='#'
+    a#home_edit_done_link.small_btn href='#' Done
 
-coffee:
-
-  group_report_path = (data) ->
-    if data.parent_ and data.parent_.name
-      group_report_path(data.parent_) + "/#{data.name}"
-    else
-      "/#{index_model.release}/#{data.name}"
-
-  directives =
-    profiles:
-      'name@href':    -> group_report_path(this)
-      testsets:
-        'name@href':  -> group_report_path(this)
-        products:
-         'name@href': -> group_report_path(this)
-
-  $('#report_navigation').render(index_model, directives)
+- content_for :view_specific_js do
+  javascript:
+    auth_token = "#{{form_authenticity_token}}";
+  = javascript_include_tag 'index'

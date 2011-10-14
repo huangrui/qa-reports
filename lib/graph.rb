@@ -20,7 +20,7 @@
 module Graph
 
   class Data
-    attr_accessor :passed, :failed, :na, :total
+    attr_accessor :passed, :failed, :na, :measured, :total
     attr_accessor :labels
   end
 
@@ -29,11 +29,11 @@ module Graph
       pw = passed*100/max_cases
       fw = failed*100/max_cases
       nw = na*100/max_cases
-    
+
       # Do not set zero to any value width if the value is not zero. This
-      # would happen e.g. when there's one report that has about 100 
+      # would happen e.g. when there's one report that has about 100
       # cases and another one with only 6 of which only 1 is failed. The
-      # bar would be all green and a little shorter than a graph of 
+      # bar would be all green and a little shorter than a graph of
       # 6 passed cases
       if pw == 0 and passed != 0
           pw = 1
@@ -78,7 +78,7 @@ module Graph
     data.passed = passed = []
     data.failed = failed = []
     data.na     = na     = []
-    data.labels = labels = [] 
+    data.labels = labels = []
 
     sessions.reverse_each do |s|
       labels << s.format_date

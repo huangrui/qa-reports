@@ -1,6 +1,9 @@
 module MeegoTestCaseHelper
 
-  RESULTS = {-1 => "Fail", 0 => "N/A", 1 => "Pass"}
+  RESULTS = {MeegoTestCase::FAIL      => "Fail",
+             MeegoTestCase::NA        => "N/A",
+             MeegoTestCase::PASS      => "Pass",
+             MeegoTestCase::MEASURED  => "Measured"}
 
   def result_to_txt(result)
     RESULTS[result] or "N/A"
@@ -22,26 +25,13 @@ module MeegoTestCaseHelper
     end
   end
 
-
   def result_class(model, prefix = "")
-    if model==nil
-      return prefix + "na"
-    end
+    return prefix + MeegoTestSession.result_as_string(MeegoTestCase::NA) if model.nil?
 
-    case model.result
-      when 1
-        prefix + "pass"
-      when -1
-        prefix + "fail"
-      else
-        prefix + "na"
-    end
+    prefix + MeegoTestSession.result_as_string(model.result)
   end
 
   def comment_html(model)
-    if model==nil
-      return nil
-    end
-    model.comment ? MeegoTestReport::format_txt(model.comment).html_safe : nil
+    (model.present? && model.comment) ? MeegoTestReport::format_txt(model.comment).html_safe : nil
   end
 end

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testresults>
+  <!--
+     This sample file creates a report that has 10 different measurements.
+     The "% of target"s for these are 2 x 50%, 1 x 150%, 1 x 66.6%, 3 x 0.00%.
+     For 3 measurements that value cannot be calculated. The NFT index for
+     this set is thus: (2 x 50 + 100 + 66.6) / 7 = 38%
+    -->
+  <suite name="NFT tests">
+    <set name="NFT tests" feature="NFT">
+      <case name="Measured type"
+	    result="Measured">
+        <measurement name="boot time"
+  		    unit="s"
+  		    value="10"/>
+        <measurement name="boot time with target"
+		      unit="s"
+		      value="10"
+		      target="15"/>
+      </case>
+      <case name="Smaller Better"
+      result="Pass">
+        <measurement name="boot time ok"
+          unit="s"
+          value="10"
+          target="15"/>
+        <measurement name="boot time not ok"
+          unit="s"
+          value="20"
+          target="15"/>
+        <measurement name="boot time inside fail limit"
+          unit="s"
+          value="16"
+          target="15"
+          failure="18"/>
+        <measurement name="boot time outside fail limit"
+          unit="s"
+          value="20"
+          target="15"
+          failure="18"/>
+        <measurement name="div by zero"
+          unit="s"
+          value="0"
+          target="15"/>
+      </case>
+      <case name="Bigger Better"
+      result="Fail">
+        <measurement name="speed ok"
+          unit="fps"
+          value="15"
+          target="15"/>
+        <measurement name="speed not ok"
+          unit="fps"
+          value="15"
+          target="20"/>
+        <measurement name="speed inside fail limit"
+          unit="fps"
+          value="16"
+          target="20"
+          failure="15"/>
+        <measurement name="speed time outside fail limit"
+          unit="s"
+          value="13"
+          target="20"
+          failure="15"/>
+        <measurement name="div by zero"
+          unit="s"
+          value="15"
+          target="0"/>
+      </case>
+      <case name="N/A"
+      result="NA">
+        <measurement name="not measured"
+          unit="fps"
+          target="15"/>
+      </case>
+    </set>
+  </suite>
+</testresults>

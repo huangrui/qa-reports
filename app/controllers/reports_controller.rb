@@ -39,11 +39,12 @@ class ReportsController < ApplicationController
   cache_sweeper :meego_test_session_sweeper, :only   => [:update, :delete, :publish]
 
   def index
-    @index_model = {}
-    @index_model['release']  = release.name
-    @index_model['profiles'] = Product.by_profile_by_testset(release)
+    @index_model = Index.find_by_release(release, params[:show_all])
     @show_rss = true
-    render :layout => "application"
+    respond_to do |format|
+      format.html { render :layout => 'application' }
+      format.json { render :json   => @index_model  }
+    end
   end
 
   def preview
@@ -52,6 +53,7 @@ class ReportsController < ApplicationController
     @editing          = true
     @wizard           = true
     @no_upload_link   = true
+    @report_show      = ReportShow.new(MeegoTestSession.find(params[:id]))
   end
 
   def publish
@@ -59,26 +61,29 @@ class ReportsController < ApplicationController
     report.update_attribute(:published, true)
 
     flash[:notice] = "Your report has been successfully published"
-    redirect_to show_report_path(report.release.name, report.target, report.testset, report.product, report)
+    redirect_to show_report_path(report.release.name, report.profile.name, report.testset, report.product, report)
   end
 
   def show
     populate_report_fields
     @history      = history(@report, 5)
     @build_diff   = build_diff(@report, 4)
+    @report_show  = ReportShow.new(MeegoTestSession.find(params[:id]), @build_diff)
   end
 
   def print
     populate_report_fields
     @build_diff   = []
     @email        = true
+    @report_show  = ReportShow.new(MeegoTestSession.find(params[:id]))
   end
 
   def edit
     populate_report_fields
     populate_edit_fields
-    @editing          = true
-    @no_upload_link   = true
+    @editing        = true
+    @no_upload_link = true
+    @report_show    = ReportShow.new(MeegoTestSession.find(params[:id]))
   end
 
   def update
@@ -106,8 +111,8 @@ class ReportsController < ApplicationController
     @compare_cache_key = "compare_page_#{@release_version}_#{@target}_#{@testset}_#{@comparison_testset}"
 
     MeegoTestSession.published_hwversion_by_release_version_target_testset(@release_version, @target, @testset).each{|product|
-        left = MeegoTestSession.by_release_version_target_testset_product(@release_version, @target, @testset, product.product).first
-        right = MeegoTestSession.by_release_version_target_testset_product(@release_version, @target, @comparison_testset, product.product).first
+        left  = MeegoTestSession.release(@release_version).profile(@target).testset(@testset).product(product.product).first
+        right = MeegoTestSession.release(@release_version).profile(@target).testset(@comparison_testset).product(product.product).first
         @comparison.add_pair(product.product, left, right)
     }
     @groups = @comparison.groups
@@ -119,7 +124,7 @@ class ReportsController < ApplicationController
   def validate_path_params
     if params[:release_version]
       # Raise ActiveRecord::RecordNotFound if the report doesn't exist
-      MeegoTestSession.release(release.name).profile(profile).testset(testset).product_is(product).find(params[:id])
+      MeegoTestSession.release(release.name).profile(profile.name).testset(testset).product_is(product).find(params[:id])
     end
   end
 
@@ -130,8 +135,8 @@ class ReportsController < ApplicationController
 
   def populate_edit_fields
     @build_diff       = []
+    @profiles         = Profile.names
     @release_versions = Release.in_sort_order.map { |release| release.name }
-    @targets          = TargetLabel.targets
     @testsets         = MeegoTestSession.release(release.name).testsets
     @products         = MeegoTestSession.release(release.name).popular_products
     @build_ids        = MeegoTestSession.release(release.name).popular_build_ids
@@ -141,13 +146,13 @@ class ReportsController < ApplicationController
 
   #TODO: These should be somewhere else..
   def history(s, cnt)
-    MeegoTestSession.where("(tested_at < '#{s.tested_at}' OR tested_at = '#{s.tested_at}' AND created_at < '#{s.created_at}') AND target = '#{s.target.downcase}' AND testset = '#{s.testset.downcase}' AND product = '#{s.product.downcase}' AND published = 1 AND release_id = #{s.release_id}").
+    MeegoTestSession.where("(tested_at < '#{s.tested_at}' OR tested_at = '#{s.tested_at}' AND created_at < '#{s.created_at}') AND profile_id = '#{s.profile.id}' AND testset = '#{s.testset.downcase}' AND product = '#{s.product.downcase}' AND published = 1 AND release_id = #{s.release_id}").
         order("tested_at DESC, created_at DESC").limit(cnt).
         includes([{:features => :meego_test_cases}, {:meego_test_cases => :feature}])
   end
 
   def build_diff(s, cnt)
-    sessions = MeegoTestSession.published.profile(s.target).testset(s.testset).product_is(s.product).
+    sessions = MeegoTestSession.published.profile(s.profile.name).testset(s.testset).product_is(s.product).
         where("release_id = #{s.release_id} AND build_id < '#{s.build_id}' AND build_id != ''").
         order("build_id DESC, tested_at DESC, created_at DESC")
 

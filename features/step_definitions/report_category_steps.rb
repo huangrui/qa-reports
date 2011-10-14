@@ -1,12 +1,12 @@
 Given /^there are (\d+) reports from "([^"]*)" under "([^"]*)"$/ do |num, date, report_path|
-  release, target, testset, product = report_path.split '/'
+  release, profile, testset, product = report_path.split '/'
   year, month = date.split '/'
 
   num.to_i.times do |i|
     FactoryGirl.create(:test_report,
       :tested_at => DateTime.new(year.to_i, month.to_i, i % 27 + 1),
       :release => Release.find_by_name(release),
-      :target => target,
+      :profile => Profile.find_by_name(profile),
       :testset => testset,
       :product => product)
   end

@@ -5,12 +5,13 @@ module CsvGenerator
   # have such cases.
 
   CSV_REPORT_QUERY = <<-END
-    SELECT 
-    mtset.name                 AS feature, 
-    mtc.name                   AS testcase, 
+    SELECT
+    mtset.name                 AS feature,
+    mtc.name                   AS testcase,
     if(mtc.result = 1,1,null)  AS pass,
     if(mtc.result = -1,1,null) AS fail,
     if(mtc.result = 0,1,null)  AS na,
+    if(mtc.result = 2,1,null)  AS measured,
     mtc.comment                AS comment,
     mms.name                   AS m_name,
     mms.value                  AS m_value,
@@ -25,13 +26,14 @@ module CsvGenerator
     ORDER BY mtset.id, mtc.id;
   END
 
-  CSV_REPORT_HEADERS = 
+  CSV_REPORT_HEADERS =
     [
      "Feature",
      "Test Case",
      "Pass",
      "Fail",
      "N/A",
+     "Measured",
      "Comment",
      "Measurement Name",
      "Value",
@@ -41,19 +43,20 @@ module CsvGenerator
     ]
 
   CSV_QUERY = <<-END
-    SELECT 
-    mts.tested_at           AS tested_at, 
+    SELECT
+    mts.tested_at           AS tested_at,
     r.name                  AS release_version,
-    mts.target              AS target,
+    p.name                  AS target,
     mts.testset             AS testset,
     mts.product             AS product,
     mts.title               AS session,
     mtset.name              AS feature,
-    mtc.name                AS testcase, 
+    mtc.name                AS testcase,
     if(mtc.result = 1,1,0)  AS pass,
     if(mtc.result = -1,1,0) AS fail,
     if(mtc.result = 0,1,0)  AS na,
-    mtc.comment             AS comment, 
+    if(mtc.result = 2,1,0)  AS measured,
+    mtc.comment             AS comment,
     mms.name                AS m_name,
     mms.value               AS m_value,
     mms.unit                AS m_unit,
@@ -67,10 +70,11 @@ module CsvGenerator
     LEFT JOIN meego_test_cases   AS mtc    ON (mtc.meego_test_session_id = mts.id)
     LEFT JOIN features           AS mtset  ON (mtc.feature_id = mtset.id)
     LEFT JOIN releases           AS r      ON (mts.release_id = r.id)
+    LEFT JOIN profiles           AS p      ON (mts.profile_id = p.id)
     LEFT JOIN meego_measurements AS mms    ON (mms.meego_test_case_id = mtc.id)
   END
 
-  CSV_HEADERS = 
+  CSV_HEADERS =
     [
      "Test execution date",
      "MeeGo release",
@@ -83,6 +87,7 @@ module CsvGenerator
      "Pass",
      "Fail",
      "N/A",
+     "Measured",
      "Notes",
      "Measurement Name",
      "Value",
@@ -97,7 +102,7 @@ module CsvGenerator
     # Construct conditions
     conds = ["mts.published = ?", "mtc.deleted = ?"]
     conds << "r.name = ?" if release_version
-    conds << "mts.target = ?" if target
+    conds << "p.name = ?" if target
     conds << "mts.testset = ?" if testset
     conds << "mts.product = ?" if product
 
@@ -112,15 +117,15 @@ module CsvGenerator
     query = CSV_QUERY + " WHERE " + conditions + ";"
 
     result = MeegoTestSession.find_by_sql([query, *values])
- 
+
     FasterCSV.generate(:col_sep => ';') do |csv|
       csv << CSV_HEADERS
 
       result.each do |row|
-        csv << [row[:tested_at], row[:release_version], row[:target], 
-                row[:testset], row[:product], row[:session], row[:feature], 
-                row[:testcase], row[:pass], row[:fail], row[:na], 
-                row[:comment], row[:m_name], row[:m_value], row[:m_unit], 
+        csv << [row[:tested_at], row[:release_version], row[:target],
+                row[:testset], row[:product], row[:session], row[:feature],
+                row[:testcase], row[:pass], row[:fail], row[:na], row[:measured],
+                row[:comment], row[:m_name], row[:m_value], row[:m_unit],
                 row[:m_target], row[:m_failure], row[:author], row[:editor]]
       end
     end
@@ -134,7 +139,7 @@ module CsvGenerator
 
       result.each do |row|
         csv << [row[:feature], row[:testcase], row[:pass], row[:fail],
-                row[:na], row[:comment], row[:m_name], row[:m_value],
+                row[:na], row[:measured], row[:comment], row[:m_name], row[:m_value],
                 row[:m_unit], row[:m_target], row[:m_failure]]
       end
     end
