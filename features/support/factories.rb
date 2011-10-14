@@ -22,7 +22,6 @@ FactoryGirl.define do
 
   factory :profile do
     name       "Handset"
-    normalized "handset"
     sort_order 0
   end
 
