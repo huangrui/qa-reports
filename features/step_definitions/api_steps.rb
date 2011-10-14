@@ -1,4 +1,4 @@
-Given /^I am an user with a REST authentication token$/ do
+Given %r/^I am an user with a REST authentication token$/ do
   if !User.find_by_email('resting@man.net')
     FactoryGirl.create(:user,
       :name                  => 'John Restless',
@@ -29,7 +29,7 @@ end
 
 # Note: this must use the API parameters for the current API version. There
 # are other methods for using deprecated parameters.
-When /^the client sends file "([^"]*)" via the REST API$/ do |file|
+When %r/^the client sends file "([^"]*)" via the REST API$/ do |file|
   # @default_api_opts defined in features/support/hooks.rb
   api_import @default_api_opts.merge({
     "report.1" => Rack::Test::UploadedFile.new("#{file}", "text/xml")
@@ -53,7 +53,7 @@ When "the client sends a basic test result file with deprecated product paramete
   response.should be_success
 end
 
-When /^the client sends reports "([^"]*)" via the REST API to test set "([^"]*)" and product "([^"]*)"$/ do |files, testset, hardware|
+When %r/^the client sends reports "([^"]*)" via the REST API to test set "([^"]*)" and product "([^"]*)"$/ do |files, testset, hardware|
   data = @default_api_opts.merge({
     "testset" => testset,
     "product" => hardware
@@ -67,7 +67,7 @@ When /^the client sends reports "([^"]*)" via the REST API to test set "([^"]*)"
   response.should be_success
 end
 
-When /^the client sends files with attachments$/ do
+When %r/^the client sends files with attachments$/ do
   api_import @default_api_opts.merge({
       "report.1"        => Rack::Test::UploadedFile.new("features/resources/sim.xml", "text/xml"),
       "report.2"        => Rack::Test::UploadedFile.new("features/resources/bluetooth.xml", "text/xml"),
@@ -88,17 +88,17 @@ When "the client sends three CSV files" do
   And %{session "short3.csv" has been modified at "2011-03-01 01:01"}
 end
 
-When /^the client sends a request with string value instead of a file$/ do
+When %r/^the client sends a request with string value instead of a file$/ do
     api_import @default_api_opts.merge("report.1" => "Foo!")
 end
 
-When /^the client sends a request without file$/ do
+When %r/^the client sends a request without file$/ do
   @default_api_opts.delete("report.1")
   api_import @default_api_opts
   response.should be_success
 end
 
-When /^the client sends a request without a target profile$/ do
+When %r/^the client sends a request without a target profile$/ do
   @default_api_opts.delete("target")
   api_import @default_api_opts
   response.should be_success
@@ -154,7 +154,7 @@ When "the client sends a request with defined issue summary" do
   When %{the client sends a request with optional parameter "issue_summary_txt" with value "No major issues found"}
 end
 
-When /^the client sends a request with optional parameter "([^"]*)" with value "([^"]*)"$/ do |opt, val|
+When %r/^the client sends a request with optional parameter "([^"]*)" with value "([^"]*)"$/ do |opt, val|
   api_import @default_api_opts.merge({
     "report.1"        => Rack::Test::UploadedFile.new("features/resources/sim.xml", "text/xml"),
     opt               => val
@@ -168,7 +168,7 @@ When "the client sends a request with all optional parameters defined" do
   response.should be_success
 end
 
-When /^I view the latest report "([^"]*)"/ do |report_string|
+When %r/^I view the latest report "([^"]*)"/ do |report_string|
   #TODO: Use scopes
   version, target, test_type, product = report_string.downcase.split('/')
   report = MeegoTestSession.joins([:release, :profile]).where(:releases => {:name => version}, :profiles => {:name => target}, :product => product, :testset => test_type).order("created_at DESC").first
@@ -184,24 +184,24 @@ When "I download a list of sessions without a begin time" do
   When %{I download "/api/reports?limit_amount=1"}
 end
 
-When /^I download "([^"]*)"$/ do |file|
+When %r/^I download "([^"]*)"$/ do |file|
   get file
 end
 
-When /^I view the (updated )?report$/ do |unused_param|
+When %r/^I view the (updated )?report$/ do |unused_param|
   When %{I view the report "1.2/Core/Automated/N900"}
 end
 
-Then /^I should be able to view the latest created report$/ do
+Then %r/^I should be able to view the latest created report$/ do
   Then %{I view the latest report "1.2/Core/Automated/N900"}
 end
 
-Then /^I should be able to view the created report$/ do
+Then %r/^I should be able to view the created report$/ do
   Then %{I view the report "1.2/Core/Automated/N900"}
 end
 
 # For uploading multiple files (sim and bluetooth)
-Then /^I should see names of the two features/ do
+Then %r/^I should see names of the two features/ do
   Then %{I should see "SIM"}
   And %{I should see "BT"}
 end
@@ -291,7 +291,7 @@ Then "the result complains about invalid parameter" do
   Then %{the REST result "errors" is "unknown attribute: foobar"}
 end
 
-Then /^the REST result "([^"]*)" is "([^"]*)"$/ do |key, value|
+Then %r/^the REST result "([^"]*)" is "([^"]*)"$/ do |key, value|
   json = ActiveSupport::JSON.decode(@response.body)
   key.split('|').each { |item| json = json[item] }
   assert_msg = "Expected response '#{key}' with value \"#{value}\"\nGot value: \"#{json}\""
@@ -304,7 +304,7 @@ def get_testsessionid(file)
   FileAttachment.where('file_file_name like ?', '%' + file).first.attachable_id
 end
 
-And /^session "([^"]*)" has been modified at "([^"]*)"$/ do |file, date|
+And %r/^session "([^"]*)" has been modified at "([^"]*)"$/ do |file, date|
   tid = get_testsessionid(file)
   d = DateTime.parse(date)
   ActiveRecord::Base.connection.execute("update meego_test_sessions set updated_at = '#{d}' where id = #{tid}")
@@ -318,7 +318,7 @@ Then "result should match the file with oldest date" do
   Then %{resulting JSON should match file "short1.csv"}
 end
 
-Then /^resulting JSON should match file "([^"]*)"$/ do |file1|
+Then %r/^resulting JSON should match file "([^"]*)"$/ do |file1|
   json = ActiveSupport::JSON.decode(response.body)
   json[0]['qa_id'].should == get_testsessionid(file1)
   json.count.should == 1

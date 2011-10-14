@@ -1,5 +1,5 @@
 
-When /^the client sends a updated file "([^\"]*)" with the id (\d+) via the REST API$/ do |file, report_id|
+When %r/^the client sends a updated file "([^\"]*)" with the id (\d+) via the REST API$/ do |file, report_id|
   report_id = MeegoTestSession.find(:first).id
   post "/api/update/#{report_id}?auth_token=foobar", {
       "report"          => Rack::Test::UploadedFile.new("features/resources/#{file}", "text/xml")
@@ -36,7 +36,7 @@ When "the client sends a valid and an invalid file" do
   When %{the client sends 1 updated valid file, and 1 invalid file with the id 1 via the REST API}
 end
 
-When /^the client sends several updated files with the id (\d+) via the REST API$/ do |report_id|
+When %r/^the client sends several updated files with the id (\d+) via the REST API$/ do |report_id|
   report_id = MeegoTestSession.find(:first).id
   post "/api/update/#{report_id}?auth_token=foobar", {
       "report.1"        => Rack::Test::UploadedFile.new("features/resources/sim_new.xml", "text/xml"),
@@ -45,7 +45,7 @@ When /^the client sends several updated files with the id (\d+) via the REST API
   response.should be_success
 end
 
-When /^the client sends 1 updated valid file, and 1 invalid file with the id (\d+) via the REST API$/ do |report_id|
+When %r/^the client sends 1 updated valid file, and 1 invalid file with the id (\d+) via the REST API$/ do |report_id|
   report_id = MeegoTestSession.find(:first).id
   post "/api/update/#{report_id}?auth_token=foobar", {
       "report.1"        => Rack::Test::UploadedFile.new("features/resources/sim_new.xml", "text/xml"),
