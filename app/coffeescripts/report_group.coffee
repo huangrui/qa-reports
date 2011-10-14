@@ -1,4 +1,4 @@
-$(window).load ->
+$ () ->
   if $('#trend_labels').text().trim().length > 0
     trend_labels     = $('#trend_labels').text().split(',')
     trend_abs_passed = (parseInt(num) for num in $('#trend_abs_passed').text().split(','))
