@@ -33,7 +33,7 @@ class ReportGroupViewModel
         :nas    => report.total_na },
       :year => report.format_year,
       :release => report.release.name,
-      :target => report.target,
+      :target => report.profile.name,
       :testset => report.testset,
       :product => report.product,
       :id => report.id }
