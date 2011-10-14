@@ -1,4 +1,4 @@
-Given /^there are (\d+) reports from "([^"]*)" under "([^"]*)"$/ do |num, date, report_path|
+Given %r/^there are (\d+) reports from "([^"]*)" under "([^"]*)"$/ do |num, date, report_path|
   release, target, testset, product = report_path.split '/'
   year, month = date.split '/'
 
@@ -12,11 +12,11 @@ Given /^there are (\d+) reports from "([^"]*)" under "([^"]*)"$/ do |num, date, 
   end
 end
 
-When /^I view the report category "([^"]*)"$/ do |report_path|
+When %r/^I view the report category "([^"]*)"$/ do |report_path|
   visit "/#{report_path}"
 end
 
-Then /^reports from "([^"]*)" should be in the report list under "([^"]*)"$/ do |date, month_name|
+Then %r/^reports from "([^"]*)" should be in the report list under "([^"]*)"$/ do |date, month_name|
   year, month = date.split '/'
   next_month = (month.to_i + 1).to_s
 
@@ -24,11 +24,11 @@ Then /^reports from "([^"]*)" should be in the report list under "([^"]*)"$/ do 
   (find(:xpath, "//table[@class='month' and contains(.,'#{month_name}')]").all('tr').count - 1).should == reports_in_month
 end
 
-Then /^reports for "([^"]*)" should not be visible on the page$/ do |month_name|
+Then %r/^reports for "([^"]*)" should not be visible on the page$/ do |month_name|
   Then %{I should not see "#{month_name}" within ".index_month"}
 end
 
-Then /^I should see a graph containing data for the most recent reports$/ do
+Then %r/^I should see a graph containing data for the most recent reports$/ do
   latest_reports = MeegoTestSession.published.order('tested_at DESC, created_at DESC').
     limit(20)
 

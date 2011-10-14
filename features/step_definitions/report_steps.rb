@@ -9,7 +9,7 @@ def measurement_unit(value, target)
   value.split.second || "dummy"
 end
 
-Given /^there's an existing report$/ do
+Given %r/^there's an existing report$/ do
   report = FactoryGirl.build(:test_report_wo_features, :tested_at => '2011-09-01')
   report.features << FactoryGirl.build(:feature_wo_test_cases)
   report.features.first.meego_test_cases <<
@@ -19,7 +19,7 @@ Given /^there's an existing report$/ do
   report.save!
 end
 
-Given /^there's a "([^"]*)" report created "([^"]*)" days ago$/ do |categories, count|
+Given %r/^there's a "([^"]*)" report created "([^"]*)" days ago$/ do |categories, count|
   profile, testset, product = categories.split '/'
   release = Release.first
   profile = FactoryGirl.build(:profile, :label => profile)
@@ -32,7 +32,7 @@ Given /^there's a "([^"]*)" report created "([^"]*)" days ago$/ do |categories, 
   report.save!
 end
 
-Given /^I view a report with results: (\d+) Passed, (\d+) Failed, (\d+) N\/A$/ do |passed, failed, na|
+Given %r/^I view a report with results: (\d+) Passed, (\d+) Failed, (\d+) N\/A$/ do |passed, failed, na|
   report = FactoryGirl.build(:test_report_wo_features)
   report.features << FactoryGirl.build(:feature_wo_test_cases)
   report.features.first.meego_test_cases << FactoryGirl.build_list(:test_case, passed.to_i, :result =>  MeegoTestCase::PASS)
@@ -41,7 +41,7 @@ Given /^I view a report with results: (\d+) Passed, (\d+) Failed, (\d+) N\/A$/ d
   report.save!
 end
 
-Then /^I should see Result Summary:$/ do |table|
+Then %r/^I should see Result Summary:$/ do |table|
   visit report_path MeegoTestSession.first
   with_scope("#test_result_overview") do
     table.hashes.each do |hash|
@@ -51,7 +51,7 @@ Then /^I should see Result Summary:$/ do |table|
   end
 end
 
-And /^I should not see in Result Summary:$/ do |table|
+And %r/^I should not see in Result Summary:$/ do |table|
   #visit report_path MeegoTestSession.first
   with_scope("#test_result_overview") do
     table.hashes.each do |hash|
@@ -60,7 +60,7 @@ And /^I should not see in Result Summary:$/ do |table|
   end
 end
 
-Given /^I view a report with results:$/ do |table|
+Given %r/^I view a report with results:$/ do |table|
   report = FactoryGirl.build(:test_report_wo_features)
   report.features << FactoryGirl.build(:feature_wo_test_cases)
 
@@ -77,7 +77,7 @@ Given /^I view a report with results:$/ do |table|
   report.save!
 end
 
-Given /^I create a new test report with same test cases$/ do
+Given %r/^I create a new test report with same test cases$/ do
   RESULT_CSV = 'Category,Check points,Notes (bugs),Pass,Fail,N A
 Bluetooth,Test Case 1,,1,0,0
 Bluetooth,Test Case 2,,0,1,0'
@@ -93,7 +93,7 @@ Bluetooth,Test Case 2,,0,1,0'
   report.prev_session.features.count.should == 1
 end
 
-Then /^I should see the test case comments from the previous test report if the result hasn't changed$/ do
+Then %r/^I should see the test case comments from the previous test report if the result hasn't changed$/ do
   report = MeegoTestSession.find_by_tested_at('2011-09-02')
   visit report_path(report)
   click_link_or_button('+ see 1 passing tests')

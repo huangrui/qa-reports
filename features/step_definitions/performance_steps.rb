@@ -1,15 +1,15 @@
-Given /^I measure the speed of the test hardware$/ do
+Given %r/^I measure the speed of the test hardware$/ do
   t = Time.now
   40.times { get '/' }
   @slowness_factor = Time.now - t
   puts "Measured slowness factor of #{@slowness_factor} for this test machine."
 end
 
-When /^I start the timer$/ do
+When %r/^I start the timer$/ do
   @previous_step_time = @test_begin_time = Time.now
 end
 
-Then /^the time spent for the "([^\"]*)" step should be less than (\d+) seconds$/ do |step_name, max_seconds|
+Then %r/^the time spent for the "([^\"]*)" step should be less than (\d+) seconds$/ do |step_name, max_seconds|
   completion_time = Time.now
   max_seconds = @slowness_factor * max_seconds.to_f
 
@@ -19,7 +19,7 @@ Then /^the time spent for the "([^\"]*)" step should be less than (\d+) seconds$
   @previous_step_time = Time.now
 end
 
-Then /^the total time spent since the start should be less than (\d+) seconds$/ do |max_seconds|
+Then %r/^the total time spent since the start should be less than (\d+) seconds$/ do |max_seconds|
   completion_time = Time.now
   max_seconds = @slowness_factor * max_seconds.to_f
 
