@@ -180,7 +180,7 @@ Feature: REST API
     Then the REST result "ok" is "1"
     And I should be able to view the created report
 
-    When the client hides the report via the REST API to version "1.2", target "Core", test set "automated", hardware "N900"
+    When the client hides the report via the REST API to version "1.2", target "Core", testtype "automated", hardware "N900"
     Then the REST result "ok" is "1"
     Then the REST hided result "count" is 1
     Then I should be able to view the report hided
@@ -190,7 +190,7 @@ Feature: REST API
     Then the REST result "ok" is "1"
     And I should be able to view the created report
 
-    When the client hides the report via the REST API to version "1.2", target "Netbook", test set "automated", hardware "N900"
+    When the client hides the report via the REST API to version "1.2", target "Netbook", testtype "automated", hardware "N900"
     Then the REST result "ok" is "0"
     Then the REST result "errors" is "No reports searched out via the keywords:version <= '1.2',target <= 'Netbook',testtype <= 'automated',hardware <= 'N900'"
 
@@ -199,7 +199,7 @@ Feature: REST API
     Then the REST result "ok" is "1"
     And I should be able to view the created report
 
-    When the client hides the report via the REST API to version "1.2", target "Core", test set "automated" lacked the hardware
+    When the client hides the report via the REST API to version "1.2", target "Core", testtype "automated" lacked the hardware
     Then the REST result "ok" is "0"
     Then the REST result "errors" is "Request input version, target, testtype, and hardware all the four keywords"
 
