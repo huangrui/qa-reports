@@ -1,113 +1,122 @@
 linkEditButtons = () ->
-    $('div.editable_area').each (i, node) ->
-        $node = $(node);
-        contentDiv = $node.children('.editcontent').first()
-        rawDiv = contentDiv.next '.editmarkup'
-        $node.data 'content', contentDiv
-        $node.data 'raw', rawDiv
-        $node.click handleEditButton
+    $('.editable_area').each (i, node) ->
+        initInplaceEdit node, '.editcontent', 'textarea', true
 
-    $('div.editable_title').click handleTitleEdit
+    initInplaceEdit '.editable_title', '.editcontent', '.title_field', false
+
+
     $('.testcase').each (i, node) ->
         linkTestCaseButtons node
 
+
     $('.feature_record').each (i, node) ->
-        $node = $(node)
-        $comment = $node.find '.feature_record_notes'
-        $grading = $node.find '.feature_record_grading'
+        initInplaceEdit $(node).find('.feature_record_notes'), '.content', '.comment_field', true
 
-        $comment.click handleFeatureCommentEdit
-        $grading.click handleFeatureGradingEdit
+        ctx = $(node).find('.feature_record_grading')
+        initSelectionEdit ctx, 'span.content', false,
+            "1": 'grading_red'
+            "2": 'grading_yellow'
+            "3": 'grading_green'
+            "0": 'grading_white'
 
+initSelectionEdit = (context, cls_elem, replace_txt, cls_mapping) ->
+    context  = $(context)
+    if cls_elem?
+        cls_elem = context.find cls_elem
+    else
+        cls_elem = context
 
-handleEditButton = () ->
-    $button = $(this)
-    $div = $button.data 'content'
-    return false if $div.is ":hidden"
-    $raw = $button.data 'raw'
-    fieldName = $div.attr 'id'
-    text = $.trim $raw.text()
+    content = context.find 'span.content'
+    form    = context.find 'form'
+    input   = form.find 'select'
+    cls     = 'edit'
 
-    $form = $($('#txt_edit_form form').clone())
-    $area = $($form.find('textarea'))
+    reverse = (val) ->
+        for k,v of cls_mapping
+            return k if v == val
 
-    $area.attr 'name', 'meego_test_session[' + fieldName + ']'
-    $area.autogrow()
-    $area.val text
+    find_val = () ->
+        for c in cls_elem.attr("class").split(" ")
+            k = reverse c
+            return [k,c] if k?
 
-    $form.data 'original', $div
-    $form.data 'markup', $raw
-    $form.data 'button', $button
+    clickHandler = () ->
+        form.toggle()
+        if context.hasClass cls
+            [k,c] = find_val()
+            cls_elem.removeClass c
+            input.focus()
+        f = () -> context.toggleClass cls
+        setTimeout f, 1
+        content.toggle()
 
-    $form.submit handleTextEditSubmit
-    $form.find('.save').click () ->
-        $form.submit()
+    save_selection = ->
+        return false if context.hasClass cls
+        data   = form.serialize()
+        action = form.attr 'action'
+        $.post action, data
+        if replace_txt
+            content.text input.find('[selected]').text()
+        cls_elem.addClass cls_mapping[input.val()]
+        clickHandler()
         return false
 
-    $form.find('.cancel').click () ->
-        $form.detach()
-        $div.show()
-        $button.addClass 'editable_text'
+    input.change save_selection
+
+    input.blur ->
+        return false if context.hasClass cls
+        save_selection()
+
+    context.click ->
+        clickHandler() if context.hasClass cls
         return false
 
-    $button.removeClass 'editable_text'
 
-    $div.hide()
-    $form.insertAfter $div
-    $area.change()
-    $area.focus()
+initInplaceEdit = (context, contentSelector, inputSelector, hasMarkup) ->
+    context = $(context)
 
-    return false
+    content = context.find contentSelector
+    form    = context.find 'form'
+    input   = form.find inputSelector
+    undo    = null
 
-handleTitleEdit = () ->
-    $button = $(this)
-    $content = $button.children('h1').find 'span.content'
-    return false if $content.is ":hidden"
+    cls = if context.hasClass 'edit' then 'edit' else 'editable_text'
 
-    title = $content.text()
-    $form = $('#title_edit_form form').clone()
-    $field = $form.find '.title_field'
-    $field.val title
-    $form.data 'original', $content
-    $form.data 'button', $button
+    clickHandler = () ->
+        form.toggle()
+        if context.hasClass cls
+            context.unbind 'click'
+            undo = input.val()
+            input.focus()
+        else
+            context.click clickHandler
+        context.toggleClass cls
+        content.toggle()
 
-    $button.removeClass 'editable_text'
-
-    $form.submit handleTitleEditSubmit
-    $form.find('.save').click () ->
-        $form.submit()
         return false
 
-    $form.find('.cancel').click () ->
-        $form.detach()
-        $content.show()
-        $button.addClass 'editable_text'
+    context.click clickHandler
+
+    form.find('.cancel').click ->
+        input.val undo
+        clickHandler()
         return false
 
-    $content.hide()
-    $form.insertAfter $content
-    $field.focus()
+    form.submit ->
+        data   = form.serialize()
+        action = form.attr 'action'
+        $.post action, data
 
-    return false
+        val = input.val()
 
-handleTitleEditSubmit = () ->
-    $form = $(this)
-    $content = $form.data 'original'
-    title = $form.find('.title_field').val()
-    $content.text title
+        if hasMarkup
+            content.html formatMarkup val
+            fetchBugzillaInfo()
+        else
+            content.text val
 
-    data = $form.serialize()
-    action = $form.attr 'action'
-
-    $button = $form.data 'button'
-
-    $.post action, data
-
-    $button.addClass 'editable_text'
-    $form.detach()
-    $content.show()
-
-    return false
+        clickHandler()
+        return false
 
 prepareCategoryUpdate = (div) ->
     $div      = $(div)
@@ -159,9 +168,9 @@ prepareCategoryUpdate = (div) ->
       $.post url, data, (data) ->
           $datespan.text(data)
 
-          $catpath.html(htmlEscape(versionval) + arrow + htmlEscape(targetval)
-                                               + arrow + htmlEscape(typeval)
-                                               + arrow + htmlEscape(hwval))
+          $catpath.html(htmlEscape(versionval) + arrow + htmlEscape(targetval) +
+                                                 arrow + htmlEscape(typeval) +
+                                                 arrow + htmlEscape(hwval))
 
           $donebtn.attr("href", "/" + encodeURI(versionval) +
                                 "/" + encodeURI(targetval) +
@@ -172,278 +181,6 @@ prepareCategoryUpdate = (div) ->
       $div.jqmHide()
       return false
 
-###
- * Handle the feature grading edit
-###
-handleFeatureGradingEdit = () ->
-    $node = $(this)
-    $span = $node.find('span')
-    return false if $span.is ":hidden"
-
-    $feature = $node.closest '.feature_record'
-    id = $feature.attr('id').substring(8)
-    $form = $('#feature_grading_edit_form form').clone()
-    $form.find('.id_field').val id
-    $select = $form.find 'select'
-
-    $div = $feature.find '.feature_record_grading_content'
-
-    grading = $div.text()
-    code = switch grading
-        when 'Red'    then "1"
-        when 'Yellow' then "2"
-        when 'Green'  then "3"
-        else "0"
-
-    $select.find('option[selected="selected"]').removeAttr "selected"
-    $select.find('option[value="' + code + '"]').attr "selected", "selected"
-
-    $node.unbind 'click'
-    $node.removeClass 'edit'
-
-    $form.submit handleFeatureGradingSubmit
-    $select.change () ->
-        $select.unbind 'blur'
-        if $select.val() == code
-            $form.detach()
-            $span.show()
-            $node.addClass 'edit'
-            $node.click handleFeatureGradingEdit
-        else
-            $form.submit()
-
-    $select.blur () ->
-        $form.detach()
-        $span.show()
-        $node.addClass 'edit'
-        $node.click handleFeatureGradingEdit
-
-    $span.hide()
-    $form.insertAfter $div
-    $select.focus()
-    return false
-
-###
- * Submit feature's grading Ajax requirement
-###
-handleFeatureGradingSubmit = () ->
-    $form = $(this)
-    data = $form.serialize()
-    url = $form.attr 'action'
-
-    $node = $form.closest 'td'
-    $node.addClass('edit').click handleFeatureGradingEdit
-
-    $span = $node.find 'span'
-    $feature = $form.closest '.feature_record_grading'
-    $div =  $feature.find '.feature_record_grading_content'
-
-    $span.removeClass 'grading_white grading_red grading_yellow grading_green'
-    result = $form.find('select').val()
-
-    [cls,txt] = switch result
-        when "1" then ['grading_red', 'Red']
-        when "2" then ['grading_yellow', 'Yellow']
-        when "3" then ['grading_green', 'Green']
-        else ['grading_white', 'N/A']
-
-    $span.addClass cls
-    $div.text txt
-
-    $form.detach()
-    $span.show()
-    $.post url, data
-    return false
-
-###
- *  Handle the comments of category edit
- *  @return
-###
-handleFeatureCommentEdit = () ->
-    $node = $(this)
-    $div = $node.find 'div.content'
-    return false if $div.is ":hidden"
-
-    $feature = $node.closest '.feature_record'
-    $form = $('#feature_comment_edit_form form').clone()
-
-    $field = $form.find '.comment_field'
-
-    id = $feature.attr('id').substring(8)
-    $form.find('.id_field').val id
-
-    markup = $feature.find('.comment_markup').text()
-    $field.autogrow()
-    $field.val markup
-
-    $form.submit handleFeatureCommentFormSubmit
-    $form.find('.cancel').click () ->
-        $form.detach()
-        $div.show()
-        $node.click handleFeatureCommentEdit
-        $node.addClass 'edit'
-        return false
-
-    $node.unbind 'click'
-    $node.removeClass 'edit'
-    $div.hide()
-    $form.insertAfter $div
-
-    $field.change()
-    $field.focus()
-    return false
-
-###
- * Submit feature's comments Ajax requirement
- * @return
-###
-handleFeatureCommentFormSubmit = () ->
-    $form = $(this)
-    $feature = $form.closest '.feature_record'
-    $div = $feature.find '.feature_record_notes div.content'
-    markup = $form.find('.comment_field').val()
-
-    data = $form.serialize()
-    url = $form.attr('action')
-    $feature.find('.comment_markup').text markup
-    html = formatMarkup markup
-    $div.html html
-    $form.detach()
-    $div.show()
-    $feature.find('.feature_record_notes')
-        .click(handleFeatureCommentEdit)
-        .addClass('edit')
-
-    $.post url, data
-    fetchBugzillaInfo()
-    return false
-
-handleResultEdit = () ->
-    $node = $(this)
-    $span = $node.find 'span'
-    return false if $span.is ":hidden"
-
-    $testcase = $node.closest '.testcase'
-    id = $testcase.attr('id').substring(9)
-    $form = $('#result_edit_form form').clone()
-    $form.find('.id_field').val id
-    $select = $form.find 'select'
-
-    result = $span.text()
-
-    code = switch result
-        when 'Pass' then '1'
-        when 'Fail' then '-1'
-        else '0'
-
-    $select.find('option[selected="selected"]').removeAttr "selected"
-    $select.find('option[value="' + code + '"]').attr "selected", "selected"
-
-    $node.unbind 'click'
-    $node.removeClass 'edit'
-
-    $form.submit handleResultSubmit
-    $select.change () ->
-        $select.unbind 'blur'
-        if $select.val() == code
-            $form.detach()
-            $span.show()
-            $node.addClass 'edit'
-            $node.click handleResultEdit
-        else
-            $form.submit()
-
-    $select.blur () ->
-        $form.detach()
-        $span.show()
-        $node.addClass 'edit'
-        $node.click handleResultEdit
-
-    $span.hide()
-    $form.insertAfter $span
-    $select.focus()
-
-    return false
-
-handleResultSubmit = () ->
-    $form = $(this)
-
-    data = $form.serialize()
-    url = $form.attr 'action'
-
-    $node = $form.closest 'td'
-    $node.addClass('edit').removeClass('pass fail na').click handleResultEdit
-
-    $span = $node.find 'span'
-    result = $form.find('select').val()
-
-    [cls,txt] = switch result
-        when '1'  then ['pass', 'Pass']
-        when '-1' then ['fail', 'Fail']
-        else ['na', 'N/A']
-    $node.addClass cls
-    $span.text txt
-
-    $form.detach()
-    $span.show()
-    $.post url, data
-
-    return false
-
-handleDateEdit = () ->
-    $button = $(this)
-    $content = $button.find('span.content').first()
-    $raw = $content.next 'span.editmarkup'
-    return false if $content.is ":hidden"
-
-    data = $raw.text()
-    $form = $('#date_edit_form form').clone()
-    $field = $form.find '.date_field'
-    $field.val data
-    $form.data('original', $content).data('raw', $raw).data 'button', $button
-
-    $form.submit handleDateEditSubmit
-
-    $form.find('.save').click () ->
-        $form.submit()
-        return false
-
-    $form.find('.cancel').click () ->
-        $form.detach()
-        $content.show()
-        $button.addClass 'editable_text'
-        return false
-
-    $content.hide()
-    $form.insertAfter $content
-    $field.focus()
-    addDateSelector $field
-    $button.removeClass 'editable_text'
-
-    return false
-
-handleDateEditSubmit = () ->
-    $form = $(this)
-    $content = $form.data('original')
-    $raw = $form.data('raw')
-    data = $form.find('.date_field').val()
-    $raw.text(data);
-
-    data = $form.serialize()
-    action = $form.attr('action')
-
-    $button = $form.data('button')
-
-    $.post action, data, (data) ->
-        $content.text data
-
-    $button.addClass 'editable_text'
-    $form.detach()
-    $content.show()
-
-    return false
-
-
 handleCommentEdit = () ->
     $node = $(this)
     $div = $node.find 'div.content'
@@ -453,18 +190,19 @@ handleCommentEdit = () ->
     $form = $('#comment_edit_form form').clone()
     $field = $form.find '.comment_field'
 
+    attachment_id = $div.find('.note_attachment').attr('id')
     attachment_url = $div.find('.note_attachment').attr('href') || ''
     attachment_filename = attachment_url.split('/').pop()
 
-    $current_attachment = $form.find 'div.attachment:not(.add)'
-    $add_attachment = $form.find 'div.attachment.add'
+    $current_attachment = $form.find 'div.attachment.current'
+    $add_attachment = $form.find 'div.attachment.new'
 
     if attachment_url == '' || attachment_filename == ''
         $current_attachment.hide()
     else
         $add_attachment.hide()
 
-        $attachment_link = $current_attachment.find '#attachment_link'
+        $attachment_link = $current_attachment.find '.attachment_link'
         $attachment_link.attr 'href', attachment_url
         $attachment_link.html attachment_filename
 
@@ -472,15 +210,18 @@ handleCommentEdit = () ->
 
         $current_attachment.find('.delete').click () ->
             $attachment_field = $(this).closest('.field')
-            $current_attachment = $attachment_field.find('div.attachment:not(.add)');
-            $add_attachment = $attachment_field.find('div.attachment.add')
+            $current_attachment = $attachment_field.find('div.attachment:not(.add)')
+            $.post "/attachments/#{attachment_id}", {"_method": "delete"}
+
+            $add_attachment = $attachment_field.find('div.attachment.new')
 
             $current_attachment.hide()
             $current_attachment.find('input').attr('value', '')
             $add_attachment.show()
+            return false
 
-    id = $testcase.attr('id').substring(9)
-    $form.find('.id_field').val(id)
+    id = $testcase.attr('id').replace 'testcase-', ''
+    $form.attr('action', "/test_cases/#{id}")
 
     markup = $testcase.find('.comment_markup').text()
     $field.autogrow()
@@ -529,35 +270,6 @@ handleCommentFormSubmit = () ->
             $testcase.find('.testcase_notes').html responseText
             fetchBugzillaInfo()
 
-    return false
-
-handleTextEditSubmit = () ->
-    $form = $(this)
-    $original = $form.data 'original'
-    $markup = $form.data 'markup'
-    $area = $form.find 'textarea'
-
-    text = $area.val()
-    $button = $form.data "button"
-    $button.addClass 'editable_text'
-
-    if $markup.text() == text
-        # No changes were made.
-        $form.detach()
-        $original.show()
-        return false
-
-    $markup.text text
-
-    data = $form.serialize()
-    action = $form.attr "action"
-    $.post action, data
-
-    $original.html formatMarkup text
-    $form.detach()
-    $original.show()
-
-    fetchBugzillaInfo()
     return false
 
 formatMarkup = (s) ->
@@ -624,12 +336,16 @@ toggleRemoveTestCase = (eventObject) ->
     $testCaseRow.find('.testcase_result').toggleClass 'edit'
 
 removeTestCase = (id, callback) ->
-    $.post "/ajax_remove_testcase", {id: id}, (data) ->
-        callback? this if data.ok == 1
+    $.post "/test_cases/#{id}", {"_method": "put", "test_case": {"deleted": "true"}}, () ->
+        callback? this
 
 restoreTestCase = (id, callback) ->
-    $.post "/ajax_restore_testcase", {id: id}, (data) ->
-        callback? this if data.ok == 1
+    $.post "/test_cases/#{id}", {"_method": "put", "test_case": {"deleted": "false"}}, () ->
+        callback? this
+
+removeAttachment = (id, callback) ->
+    $.post "/attachments/#{id}", {"_method": "delete", "type": "report_attachment" }, () ->
+        callback? this
 
 unlinkTestCaseButtons = (node) ->
     $node = $(node)
@@ -644,7 +360,13 @@ linkTestCaseButtons = (node) ->
     $comment = $node.find '.testcase_notes'
     $result = $node.find '.testcase_result'
 
-    $result.click handleResultEdit
+    for r in $result
+        initSelectionEdit r, null, true,
+            "-1": 'fail'
+            "0": 'na'
+            "1": 'pass'
+            "2": 'measured'
+
     $comment.click handleCommentEdit
 
 $(document).ready () ->

@@ -38,44 +38,36 @@ class MeegoTestSession < ActiveRecord::Base
   include MeasurementUtils
   include CacheHelper
 
-  attr_accessor :uploaded_files
-
-  has_many :features, :dependent => :destroy, :order => "id DESC"
-  has_many :meego_test_cases, :autosave => false, :order => "id DESC"
-  has_many :test_result_files, :dependent => :destroy
-  has_many :report_attachments, :dependent => :destroy
-  has_many :passed, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::PASS}"
-  has_many :failed, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::FAIL}"
-  has_many :na, :class_name => "MeegoTestCase", :conditions => "result = #{MeegoTestCase::NA}"
-
   belongs_to :author, :class_name => "User"
   belongs_to :editor, :class_name => "User"
+  belongs_to :release
+  belongs_to :profile
 
-  belongs_to :version_label, :class_name => "VersionLabel", :foreign_key => "version_label_id"
+  has_many :features,         :dependent => :destroy, :order => "id DESC"
+  has_many :meego_test_cases, :autosave => false,     :order => "id DESC"
+  has_many :test_cases,       :class_name => "MeegoTestCase", :autosave => false,     :order => "id DESC"
+  has_many :passed,           :class_name => "MeegoTestCase", :conditions => { :result => MeegoTestCase::PASS     }
+  has_many :failed,           :class_name => "MeegoTestCase", :conditions => { :result => MeegoTestCase::FAIL     }
+  has_many :na,               :class_name => "MeegoTestCase", :conditions => { :result => MeegoTestCase::NA       }
+  has_many :measured,         :class_name => "MeegoTestCase", :conditions => { :result => MeegoTestCase::MEASURED }
 
-  validates_presence_of :title, :target, :testset, :product
-  validates_presence_of :uploaded_files #, :on => :create
+  has_many :result_files,     :class_name => 'FileAttachment', :as => :attachable, :dependent => :destroy, :conditions => {:attachment_type => 'result_file'}
+  has_many :attachments,      :class_name => 'FileAttachment', :as => :attachable, :dependent => :destroy, :conditions => {:attachment_type => 'attachment'}
+
+  validates_presence_of :title, :testset, :product
+  validates_presence_of :result_files
   validates_presence_of :author
+  validates_presence_of :release, :profile
+  validates             :tested_at, :date_time => true
+  validate              :validate_profile_testset_and_product
 
-  validates :tested_at, :date_time => true
+  accepts_nested_attributes_for :features, :result_files
 
-  validate :validate_labels
-  validate :validate_type_hw
-
-  accepts_nested_attributes_for :features, :test_result_files
-
-  before_save :force_testset_product_names
-
-  after_destroy :remove_uploaded_files
-
-  scope :published, where(:published => true)
-  scope :release, lambda { |release| published.joins(:version_label).where(:version_labels => {:normalized => release.downcase}) }
-  scope :profile, lambda { |profile| published.where(:target => profile.downcase) }
-  scope :testset, lambda { |testset| published.where(:testset => testset.downcase) }
+  scope :published,  where(:published => true)
+  scope :release,    lambda { |release| published.joins(:release).where(:releases => {:name => release}) }
+  scope :profile,    lambda { |profile| published.joins(:profile).where(:profiles => {:normalized => profile.downcase}) }
+  scope :testset,    lambda { |testset| published.where(:testset => testset.downcase) }
   scope :product_is, lambda { |product| published.where(:product => product.downcase) }
-
-  RESULT_FILES_DIR = "public/reports"
-  INVALID_RESULTS_DIR = "public/reports/invalid_files"
 
   include ReportSummary
 
@@ -83,15 +75,15 @@ class MeegoTestSession < ActiveRecord::Base
     published.order(:tested_at).last
   end
 
+  #TODO: Throw away
   def month
     @month ||= tested_at.strftime("%B %Y")
   end
 
-
   def self.fetch_fully(id)
     find(id, :include =>
          {:features =>
-           {:meego_test_cases => [:measurements, :serial_measurements, :meego_test_case_attachments, :feature, :meego_test_session]}
+           {:meego_test_cases => [:measurements, :serial_measurements, :attachment, :feature, :meego_test_session]}
          })
   end
 
@@ -116,23 +108,6 @@ class MeegoTestSession < ActiveRecord::Base
       group(:product).limit(limit).map(&:product)
   end
 
-  def target=(target)
-    target = target.try(:downcase)
-    write_attribute(:target, target)
-  end
-
-  def target
-    read_attribute(:target).try(:capitalize)
-  end
-
-  def build_id_txt=(build_id)
-    write_attribute(:build_id, build_id)
-  end
-
-  def build_id_txt
-    s = read_attribute(:build_id)
-  end
-
   def self.popular_build_ids(limit=3)
     published.select("build_id as build_id").order("COUNT(build_id) DESC").
       group(:build_id).limit(limit).map { |row| row.build_id.humanize }
@@ -142,79 +117,17 @@ class MeegoTestSession < ActiveRecord::Base
     prev_session
   end
 
-  def raw_result_files
-    FileStorage.new(dir="public/reports", baseurl="/reports/").list_report_files(self)
-  end
-
-  def self.import(attributes, files, user)
-    attr             = attributes.merge!({:uploaded_files => files})
-    result           = MeegoTestSession.new(attr)
-    result.tested_at = result.tested_at || Time.now
-    result.import_report(user, true)
-    result.save!
-    result
-  end
-
   def self.load_case_counts_for_reports!(reports)
     result_counts = MeegoTestCase.select([:meego_test_session_id, :result, :count]).
       where(:meego_test_session_id => reports).group(:meego_test_session_id, :result).count(:result)
 
     reports.map! do |report|
-      report.total_passed = result_counts[[report.id, MeegoTestCase::PASS]]
-      report.total_failed = result_counts[[report.id, MeegoTestCase::FAIL]]
-      report.total_na     = result_counts[[report.id, MeegoTestCase::NA]]
-      report.total_cases  = report.total_passed + report.total_failed + report.total_na
+      report.total_passed   = result_counts[[report.id, MeegoTestCase::PASS]]
+      report.total_failed   = result_counts[[report.id, MeegoTestCase::FAIL]]
+      report.total_na       = result_counts[[report.id, MeegoTestCase::NA]]
+      report.total_measured = result_counts[[report.id, MeegoTestCase::MEASURED]]
+      report.total_cases    = report.total_passed + report.total_failed + report.total_na + report.total_measured
       report
-    end
-  end
-
-  def self.filters_exist?(target, testset, product)
-    return true if target.blank? and testset.blank? and product.blank?
-
-    filters_exist = false
-
-    if target.present?
-      filters_exist = find_by_target(target.downcase).present?
-
-      if testset.present?
-        filters_exist &= find_by_testset(testset.downcase).present?
-      end
-
-      if testset.present? && product.present?
-        filters_exist &= find_by_product(product.downcase).present?
-      end
-    end
-
-    return filters_exist
-  end
-
-  class << self
-    def by_release_version_target_testset_product(release_version, target, testset, product, order_by = "tested_at DESC, id DESC", limit = nil)
-      target    = target.downcase
-      testset  = testset.downcase
-      product = product.downcase
-      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testset => testset, :product => product).joins(:version_label).order(order_by).limit(limit)
-    end
-
-    def published_by_release_version_target_testset(release_version, target, testset, order_by = "tested_at DESC, id DESC", limit = nil)
-      target   = target.downcase
-      testset = testset.downcase
-      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testset => testset).joins(:version_label).order(order_by).limit(limit)
-    end
-
-    def published_hwversion_by_release_version_target_testset(release_version, target, testset)
-      target   = target.downcase
-      testset = testset.downcase
-      published.where("version_labels.normalized" => release_version.downcase, :target => target, :testset => testset).select("DISTINCT product").joins(:version_label).order("product")
-    end
-
-    def published_by_release_version_target(release_version, target, order_by = "tested_at DESC, id DESC", limit = nil)
-      target = target.downcase
-      published.where("version_labels.normalized" => release_version.downcase, :target => target).joins(:version_label).order(order_by).limit(limit)
-    end
-
-    def published_by_release_version(release_version, order_by = "tested_at DESC", limit = nil)
-      published.where("version_labels.normalized" => release_version.downcase).joins(:version_label).order(order_by).limit(limit)
     end
   end
 
@@ -227,7 +140,7 @@ class MeegoTestSession < ActiveRecord::Base
     created = created_at || Time.now
 
     @prev_session = MeegoTestSession.find(:first, :conditions => [
-        "(tested_at < ? OR tested_at = ? AND created_at < ?) AND target = ? AND testset = ? AND product = ? AND published = ? AND version_label_id = ?", tested, tested, created, target.downcase, testset.downcase, product.downcase, true, version_label_id
+        "(tested_at < ? OR tested_at = ? AND created_at < ?) AND profile_id = ? AND testset = ? AND product = ? AND published = ? AND release_id = ?", tested, tested, created, profile.try(:id), testset.downcase, product.downcase, true, release_id
     ],
                           :order => "tested_at DESC, created_at DESC", :include =>
          [{:features => :meego_test_cases}, {:meego_test_cases => :feature}])
@@ -239,7 +152,7 @@ class MeegoTestSession < ActiveRecord::Base
   def next_session
     return @next_session unless @next_session.nil? and @has_next.nil?
     @next_session = MeegoTestSession.find(:first, :conditions => [
-        "(tested_at > ? OR tested_at = ? AND created_at > ?) AND target = ? AND testset = ? AND product = ? AND published = ? AND version_label_id = ?", tested_at, tested_at, created_at, target.downcase, testset.downcase, product.downcase, true, version_label_id
+        "(tested_at > ? OR tested_at = ? AND created_at > ?) AND profile_id = ? AND testset = ? AND product = ? AND published = ? AND release_id = ?", tested_at, tested_at, created_at, profile.try(:id), testset.downcase, product.downcase, true, release_id
     ],
                           :order => "tested_at ASC, created_at ASC", :include =>
          [{:features => :meego_test_cases}, {:meego_test_cases => :feature}])
@@ -273,41 +186,47 @@ class MeegoTestSession < ActiveRecord::Base
   ###############################################
   def summary_data
     data = Graph::Data.new
-    data.passed = passed = []
-    data.failed = failed = []
-    data.na     = na     = []
-    data.labels = labels = []
+    data.passed    = passed   = []
+    data.failed    = failed   = []
+    data.na        = na       = []
+    data.measured  = measured = []
+    data.labels    = labels   = []
 
     prev = prev_session
     if prev
       pp = prev.prev_session
       if pp
-        passed << pp.total_passed
-        failed << pp.total_failed
-        na     << pp.total_na
-        labels << pp.formatted_date
+        passed    << pp.total_passed
+        failed    << pp.total_failed
+        na        << pp.total_na
+        measured  << pp.total_measured
+        labels    << pp.formatted_date
       else
-        passed << 0
-        failed << 0
-        na     << 0
-        labels << ""
+        passed    << 0
+        failed    << 0
+        na        << 0
+        measured  << 0
+        labels    << ""
       end
 
-      passed << prev.total_passed
-      failed << prev.total_failed
-      na     << prev.total_na
-      labels << prev.formatted_date
+      passed    << prev.total_passed
+      failed    << prev.total_failed
+      na        << prev.total_na
+      measured  << prev.total_measured
+      labels    << prev.formatted_date
     else
-      passed << 0
-      failed << 0
-      na     << 0
-      labels << ""
+      passed    << 0
+      failed    << 0
+      na        << 0
+      measured  << 0
+      labels    << ""
     end
 
-    passed << total_passed
-    failed << total_failed
-    na     << total_na
-    labels << "Current"
+    passed    << total_passed
+    failed    << total_failed
+    na        << total_na
+    measured  << total_measured
+    labels    << "Current"
 
     data
   end
@@ -353,15 +272,6 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 
-  def build_id_html
-    txt = build_id_txt
-    if txt == ""
-      "No build id details filled in yet"
-    else
-      MeegoTestReport::format_txt(txt)
-    end
-  end
-
   def environment_html
     txt = environment_txt
     if txt == ""
@@ -389,75 +299,19 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 
-  # Check that the target and release_version given as parameters
-  # exist in label tables. Test session tables allow anything, but
-  # if using other than what's in the label tables, the results
-  # won't show up
-  def validate_labels
-    if target.blank?
-      errors.add :target, "can't be blank"
-    else
-      label = TargetLabel.find(:first, :conditions => {:normalized => target.downcase})
-      if not label
-        valid_targets = TargetLabel.labels.join(",")
-        errors.add :target, "Incorrect target '#{target}'. Valid ones are #{valid_targets}."
-      end
-    end
-
-    if release_version.blank?
-      errors.add :release_version, "can't be blank"
-    else
-      label = VersionLabel.find(:first, :conditions => {:normalized => release_version.downcase})
-      if not label
-        valid_versions = VersionLabel.release_versions.join(",")
-        errors.add :release_version, "Incorrect release version '#{release_version}'. Valid ones are #{valid_versions}."
-      end
-    end
-
-  end
-
-  # Validate user entered test set and hw product. If all characters are
-  # allowed users may enter characters that break the functionality. Thus,
-  # restrict the allowed subset to certainly safe
-  def validate_type_hw
+  def validate_profile_testset_and_product
     # \A and \z instead of ^ and $ cause multiline strings to fail validation.
     # And for the record: at least these characters break the navigation:
     # . % \ / (yes, dot is there as well for some oddball reason)
     allowed = /\A[\w\ \-:;,"\+\(\)]+\z/
 
-    if not testset.match(allowed)
-      errors.add :testset, "Incorrect test set. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( ) \" +"
-    end
-
-    if not product.match(allowed)
-      errors.add :product, "Incorrect product. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( ) \" +"
-    end
+    errors.add :testset, "Incorrect test set. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( ) \" +" unless testset.match(allowed)
+    errors.add :product, "Incorrect product. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( ) \" +"  unless product.match(allowed)
   end
-
-  def force_testset_product_names
-    write_attribute :testset, testset_label
-    write_attribute :product, product_label
-  end
-
-  def testset_label
-    @testset_label = self.class.persistent_label_for(:testset, testset) if @testset_label.nil? or testset.casecmp(@testset_label) != 0
-    @testset_label
-  end
-
-  def product_label
-    @product_label = self.class.persistent_label_for(:product, product) if @product_label.nil? or product.casecmp(@product_label) != 0
-    @product_label
-  end
-
-  def self.persistent_label_for(attribute, name)
-    session = MeegoTestSession.select(attribute).find(:first, :conditions => {attribute => name})
-    session.present? ? session.send(attribute) : name
-  end
-
 
   def generate_defaults!
     time                 = tested_at || Time.now
-    self.title           ||= "%s Test Report: %s %s %s" % [target, product_label, testset_label, time.strftime('%Y-%m-%d')]
+    self.title           ||= "%s Test Report: %s %s %s" % [profile.name, product_label, testset_label, time.strftime('%Y-%m-%d')]
     self.environment_txt = "* Product: " + product if self.environment_txt.empty?
   end
 
@@ -469,73 +323,34 @@ class MeegoTestSession < ActiveRecord::Base
     tested_at.strftime("%Y")
   end
 
+  RESULT_NAMES = {"fail"     => MeegoTestCase::FAIL,
+                  "na"       => MeegoTestCase::NA,
+                  "pass"     => MeegoTestCase::PASS,
+                  "measured" => MeegoTestCase::MEASURED}
+
+  #TODO: move to test case?
   def self.map_result(result)
-    result = result.downcase
-    if result == "pass"
-      1
-    elsif result == "fail"
-      -1
-    else
-      0
-    end
+    RESULT_NAMES[result.downcase] || MeegoTestCase::NA
   end
 
-  def sanitize_filename(filename)
-    filename.gsub(/[^\w\.\_\-]/, '_')
+  def self.result_as_string(result)
+    RESULT_NAMES.invert[result] || RESULT_NAMES.invert(MeegoTestCase::NA)
   end
 
-  def valid_filename_extension?(filename)
-    if filename =~ /\.csv$/i or filename =~ /\.xml$/i
-      return true
-    else
-      errors.add :uploaded_files, "You can only upload files with the extension .xml or .csv"
-      return false
-    end
-  end
 
-  ###############################################
-  # For encapsulating the release_version          #
-  ###############################################
-  def release_version=(release_version)
-    version_label = VersionLabel.where( :normalized => release_version.downcase)
-    self.version_label = version_label.first
-  end
-
-  def release_version
-    if self.version_label
-      return self.version_label.label
-    else
-      return nil
-    end
-  end
-
-  def generate_file_destination_path(original_filename)
-    datepart = Time.now.strftime("%Y%m%d")
-    dir      = File.join(RESULT_FILES_DIR, datepart)
-    dir      = File.join(INVALID_RESULTS_DIR, datepart) if !errors.empty? #store invalid results data for debugging purposes
-
-    FileUtils.mkdir_p(dir)
-
-    filename     = ("%06i-" % Time.now.usec) + sanitize_filename(original_filename)
-    path_to_file = File.join(dir, filename)
-  end
-
-  def remove_uploaded_files
-    # TODO: when report is deleted files should be deleted as well
-  end
 
   def update_report_result(user, params, published = true)
     tmp = ReportFactory.new.build(params)
-    parsing_errors = tmp.errors[:uploaded_files]
+    parsing_errors = tmp.errors[:result_files]
 
-    user.update_attribute(:default_target, self.target) if self.target.present?
+    user.update_attribute(:default_target, self.profile.name) if self.profile.name.present?
     self.editor    = user
     self.published = published
 
     if !parsing_errors.empty?
       return parsing_errors.join(',')
     else
-      @uploaded_files = tmp.uploaded_files
+      @result_files = tmp.result_files
       self.features.clear
       self.meego_test_cases.clear
       tmp.features.each do |feature|
@@ -545,34 +360,6 @@ class MeegoTestSession < ActiveRecord::Base
       self.meego_test_cases = tmp.meego_test_cases
       return nil
     end
-  end
-
-  private
-
-  def create_version_label
-    verlabel = VersionLabel.find(:first, :conditions => {:normalized => release_version.downcase})
-    if verlabel
-      self.version_label = verlabel
-      save
-    else
-      verlabel = VersionLabel.new(:label => release_version, :normalized => release_version.downcase)
-      verlabel.save
-    end
-  end
-
-  def create_target_label
-    tarlabel = TargetLabel.find(:first, :conditions => {:normalized => target.downcase})
-    if tarlabel
-      self.target = tarlabel.label
-      save
-    else
-      tarlabel = TargetLabel.new(:label => target, :normalized => target.downcase)
-      tarlabel.save
-    end
-  end
-
-  def create_labels
-    create_version_label && create_target_label
   end
 
 end

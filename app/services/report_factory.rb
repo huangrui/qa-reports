@@ -8,11 +8,12 @@ class ReportFactory
   def build(params)
     @errors = {}
 
+    params[:release] ||= Release.find_by_name params.delete(:release_version) if params[:release_version]
+    params[:profile] ||= Profile.find_by_name params.delete(:target) if params[:target]
+
     begin
       generate_title(params)
       parse_result_files(params)
-      save_result_files(params)
-
       test_session = MeegoTestSession.new(params)
       copy_template_values(test_session)
 
@@ -20,7 +21,7 @@ class ReportFactory
       Rails.logger.error "ERROR IN FILE PARSING: " + e.filename
       Rails.logger.error "ERROR MESSAGE: " + e.message
       test_session = MeegoTestSession.new(params)
-      test_session.errors.add(:uploaded_files, e.message)
+      test_session.errors.add(:result_files, e.message)
     end
 
     test_session
@@ -32,27 +33,34 @@ class ReportFactory
     params[:tested_at] = Time.now.to_s unless params[:tested_at].present?
 
     tested_at = DateTime.parse(params[:tested_at]).strftime('%Y-%m-%d')
-    title_values = [params[:target], params[:product], params[:testset], tested_at]
+    title_values = [params[:profile].try(:name), params[:product], params[:testset], tested_at]
     params[:title] ||= "%s Test Report: %s %s %s" % title_values
   end
 
   def parse_result_files(params)
     features = {}
 
-    params[:uploaded_files].each do |file|
-      if file.original_filename =~ /.csv$/i
-        new_features = CSVResultFileParser.new.parse(file.open)
-      elsif file.original_filename =~ /.xml$/i
+    params[:result_files] ||= []
+    params[:result_files_attributes] ||= []
+    params[:result_files] += params.delete(:result_files_attributes).map do |file|
+      FileAttachment.new file
+    end
+
+    params[:result_files].each do |result_attachment|
+      file = result_attachment.file.to_file
+      if result_attachment.filename =~ /.csv$/i
+        new_features = CSVResultFileParser.new.parse(file)
+      elsif result_attachment.filename =~ /.xml$/i
         begin
-          new_features = XMLResultFileParser.new.parse(file.open)
+          new_features = XMLResultFileParser.new.parse(file)
         rescue Nokogiri::XML::SyntaxError => e
-          raise ParseError.new(file.original_filename), file.original_filename + ": " + e.message
+          raise ParseError.new(result_attachment.filename), result_attachment.filename + ": " + e.message
         end
       else
-        raise ParseError.new(file.original_filename), "You can only upload files with the extension .xml or .csv"
+        raise ParseError.new(result_attachment.filename), "You can only upload files with the extension .xml or .csv"
       end
 
-      raise ParseError.new(file.original_filename), file.original_filename + " didn't contain any valid test cases" if new_features.empty?
+      raise ParseError.new(result_attachment.filename), result_attachment.filename + " didn't contain any valid test cases" if new_features.empty?
 
       merge_results(features, new_features)
     end
@@ -67,28 +75,6 @@ class ReportFactory
       features[feature] ||= {}
       features[feature].merge!(tcs)
     end
-  end
-
-  # TODO: This should be handled with paperclip
-  def save_result_files(params)
-    test_result_files = []
-
-    params[:uploaded_files].each do |tmpfile|
-      result_file_path = generate_file_destination_path(tmpfile.original_filename)
-      FileUtils.move tmpfile.path, result_file_path
-      test_result_files << {:path => result_file_path}
-    end
-
-    params[:test_result_files_attributes] = test_result_files
-  end
-
-  def generate_file_destination_path(original_filename)
-    datepart = Time.now.strftime("%Y%m%d")
-    dir      = File.join(MeegoTestSession::RESULT_FILES_DIR, datepart)
-    FileUtils.mkdir_p(dir)
-
-    filename     = ("%06i-" % Time.now.usec) + sanitize_filename(original_filename)
-    path_to_file = File.join(dir, filename)
   end
 
   def sanitize_filename(filename)

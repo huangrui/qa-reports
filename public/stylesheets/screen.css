@@ -83,7 +83,8 @@ a img {
   float: left;
 }
 
-.htmlgraph .na {
+.htmlgraph .na,
+.htmlgraph .measured {
   background-color: #ddd;
   float: left;
 }
@@ -336,6 +337,9 @@ em {
 .un {font-weight: normal;
     font-size: smaller;}
 
+/* second undermine for giving text less contrast */
+.un2 {color: #aaa;}
+
 dfn {
     font-weight:bold; }
 
@@ -478,7 +482,7 @@ label.inline_label {
     float: none;
     width: auto;
     text-align: inherit;
-    margin: 0 0.75em 0 0;
+    margin: 0 0.75em 0 0.15em;
     display: inline;}
 
 div.field div.field_with_errors {
@@ -699,8 +703,7 @@ input#report_test_data.file {
 .ui_btn:hover {
     -webkit-box-shadow: #aaa 0px 0px 2px;
     -moz-box-shadow: #aaa 0px 0px 2px;
-    box-shadow: #aaa 0px 0px 2px;
-    /*filter: progid:DXImageTransform.Microsoft.Shadow(color='#969696', Direction=135, Strength=3);*/}
+    box-shadow: #aaa 0px 0px 2px;}
 
 .ui_btn:active {
     background-image: url(../images/ui_btn_bg_active.png);
@@ -1194,6 +1197,7 @@ div.formError, #error, form .error {
 #index_page,
 #error_page {
     padding-bottom: 329px;
+    position: relative;
     background: url(../images/hdiv_3.png) no-repeat 50% bottom; }
 
 /* @group header */
@@ -1289,6 +1293,10 @@ div.formError, #error, form .error {
     height: 1.0833em;
     margin-right: -1px;}
 
+#version_navi #report_filters {
+    float: right;
+}
+
 a#csv_report_link {
     padding-left: 400px;}
 /* @end */
@@ -1338,6 +1346,16 @@ th.filtered:last-child {
 
 #report_navigation ul {
     padding-left: 20px; }
+
+#report_navigation a.name {
+    font-weight: bold;
+    display: inline-block;
+    width: 100%;
+}
+
+#report_navigation ul a.name {
+    font-weight: normal;
+}
 
 th.filtered {
     padding-top: 30px;
@@ -1470,11 +1488,13 @@ td em {
     font-weight: normal;
     font-style: normal; }
 
-td.inc em{
-    background-image: url(../images/inc.png); }
+td.inc em {
+    background-image: url(../images/inc.png);
+    white-space:nowrap; }
 
-td.dec em{
-    background-image: url(../images/dec.png); }
+td.dec em {
+    background-image: url(../images/dec.png);
+    white-space:nowrap; }
 
 .th_feature {
     width: 30%;}
@@ -1482,6 +1502,7 @@ td.dec em{
 .th_total,
 .th_passed,
 .th_failed,
+.th_measured,
 .th_not_testable{
     width:40px;
     text-align: center;}
@@ -1492,7 +1513,8 @@ td.dec em{
 #test_results_by_feature .total,
 #test_results_by_feature .pass,
 #test_results_by_feature .fail,
-#test_results_by_feature .na {
+#test_results_by_feature .na,
+#test_results_by_feature .measured {
     text-align: center; }
 
 #test_results_by_feature .rate {
@@ -1523,8 +1545,16 @@ td.dec em{
 .th_target {
 	width: 7%;}
 
+.th_name {
+	width: 17%;
+}
+
 .th_measured {
 	width:7%;}
+
+.history .th_measured {
+	width: 45%;
+	text-align:left;}
 
 .th_limit {
 	width:7%;}
@@ -1754,7 +1784,8 @@ td.testcase_name p {
 
 .changed_from_fail,
 .changed_from_pass,
-.changed_from_na {
+.changed_from_na,
+.changed_from_measured {
 	background: transparent no-repeat left 0.8em;}
 
 .changed_from_fail {
@@ -1763,7 +1794,8 @@ td.testcase_name p {
 .changed_from_pass {
 	background-image: url(../images/changed_from_pass.png);}
 
-.changed_from_na {
+.changed_from_na,
+.changed_from_measured {
 	background-image: url(../images/changed_from_na.png);}
 
 td.testcase_result.edit:hover {
@@ -1823,6 +1855,18 @@ td.fail {
 
 .fail {
     color: #ec4343; }
+
+.med {
+	color: #233a84;}
+
+.avg {
+	color: #6c3d0f;}
+
+.min {
+	color: #bb2825;}
+
+.max {
+	color: #2a7438;}
 
 .history_result {
 	background: transparent no-repeat right 0.8em url(../images/history_arrow.png);}
@@ -1904,17 +1948,25 @@ width: 35px;
 	cursor: pointer;
 }
 
+
 .nft_drilldown_modal_window {
 	width: 800px;
 	padding: 14px 40px 40px;
 	margin-left: -440px;
 }
 
+/* TODO this was the old one, is it the right one as well?
 #nft_drilldown_graph, #nft_trend_graph {
         width: 823px;
         height: 314px;
         padding: 20px;
         border: 1px solid #b2b2b2;
+*/
+.drilldown_container {
+  width: 770px;
+  height: 270px;
+  padding : 10px;
+  border: 1px solid #b2b2b2;
 }
 
 .modal_close {
@@ -2170,4 +2222,59 @@ div#drag_drop_area.indented ul input[type=checkbox] {
 div.field.last {
     padding-bottom: 30px;
     margin-bottom: -30px;
+}
+
+#home_edit_link, #home_edit_done_link {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+
+#home_edit_link {
+    color: #aaa;
+    text-decoration: none;
+    font-weight: bold;
+    background: transparent url('../images/home_edit_icon.png') no-repeat right 0px;
+    display: block;
+    width: 16px;
+    height: 16px;
+    line-height: 14px;
+}
+
+#home_edit_link:hover {
+    color: #F20089;
+    background-position: right -16px;
+}
+
+#home_edit_done_link {
+    display: none;
+}
+
+#index_page.editing #home_edit_link {
+    display: none;
+}
+
+#index_page.editing #home_edit_done_link {
+    display: block;
+}
+
+#report_navigation ul {
+    margin-right: 0;
+}
+
+#report_navigation .editable_text {
+    display: block;
+    margin: 0;
+    padding: 0;
+    background-position: right center;
+}
+
+.to_be_edited {
+    background: #fff8de;
+    color: #ed0089;
+}
+
+.being_edited {
+    background: #fff8de;
+    color: #ed0089;
 }

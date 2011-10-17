@@ -1,0 +1,8 @@
+#category-dialog.jqmWindow style="display:none;"
+  = form_for @report, :as => :report, :url => report_path(@report) do |f|
+    h1 Change test category
+    = render :partial => 'shared/report_form', :object => f
+  form
+    #wizard_actions
+      input.dialog-cancel.jqmClose type="button" value="Cancel"
+      input.dialog-delete type="submit" value="Save"

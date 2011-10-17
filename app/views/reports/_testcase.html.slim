@@ -2,20 +2,27 @@ tr class="testcase #{result_class(testcase, 'result_')}" id="testcase-#{testcase
   td.testcase_name
     - if @editing
       a.remove_list_item.toggle_testcase href="#" Remove
-    p
-      = testcase.name
+    = testcase.name
     - if not testcase.source_link.blank?
       a.dl_link href=(testcase.source_link)
     - if not testcase.binary_link.blank?
       a.dl_link href=(testcase.binary_link)
-  td class="testcase_result #{result_class(testcase)} #{'edit' if @editing} #{testcase.find_change_class(@test_session.prev_session)} "
+  td class="testcase_result #{result_class(testcase)} #{'edit' if @editing} #{testcase.find_change_class(@report.prev_session)} "
     span.content #{result_html(testcase)}
+    form.result_form.float_container action="/test_cases/#{testcase.id}" method="post" style="display:none"
+      input name="authenticity_token" type="hidden" value=form_authenticity_token
+      input name="_method" type="hidden" value="put"
+      div.float_above
+        select name="test_case[result]"
+          - (-1..1).each do |s|
+            option selected="#{testcase.result == s ? 'selected' : ''}" value="#{s}" =result_to_txt(s)
+
   / NOTE: if changed, update also _nft_testcase and _testcase_comment. DRY violated because of seriously bad partial rendering performance.
   td class="testcase_notes #{'edit' if @editing}" rowspan="#{testcase.all_measurements.size if testcase.has_measurements? }"
     .content
       = comment_html(testcase)
-      - if not testcase.attachments.empty?
-        - attachment = testcase.attachments.first
-        a class="note_attachment #{'image_attachment' if attachment.image?}" href="#{attachment.pretty_url}" title=attachment.filename =attachment.pretty_url
+      - if testcase.attachment
+        - attachment = testcase.attachment
+        a id=attachment.id class="note_attachment #{'image_attachment' if attachment.image?}" href="#{attachment.pretty_url}" title=attachment.filename =attachment.pretty_url
     - if @editing
       .comment_markup style="display:none;" #{testcase.comment}

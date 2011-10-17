@@ -1,3 +1,3 @@
-And /^want to see history details$/ do
-  find(:xpath, "//a[@id='detailed_case' and @class = 'see_history_button sort_btn']").click
+When /^(?:|I )click to see test results history$/ do
+  find(".detailed_results .see_history_button").click
 end

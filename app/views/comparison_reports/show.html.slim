@@ -7,11 +7,11 @@
 - content_for :page_content do
   h1
     em
-      = @testset
+      = testset
       |  vs.
       = @comparison_testset
       | :
-    = @target
+    = profile.name
 
 
   .clearfix
@@ -21,7 +21,7 @@
     thead
       tr
         = render :partial => "shared/comparison_result_filter_buttons"
-        th.column_head_1 colspan=@comparison_report.products.length #{@testset}
+        th.column_head_1 colspan=@comparison_report.products.length #{testset}
         th.column_head_separate
         th.column_head_1 colspan=@comparison_report.products.length #{@comparison_testset}
       tr.compare_testset

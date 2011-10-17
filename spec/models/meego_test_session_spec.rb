@@ -2,89 +2,31 @@ require 'spec_helper'
 
 describe MeegoTestSession do
 
-  it "should accept valid tested_at date" do
-    ['2010-07-15', '2010-11-4', '2011-12-30 23:45:59'].each do |date|
-      mts = MeegoTestSession.new(:tested_at => date)
-      mts.valid? # called for side effects
-      mts.errors[:tested_at].should be_empty
+  describe "Without Test Cases" do
+    it "should return 0 for Run rate, pass rate and executed pass rate" do
+      report = FactoryGirl.build(:test_report_wo_features, :tested_at => '2011-09-01')
+      report.features << FactoryGirl.build(:feature_wo_test_cases)
+      report.run_rate.should == 0
+      report.pass_rate.should == 0
+      report.pass_rate_executed.should == 0
     end
   end
 
-  it "should not accept empty tested_at string" do
-      mts = MeegoTestSession.new(:tested_at => '')
-      mts.should_not be_valid
-  end
-
-  it "should fail to accept invalid tested_at date" do
-    mts = MeegoTestSession.new(:tested_at => '2010-13-15')
-    mts.should_not be_valid
-    mts.errors[:tested_at].should_not be_empty
-  end
-
-  it "should create test sets and test cases" do
-    params = {
-      :title => "Dummy test report",
-      :release_version => "1.2",
-      :product => "N900",
-      :target => "Core",
-      :testset => "Sanity",
-      :tested_at => "2011-12-30 23:45:59",
-      :uploaded_files => "foo.csv"
-    }
-
-    mts = MeegoTestSession.new(params)
-    mts.valid?
-    puts mts.errors
-  end
-
-  describe "filters_exist?" do
-
-    before(:each) do
-      @session = mock_model(MeegoTestSession)
-      MeegoTestSession.stub!(:find_by_target).and_return(@session)
-      MeegoTestSession.stub!(:find_by_testset).and_return(@session)
-      MeegoTestSession.stub!(:find_by_product).and_return(@session)
-      @target = nil
-      @testset = nil
-      @product = nil
-    end
-
-    it "should succeed when all filters exist" do
-      @target = 'SomeTarget'
-      @testset = 'SomeTestSet'
-      @product = 'Someproduct'
-      MeegoTestSession.filters_exist?(@target, @testset, @product).should be_true
-    end
-
-    it "should succeed when target and testset exist" do
-      @target = 'SomeTarget'
-      @testset = 'SomeTestSet'
-      MeegoTestSession.stub!(:find_by_product).and_return(nil)
-      MeegoTestSession.filters_exist?(@target, @testset, @product).should be_true
-    end
-
-    it "should succeed when target exists" do
-      @target = 'SomeTarget'
-      MeegoTestSession.stub!(:find_by_testset).and_return(nil)
-      MeegoTestSession.stub!(:find_by_product).and_return(nil)
-      MeegoTestSession.filters_exist?(@target, @testset, @product).should be_true
-    end
-
-
-    it "should fail if target is not found" do
-      @testset = 'SomeTestSet'
-      @product = 'Someproduct'
-      MeegoTestSession.stub!(:find_by_target).and_return(nil)      
-      MeegoTestSession.filters_exist?(@target, @testset, @product).should be_false
-    end
-
-
-    it "should fail if testset is not found and target and product exist" do
-      @testset = 'InvalidType'
-      @target = 'SomeTarget'
-      @product = 'Someproduct'
-      MeegoTestSession.stub!(:find_by_testset).and_return(nil)
-      MeegoTestSession.filters_exist?(@target, @testset, @product).should be_false
+  describe "With Passed, Failed, N/A and Measured Test Cases" do
+    it "should calucalate Run rate, pass rate and executed pass rate" do
+      report = FactoryGirl.build(:test_report_wo_features, :tested_at => '2011-09-01')
+      report.features << FactoryGirl.build(:feature_wo_test_cases)
+      report.features.first.meego_test_cases <<
+        FactoryGirl.build_list(:test_case, 8 , :result => MeegoTestCase::PASS) <<
+        FactoryGirl.build_list(:test_case, 5 , :result => MeegoTestCase::FAIL) <<
+        FactoryGirl.build_list(:test_case, 4 , :result => MeegoTestCase::NA)   <<
+        FactoryGirl.build_list(:test_case, 7 , :result => MeegoTestCase::MEASURED)
+      report.save!
+      report.run_rate.should == (8.0 + 5.0 + 7.0) / (8.0 + 5.0 + 4.0 + 7.0)
+      report.pass_rate.should == (8.0) / (8.0 + 5.0 + 4.0)
+      report.pass_rate_executed.should == (8.0) / (8.0 + 5.0)
     end
   end
+
+
 end

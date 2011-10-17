@@ -29,11 +29,10 @@ class ApiController < ApplicationController
   def import_data
     data = request.query_parameters.merge(request.request_parameters)
     data.delete(:auth_token)
-
     errors = []
 
-    data[:uploaded_files] = collect_files(data, "report", errors)
-    attachments           = collect_files(data, "attachment", errors)
+    data[:result_files] = collect_files(data, "report", errors)
+    data[:attachments]  = collect_files(data, "attachment", errors)
 
     if !errors.empty?
       render :json => {:ok => '0', :errors => "Request contained invalid files: " + errors.join(',')}
@@ -46,31 +45,32 @@ class ApiController < ApplicationController
     data.delete(:hwproduct)
     data.delete(:testtype)
     data.delete(:hardware)
+    data[:build_id] ||= data.delete(:build_id_txt) if data[:build_id_txt]
 
     begin
-      @test_session = ReportFactory.new.build(data)
+      return render :json => {:ok => '0', :errors => {:target, "can't be blank"}} if not data[:target]
+      return render :json => {:ok => '0', :errors => {:target, "Incorrect target '#{data[:target]}'. Valid ones are: #{Profile.names.join(',')}."}} if not Profile.find_by_name(data[:target])
+      @test_session = ReportFactory.new.build(data.clone)
+      return render :json => {:ok => '0', :errors => errmsg_invalid_version(data[:release_version])} if not @test_session.release
       @test_session.author = current_user
       @test_session.editor = current_user
       @test_session.published = true
+
     rescue ActiveRecord::UnknownAttributeError => error
       render :json => {:ok => '0', :errors => error.message}
       return
     end
 
-    attachments.each do |file|
-      @test_session.report_attachments.build(:attachment => file)
+    # Check the errors
+    if @test_session.errors.length > 0
+      render :json => {:ok => '0', :errors => @test_session.errors}
+      return
     end
 
     begin
       @test_session.save!
 
-      #TODO: Use PaperClip
-      files = FileStorage.new()
-      attachments.each { |file|
-        files.add_file(@test_session, file, file.original_filename)
-      }
-
-      report_url = url_for :controller => 'reports', :action => 'view', :release_version => data[:release_version], :target => data[:target], :testset => data[:testset], :product => data[:product], :id => @test_session.id
+      report_url = url_for :controller => 'reports', :action => 'show', :release_version => @test_session.release.name, :target => data[:target], :testset => data[:testset], :product => data[:product], :id => @test_session.id
       render :json => {:ok => '1', :url => report_url}
     rescue ActiveRecord::RecordInvalid => invalid
       error_messages = {}
@@ -86,7 +86,7 @@ class ApiController < ApplicationController
 
     errors                = []
 
-    data[:uploaded_files] = collect_files(data, "report", errors)
+    data[:result_files] = collect_files(data, "report", errors)
     data[:updated_at] = data[:updated_at] || Time.now
 
     if !errors.empty?
@@ -139,14 +139,16 @@ class ApiController < ApplicationController
 
   private
 
+  ATTACHMENT_TYPE_MAPPING = {'report' => :result_file, 'attachment' => :attachment}
+
   def collect_file(parameters, key, errors)
     file = parameters.delete(key)
     if (file!=nil)
       if (!file.respond_to?(:path))
         errors << "Invalid file attachment for field " + key
       end
+      FileAttachment.new(:file => file, :attachment_type => ATTACHMENT_TYPE_MAPPING[key.split('.').first])
     end
-    file
   end
 
   def collect_files(parameters, name, errors)
@@ -158,6 +160,10 @@ class ApiController < ApplicationController
       results << collect_file(parameters, key, errors)
     }
     results.compact
+  end
+
+  def errmsg_invalid_version(version)
+    {:release_version => "Incorrect release version '#{version}'. Valid ones are #{Release.names.join(',')}."}
   end
 
 end

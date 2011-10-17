@@ -37,7 +37,7 @@ Feature: Manage reports
     Then I should see "Click here to view this message in your browser or handheld device" within ".report-backlink"
     And the link "Click here" within ".report-backlink" should point to the report "1.2/Core/automated/N900"
 
-  @selenium
+  @javascript
   Scenario: Deleting a report
     When I view the report "1.2/Core/automated/N900"
     And I click to delete the report
@@ -46,4 +46,10 @@ Feature: Manage reports
 
     When I click to confirm the delete
 
-    Then I should not be able to view the report "1.2/Core/automated/N900"
+    Then I should be on the homepage
+    And I should not be able to view the report "1.2/Core/automated/N900"
+
+  Scenario: Link to original result file is shown
+    When I view the report "1.2/Core/automated/N900"
+
+    And I should see the download link for the result file "sample.csv"

@@ -77,13 +77,8 @@ module ReportsHelper
     end
   end
 
-  def rss_url
-    href = "/#{@selected_release_version}"
-    href += "/#{@target}" if @target
-    href += "/#{@testset}" if @testset
-    href += "/#{@product}" if @product
-    href += "/rss"
-    href
+  def rss_path
+    request.env['PATH_INFO'] + "/rss"
   end
 
 

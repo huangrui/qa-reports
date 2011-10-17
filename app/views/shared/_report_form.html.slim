@@ -1,19 +1,17 @@
 - f = report_form
-- if @test_session
-  input.id_field name="id" type="hidden" value=(@test_session.id)
 
 .field
   label for="report_meego_version" MeeGo release:
-  - @release_versions.each do |release_version|
-    = f.radio_button :release_version, release_version, :class => "version"
-    = f.label :release_version, release_version, :value => release_version, :class => "inline_label"
+  - Release.names.each do |release_version|
+    = radio_button :release, :name, release_version, :class => "version"
+    = label :release, :name, release_version, :value => release_version, :class => "inline_label"
 
 .field
   label for="report_test_target" Target profile:
-  - @targets.each do |target|
-    = f.radio_button :target, target.capitalize, :class => "target"
-    = f.label :target, target.humanize, :value => target.capitalize, :class => "inline_label"
-  = f.error_message_on :target
+  - @profiles.each do |profile|
+    = radio_button :profile, :name, profile, :class => "target"
+    = label :profile, :name, profile.humanize, :value => profile, :class => "inline_label"
+  = error_message_on :profile, :name
 
 .field
   label for="report_test_execution_date" Test execution date:
@@ -33,16 +31,16 @@
   label for="report_test_product" Product:
   = f.text_field :product, :id => "report_test_product", :class => "text product", :tabindex => 5
   small.suggestions
-    | e.g. #{render :partial=>'shared/suggestion', :collection => @product[0,3], :spacer_template => 'shared/comma'}
+    | e.g. #{render :partial=>'shared/suggestion', :collection => @products[0,3], :spacer_template => 'shared/comma'}
   = f.error_message_on :product
   = form_ajax_error_msg "product"
 
 .field
-  label for="report_test_build_id" 
+  label for="report_test_build_id"
     | Build id:
     .help_tag optional
   = f.text_field :build_id, :id => "report_test_build_id", :class => "text build_id", :tabindex => 5
   small.suggestions
-    | e.g. #{render :partial=>'shared/suggestion', :collection => @build_id[0,3], :spacer_template => 'shared/comma'}
+    | e.g. #{render :partial=>'shared/suggestion', :collection => @build_ids[0,3], :spacer_template => 'shared/comma'}
   = f.error_message_on :build_id
   = form_ajax_error_msg "build_id"

@@ -10,8 +10,7 @@ set :use_sudo, false
 set :copy_compression, :zip
 
 set :scm, :git
-set :repository, "http://git.gitorious.org/meego-quality-assurance/qa-reports.git"
-set :deploy_via, :remote_cache
+set :repository, "http://github.com/leonidas/qa-reports.git"
 
 ssh_options[:forward_agent] = true
 ssh_options[:user] = "www-data"
@@ -60,16 +59,16 @@ after "deploy:update_code" do
   # Remove default QA Dashboard config and symlink to shared.
   run "rm #{latest_release}/config/qa-dashboard_config.yml"
   run "ln -nfs #{shared_path}/config/qa-dashboard_config.yml #{latest_release}/config/qa-dashboard_config.yml"
+
+  # Remove local directories
+  run "rm -fr #{latest_release}/public/reports"
+
+  # Link to shared folders
+  run "ln -nfs #{shared_path}/reports #{latest_release}/public/"
+  run "ln -nfs #{shared_path}/files #{latest_release}/public/"
 end
 
 after "deploy:symlink" do
-  # Remove local directories
-  run "rm -fr #{current_path}/public/reports"
-
-  # Link to shared folders
-  run "ln -nfs #{shared_path}/reports #{current_path}/public/"
-  run "ln -nfs #{shared_path}/files #{current_path}/public/"
-
   # Remove empty token file that comes with deployment and symlink to shared
   run "rm -rf #{current_path}/config/registeration_token"
   run "ln -nfs #{shared_path}/config/registeration_token #{current_path}/config/registeration_token"

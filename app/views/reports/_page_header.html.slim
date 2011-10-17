@@ -10,12 +10,12 @@
       li
         = render :partial => "shared/session_management"
 
-/ Dirty hack to allow a div to be left open 
+/ Dirty hack to allow a div to be left open
 / TODO: make it cleaner (refactor page hierarchy?)
 | <div id="wrapper">
 #header
   #logo
     h3
-      a href=url_for(:controller=>'/index', :action=>'index', :release_version=>@selected_release_version) MeeGo | QA Reports
-      a.hover href=url_for(:controller=>'/index', :action=>'index', :release_version=>@selected_release_version)
+      a href=release_path(release.name) MeeGo | QA Reports
+      a.hover href=release_path(release.name)
   = render :partial => "reports/upload_link"

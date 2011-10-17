@@ -29,26 +29,13 @@ module ApplicationHelper
     end
   end
 
-  def upload_full_path
-    if @product
-      url_for :controller => "/upload", :action => :upload_form, :release_version => @selected_release_version, :testset => @testset, :target => @target, :product => @product
-    elsif @target
-      url_for :controller => "/upload", :action => :upload_form,  :release_version => @selected_release_version, :testset => @testset, :target => @target
-    elsif @testset
-      url_for :controller => "/upload", :action => :upload_form, :release_version => @selected_release_version, :testset => @testset
-    elsif @selected_release_version
-      url_for :controller => "/upload", :action => :upload_form, :release_version => @selected_release_version
-    else
-      url_for :controller => "/upload", :action => :upload_form
-    end
-  end
-
  def breadcrumbs
-  html = '<div id="breadcrumb"><li><a href="' + url_for(:controller=>'index', :action=>'index') + '">Home</a></li>'
+  html = '<div id="breadcrumb"><li><a href="' + root_path + '">Home</a></li>'
 
-  html += ('<li> &rsaquo; ' + link_to_unless_current(@target, profile_report_path(@selected_release_version, @target)) + '</li>') if @target
-  html += ('<li> &rsaquo; ' + link_to_unless_current(@testset, testset_report_path(@selected_release_version, @target, @testset)) + '</li>') if @testset
-  html += ('<li> &rsaquo; ' + link_to_unless_current(@product, product_report_path(@selected_release_version, @target, @testset, @product)) + '</li>') if @product
+
+  html += ('<li> &rsaquo; ' + link_to_unless_current(@profile.name, group_report_path(release.name, @profile.name)) + '</li>') if @profile
+  html += ('<li> &rsaquo; ' + link_to_unless_current(@testset, group_report_path(release.name, @profile.name, @testset)) + '</li>') if @testset
+  html += ('<li> &rsaquo; ' + link_to_unless_current(@product, group_report_path(release.name, @profile.name, @testset, @product)) + '</li>') if @product
   html += ('<li> &rsaquo; ' + @test_session.title + '</li>') if @test_session
   html += '</div>'
   html.html_safe
@@ -58,7 +45,7 @@ module ApplicationHelper
   def release_version_navigation(current_version, target='', testset='', product='')
     html = '<ul class="clearfix">'
     link_text = ''
-    @meego_releases.each do |release|
+    Release.names.each do |release|
       if release =~ /\d+\.\d+/
         if release == current_version
             html += '<li class="current">'
@@ -106,7 +93,7 @@ module ApplicationHelper
   end
 
   def report_url(s)
-      url_for :controller=>'reports',:action=>'view', :release_version=>s.release_version, :target=>s.target, :testset=>s.testset, :product=>s.product, :id=>s.id
+      url_for :controller=>'reports',:action=>'show', :release_version=>s.release.name, :target=>s.profile.name, :testset=>s.testset, :product=>s.product, :id=>s.id
   end
 
   def format_date_to_human_readable(date)
@@ -115,6 +102,10 @@ module ApplicationHelper
 
   def format_date_to_input(date)
     date ? date.strftime('%Y-%m-%d') : ''
+  end
+
+  def format_date_for_nft_history(date)
+    date ? date.strftime('%d/%m/%Y') : ''
   end
 
   def use_nokia_layout?
@@ -130,10 +121,6 @@ module ApplicationHelper
 
   def ints2js(ints)
     ('[' + ints.map{|v| v.to_s}.join(",") + ']').html_safe
-  end
-
-  def strs2js(strings)
-    ('[' + strings.map{|s| "\"#{s}\""}.join(",") + ']').html_safe
   end
 
   def google_analytics_tag
