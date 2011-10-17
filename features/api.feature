@@ -192,7 +192,7 @@ Feature: REST API
 
     When the client hides the report via the REST API to version "1.2", target "Netbook", test set "automated", hardware "N900"
     Then the REST result "ok" is "0"
-    Then the REST result "errors" is "No reports searched out via the keywords:version <= '1.2',target <= 'Netbook',testset <= 'automated',product <= 'N900'"
+    Then the REST result "errors" is "No reports searched out via the keywords:version <= '1.2',target <= 'Netbook',testtype <= 'automated',hardware <= 'N900'"
 
   Scenario: Hiding the existed test report with the lacked parameters
     When the client sends file "sim.xml" via the REST API
@@ -201,5 +201,5 @@ Feature: REST API
 
     When the client hides the report via the REST API to version "1.2", target "Core", test set "automated" lacked the hardware
     Then the REST result "ok" is "0"
-    Then the REST result "errors" is "Request input version, target, testset, and product all the four keywords"
+    Then the REST result "errors" is "Request input version, target, testtype, and hardware all the four keywords"
 

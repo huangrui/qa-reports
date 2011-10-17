@@ -60,9 +60,9 @@ When /I view the report "([^"]*)" for build$/ do |report_string|
 end
 
 When /I view the report "([^"]*)" hided$/ do |report_string|
-  version, target, testset, product = report_string.downcase.split('/')
+  version, target, test_type, hardware = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {"version_labels.normalized" => version, :target => target, :product => product, :testset => testset, :published => true}, :include => :version_label
+   {"version_labels.normalized" => version, :target => target, :hardware => hardware, :testtype => test_type, :published => true}, :include => :version_label
   )
   report == nil
 end
