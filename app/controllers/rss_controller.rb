@@ -20,32 +20,22 @@
 # 02110-1301 USA
 
 class RssController < ApplicationController
+  layout false
 
   def rss
-    @target   = params[:target]
-    @testset = params[:testset]
-    @product = params[:product]
+   filter = {
+        :release_id => release.id,
+        :profile_id => Profile.find_by_name(params[:target]).try(:id),
+        :testset    => testset,
+        :product    => product
+      }.delete_if { |key, value| value.nil? }
 
-    unless MeegoTestSession.filters_exist?(@target, @testset, @product)
-      return render_404
-    end
+    @report_shows = MeegoTestSession.published.where(filter).order("created_at DESC").limit(10).map{|report| ReportShow.new(report)}
 
     if @selected_release_version.eql? "1"
       @selected_release_version = "V"+@selected_release_version
     end
 
-    if @product
-      @sessions = MeegoTestSession.by_release_version_target_testset_product(@selected_release_version, @target, @testset, @product, "created_at DESC", 10)
-    elsif @testset
-      @sessions = MeegoTestSession.published_by_release_version_target_testset(@selected_release_version, @target, @testset, "created_at DESC", 10)
-    elsif @target
-      @sessions = MeegoTestSession.published_by_release_version_target(@selected_release_version, @target, "created_at DESC", 10)
-    else
-      @sessions = MeegoTestSession.published_by_release_version(@selected_release_version, "created_at DESC", 10)
-    end
-
-    render :layout => false
     response.headers["Content-Type"] = "application/xml; charset=utf-8"
   end
-
 end

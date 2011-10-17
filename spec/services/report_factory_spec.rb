@@ -3,19 +3,11 @@ require 'report_factory'
 
 describe ReportFactory do
 
-  class ResultFile
-
-    # .'open' calls Kernel.sleep, which makes it a bit painful to stub with rspec
-    def open
-      StringIO.new("foobar")
-    end
-  end
-
   describe "a report build with valid attributes" do
     before(:each) do
 
-      @result_file1 = ResultFile.new
-      @result_file2 = ResultFile.new
+      @result_file1 = Object.new
+      @result_file2 = Object.new
 
       @result_file1.stub!(:original_filename).and_return("bluetooth.xml")
       @result_file2.stub!(:original_filename).and_return("wlan.csv")
@@ -23,13 +15,22 @@ describe ReportFactory do
       @result_file1.stub!(:path).and_return("/var/tmp/bluetooth.xml")
       @result_file2.stub!(:path).and_return("/var/tmp/wlan.csv")
 
+      @result_attachment1 = FileAttachment.new
+      @result_attachment2 = FileAttachment.new
+
+      @result_attachment1.stub_chain(:file, :to_file).and_return(@result_file1)
+      @result_attachment2.stub_chain(:file, :to_file).and_return(@result_file2)
+
+      @result_attachment1.stub!(:filename).and_return(@result_file1.original_filename)
+      @result_attachment2.stub!(:filename).and_return(@result_file2.original_filename)
+
       @report_attributes = {
-        :release_version => "1.2",
+        :release_version => "1.1",
         :target => "Core",
         :testset => "Sanity",
         :product => "N900",
         :tested_at => "2011-12-30 23:45:59",
-        :uploaded_files => [@result_file1, @result_file2]
+        :result_files => [@result_attachment1, @result_attachment2]
       }
 
       @test_cases1 = {
@@ -74,6 +75,10 @@ describe ReportFactory do
 
       it "should have title 'Core Test Report: N900 Sanity 2011-12-30" do
         @report.title.should == "Core Test Report: N900 Sanity 2011-12-30"
+      end
+
+      it "should have release '1.1" do
+        @report.release.name == "1.1"
       end
 
       it "should have environment '* Hardware: N900'" do

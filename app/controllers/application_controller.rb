@@ -21,36 +21,37 @@
 #
 
 class ApplicationController < ActionController::Base
-
-  before_filter :get_meego_versions
-  before_filter :get_selected_release_version
+  helper_method :release, :profile, :testset, :product
+  before_filter :update_session_data, :profile
 
   #protect_from_forgery
 
-  def get_meego_versions
-    @meego_releases = VersionLabel.release_versions
-  end
+  rescue_from ActiveRecord::RecordNotFound, :with => :record_not_found
 
-  def get_selected_release_version
-    @selected_release_version = session[:release_version] =
-      valid_version_label(params[:release_version]) || session[:release_version] || VersionLabel.latest.label
-  end
-
-  def render_404
+  def record_not_found
     render :file => "#{Rails.root}/public/404.html", :status => :not_found, :layout => false
   end
 
-  private
-  
-  def valid_version_label release_version
-    return unless release_version.present?
+  def release
+    @release ||= Release.find_by_name(params[:release_version]) || Release.find_by_name(params[:release].try(:fetch, :name)) || Release.find_by_id(session[:release_id]) || Release.latest
+  end
 
-    if VersionLabel.all.map(&:normalized).include? release_version.downcase
-      release_version
-    else
-      Rails.logger.info ["Info:  Invalid release version: ", release_version]
-      return nil
-    end
+  def profile
+    @profile ||= Profile.find_by_name(params[:target]) || Profile.find_by_name(params[:profile].try(:fetch, :name)) || Profile.first
+  end
+
+  def testset
+    @testset ||= params[:testset]
+  end
+
+  def product
+    @product ||= params[:product]
+  end
+
+private
+
+  def update_session_data
+    session[:release_id] = release.id
   end
 
 end

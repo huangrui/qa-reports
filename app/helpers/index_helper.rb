@@ -18,15 +18,12 @@
 
 module IndexHelper
 
-  def current_filter_path
-    path = @target
-    path += " / #{@testset}" if @testset.present?
-    path += " / #{@product}" if @product.present?
-    path
+  def group_report_title
+    [profile.name, testset, product].compact.join(' / ')
   end
 
   def filtered_index_url(target, testset=nil, product=nil)
-    url_for(:controller=>'ReportGroupsController', :action=>'show', :release_version=>@selected_release_version, :target=>target, :testset=>testset, :product=>product)
+    url_for(:controller=>'ReportGroupsController', :action=>'show', :release_version=>release.name, :target=>target, :testset=>testset, :product=>product)
   end
 
 end

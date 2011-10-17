@@ -1,10 +1,10 @@
-- if (@files != nil && @files.length > 0) || @editing
+- if !@report.attachments.empty? || @editing
   div#drag_drop_area
     h2#attachments Attachments
 
     ul#file_attachment_list class="item_list attachment #{'editing' if @editing}"
       span#file_attachment_list_ready
-          = render :partial => "reports/file_attachment_list", :locals => {:report => @report, :files => @files || []}
+          = render :partial => "reports/file_attachment_list", :locals => {:report => @report, :files => @report.attachments}
 
     - if @editing
         = javascript_include_tag "file_attachments"

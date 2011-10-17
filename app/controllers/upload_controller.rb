@@ -32,21 +32,17 @@ class UploadController < ApplicationController
 
   def upload_form
     new_report = {}
-    [:release_version, :target, :testset, :product].each do |key|
+    [:testset, :product].each do |key|
       new_report[key] = params[key] if params[key]
     end
 
-    new_report[:release] = new_report[:release].downcase if new_report[:release]
-    new_report[:target] ||= new_report[:target].downcase if new_report[:target]
-    new_report[:target] ||= TargetLabel.targets.first.downcase
     @test_session = MeegoTestSession.new(new_report)
-    @test_session.version_label = VersionLabel.find_by_label(new_report[:release_version]) || VersionLabel.latest
+    @test_session.release = Release.find_by_name(params[:release_version])
+    @test_session.profile = profile || Profile.first
 
-    @release_versions = VersionLabel.in_sort_order.map { |release| release.label }
-    @targets = TargetLabel.targets.map {|target| target.downcase}
-    @testsets = MeegoTestSession.release(@selected_release_version).testsets
-    @product = MeegoTestSession.release(@selected_release_version).popular_products
-    @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
+    set_suggestions
+
+    @profiles  = Profile.names
 
     @no_upload_link = true
   end
@@ -54,55 +50,53 @@ class UploadController < ApplicationController
   def upload_report
     file = filestream_from_qq_param
 
-    extension = File.extname(file.original_filename)
-    raw_filename_wo_extension = File.basename(file.original_filename, extension)
+    attachment = FileAttachment.create! :file => file, :attachment_type => :result_file
 
-    # TODO: Temp files needs to be deleted periodically
-    url      = "/reports/tmp/#{raw_filename_wo_extension.parameterize}#{extension}"
-    filename = "#{Rails.root}/public#{url}"
-
-    File.open(filename, 'wb') {|f| f.write( file.read() ) }
-
-    render :json => { :ok => '1', :url => url }
+    render :json => { :ok => '1', :attachment_id => attachment.id }
   end
 
   def upload_attachment
     file = filestream_from_qq_param
 
     session = MeegoTestSession.find(params[:id])
-    session.report_attachments.create(:attachment => file)
+    session.attachments.create(:file => file)
     @editing = true
 
     expire_caches_for(session)
     # full file name of template has to be given because flash uploader can pass header HTTP_ACCEPT: text/*
     # file is not found because render :formats=>[:"text/*"]
-    html_content = render_to_string :partial => 'reports/file_attachment_list.html.slim', :locals => {:report => session, :files => session.report_attachments}
+    html_content = render_to_string :partial => 'reports/file_attachment_list.html.slim', :locals => {:report => session, :files => session.attachments}
     render :json => { :ok => '1', :html_content => html_content}
   end
 
   def upload
-    params[:meego_test_session][:uploaded_files] ||= []
-    params[:meego_test_session][:uploaded_files] += handle_ajax_uploads(params[:drag_n_drop_attachments])
+    params[:meego_test_session][:result_files] = FileAttachment.where(:id => params.delete(:drag_n_drop_attachments))
+
+    params[:meego_test_session][:release_version] = params[:release][:name]
+    params[:meego_test_session][:target] = params[:profile][:name]
 
     @test_session = ReportFactory.new.build(params[:meego_test_session])
     @test_session.author = current_user
     @test_session.editor = current_user
 
-    if @test_session.errors.empty? and @test_session.save
-      session[:preview_id] = @test_session.id
+    set_suggestions
 
-      redirect_to :controller => 'reports', :action => 'preview'
+    if @test_session.errors.empty? and @test_session.save
+      redirect_to preview_report_path(@test_session)
     else
-      @release_versions = VersionLabel.all.map { |release| release.label }
-      @targets = TargetLabel.targets
-      @testsets = MeegoTestSession.release(@selected_release_version).testsets
-      @product = MeegoTestSession.release(@selected_release_version).popular_products
-      @build_id = MeegoTestSession.release(@selected_release_version).popular_build_ids
+      @profiles = Profile.names
       render :upload_form
     end
   end
 
   private
+
+  def set_suggestions
+    scope      = MeegoTestSession.release(@test_session.release.name)
+    @testsets  = scope.testsets
+    @products  = scope.popular_products
+    @build_ids = scope.popular_build_ids
+  end
 
   def filestream_from_qq_param
     if request['qqfile'].respond_to? 'original_filename'
@@ -112,21 +106,5 @@ class UploadController < ApplicationController
       f.original_filename = request['qqfile']
       return f
     end
-  end
-
-  def handle_ajax_uploads(ajax_uploads)
-    uploaded_files = []
-
-    ajax_uploads ||= []
-    ajax_uploads.each do |name|
-      file = File.new("public" + name)
-      tmp = Tempfile.new("result_file")
-      tmp.write file.read
-      tmp.rewind
-      uploaded_files << ActionDispatch::Http::UploadedFile.new(:filename => File.basename(file.path), :tempfile => tmp)
-      rm file.path
-    end
-
-    uploaded_files
   end
 end

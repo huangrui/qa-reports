@@ -11,19 +11,26 @@ tr class="feature_record #{row_class(feature_summary_counter)}" id="feature-#{fe
   td.pass=feature_summary.total_passed
   td.fail=feature_summary.total_failed
   td.na=feature_summary.total_na
-  td.rate=feature_summary.total_pass_rate
+  td.rate=feature_summary.percentage(:pass_rate)
   td=feature_summary.graph_img_tag(max_cases)
 
   td class="feature_record_notes #{'edit' if @editing}"
     .content=MeegoTestReport::format_txt(feature_summary.comments).html_safe
     - if @editing
-      .comment_markup style="display:none;"
-        = MeegoTestReport::format_txt(feature_summary.comments).html_safe
+      form.comment_form style="display:none" method="post" action=feature_path(feature_summary.id)
+        input name="authenticity_token" type="hidden" value=form_authenticity_token
+        input name="_method" type="hidden" value="put"
+        textarea.comment_field name="feature[comments]" =feature_summary.comments
+        input.small_btn.save type="submit" value="Save"
+        input.small_btn.cancel.last type="button" value="Cancel"
 
   td class="feature_record_grading #{'edit' if @editing}"
     span class="content #{grading_class(feature_summary)}"
       |&nbsp;&nbsp;
     - if @editing
-      .feature_record_grading_content style="display:none;"
-        = grading_html(feature_summary)
-
+      form.result_form.float_container method="post" style="display:none" action=feature_path(feature_summary.id)
+        input name="authenticity_token" type="hidden" value=form_authenticity_token
+        input name="_method" type="hidden" value="put"
+        select.grading_select.float_above name="feature[grading]"
+          - (0..3).each do |g|
+            option selected="#{feature_summary.grading == g ? 'selected' : ''}" value="#{g}" =grading_to_str(g)

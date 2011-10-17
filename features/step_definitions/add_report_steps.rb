@@ -1,3 +1,8 @@
+Given /^I upload a new report with different comments$/ do
+  report = FactoryGirl.build(:test_report)
+  report.features << FactoryGirl.build(:feature, :name => "WLAN")
+end
+
 And /^(?:|I )upload the report "([^"]*)" with different comments$/ do |report|
     When %{I follow "Add report"}
     And %{I select target "Core", test set "automated" and product "N900" with date "2010-02-12"}

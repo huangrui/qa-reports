@@ -1,20 +1,23 @@
 - if @editing
   | <div class="editable_text editable_date" id="test_category">
 
-dt Test execution date and category:
+dt Test execution date, category and build id:
 dd
   span.date= format_date_to_human_readable @report.tested_at
   - if @editing
     span.editmarkup style="display:none;"
 
 dd.category
-  = @test_session.release_version
-  |  &rsaquo; 
-  = @test_session.target
-  |  &rsaquo; 
-  = @test_session.testset
-  |  &rsaquo; 
-  = @test_session.product
+  = @report.release.name
+  |  &rsaquo;
+  = @report.profile.name
+  |  &rsaquo;
+  = @report.testset
+  |  &rsaquo;
+  = @report.product
+
+dd.build-id
+  = @report.build_id
 
 - if @editing
   | </div>

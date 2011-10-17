@@ -1,0 +1,3 @@
+Feature,Test Case,Pass,Fail,,Comment,Measurement Name,Value,Unit,Target,Failure
+Feature One,Description One,1,0,0,This result file is invalid
+Feature Two,Description Two,0,1,0,It's missing a header

@@ -1,5 +1,10 @@
 require 'faster_csv'
 
+def find_feature_row (feature_name)
+  feature_name_cell = find(".feature_record a", :text => feature_name) # Locate the feature title cell
+  feature_name_cell.find(:xpath, "ancestor::tr[contains(@class, 'feature_record')]") # Locate the parent feature row
+end
+
 Then /^I should see the following table:$/ do |expected_report_front_pages_table|
   expected_report_front_pages_table.diff!(tableish('table tr', 'td,th'))
 end
@@ -17,46 +22,52 @@ When /^I should see the sign in link without ability to add report$/ do
 end
 
 When /I view the group report "([^"]*)"$/ do |report_string|
-  version, target, test_set, product = report_string.downcase.split('/')
-  visit("/#{version}/#{target}/#{test_set}/#{product}")
+  visit("/#{report_string}")
+end
+
+Then /^I should see the download link for the result file "([^"]*)"$/ do |result_file|
+  with_scope('#raw_file_attachment_list_ready') do
+    find_link(result_file)
+  end
 end
 
 Then /I should see the imported data from "([^"]*)" and "([^"]*)" in the exported CSV.$/ do |file1, file2|
   input = FasterCSV.read('features/resources/' + file1).drop(1) +
           FasterCSV.read('features/resources/' + file2).drop(1)
-  result = FasterCSV.parse(page.body, {:col_sep => ';'}).drop(1)
-  result.count.should == input.count
+  expected = input.each{|list| list.insert(4, "0")} # Add Measured result value. It is generated in export even if not given in import
+  result = FasterCSV.parse(page.text, {:col_sep => ';'}).drop(1)
+  actual = result.map{ |item| (6..12).map{|field| item[field]}}
 
-  mapped_result = result.map{ |item| [item[6], item[7], item[11], item[8], item[9], item[10]] }
-  (input - mapped_result).should be_empty
+  actual.count.should == expected.count
 
-
+  difference = actual - expected
+  difference.should be_empty, "Exported data does not match with the imported\nExpected: #{expected.to_yaml}\nGot: #{actual.to_yaml}\n"
 end
 
 Then /I should see the imported test cases from "([^"]*)" in the exported CSV.$/ do |file|
   input = FasterCSV.read('features/resources/' + file).drop(1)
-  result = FasterCSV.parse(page.body, {:col_sep => ','}).drop(1)
-  result.count.should == input.count
-  mapped_result = result.map{ |item| [item[0], item[1], item[2], item[3], item[4], item[5]] }
-  (input - mapped_result).should be_empty
+  expected = input.each{|list| list.insert(5, nil)} # Add Measured result value. It is generated in export even if not given in import
+  result = FasterCSV.parse(page.text, {:col_sep => ','}).drop(1)
+  actual = result.map{ |item| (0..6).map{|field| item[field]}}
+  actual.count.should == expected.count
+  difference = actual - expected
+  difference.should be_empty, "Exported data does not match with the imported\nExpected: #{expected.to_yaml}\nGot: #{actual.to_yaml}\n"
 end
 
 When /^(?:|I )(?:|return to )view the report "([^"]*)"$/ do |report_string|
-  version, target, test_set, product = report_string.downcase.split('/')
-  report = MeegoTestSession.first(:conditions =>
-   {"version_labels.normalized" => version, :target => target, :product => product, :testset => test_set}, :include => :version_label,
-   :order => "tested_at DESC, created_at DESC")
-  raise "report not found with parameters #{version}/#{target}/#{product}/#{test_set}!" unless report
-  visit("/#{version}/#{target}/#{test_set}/#{product}/#{report.id}")
+  release, profile, testset, product = report_string.split('/')
+  report = MeegoTestSession.release(release).profile(profile).testset(testset).product_is(product).last
+  raise "report not found with parameters #{release}/#{profile}/#{testset}/#{product}!" unless report
+  visit show_report_path(release, profile, testset, product, report)
 end
 
 When /I view the report "([^"]*)" for build$/ do |report_string|
-  version, target, testset, product = report_string.downcase.split('/')
+  release, profile, testset, product = report_string.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {"version_labels.normalized" => version, :target => target, :product => product, :testset => testset}, :include => :version_label,
-   :order => "build_id DESC, tested_at DESC, created_at DESC")
-  raise "report not found with parameters #{version}/#{target}/#{hardware}/#{test_type}!" unless report
-  visit("/#{version}/#{target}/#{testset}/#{product}/#{report.id}")
+    {"releases.name" => release, "profiles.name" => profile, :product => product, :testset => testset}, :include => [:release, :profile],
+    :order => "build_id DESC, tested_at DESC, created_at DESC")
+  raise "report not found with parameters #{release}/#{profile}/#{testset}/#{product}!" unless report
+  visit show_report_path(release, profile, testset, product, report)
 end
 
 Given /^I have created the "([^"]*)" report(?: using "([^"]*)")?(?: and optional build id is "([^"]*)")?$/ do |report_name, report_template, build_id|
@@ -92,10 +103,11 @@ Given /^there exists a report for "([^"]*)"$/ do |report_name|
     :password => "password",
     :password_confirmation => "password")
 
-  session = MeegoTestSession.new(:target => target, :product => product,
-    :testset => test_set, :uploaded_files => [testfile],
+  session = MeegoTestSession.new(:product => product,
+    :testset => test_set, :result_files_attributes => [{:file => testfile}],
     :tested_at => Time.now, :author => user, :editor => user, :release_version => version
   )
+  session.profile = Profile.find_by_name(target)
   session.generate_defaults! # Is this necessary, or could we just say create! above?
   session.save!
 end
@@ -144,8 +156,8 @@ When /^I remove the attachment from the test case "([^"]*)"$/ do |test_case|
   And "I submit the comment for the test case \"#{test_case}\""
 end
 
-When /^I attach the report "([^"]*)"$/ do |file|
-  And "attach the file \"#{Dir.getwd}/features/resources/#{file}\" to \"meego_test_session[uploaded_files][]\""
+When /^(?:|I )attach the report "([^"]*)"$/ do |file|
+  And "attach the file \"#{Dir.getwd}/features/resources/#{file}\" to \"meego_test_session[result_files_attributes][][file]\""
 end
 
 Given /^I select target "([^"]*)", test set "([^"]*)" and product "([^"]*)"(?: with date "([^\"]*)")?/ do |target, test_set, product, date|
@@ -179,7 +191,32 @@ end
 Then /^(?:|I )should not be able to view the report "([^"]*)"$/ do |report_string|
   version, target, test_set, product = report_string.downcase.split('/')
   report = MeegoTestSession.first(:conditions =>
-   {"version_labels.normalized" => version, :target => target, :product => product, :testset => test_set}, :include => :version_label,
+   {"releases.name" => version, "profiles.name" => target, :product => product, :testset => test_set}, :include => [:release, :profile],
    :order => "tested_at DESC, created_at DESC")
   report.should == nil
+end
+
+Then /^(?:|I )should see feature "([^"]*)" graded as ([^"]*)$/ do |feature_name, grading_color|
+  find_feature_row(feature_name).find(:xpath, "descendant::span")['class'].should =~ /#{grading_color}/ # Check that the color matches the status
+end
+
+When /^(?:|I )fill in comment "([^"]*)" for feature "([^"]*)"$/ do |comment, feature_name|
+  find_feature_row(feature_name).find(".feature_record_notes").click()
+  fill_in("feature[comments]", :with => comment)
+end
+
+When /^I (save|cancel) the comment of feature "([^"]*)"$/ do |action, feature_name|
+  find_feature_row(feature_name).click_link_or_button(action.capitalize)
+end
+
+When /^I change comment of feature "([^"]*)" to "([^"]*)"$/ do |feature_name, comment|
+  When %{I fill in comment "#{comment}" for feature "#{feature_name}"}
+  And %{I save the comment of feature "#{feature_name}"}
+end
+
+When /^I change grading of feature "([^"]*)" to ([^"]*)$/ do |feature_name, grading_color|
+  grading_area = find_feature_row(feature_name).find(".feature_record_grading")
+  grading_area.click
+
+  grading_area.find("option", :text => grading_color.capitalize).select_option
 end
