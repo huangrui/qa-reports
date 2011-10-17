@@ -105,7 +105,7 @@ h2#test_results
               th.th_not_testable N/A
               = history_headers(@history)
               th.th_result.current_feature_history_result Current
-          = render :partial => 'feature_pass_rate_history_summary', :collection => @test_session.features
+          = render :partial => 'feature_pass_rate_history_summary', :collection => @report_show.features
 
     - unless @build_diff.empty?
       table.feature_detailed_results_with_build_id#test_feature_build_results style="display:none"
