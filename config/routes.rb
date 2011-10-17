@@ -12,7 +12,6 @@ Meegoqa::Application.routes.draw do
   match '/api/get_token' => 'api#get_token', :via => "get"
   match '/api/update/:id' => 'api#update_result', :via => "post"
   match '/api/reports' => 'api#reports_by_limit_and_time', :via => "get"
-  match '/api/hide' => 'api#hide_obsolete_results', :via => "post"
 
   match '/finalize' => 'reports#preview', :via => "get"
   match '/publish' => 'reports#publish', :via => "post"
