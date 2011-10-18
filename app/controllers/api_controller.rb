@@ -24,7 +24,7 @@ class ApiController < ApplicationController
   include CacheHelper
 
   cache_sweeper :meego_test_session_sweeper, :only => [:import_data]
-  before_filter :authenticate_user!, :except => [:reports_by_limit_and_time, :merge_result]
+  before_filter :authenticate_user!, :except => [:reports_by_limit_and_time]
 
   def import_data
     data = request.query_parameters.merge(request.request_parameters)
@@ -82,7 +82,7 @@ class ApiController < ApplicationController
 
   def merge_result
     data = request.query_parameters.merge(request.request_parameters)
-    puts data
+    #puts data
     render :json => {:ok => '0', :errors => "Not implemented yet"}
   end
 
