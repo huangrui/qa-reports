@@ -302,7 +302,7 @@ end
 
 Then %r/^the REST result "([^"]*)" contains "([^"]*)"$/ do |key, value|
   json = ActiveSupport::JSON.decode(@response.body)
-  comparison = json[key].match(/#{value}/).should eql(true), "Did not find \"#{value}\" in the message \"#{json[key]}\""
+  assert json[key] =~ /#{value}/i, "Did not find \"#{value}\" in the message \"#{json[key]}\""
 end
 
 def get_testsessionid(file)
