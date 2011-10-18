@@ -38,7 +38,7 @@ Feature: Merge API
     Then the API responds with an error about "invalid result file"
 
   Scenario: Try to merge to a non-existing report
-    When I merge with the latest report using result file "sample.csv"
+    When I merge with a non-existing report using result file "sample.csv"
     Then the API responds with an error about "report not found"
 
   Scenario: Updating test report with a valid and an invalid file

@@ -21,6 +21,14 @@ When /^I merge with the latest report using multiple files$/ do
   api_merge default_api_merge_opts
 end
 
+When %r/^I merge the result file "([^"]*)" with report having id "([^"]*)"$/ do |file, id|
+  assert file.present?, "filename is missing"
+  params = default_api_merge_opts
+  params[:result_files] = [Rack::Test::UploadedFile.new("features/resources/#{file}", "text/xml")]
+  api_merge params, id
+end
+
+
 When %r/^I merge with the latest report using result file "([^"]*)"$/ do |file|
   assert file.present?, "filename is missing"
   params = default_api_merge_opts
@@ -44,6 +52,10 @@ When /^I merge with the latest report using multiple files including an invalid 
   params = default_api_merge_opts
   params[:result_files] << Rack::Test::UploadedFile.new("features/resources/invalid.csv", "text/csv")
   api_merge params
+end
+
+When /^I merge with a non\-existing report using result file "([^"]*)"$/ do |file|
+  Then "I merge the result file \"#{file}\" with report having id \"1234567890\""
 end
 
 Then %r/^the API responds with an error about "([^"]*)"$/ do |error|
