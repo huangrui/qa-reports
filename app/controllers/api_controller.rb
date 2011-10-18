@@ -82,6 +82,15 @@ class ApiController < ApplicationController
 
   def merge_result
     data = request.query_parameters.merge(request.request_parameters)
+    data.delete(:auth_token)
+
+    begin
+      report = MeegoTestSession.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      render :json => {:ok => '0', :errors => "Report not found"} if report.nil?
+      return
+    end
+
     #puts data
     render :json => {:ok => '0', :errors => "Not implemented yet"}
   end
