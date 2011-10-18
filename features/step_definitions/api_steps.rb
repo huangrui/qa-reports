@@ -300,6 +300,11 @@ Then %r/^the REST result "([^"]*)" is "([^"]*)"$/ do |key, value|
   json.should eql(value), assert_msg
 end
 
+Then %r/^the REST result "([^"]*)" contains "([^"]*)"$/ do |key, value|
+  json = ActiveSupport::JSON.decode(@response.body)
+  comparison = json[key].match(/#{value}/).should eql(true), "Did not find \"#{value}\" in the message \"#{json[key]}\""
+end
+
 def get_testsessionid(file)
   FileAttachment.where('file_file_name like ?', '%' + file).first.attachable_id
 end
