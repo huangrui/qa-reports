@@ -1,9 +1,9 @@
 module MeegoTestCaseHelper
 
   RESULT_TO_TXT = {MeegoTestCase::FAIL      => "Fail",
-             MeegoTestCase::NA        => "N/A",
-             MeegoTestCase::PASS      => "Pass",
-             MeegoTestCase::MEASURED  => "Measured"}
+                   MeegoTestCase::NA        => "N/A",
+                   MeegoTestCase::PASS      => "Pass",
+                   MeegoTestCase::MEASURED  => "Measured"}
 
   TXT_TO_RESULT = RESULT_TO_TXT.invert
 
