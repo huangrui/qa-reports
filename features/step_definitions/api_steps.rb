@@ -1,4 +1,4 @@
-Given %r/^I am an user with a REST authentication token$/ do
+Given %r/^I am a user with a REST authentication token$/ do
   if !User.find_by_email('resting@man.net')
     FactoryGirl.create(:user,
       :name                  => 'John Restless',
