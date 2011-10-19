@@ -7,11 +7,10 @@ def validate_visible_categories(expected_reports)
   expected_products = expected_reports.map(&:product)
   invalid_products = all.map(&:product) - expected_products
 
-  #TODO: Use capybara api
-  expected_testsets.each {|ts| Then "I should see \"#{ts}\"" }
-  expected_products.each {|p|  Then "I should see \"#{p}\"" }
-  invalid_testsets.each {|ts| Then "I should not see \"#{ts}\""}
-  invalid_products.each {|p|  Then "I should not see \"#{p}\""}
+  expected_testsets.each {|ts| page.should have_content ts    }
+  expected_products.each {|p|  page.should have_content p     }
+  invalid_testsets.each  {|ts| page.should have_no_content ts }
+  invalid_products.each  {|p|  page.should have_no_content p  }
 end
 
 Then %r/^only recent categories from release "([^"]*)" should be shown$/ do |release|

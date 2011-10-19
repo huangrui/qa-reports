@@ -109,11 +109,12 @@ $(document).ready ->
       $('#report_navigation').show()
 
   $('#report_filters a').click (event) ->
-    link = $(this)
+    target = $(event.target)
     event.preventDefault()
-    $.get link.attr('href'), (index_model) ->
+    link = $('#release_filters .current a').attr('href') + target.attr('href')
+    $.get link, (index_model) ->
       $('#report_filters li').removeClass 'current'
-      link.parent().addClass 'current'
+      target.parent().addClass 'current'
       $('#report_navigation').render index_model, directives
       $('#report_navigation').show()
 
