@@ -28,7 +28,9 @@ Feature: Show only latest test sets and products on front page
   @javascript
   Scenario: Select all and change release
     When I follow "All"
-    And  I follow "1.1"
+    Then all categories from release "1.2" should be shown
+
+    When  I follow "1.1"
     Then all categories from release "1.1" should be shown
 
   @javascript
