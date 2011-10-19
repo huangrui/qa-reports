@@ -98,6 +98,15 @@ $(document).ready ->
     $(product_titles).live 'mouseout', ->
       $(product_titles).removeClass('to_be_edited')
 
+  $('#version_navi a').click (event) ->
+    event.preventDefault()
+    target = $(event.target)
+    link = target.attr('href') + $('#report_filters .current a').attr 'href'
+    $.get link, (index_model) ->
+      $('#version_navi li').removeClass 'current'
+      target.parent().addClass 'current'
+      $('#report_navigation').render index_model, directives
+      $('#report_navigation').show()
 
   $('#report_filters a').click (event) ->
     link = $(this)
