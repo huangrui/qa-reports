@@ -98,25 +98,31 @@ $(document).ready ->
     $(product_titles).live 'mouseout', ->
       $(product_titles).removeClass('to_be_edited')
 
-  $('#release_filters a').click (event) ->
+  $('.tabs').click (event) ->
     event.preventDefault()
     target = $(event.target)
-    link = target.attr('href') + $('#report_filters .current a').attr 'href'
-    $.get link, (index_model) ->
-      $('#release_filters li').removeClass 'current'
-      target.parent().addClass 'current'
+    target.parent().addClass('current').siblings().removeClass('current')
+    tabs = $(this)
+    tabs.attr 'selected', target.attr('href')
+    tabs.trigger 'change'
+
+  $('.tabs').change (event) ->
+    release_path = $('#release_filters').attr('selected')
+    scope_path   = $('#report_filters').attr 'selected'
+    console.log release_path
+    console.log scope_path
+    path         = release_path + scope_path
+    console.log "pushState"
+    history.pushState { 'release_path': release_path, 'scope_path': scope_path }, "", path
+
+  $(window).bind 'popstate', (event) ->
+    console.log "popstate"
+    path = window.location.pathname
+    console.log path
+    $.get path, (index_model) ->
       $('#report_navigation').render index_model, directives
       $('#report_navigation').show()
 
-  $('#report_filters a').click (event) ->
-    target = $(event.target)
-    event.preventDefault()
-    link = $('#release_filters .current a').attr('href') + target.attr('href')
-    $.get link, (index_model) ->
-      $('#report_filters li').removeClass 'current'
-      target.parent().addClass 'current'
-      $('#report_navigation').render index_model, directives
-      $('#report_navigation').show()
+  console.log "documentReady"
 
-  $('#report_filters li a').first().trigger 'click'
   initInplaceEdit()
