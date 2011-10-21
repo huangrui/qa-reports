@@ -26,12 +26,6 @@ class ApiController < ApplicationController
   cache_sweeper :meego_test_session_sweeper, :only => [:import_data]
   before_filter :api_authentication, :except => [:reports_by_limit_and_time]
 
-  def api_authentication
-      data = request.query_parameters.merge(request.request_parameters)
-      return render :status => 403, :json => {:ok => '0', :errors => "Missing authentication token."} if data[:auth_token].nil?
-      return render :status => 403, :json => {:ok => '0', :errors => "Invalid authentication token."} unless user_signed_in?
-  end
-
   def import_data
     data = request.query_parameters.merge(request.request_parameters)
     data.delete(:auth_token)
@@ -210,6 +204,12 @@ class ApiController < ApplicationController
 
   def errmsg_invalid_version(version)
     {:release_version => "Incorrect release version '#{version}'. Valid ones are #{Release.names.join(',')}."}
+  end
+
+  def api_authentication
+      data = request.query_parameters.merge(request.request_parameters)
+      return render :status => 403, :json => {:ok => '0', :errors => "Missing authentication token."} if data[:auth_token].nil?
+      return render :status => 403, :json => {:ok => '0', :errors => "Invalid authentication token."} unless user_signed_in?
   end
 
 end
