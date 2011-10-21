@@ -93,10 +93,10 @@ class ApiController < ApplicationController
     begin
       report = MeegoTestSession.find(params[:id])
     rescue ActiveRecord::RecordNotFound
-      render :json => {:ok => '0', :errors => "Report not found"} if report.nil?
-      return
+      return render :json => {:ok => '0', :errors => "Report not found with id = #{params[:id]}"} if report.nil?
     end
-
+    return render :json => {:ok => '0', :errors => "Missing result file/files."} if data[:result_files].nil?
+    #logger.debug "DEBUG: Result files = #{data[:result_files].join(',')}"
     #puts data
     render :json => {:ok => '0', :errors => "Not implemented yet"}
   end
