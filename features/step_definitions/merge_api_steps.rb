@@ -67,6 +67,12 @@ Then /^the API responds ok$/ do
   Then %{the REST result "ok" is "1"}
 end
 
+When /^I merge with the latest report with an invalid auth token$/ do
+  params = default_api_merge_opts
+  params[:auth_token] = "invalidtoken"
+  api_merge params
+end
+
 # Given /^I have a report with$/ do |table|
 #   report = FactoryGirl.build(:test_report_wo_features)
 #   features  = {}

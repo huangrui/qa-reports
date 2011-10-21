@@ -45,6 +45,11 @@ Feature: Merge API
     When I merge with the latest report using multiple files including an invalid file
     Then the API responds with an error about "invalid result file"
 
+  Scenario: Try to merge with an invalid auth token
+    When I merge with the latest report with an invalid auth token
+    Then I get a "403" response code
+    And the API responds with an error about "invalid authentication token"
+
 #  @wip
 #  Scenario: Merge a new testcase
 #    Given I have a report with
