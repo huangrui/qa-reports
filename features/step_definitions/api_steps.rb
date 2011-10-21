@@ -328,3 +328,7 @@ Then %r/^resulting JSON should match file "([^"]*)"$/ do |file1|
   json[0]['qa_id'].should == get_testsessionid(file1)
   json.count.should == 1
 end
+
+Then %r/^I get a "([^"]*)" response code$/ do |code|
+  response.code.should == code
+end

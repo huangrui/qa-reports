@@ -18,14 +18,14 @@ Feature: Merge API
     Then the API responds ok
 
   # Missing parameters
-
   Scenario: Try to merge without a result file
     When I merge with the latest report without defining a result file
     Then the API responds with an error about "missing result file"
 
   Scenario: Try to merge without an auth token
     When I merge with the latest report without defining an auth token
-    Then the API responds with an error about "missing auth token"
+    Then I get a "403" response code
+    And the API responds with an error about "missing authentication token"
 
   # Invalid parameters
 
