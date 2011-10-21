@@ -87,17 +87,42 @@ class ApiController < ApplicationController
   end
 
   def merge_result
-    data = request.query_parameters.merge(request.request_parameters)
-    data.delete(:auth_token)
+    req = request.query_parameters.merge(request.request_parameters)
 
+    # Check that report with given id exists
     begin
       report = MeegoTestSession.find(params[:id])
     rescue ActiveRecord::RecordNotFound
       return render :json => {:ok => '0', :errors => "Report not found with id = #{params[:id]}"} if report.nil?
     end
-    return render :json => {:ok => '0', :errors => "Missing result file/files."} if data[:result_files].nil?
-    #logger.debug "DEBUG: Result files = #{data[:result_files].join(',')}"
-    #puts data
+
+    # Handle result files
+    return render :json => {:ok => '0', :errors => "Missing result file/files."} if req[:result_files].nil?
+    errors       = []
+    result_files = []
+
+    # <TODO>: why is this check needed? (from update method) remove if not needed
+    req[:result_files].each do |file|
+      unless file.respond_to?(:path)
+        errors << file.respond_to?(:original_filename) ? "Invalid file" : "Invalid file #{file.original_filename}"
+      else
+        result_files << FileAttachment.new(:file => file, :attachment_type => :result_file)
+      end
+    end
+    return render :json => {:ok => '0', :errors => errors.join(',')} if not errors.empty?
+    # </TODO>
+
+    begin
+      # TODO: change to user merge instead of update
+      parse_err = report.update_report_result(current_user, {:result_files => result_files}, true)
+    rescue ActiveRecord::UnknownAttributeError => errors
+      return render :json => {:ok => '0', :errors => errors.message}
+    end
+
+    return render :json => {:ok => '0', :errors => "Request contained invalid files: " + parse_err} if parse_err.present?
+
+    # TODO: save report
+
     render :json => {:ok => '0', :errors => "Not implemented yet"}
   end
 
