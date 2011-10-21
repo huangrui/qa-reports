@@ -60,6 +60,7 @@ Feature:
     But I should not see "foo" in test reports titles
 
     When I view the group report for "Handset/foo"
+    And I scroll down the page
 
     Then I should see "foo" in test reports titles
     But I should not see "bar" in test reports titles
