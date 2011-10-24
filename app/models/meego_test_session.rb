@@ -337,8 +337,6 @@ class MeegoTestSession < ActiveRecord::Base
     RESULT_NAMES.invert[result] || RESULT_NAMES.invert(MeegoTestCase::NA)
   end
 
-
-
   def update_report_result(user, params, published = true)
     tmp = ReportFactory.new.build(params)
     parsing_errors = tmp.errors[:result_files]
@@ -360,6 +358,11 @@ class MeegoTestSession < ActiveRecord::Base
       self.meego_test_cases = tmp.meego_test_cases
       return nil
     end
+  end
+
+  def merge!(report, user)
+    #TODO
+    self
   end
 
 end

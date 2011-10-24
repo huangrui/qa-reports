@@ -90,24 +90,25 @@ class ApiController < ApplicationController
       return render :json => {:ok => '0', :errors => "Report not found with id = #{params[:id]}"} if report.nil?
     end
 
-    # Handle result files
+    # Validate parameters for result files
     return render :json => {:ok => '0', :errors => "Missing result file/files."} if req[:result_files].nil?
     errors = file_validation(req[:result_files])
     return render :json => {:ok => '0', :errors => errors.join(',')} if not errors.empty?
-    # </TODO>
 
+    # Parse result files into a report
+    result_files = []
+    req[:result_files].each { |file| result_files << FileAttachment.new(:file => file, :attachment_type => :result_file)}
+    tmp = ReportFactory.new.build( {:result_files => result_files})
+    return render :json => {:ok => '0', :errors => "Request contained invalid files: " + tmp.errors[:result_files].join(',')} if not tmp.errors[:result_files].empty?
+
+    # Merge into target report
     begin
-      # TODO: change to user merge instead of update
-      parse_err = report.update_report_result(current_user, {:result_files => result_files}, true)
-    rescue ActiveRecord::UnknownAttributeError => errors
-      return render :json => {:ok => '0', :errors => errors.message}
+      report.merge!(tmp, current_user)
+    rescue ActiveRecord::RecordInvalid => invalid
+      return render :json => {:ok => '0', :errors => invalid.record.errors}
     end
 
-    return render :json => {:ok => '0', :errors => "Request contained invalid files: " + parse_err} if parse_err.present?
-
-    # TODO: save report
-
-    render :json => {:ok => '0', :errors => "Not implemented yet"}
+    render :json => {:ok => '1'}
   end
 
   def update_result
