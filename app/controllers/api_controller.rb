@@ -92,17 +92,7 @@ class ApiController < ApplicationController
 
     # Handle result files
     return render :json => {:ok => '0', :errors => "Missing result file/files."} if req[:result_files].nil?
-    errors       = []
-    result_files = []
-
-    # <TODO>: why is this check needed? (from update method) remove if not needed
-    req[:result_files].each do |file|
-      unless file.respond_to?(:path)
-        errors << file.respond_to?(:original_filename) ? "Invalid file" : "Invalid file #{file.original_filename}"
-      else
-        result_files << FileAttachment.new(:file => file, :attachment_type => :result_file)
-      end
-    end
+    errors = file_validation(req[:result_files])
     return render :json => {:ok => '0', :errors => errors.join(',')} if not errors.empty?
     # </TODO>
 
@@ -212,4 +202,13 @@ class ApiController < ApplicationController
       return render :status => 403, :json => {:ok => '0', :errors => "Invalid authentication token."} unless user_signed_in?
   end
 
+  def file_validation(files)
+    errors = []
+    files.each do |file|
+      if not file.respond_to?(:path)
+        errors << (file.respond_to?(:original_filename) ? "Invalid file #{file.original_filename}" : "Invalid file")
+      end
+    end
+    errors
+  end
 end
