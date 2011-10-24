@@ -31,11 +31,11 @@ Feature: Merge API
 
   Scenario: Try to merge with a file which has invalid extension
     When I merge with the latest report using result file "invalid_ext.txt"
-    Then the API responds with an error about "invalid file extension"
+    Then the API responds with an error about "only upload files with the extension .xml or .csv"
 
   Scenario: Try to merge with invalid result file
     When I merge with the latest report using result file "invalid.xml"
-    Then the API responds with an error about "invalid result file"
+    Then the API responds with an error about "request contained invalid files"
 
   Scenario: Try to merge to a non-existing report
     When I merge with a non-existing report using result file "sample.csv"
@@ -43,7 +43,7 @@ Feature: Merge API
 
   Scenario: Updating test report with a valid and an invalid file
     When I merge with the latest report using multiple files including an invalid file
-    Then the API responds with an error about "invalid result file"
+    Then the API responds with an error about "request contained invalid files"
 
   Scenario: Try to merge with an invalid auth token
     When I merge with the latest report with an invalid auth token
