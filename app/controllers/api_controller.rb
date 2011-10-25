@@ -26,6 +26,10 @@ class ApiController < ApplicationController
   cache_sweeper :meego_test_session_sweeper, :only => [:import_data]
   before_filter :api_authentication, :except => [:reports_by_limit_and_time]
 
+  def record_not_found
+    head :not_found
+  end
+
   def import_data
     data = request.query_parameters.merge(request.request_parameters)
     data.delete(:auth_token)
@@ -81,34 +85,14 @@ class ApiController < ApplicationController
   end
 
   def merge_result
-    req = request.query_parameters.merge(request.request_parameters)
-
-    # Check that report with given id exists
-    begin
-      report = MeegoTestSession.find(params[:id])
-    rescue ActiveRecord::RecordNotFound
-      return render :json => {:ok => '0', :errors => "Report not found with id = #{params[:id]}"} if report.nil?
+    report = MeegoTestSession.find(params[:id])
+    report.merge!(params[:result_files])
+    if report.errors.empty? && report.save
+      #report.update_attribute(:editor, current_user)
+      head :ok
+    else
+      render :json => {:errors => report.errors}, :status => :unprocessable_entity
     end
-
-    # Validate parameters for result files
-    return render :json => {:ok => '0', :errors => "Missing result file/files."} if req[:result_files].nil?
-    errors = file_validation(req[:result_files])
-    return render :json => {:ok => '0', :errors => errors.join(',')} if not errors.empty?
-
-    # Parse result files into a report
-    result_files = []
-    req[:result_files].each { |file| result_files << FileAttachment.new(:file => file, :attachment_type => :result_file)}
-    tmp = ReportFactory.new.build( {:result_files => result_files})
-    return render :json => {:ok => '0', :errors => "Request contained invalid files: " + tmp.errors[:result_files].join(',')} if not tmp.errors[:result_files].empty?
-
-    # Merge into target report
-    begin
-      report.merge!(tmp, current_user)
-    rescue ActiveRecord::RecordInvalid => invalid
-      return render :json => {:ok => '0', :errors => invalid.record.errors}
-    end
-
-    render :json => {:ok => '1'}
   end
 
   def update_result
@@ -198,18 +182,8 @@ class ApiController < ApplicationController
   end
 
   def api_authentication
-      data = request.query_parameters.merge(request.request_parameters)
-      return render :status => 403, :json => {:ok => '0', :errors => "Missing authentication token."} if data[:auth_token].nil?
-      return render :status => 403, :json => {:ok => '0', :errors => "Invalid authentication token."} unless user_signed_in?
+      return render :status => 403, :json => {:errors => "Missing authentication token."} if params[:auth_token].nil?
+      return render :status => 403, :json => {:errors => "Invalid authentication token."} unless user_signed_in?
   end
 
-  def file_validation(files)
-    errors = []
-    files.each do |file|
-      if not file.respond_to?(:path)
-        errors << (file.respond_to?(:original_filename) ? "Invalid file #{file.original_filename}" : "Invalid file")
-      end
-    end
-    errors
-  end
 end
