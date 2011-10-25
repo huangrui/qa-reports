@@ -59,12 +59,11 @@ When /^I merge with a non\-existing report using result file "([^"]*)"$/ do |fil
 end
 
 Then %r/^the API responds with an error about "([^"]*)"$/ do |error|
-  Then %{the REST result "ok" is "0"}
   Then %{the REST result "errors" contains "#{error}"}
 end
 
 Then /^the API responds ok$/ do
-  Then %{the REST result "ok" is "1"}
+  Then %{I get a "200" response code}
 end
 
 When /^I merge with the latest report with an invalid auth token$/ do
