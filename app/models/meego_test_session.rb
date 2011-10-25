@@ -381,8 +381,7 @@ class MeegoTestSession < ActiveRecord::Base
     end
 
     logger.info "new_data: #{new_data.inspect}"
-
-    self
+    merge!(new_data)
   end
 
   def merge!(report_hash)
@@ -397,5 +396,6 @@ class MeegoTestSession < ActiveRecord::Base
         features.build fh
       end
     end
+    self
   end
 end
