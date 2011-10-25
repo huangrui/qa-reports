@@ -72,6 +72,12 @@ When /^I merge with the latest report with an invalid auth token$/ do
   api_merge params
 end
 
+When /^I merge with the latest report using string as file parameter$/ do
+  params = default_api_merge_opts
+  params[:result_files] << "not_a_file"
+  api_merge params
+end
+
 # Given /^I have a report with$/ do |table|
 #   report = FactoryGirl.build(:test_report_wo_features)
 #   features  = {}

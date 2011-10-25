@@ -20,35 +20,42 @@ Feature: Merge API
   # Missing parameters
   Scenario: Try to merge without a result file
     When I merge with the latest report without defining a result file
-    Then the API responds with an error about "missing result file"
+    Then I get a "422" response code
+    Then the API responds with an error about "no result files"
 
   Scenario: Try to merge without an auth token
     When I merge with the latest report without defining an auth token
     Then I get a "403" response code
-    And the API responds with an error about "missing authentication token"
 
   # Invalid parameters
 
   Scenario: Try to merge with a file which has invalid extension
     When I merge with the latest report using result file "invalid_ext.txt"
-    Then the API responds with an error about "only upload files with the extension .xml or .csv"
+    Then I get a "422" response code
+    And the API responds with an error about "only upload files with the extension .xml or .csv"
+
+  Scenario: Try to merge with a string as file parameter
+    When I merge with the latest report using string as file parameter
+    Then I get a "422" response code
+    And the API responds with an error about "invalid file"
 
   Scenario: Try to merge with invalid result file
     When I merge with the latest report using result file "invalid.xml"
-    Then the API responds with an error about "request contained invalid files"
+    Then I get a "422" response code
+    And the API responds with an error about "invalid file"
 
   Scenario: Try to merge to a non-existing report
     When I merge with a non-existing report using result file "sample.csv"
-    Then the API responds with an error about "report not found"
+    Then I get a "404" response code
 
   Scenario: Updating test report with a valid and an invalid file
     When I merge with the latest report using multiple files including an invalid file
-    Then the API responds with an error about "request contained invalid files"
+    Then I get a "422" response code
+    And the API responds with an error about "invalid file"
 
   Scenario: Try to merge with an invalid auth token
     When I merge with the latest report with an invalid auth token
     Then I get a "403" response code
-    And the API responds with an error about "invalid authentication token"
 
 #  @wip
 #  Scenario: Merge a new testcase
