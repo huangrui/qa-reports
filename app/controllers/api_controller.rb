@@ -86,9 +86,9 @@ class ApiController < ApplicationController
 
   def merge_result
     report = MeegoTestSession.find(params[:id])
-    report.merge!(params[:result_files])
+    report.merge_result_files!(params[:result_files])
     if report.errors.empty? && report.save
-      #report.update_attribute(:editor, current_user)
+      report.update_attribute(:editor, current_user)
       head :ok
     else
       render :json => {:errors => report.errors}, :status => :unprocessable_entity

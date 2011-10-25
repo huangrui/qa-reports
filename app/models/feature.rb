@@ -96,7 +96,16 @@ class Feature < ActiveRecord::Base
   end
 
   def merge!(feature_hash)
-    self
+    case_hashes = feature_hash[:meego_test_cases_attributes]
+    case_hashes.each do |ch|
+      existing = meego_test_cases.select{|tc| tc.name == ch[:name]}.first
+      if existing
+        ch.each do |k,v|
+          existing.send((k.to_s + "=").to_sym, v)
+        end
+      else
+        meego_test_cases.build ch
+      end
+    end
   end
-
 end

@@ -360,7 +360,7 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 
-  def merge!(files)
+  def merge_result_files!(files)
     unless files.present?
       errors.add :result_files, "No result files."
       return self
@@ -385,4 +385,17 @@ class MeegoTestSession < ActiveRecord::Base
     self
   end
 
+  def merge!(report_hash)
+    result_files ||= []
+    result_files += report_hash[:result_files] || []
+    feature_hashes = report_hash[:features_attributes]
+    feature_hashes.each do |fh|
+      existing = features.select{|f| f.name == fh[:name]}.first
+      if existing
+        existing.merge!(fh)
+      else
+        features.build fh
+      end
+    end
+  end
 end
