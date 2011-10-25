@@ -95,4 +95,8 @@ class Feature < ActiveRecord::Base
     MeegoTestCase.import test_cases, :validate => false
   end
 
+  def merge!(feature_hash)
+    self
+  end
+
 end
