@@ -106,11 +106,7 @@ $(document).ready ->
 
     $('.tabs').click (event) ->
       event.preventDefault()
-      target = $(event.target)
-      target.parent().addClass('current').siblings().removeClass('current')
-      tabs = $(this)
-      tabs.attr 'selected', target.attr('href')
-      tabs.trigger 'change'
+      $(this).attr('selected', $(event.target).attr 'href').select().change()
 
     $('.tabs').change (event) ->
       release_path = $('#release_filters').attr 'selected'
@@ -118,12 +114,19 @@ $(document).ready ->
       Spine.Route.navigate release_path + scope_path
 
     [_, release, scope] = location.hash.split('/')
-    $('#release_filters').attr('selected', "/#{release}").trigger 'select'
-    $('#report_filters').attr('selected', "/#{scope}").trigger 'select'
-
+    if release and scope
+      $("#release_filters a[href='/#{release}'").click()
+      $("#report_filters a[href='/#{scope}'").click()
+    else
+      $("#release_filters .current a").click()
+      $("#report_filters .current a").click()
+    #$("#release_filters").attr('selected', "/#{release}").select()
+    #$("#report_filters").attr('selected', "/#{scope}'").select()
 
   Spine.Route.add "/:release/:scope": (params) ->
-    console.log params.release + params.scope
+    $.get "/#{params.release}/#{params.scope}.json", (view_model) ->
+      console.log view_model
+      $navigation.render(view_model, directives).show()
 
   Spine.Route.setup()
 

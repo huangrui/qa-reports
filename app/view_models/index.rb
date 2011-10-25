@@ -2,14 +2,14 @@ class Index
 
   CUT_OFF_LIMIT = 30
 
-  def self.find_by_release(release, show_all)
+  def self.find_by_release(release, scope)
     { :profiles => Profile.find_by_sql("
         SELECT DISTINCT profiles.name AS profile, reports.testset, reports.product AS name
         FROM profiles
         LEFT JOIN meego_test_sessions AS reports ON profiles.id = reports.profile_id AND
           reports.release_id = #{release.id} AND
           reports.published  = TRUE AND
-          reports.tested_at  > '#{show_all ? 0 : CUT_OFF_LIMIT.days.ago}'
+          reports.tested_at  > '#{scope == 'all' ? 0 : CUT_OFF_LIMIT.days.ago}'
         ORDER BY profiles.sort_order ASC, testset, product
       ").group_by(&:profile).map do |profile, testsets|
         {

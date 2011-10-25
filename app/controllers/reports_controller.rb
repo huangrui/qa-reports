@@ -48,7 +48,7 @@ class ReportsController < ApplicationController
   end
 
   def categories
-    render :json  => Index.find_by_release(release, params[:show_all])
+    render :json  => Index.find_by_release(release, params[:scope])
   end
 
   def preview
