@@ -107,22 +107,16 @@ $(document).ready ->
     tabs.trigger 'change'
 
   $('.tabs').change (event) ->
-    release_path = $('#release_filters').attr('selected')
+    release_path = $('#release_filters').attr 'selected'
     scope_path   = $('#report_filters').attr 'selected'
     console.log release_path
     console.log scope_path
-    path         = release_path + scope_path
-    console.log "pushState"
-    history.pushState { 'release_path': release_path, 'scope_path': scope_path }, "", path
+    Spine.Route.navigate release_path + scope_path
 
-  $(window).bind 'popstate', (event) ->
-    console.log "popstate"
-    path = window.location.pathname
-    console.log path
-    $.get path, (index_model) ->
-      $('#report_navigation').render index_model, directives
-      $('#report_navigation').show()
+  Spine.Route.add "/:release/:scope": (params) ->
+        console.log "Release: " + params.release
+        console.log "Scope: " + params.scope
 
-  console.log "documentReady"
+  Spine.Route.setup(history: true)
 
   initInplaceEdit()

@@ -84,7 +84,7 @@ module ApplicationHelper
         end
       end
 
-      html += link_to link_text, root_url + path
+      html += link_to link_text, "/" + path
       html += '</li>'
     end
 
