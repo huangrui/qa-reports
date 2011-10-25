@@ -57,84 +57,83 @@ Feature: Merge API
     When I merge with the latest report with an invalid auth token
     Then I get a "403" response code
 
-#  @wip
-#  Scenario: Merge a new testcase
-#    Given I have a report with
-#      | feature_name  | testcase_name | result |
-#      | featureA      | testcaseA     | Pass   |
-#    When I merge with
-#      | feature_name  | testcase_name | result |
-#      | featureA      | testcaseB     | Pass   |
-#    Then the API responds ok
-#
-#    When I view the report
-#    Then I should see it contain
-#      | feature_name  | testcase_name | result |
-#      | featureA      | testcaseA     | Pass   |
-#      | featureA      | testcaseB     | Pass   |
-#
-#  Scenario: Merge changed testcase
-#    Given I have a report with
-#      | feature_name  | testcase_name | result |
-#      | featureA      | testcaseA     | Pass   |
-#    When I merge with
-#      | feature_name  | testcase_name | result |
-#      | featureA      | testcaseA     | Fail   |
-#    Then the API responds ok
-#
-#    When I view the report
-#    Then I should see it contain
-#      | feature_name  | testcase_name | result |
-#      | featureA      | testcaseA     | Fail   |
-#
-#  Scenario: Merge changed testcase and a new one
-#    Given I have a report with
-#      | feature_name  | testcase_name | result |
-#      | featureA      | testcaseA     | Pass   |
-#    When I merge with
-#      | feature_name  | testcase_name | result |
-#      | featureA      | testcaseA     | Fail   |
-#      | featureA      | testcaseB     | Pass   |
-#    Then the API responds ok
-#
-#    When I view the report
-#    Then I should see it contain
-#      | feature_name  | testcase_name | result |
-#      | featureA      | testcaseA     | Fail   |
-#      | featureA      | testcaseB     | Pass   |
-#
-#  Scenario: Merge a new testcase and a feature
-#    Given I have a report with
-#      | feature_name  | testcase_name | result |
-#      | featureA      | testcaseA     | Pass   |
-#    When I merge with
-#      | feature_name  | testcase_name | result |
-#      | featureB      | testcaseA     | Fail   |
-#    Then the API responds ok
-#
-#    When I view the report
-#    Then I should see it contain
-#      | feature_name  | testcase_name | result |
-#      | featureA      | testcaseA     | Fail   |
-#      | featureB      | testcaseA     | Fail   |
-#
-#  Scenario: Merge changed testcases to a report with multiple test cases and features
-#    Given I have a report with
-#      | feature_name  | testcase_name | result |
-#      | featureA      | testcaseA     | Pass   |
-#      | featureA      | testcaseB     | Fail   |
-#      | featureB      | testcaseB     | Pass   |
-#    When I merge with
-#      | feature_name  | testcase_name | result |
-#      | featureA      | testcaseB     | Pass   |
-#      | featureB      | testcaseC     | Fail   |
-#    Then the API responds ok
-#
-#    When I view the report
-#    Then I should see it contain
-#      | feature_name  | testcase_name | result |
-#      | featureA      | testcaseA     | Pass   |
-#      | featureA      | testcaseB     | Pass   |
-#      | featureB      | testcaseB     | Pass   |
-#      | featureB      | testcaseC     | Fail   |
+  @wip
+  Scenario: Merge a new testcase
+    Given I have a report with
+      | feature_name  | testcase_name | result |
+      | featureA      | testcaseA     | Pass   |
+    When I merge with
+      | feature_name  | testcase_name | result |
+      | featureA      | testcaseB     | Pass   |
+    Then the API responds ok
 
+    When I view the report
+    Then I should see it contain
+      | feature_name  | testcase_name | result |
+      | featureA      | testcaseA     | Pass   |
+      | featureA      | testcaseB     | Pass   |
+  @wip
+  Scenario: Merge changed testcase
+    Given I have a report with
+      | feature_name  | testcase_name | result |
+      | featureA      | testcaseA     | Pass   |
+    When I merge with
+      | feature_name  | testcase_name | result |
+      | featureA      | testcaseA     | Fail   |
+    Then the API responds ok
+
+    When I view the report
+    Then I should see it contain
+      | feature_name  | testcase_name | result |
+      | featureA      | testcaseA     | Fail   |
+
+  Scenario: Merge changed testcase and a new one
+    Given I have a report with
+      | feature_name  | testcase_name | result |
+      | featureA      | testcaseA     | Pass   |
+    When I merge with
+      | feature_name  | testcase_name | result |
+      | featureA      | testcaseA     | Fail   |
+      | featureA      | testcaseB     | Pass   |
+    Then the API responds ok
+
+    When I view the report
+    Then I should see it contain
+      | feature_name  | testcase_name | result |
+      | featureA      | testcaseA     | Fail   |
+      | featureA      | testcaseB     | Pass   |
+
+  Scenario: Merge a new testcase and a feature
+    Given I have a report with
+      | feature_name  | testcase_name | result |
+      | featureA      | testcaseA     | Pass   |
+    When I merge with
+      | feature_name  | testcase_name | result |
+      | featureB      | testcaseA     | Fail   |
+    Then the API responds ok
+
+    When I view the report
+    Then I should see it contain
+      | feature_name  | testcase_name | result |
+      | featureA      | testcaseA     | Fail   |
+      | featureB      | testcaseA     | Fail   |
+
+  Scenario: Merge changed testcases to a report with multiple test cases and features
+    Given I have a report with
+      | feature_name  | testcase_name | result |
+      | featureA      | testcaseA     | Pass   |
+      | featureA      | testcaseB     | Fail   |
+      | featureB      | testcaseB     | Pass   |
+    When I merge with
+      | feature_name  | testcase_name | result |
+      | featureA      | testcaseB     | Pass   |
+      | featureB      | testcaseC     | Fail   |
+    Then the API responds ok
+
+    When I view the report
+    Then I should see it contain
+      | feature_name  | testcase_name | result |
+      | featureA      | testcaseA     | Pass   |
+      | featureA      | testcaseB     | Pass   |
+      | featureB      | testcaseB     | Pass   |
+      | featureB      | testcaseC     | Fail   |
