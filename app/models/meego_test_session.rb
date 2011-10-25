@@ -360,8 +360,28 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 
-  def merge!(report, user)
-    #TODO
+  def merge!(files)
+    unless files.present?
+      errors.add :result_files, "No result files."
+      return self
+    end
+
+    files.each do |f|
+      unless f.respond_to?(:path)
+        errors.add :result_files, "Invalid file: #{f.to_s}."
+        return self
+      end
+    end
+
+    begin
+      new_data = ReportFactory.new.parse_results(files)
+    rescue ParseError => e
+      errors.add :result_files, "Invalid file: #{e.message}"
+      return self
+    end
+
+    logger.info "new_data: #{new_data.inspect}"
+
     self
   end
 
