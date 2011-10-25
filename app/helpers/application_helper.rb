@@ -43,7 +43,7 @@ module ApplicationHelper
 
   # FIXME: Cleanup with link_to_unless_current
   def release_version_navigation(current_version, target='', testset='', product='')
-    html = '<ul id="release_filters" class="clearfix tabs">'
+    html = %{<ul id="release_filters" class="clearfix tabs" selected="/#{current_version}">}
     link_text = ''
     Release.names.each do |release|
       if release =~ /\d+\.\d+/

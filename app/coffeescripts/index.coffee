@@ -98,25 +98,34 @@ $(document).ready ->
     $(product_titles).live 'mouseout', ->
       $(product_titles).removeClass('to_be_edited')
 
-  $('.tabs').click (event) ->
-    event.preventDefault()
-    target = $(event.target)
-    target.parent().addClass('current').siblings().removeClass('current')
-    tabs = $(this)
-    tabs.attr 'selected', target.attr('href')
-    tabs.trigger 'change'
+  initTabs = ->
+    $('.tabs').select (event) ->
+      target   = $(event.target)
+      selected = target.attr 'selected'
+      target.find("a[href='#{selected}']").parent().addClass('current').siblings().removeClass('current')
 
-  $('.tabs').change (event) ->
-    release_path = $('#release_filters').attr 'selected'
-    scope_path   = $('#report_filters').attr 'selected'
-    console.log release_path
-    console.log scope_path
-    Spine.Route.navigate release_path + scope_path
+    $('.tabs').click (event) ->
+      event.preventDefault()
+      target = $(event.target)
+      target.parent().addClass('current').siblings().removeClass('current')
+      tabs = $(this)
+      tabs.attr 'selected', target.attr('href')
+      tabs.trigger 'change'
+
+    $('.tabs').change (event) ->
+      release_path = $('#release_filters').attr 'selected'
+      scope_path   = $('#report_filters').attr 'selected'
+      Spine.Route.navigate release_path + scope_path
+
+    [_, release, scope] = location.hash.split('/')
+    $('#release_filters').attr('selected', "/#{release}").trigger 'select'
+    $('#report_filters').attr('selected', "/#{scope}").trigger 'select'
+
 
   Spine.Route.add "/:release/:scope": (params) ->
-        console.log "Release: " + params.release
-        console.log "Scope: " + params.scope
+    console.log params.release + params.scope
 
-  Spine.Route.setup(history: true)
+  Spine.Route.setup()
 
   initInplaceEdit()
+  initTabs()

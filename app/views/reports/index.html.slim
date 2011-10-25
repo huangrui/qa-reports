@@ -1,7 +1,7 @@
 - content_for :version_navi do
   #version_navi
     = release_version_navigation(release.name)
-    ul#report_filters.tabs
+    ul#report_filters.tabs selected="/recent"
       li.current
         a href="/recent" Recent
       li
