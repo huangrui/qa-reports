@@ -3,26 +3,17 @@ include MeegoTestCaseHelper
 
 CSV_HEADERS =
   [
-   "Test execution date",
-   "MeeGo release",
-   "Profile",
-   "Test set",
-   "Hardware",
-   "Test report name",
-   "Feature",
-   "Test case",
-   "Pass",
-   "Fail",
-   "N/A",
-   "Measured",
-   "Notes",
-   "Measurement Name",
-   "Value",
-   "Unit",
-   "Target",
-   "Failure",
-   "Author",
-   "Last modified by"
+    "Feature",
+    "Test Case",
+    "Pass",
+    "Fail",
+    "NA",
+    "Comment",
+    "Measurement Name",
+    "Value",
+    "Unit",
+    "Target",
+    "Failure"
   ]
 
 def generate_csv(report)
@@ -31,37 +22,22 @@ def generate_csv(report)
   report.features.each do |f|
     f.meego_test_cases.each do |tc|
       rows << {
-        :tested_at => report.tested_at.to_s,
-        :release_version => report.release.name,
-        :target => report.profile.name,
-        :testset => report.testset,
-        :product => report.product,
-        :session => report.title,
-        :feature => f.name,
+        :feature  => f.name,
         :testcase => tc.name,
-        :pass => 1 ? tc.result == 1 : 0,
-        :fail => 1 ? tc.result == -1 : 0,
-        :na => 1 ? tc.result == 0 : 0,
-        :measured => 1 ? tc.result == 2 : 0,
-        :comment => tc.comment,
-        :m_name => "",
-        :m_value => "",
-        :m_unit => "",
-        :m_target => "",
-        :m_failure => "",
-        :author => report.author.name,
-        :editor => report.editor.name
+        :pass     => tc.result ==  1 ? 1 : 0,
+        :fail     => tc.result == -1 ? 1 : 0,
+        :na       => tc.result ==  0 ? 1 : 0,
+        :measured => tc.result ==  2 ? 1 : 0,
+        :comment  => tc.comment
       }
     end
   end
-  FasterCSV.generate(:col_sep => ';') do |csv|
+#Feature,Test Case,Pass,Fail,NA,Comment,Measurement Name,Value,Unit,Target,Failure
+
+  FasterCSV.generate(:col_sep => ',') do |csv|
     csv << CSV_HEADERS
     rows.each do |row|
-      csv << [row[:tested_at], row[:release_version], row[:target],
-              row[:testset], row[:product], row[:session], row[:feature],
-              row[:testcase], row[:pass], row[:fail], row[:na], row[:measured],
-              row[:comment], row[:m_name], row[:m_value], row[:m_unit],
-              row[:m_target], row[:m_failure], row[:author], row[:editor]]
+      csv << [row[:feature], row[:testcase], row[:pass], row[:fail], row[:na], row[:comment]]
     end
   end
 end
@@ -167,10 +143,11 @@ end
 
 When /^I merge with$/ do |table|
   csv = generate_csv generate_report(table)
-  file = Tempfile.new "tempresultcsv"
-  file.puts csv
+  file = Tempfile.new ["tempresultcsv",".csv"]
+  file << csv
+  file.flush
   params = default_api_merge_opts
-  params[:result_files] = [file]
+  params[:result_files] = [Rack::Test::UploadedFile.new(file.path, "text/csv")]
   api_merge params
 end
 

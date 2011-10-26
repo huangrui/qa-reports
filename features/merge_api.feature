@@ -72,7 +72,7 @@ Feature: Merge API
       | feature_name  | testcase_name | result |
       | featureA      | testcaseA     | Pass   |
       | featureA      | testcaseB     | Pass   |
-  @wip
+
   Scenario: Merge changed testcase
     Given I have a report with
       | feature_name  | testcase_name | result |
