@@ -67,8 +67,7 @@ Feature: Merge API
       | featureA      | testcaseB     | Pass   |
     Then the API responds ok
 
-    When I view the report
-    Then I should see it contain
+    And I should see the report contain
       | feature_name  | testcase_name | result |
       | featureA      | testcaseA     | Pass   |
       | featureA      | testcaseB     | Pass   |
@@ -82,8 +81,7 @@ Feature: Merge API
       | featureA      | testcaseA     | Fail   |
     Then the API responds ok
 
-    When I view the report
-    Then I should see it contain
+    And I should see the report contain
       | feature_name  | testcase_name | result |
       | featureA      | testcaseA     | Fail   |
 
@@ -97,12 +95,11 @@ Feature: Merge API
       | featureA      | testcaseB     | Pass   |
     Then the API responds ok
 
-    When I view the report
-    Then I should see it contain
+    And I should see the report contain
       | feature_name  | testcase_name | result |
       | featureA      | testcaseA     | Fail   |
       | featureA      | testcaseB     | Pass   |
-
+  #@wip
   Scenario: Merge a new testcase and a feature
     Given I have a report with
       | feature_name  | testcase_name | result |
@@ -112,10 +109,9 @@ Feature: Merge API
       | featureB      | testcaseA     | Fail   |
     Then the API responds ok
 
-    When I view the report
-    Then I should see it contain
+    And I should see the report contain
       | feature_name  | testcase_name | result |
-      | featureA      | testcaseA     | Fail   |
+      | featureA      | testcaseA     | Pass   |
       | featureB      | testcaseA     | Fail   |
 
   Scenario: Merge changed testcases to a report with multiple test cases and features
@@ -130,8 +126,7 @@ Feature: Merge API
       | featureB      | testcaseC     | Fail   |
     Then the API responds ok
 
-    When I view the report
-    Then I should see it contain
+    And I should see the report contain
       | feature_name  | testcase_name | result |
       | featureA      | testcaseA     | Pass   |
       | featureA      | testcaseB     | Pass   |

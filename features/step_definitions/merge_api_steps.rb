@@ -67,7 +67,7 @@ def default_api_merge_opts
      Rack::Test::UploadedFile.new("features/resources/bluetooth.xml", "text/xml")]}
 end
 
-def api_merge(params, id=MeegoTestSession.latest.id)
+def api_merge(params, id=MeegoTestSession.last.id)
   post "api/merge/#{id}", params
 end
 
@@ -151,9 +151,13 @@ When /^I merge with$/ do |table|
   api_merge params
 end
 
-Then /^I should see it contain$/ do |table|
-  table.hashes.each do |hash|
-    puts hash.inspect #TODO: remove
+And /^I should see the report contain$/ do |table|
+  report = MeegoTestSession.last
+  test_cases = report.test_cases.to_a.map {|test_case| [test_case.feature.name, test_case.name, test_case.result] }
+  expected_cases = table.hashes.map do |hash|
+    [hash[:feature_name], hash[:testcase_name], MeegoTestCaseHelper::txt_to_result(hash[:result])]
   end
-  pending # express the regexp above with the code you wish you had
+  puts test_cases
+  puts expected_cases
+  test_cases.sort.should == expected_cases.sort
 end
