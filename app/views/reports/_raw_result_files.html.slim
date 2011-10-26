@@ -8,3 +8,24 @@ h2#raw_result_files Original Result Files
           a href=file.pretty_url target="_blank" #{file.filename}
 - else
   | Result files deleted
+	
+/ TODO change all functionality to serve file merging	
+- if !@report.attachments.empty? || @editing
+  div#drag_drop_area
+
+    ul#file_attachment_list class="item_list attachment #{'editing' if @editing}"
+      span#file_attachment_list_ready
+          = render :partial => "reports/file_attachment_list", :locals => {:report => @report, :files => @report.attachments}
+
+    - if @editing
+        = javascript_include_tag "file_attachments"
+        a#merge_button.small_btn + Merge result file
+        br style="clear: both;"
+
+        - session_key = Rails.application.config.session_options[:key]
+
+        div style="display:none"
+          span#session_cookie
+            #{u cookies[session_key]}
+          span#session_key
+            #{session_key}

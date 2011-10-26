@@ -8,7 +8,7 @@
 
     - if @editing
         = javascript_include_tag "file_attachments"
-        a#upload_button.small_btn + Add attachment (or drag here)
+        a#upload_button.small_btn + Add attachment
         br style="clear: both;"
 
         - session_key = Rails.application.config.session_options[:key]
