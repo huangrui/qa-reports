@@ -113,19 +113,16 @@ $(document).ready ->
       scope_path   = $('#report_filters').attr 'selected'
       Spine.Route.navigate release_path + scope_path
 
-    [_, release, scope] = location.hash.split('/')
+    [_, release, scope] = location.hash.split '/'
     if release and scope
       $("#release_filters a[href='/#{release}'").click()
       $("#report_filters a[href='/#{scope}'").click()
     else
       $("#release_filters .current a").click()
       $("#report_filters .current a").click()
-    #$("#release_filters").attr('selected', "/#{release}").select()
-    #$("#report_filters").attr('selected', "/#{scope}'").select()
 
   Spine.Route.add "/:release/:scope": (params) ->
     $.get "/#{params.release}/#{params.scope}.json", (view_model) ->
-      console.log view_model
       $navigation.render(view_model, directives).show()
 
   Spine.Route.setup()
