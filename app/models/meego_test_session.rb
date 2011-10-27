@@ -65,7 +65,7 @@ class MeegoTestSession < ActiveRecord::Base
 
   scope :published,  where(:published => true)
   scope :release,    lambda { |release| published.joins(:release).where(:releases => {:name => release}) }
-  scope :profile,    lambda { |profile| published.joins(:profile).where(:profiles => {:normalized => profile.downcase}) }
+  scope :profile,    lambda { |profile| published.joins(:profile).where(:profiles => {:name => profile}) }
   scope :testset,    lambda { |testset| published.where(:testset => testset.downcase) }
   scope :product_is, lambda { |product| published.where(:product => product.downcase) }
 

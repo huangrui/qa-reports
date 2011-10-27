@@ -16,13 +16,12 @@ FactoryGirl.define do
   end
 
   factory :release do
-    name       "1.3"
+    name       "1.2"
     sort_order  0
   end
 
   factory :profile do
     name       "Handset"
-    normalized "handset"
     sort_order 0
   end
 
@@ -46,7 +45,7 @@ FactoryGirl.define do
   factory :test_report_wo_features, :class => MeegoTestSession do
     author
     editor
-    release
+    release         {Release.find_by_name("1.2") || FactoryGirl.create(:release)}
     title           "N900 Test Report"
     profile         {Profile.find_by_name("Handset") || FactoryGirl.create(:profile)}
     testset         "Acceptance"

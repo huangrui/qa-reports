@@ -6,10 +6,23 @@
      = release_version_navigation(release.name, profile.name, testset, product)
 
   / Template for new month tables
-  table.month_template style="display:none"
-    tr
-      td.index_month_title colspan="3"
-        strong.month Month
+  div.month_template style="display:none"
+    table.month
+      thead
+        tr
+          td.index_month_title colspan="3"
+            strong.name Month 2020
+      tbody.reports
+        tr
+          td.date
+          td.report_name
+            a.name
+          td.graph
+            .htmlgraph
+              .passed &nbsp;
+              .failed &nbsp;
+              .na     &nbsp;
+          td.year style="display:none"
 
   table#infinite_scroll_results style="display:none"
 
@@ -34,7 +47,7 @@
             a.compare href=compare_latest_to_previous_url See detailed comparison
             = render :partial => "shared/report_comparison_summary", :locals => {:comparison => @group_report.comparison}
 
-        .index_month
+        #reports_by_month.index_month
 
   div style="display:none"
     span#report_list_url #{{report_list_path(release.name, profile.name, testset, product)}}
@@ -49,3 +62,6 @@
 
   = javascript_include_tag "jquery-infinite-scroll/jquery.infinitescroll.js"
   = javascript_include_tag "report_group.js"
+
+javascript:
+  max_cases = #{{@group_report.max_cases}}
