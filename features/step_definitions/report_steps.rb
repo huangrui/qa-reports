@@ -20,9 +20,10 @@ Given %r/^there's an existing report$/ do
 end
 
 Given %r/^there's a "([^"]*)" report created "([^"]*)" days ago$/ do |categories, count|
-  profile, testset, product = categories.split '/'
+  release, profile, testset, product = categories.split '/'
+  release, profile, testset, product = nil, release, profile, testset if !product
   report  = FactoryGirl.build(:test_report,
-    :release => Release.first,
+    :release => (release ? Release.find_by_name(release) : Release.first),
     :profile => Profile.find_by_name(profile),
     :testset => testset,
     :product => product,

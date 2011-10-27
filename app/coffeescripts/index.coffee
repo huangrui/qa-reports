@@ -98,15 +98,34 @@ $(document).ready ->
     $(product_titles).live 'mouseout', ->
       $(product_titles).removeClass('to_be_edited')
 
+  initTabs = ->
+    $('.tabs').select (event) ->
+      target   = $(event.target)
+      selected = target.attr 'selected'
+      target.find("a[href='#{selected}']").parent().addClass('current').siblings().removeClass('current')
 
-  $('#report_filters a').click (event) ->
-    link = $(this)
-    event.preventDefault()
-    $.get link.attr('href'), (index_model) ->
-      $('#report_filters li').removeClass 'current'
-      link.parent().addClass 'current'
-      $('#report_navigation').render index_model, directives
-      $('#report_navigation').show()
+    $('.tabs').click (event) ->
+      event.preventDefault()
+      $(this).attr('selected', $(event.target).attr 'href').select().change()
 
-  $('#report_filters li a').first().trigger 'click'
+    $('.tabs').change (event) ->
+      release_path = $('#release_filters').attr 'selected'
+      scope_path   = $('#report_filters').attr 'selected'
+      Spine.Route.navigate release_path + scope_path
+
+    [_, release, scope] = location.hash.split '/'
+    if release and scope
+      $("#release_filters a[href='/#{release}'").click()
+      $("#report_filters a[href='/#{scope}'").click()
+    else
+      $("#release_filters .current a").click()
+      $("#report_filters .current a").click()
+
+  Spine.Route.add "/:release/:scope": (params) ->
+    $.get "/#{params.release}/#{params.scope}.json", (view_model) ->
+      $navigation.render(view_model, directives).show()
+
+  Spine.Route.setup()
+
   initInplaceEdit()
+  initTabs()
