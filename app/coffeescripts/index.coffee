@@ -53,11 +53,11 @@ $(document).ready ->
       "new_value"          : val
 
     $.post post_url, data, (res, status) ->
-      $.ajax
-        "url"      : window.location.href.replace(/\/index/, '') + '/index.json'
-        "success"  : (data) ->
-          $navigation.render data, directives
-          editMode()
+      release_path = $('#release_filters').attr 'selected'
+      scope_path   = $('#report_filters').attr 'selected'
+      $.get "#{release_path}#{scope_path}.json", (view_model) ->
+        $navigation.render(view_model, directives).show()
+        editMode()
 
   editMode = (event) ->
     event?.preventDefault()
