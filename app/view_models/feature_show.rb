@@ -8,8 +8,8 @@ class FeatureShow < SummaryShow
     super(@feature, build_diff)
   end
 
-  def history
-    @build_diff.map do |report|
+  def history(method)
+    method.map do |report|
       feature = @feature.find_matching_feature report
       FeatureShow.new(feature) unless feature.nil?
     end

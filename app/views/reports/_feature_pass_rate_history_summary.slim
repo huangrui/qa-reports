@@ -4,6 +4,7 @@
 / Copyright (C) 2010 Intel Corporation.
 /
 / Authors: Tang, Shao-Feng <shaofeng.tang@intel.com>
+/          Huang Rui       <rui.r.huang@intel.com>
 /
 / This program is free software; you can redistribute it and/or
 / modify it under the terms of the GNU Lesser General Public License
@@ -31,10 +32,9 @@ tr class="feature_record #{row_class(feature_pass_rate_history_summary_counter)}
       td.pass  =feature_summary.total_passed
       td.fail  =feature_summary.total_failed
       td.na    =feature_summary.total_na
-      - @history.reverse_each do |h|
-        - tset = feature_summary.find_matching_feature(h)
-        - if tset
-          td.test_feature_pass_rate.feature_history_result =tset.total_pass_rate
+      - feature_summary.history(@history).reverse_each do |feature|
+        - if feature
+          td.test_feature_pass_rate.feature_history_result =feature.percentage(:pass_rate)
         - else
           td class="test_feature_pass_rate feature_history_result" -
-      td.rate.current_feature_history_result =feature_summary.total_pass_rate
+      td.rate.current_feature_history_result =feature_summary.percentage(:pass_rate)
