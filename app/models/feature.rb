@@ -42,7 +42,7 @@ class Feature < ActiveRecord::Base
     where(:name => feature).first
   end
 
-  def self.find_matching_feature(session)
+  def find_matching_feature(session)
     return nil unless session
     session.features.each do |f|
       return f if f.name == name
