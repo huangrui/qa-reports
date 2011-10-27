@@ -387,15 +387,15 @@ class MeegoTestSession < ActiveRecord::Base
   def merge!(report_hash)
     result_files ||= []
     result_files += report_hash[:result_files] || []
-    feature_hashes = report_hash[:features_attributes]
-    feature_hashes.each do |fh|
-      existing = features.select{|f| f.name == fh[:name]}.first
-      if existing
-        existing.merge!(fh)
-      else
-        features.build fh
-      end
-    end
+
+    current_features = features.index_by &:name
+    to_update, to_create = report_hash[:features_attributes].
+                           partition {|fh| current_features.has_key? fh[:name]}
+
+    to_update.each { |fh| current_features[fh[:name]].merge! fh }
+
+    to_create.each { |fh| features.create fh }
+
     self
   end
 end

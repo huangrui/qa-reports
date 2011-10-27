@@ -157,7 +157,6 @@ And /^I should see the report contain$/ do |table|
   expected_cases = table.hashes.map do |hash|
     [hash[:feature_name], hash[:testcase_name], MeegoTestCaseHelper::txt_to_result(hash[:result])]
   end
-  puts test_cases
-  puts expected_cases
+
   test_cases.sort.should == expected_cases.sort
 end

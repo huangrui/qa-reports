@@ -96,16 +96,14 @@ class Feature < ActiveRecord::Base
   end
 
   def merge!(feature_hash)
-    case_hashes = feature_hash[:meego_test_cases_attributes]
-    case_hashes.each do |ch|
-      existing = meego_test_cases.select{|tc| tc.name == ch[:name]}.first
-      if existing
-        ch.each do |k,v|
-          existing.send((k.to_s + "=").to_sym, v)
-        end
-      else
-        meego_test_cases.build ch
-      end
+    current_cases = test_cases.index_by &:name
+    to_update, to_create = feature_hash[:meego_test_cases_attributes].
+                           partition {|ch| current_cases.has_key? ch[:name] }
+
+    to_update.each { |ch| current_cases[ch[:name]].update_attributes ch }
+
+    to_create.each do |ch|
+      test_cases.create ch.merge({:meego_test_session_id => meego_test_session.id})
     end
   end
 end

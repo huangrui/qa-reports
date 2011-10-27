@@ -57,7 +57,6 @@ Feature: Merge API
     When I merge with the latest report with an invalid auth token
     Then I get a "403" response code
 
-  @wip
   Scenario: Merge a new testcase
     Given I have a report with
       | feature_name  | testcase_name | result |
@@ -99,7 +98,7 @@ Feature: Merge API
       | feature_name  | testcase_name | result |
       | featureA      | testcaseA     | Fail   |
       | featureA      | testcaseB     | Pass   |
-  #@wip
+
   Scenario: Merge a new testcase and a feature
     Given I have a report with
       | feature_name  | testcase_name | result |
