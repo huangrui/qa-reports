@@ -382,7 +382,7 @@ function filterResults(rowsToHide, typeText) {
     }
 
     var updateToggles = function() {
-        $("a.see_all_toggle").each(function() {
+        $("a.see_all_toggle").each(function() {
           $tbody = $(this).parents("tbody").next("tbody");
           updateToggle($tbody, $(this));
         });

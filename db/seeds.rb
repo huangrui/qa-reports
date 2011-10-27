@@ -17,11 +17,11 @@ Release.create! :name => "1.2", :sort_order => 0
 Release.create! :name => "1.1", :sort_order => 1
 Release.create! :name => "1.0", :sort_order => 2
 
-Profile.create! :name => "Core", :normalized => "core", :sort_order => 0
-Profile.create! :name => "Handset", :normalized => "handset", :sort_order => 1
-Profile.create! :name => "Netbook", :normalized => "netbook", :sort_order => 2
-Profile.create! :name => "IVI", :normalized => "ivi", :sort_order => 3
-Profile.create! :name => "SDK", :normalized => "sdk", :sort_order => 4
+Profile.create! :name => "Core",    :sort_order => 0
+Profile.create! :name => "Handset", :sort_order => 1
+Profile.create! :name => "Netbook", :sort_order => 2
+Profile.create! :name => "IVI",     :sort_order => 3
+Profile.create! :name => "SDK",     :sort_order => 4
 
 if Rails.env == "staging" and MeegoTestSession.count < 10000 # ensure there's always 10000 reports on database
   testuser = User.find_by_email("test@leonidasoy.fi")

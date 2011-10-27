@@ -24,8 +24,26 @@ class ReportGroupViewModel
     @report_ranges[range] ||= find_report_range(range)
   end
 
-  def reports_by_month
-    @reports_by_month ||= all_reports.group_by(&:month)
+  def report_object(report)
+    { :date => report.format_date,
+      :name => report.title,
+      :htmlgraph => {
+        :passes => report.total_passed,
+        :fails  => report.total_failed,
+        :nas    => report.total_na },
+      :year => report.format_year,
+      :release => report.release.name,
+      :target => report.profile.name,
+      :testset => report.testset,
+      :product => report.product,
+      :id => report.id }
+  end
+
+  def report_range_by_month(range)
+    reports_by_range(range).group_by(&:month).map do |month, reports|
+      { :name => month,
+        :reports => reports.map { |report| report_object(report) } }
+    end
   end
 
   def has_comparison?
