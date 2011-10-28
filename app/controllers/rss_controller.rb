@@ -32,10 +32,6 @@ class RssController < ApplicationController
 
     @report_shows = MeegoTestSession.published.where(filter).order("created_at DESC").limit(10).map{|report| ReportShow.new(report)}
 
-    if @selected_release_version.eql? "1"
-      @selected_release_version = "V"+@selected_release_version
-    end
-
     response.headers["Content-Type"] = "application/xml; charset=utf-8"
   end
 end
