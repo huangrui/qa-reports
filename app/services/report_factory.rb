@@ -32,8 +32,13 @@ class ReportFactory
   def generate_title(params)
     params[:tested_at] = Time.now.to_s unless params[:tested_at].present?
 
+    title_post = ""
+    title_post = " Build_ID: #{params[:build_id]}" if params[:build_id].present?
+
     tested_at = DateTime.parse(params[:tested_at]).strftime('%Y-%m-%d')
+    tested_at << title_post
     title_values = [params[:profile].try(:name), params[:product], params[:testset], tested_at]
+
     params[:title] ||= "%s Test Report: %s %s %s" % title_values
   end
 
