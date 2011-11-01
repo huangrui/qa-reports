@@ -80,6 +80,10 @@ class MeegoTestSession < ActiveRecord::Base
     @month ||= tested_at.strftime("%B %Y")
   end
 
+  def meego_test_session
+    self
+  end
+
   def self.fetch_fully(id)
     find(id, :include =>
          {:features =>
