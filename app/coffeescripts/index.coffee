@@ -53,11 +53,10 @@ $(document).ready ->
       "new_value"          : val
 
     $.post post_url, data, (res, status) ->
-      $.ajax
-        "url"      : window.location.href.replace(/\/index/, '') + '/index.json'
-        "success"  : (data) ->
-          $navigation.render data, directives
-          editMode()
+      [_, release, scope] = location.hash.split '/'
+      $.get "/#{release}/#{scope}.json", (view_model) ->
+        $navigation.render(view_model, directives).show()
+        editMode()
 
   editMode = (event) ->
     event?.preventDefault()

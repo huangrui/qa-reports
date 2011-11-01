@@ -11,8 +11,9 @@ def category_selector(*category)
 end
 
 def set_input_text(input, text)
-  input.value.length.times { input.native.send_key :backspace }
-  input.native.send_key(text)
+  # input.value.length.times { input.native.send_key :backspace }
+  # input.native.send_key(text)
+  input.set text
 end
 
 When %r/^I have uploaded reports with profile "([^"]*)" having testset "([^"]*)" and product "([^"]*)"$/ do |profile, testset, product|
