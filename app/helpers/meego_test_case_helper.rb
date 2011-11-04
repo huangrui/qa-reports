@@ -1,16 +1,16 @@
 module MeegoTestCaseHelper
 
   RESULTS = {MeegoTestCase::FAIL      => "Fail",
-             MeegoTestCase::NA        => "N/A",
+             MeegoTestCase::NA        => "Block",
              MeegoTestCase::PASS      => "Pass",
              MeegoTestCase::MEASURED  => "Measured"}
 
   def result_to_txt(result)
-    RESULTS[result] or "N/A"
+    RESULTS[result] or "Block"
   end
 
   def result_html(model)
-    return "N/A" unless model
+    return "Block" unless model
     result_to_txt(model.result)
   end
 

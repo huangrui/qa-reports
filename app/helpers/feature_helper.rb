@@ -1,6 +1,6 @@
 module FeatureHelper
 
-  GRADES = {0 => "N/A", 1 => "Red", 2 => "Yellow", 3 => "Green"}
+  GRADES = {0 => "Block", 1 => "Red", 2 => "Yellow", 3 => "Green"}
 
   def grading_to_str(value)
     GRADES[value]
@@ -8,7 +8,7 @@ module FeatureHelper
 
   def grading_html(model)
     if model==nil
-        return "N/A"
+        return "Block"
     end
     grading_to_str model.grading
   end
