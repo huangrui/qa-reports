@@ -39,10 +39,14 @@ class CSVResultFileParser
   def parse(io)
     begin
       # TODO: Remove check when dropping support for version 1
-      if is_new_format?(io) then
+      if format_head_size(io) >= 11 then
         FasterCSV.parse(io, @FCSV_settings) {|row| parse_row(row) }
       else
-        FasterCSV.parse(io, @FCSV_settings) {|row| parse_row_version_1(row) }
+        if format_head_size(io) >= 5 then
+          FasterCSV.parse(io, @FCSV_settings) {|row| parse_row_version_1(row) }
+        else
+          FasterCSV.parse(io, @FCSV_settings) {|row| parse_row_version_testcase_management(row) }
+        end
       end
     rescue NoMethodError
       raise ParseError.new("unknown"), "Incorrect file format"
@@ -63,14 +67,14 @@ class CSVResultFileParser
   # TODO: Begin removing here when dropping support for version 1
   #####
 
-  def is_new_format?(io)
+  def format_head_size(io)
     first_line = io.readline
     io.rewind
 
     # Check the header row length - the new version has 11 columns. Later
     # on we will not require all of those to be present, but for now
     # there has to be some differences so we can determine the version
-    (first_line.split(',').length >= 11)
+    first_line.split(',').length
   end
 
   def parse_row_version_1(row)
@@ -90,6 +94,34 @@ class CSVResultFileParser
 
   #####
   # TODO: End removing here
+  ############################################################################
+
+  ############################################################################
+  # New parse method for intel testcase management
+  #####
+
+  def parse_row_version_testcase_management(row)
+    [0, 1, 3].each { |field| raise ParseError.new("unknown"), "Incorrect file format" unless row[field] }
+
+    feature   = row[0].toutf8.strip
+    test_case = row[1].toutf8.strip
+    comment   = row[2].try(:toutf8).try(:strip) || ""
+
+    result    = case
+                when row[3] == "Passed"  then MeegoTestCase::PASS
+                when row[3] == "Failed"  then MeegoTestCase::FAIL
+                when row[3] == "Blocked" then MeegoTestCase::NA
+                else -2
+                end
+
+    unless result == -2
+      @features[feature] ||= {}
+      @features[feature][test_case] = {:name => test_case, :result => result, :comment => comment}
+    end
+  end
+
+  #####
+  # End intel parse
   ############################################################################
 
   def parse_row(row)
