@@ -58,11 +58,11 @@ describe MeegoTestSession do
       report.merge! merge_hash
       report.save!
 
-      report.features.to_a.find{|f| f.name == "FeatureA"}.meego_test_cases.to_a.find{|tc| tc.name == "Foo"}.result.should == MeegoTestCase::FAIL
-      report.features.to_a.find{|f| f.name == "FeatureB"}.meego_test_cases.to_a.find{|tc| tc.name == "Foo"}.result.should == MeegoTestCase::NA
+      report.features.to_a.find{|f| f.name == "FeatureA"}.test_cases.to_a.find{|tc| tc.name == "Foo"}.result.should == MeegoTestCase::FAIL
+      report.features.to_a.find{|f| f.name == "FeatureB"}.test_cases.to_a.find{|tc| tc.name == "Foo"}.result.should == MeegoTestCase::NA
 
-      report.features.to_a.find{|f| f.name == "FeatureA"}.should have(1).meego_test_cases
-      report.features.to_a.find{|f| f.name == "FeatureB"}.should have(1).meego_test_cases
+      report.features.to_a.find{|f| f.name == "FeatureA"}.should have(1).test_cases
+      report.features.to_a.find{|f| f.name == "FeatureB"}.should have(1).test_cases
     end
   end
 

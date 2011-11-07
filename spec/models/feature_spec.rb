@@ -16,7 +16,7 @@ describe Feature do
       feature_hash = {:meego_test_cases_attributes => [test_case]}
 
       feature.merge!(feature_hash)
-      feature.should have(2).meego_test_cases
+      feature.should have(2).test_cases
     end
 
     it "merging existing test case" do
@@ -25,8 +25,8 @@ describe Feature do
       feature_hash = {:meego_test_cases_attributes => [test_case]}
 
       feature.merge!(feature_hash)
-      feature.should have(1).meego_test_cases
-      feature.meego_test_cases.select{|tc| tc.name == "Foo"}.first.result.should == MeegoTestCase::FAIL
+      feature.should have(1).test_cases
+      feature.test_cases.select{|tc| tc.name == "Foo"}.first.result.should == MeegoTestCase::FAIL
     end
 
     it "merging several test cases including existing ones" do
@@ -37,8 +37,8 @@ describe Feature do
 
       feature_hash = {:meego_test_cases_attributes => test_cases}
       feature.merge!(feature_hash)
-      feature.should have(3).meego_test_cases
-      tc = feature.meego_test_cases.select{|tc| tc.name == "Foo"}.first
+      feature.should have(3).test_cases
+      tc = feature.test_cases.select{|tc| tc.name == "Foo"}.first
       tc.result.should  == MeegoTestCase::FAIL
       tc.comment.should == "changedcomment"
     end
@@ -49,8 +49,8 @@ describe Feature do
       feature_hash = {:meego_test_cases_attributes => [test_case]}
 
       feature.merge!(feature_hash)
-      feature.should have(1).meego_test_cases
-      tc = feature.meego_test_cases.select{|tc| tc.name == "Foo"}.first
+      feature.should have(1).test_cases
+      tc = feature.test_cases.select{|tc| tc.name == "Foo"}.first
       tc.result.should  == MeegoTestCase::FAIL
       tc.comment.should == ""
     end
