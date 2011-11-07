@@ -53,9 +53,8 @@ $(document).ready ->
       "new_value"          : val
 
     $.post post_url, data, (res, status) ->
-      release_path = $('#release_filters').attr 'selected'
-      scope_path   = $('#report_filters').attr 'selected'
-      $.get "#{release_path}#{scope_path}.json", (view_model) ->
+      [_, release, scope] = location.hash.split '/'
+      $.get "/#{release}/#{scope}.json", (view_model) ->
         $navigation.render(view_model, directives).show()
         editMode()
 
