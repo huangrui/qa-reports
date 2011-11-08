@@ -52,6 +52,7 @@ $(document).ready ->
             $this_element = $fal.children().last()
             $this_element.attr('id', "file_upload#{id}")
             $this_element.find('.filename').text(fileName)
+            $this_element.find('.formError').hide().text('')
 
             $this_element.click ->
                 uploader._handler.cancel(id)
@@ -61,8 +62,12 @@ $(document).ready ->
               $("#file_upload#{id} .progress_bar").text((loaded/total*100).toFixed(0) + "%")
 
           onComplete: (id, fileName, response) ->
+              console.log response
               $(@element).find("#file_upload#{id}").remove()
-              $(@element).find(".file_list_ready").html(response.html_content)
+              if response.ok == "1"
+                $(@element).find(".file_list_ready").html(response.html_content)
+              else
+                $(@element).find(".formError").show().text(response.errors.toString())
 
     prepareFileUpload('#attachment_drag_drop_area', '#attachment_list_item_template',
         '/upload_attachment/')

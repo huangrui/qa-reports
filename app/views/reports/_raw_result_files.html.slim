@@ -16,6 +16,7 @@ h2#raw_result_files Original Result Files
 
     - if @editing
         a.upload_button.small_btn + Merge result file
+        .formError style="display:none"
         br style="clear: both;"
 
         - session_key = Rails.application.config.session_options[:key]
