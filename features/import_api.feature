@@ -4,7 +4,7 @@ Feature: Import API
   So that they can be browsed by users
 
   Background:
-    Given I am an user with a REST authentication token
+    Given I am a user with a REST authentication token
 
   Scenario: Uploading a test report with single basic file
     When the client sends a basic test result file

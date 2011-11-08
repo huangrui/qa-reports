@@ -5,7 +5,7 @@ def find_testcase_row(tcname)
 end
 
 Given %r/^the report for "([^"]*)" exists on the service$/ do |file|
-  Given "I am an user with a REST authentication token"
+  Given "I am a user with a REST authentication token"
 
   # @default_api_opts defined in features/support/hooks.rb
   api_import @default_api_opts.merge( "report.1" => Rack::Test::UploadedFile.new("features/resources/#{file}", "text/xml") )

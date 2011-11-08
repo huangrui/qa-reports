@@ -27,6 +27,12 @@ class ReportFactory
     test_session
   end
 
+  def parse_results(files)
+    data = {:result_files_attributes => files.map {|f| {:file => f, :attachment_type => :result_file}} }
+    parse_result_files(data)
+    return data
+  end
+
   private
 
   def generate_title(params)

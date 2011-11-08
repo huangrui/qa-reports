@@ -51,7 +51,8 @@ Feature:
   @selenium
   Scenario: Rename report titles according to new testset and product names
     When I rename the testset "foo" under profile "Core" to "bar"
-    And I rename the product "N900" to "N950"
+    Then I should see "bar"
+    When I rename the product "N900" to "N950"
     And I view the group report for "Core/bar"
     And I scroll down the page
 
