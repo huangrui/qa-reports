@@ -67,6 +67,5 @@ $(document).ready ->
     prepareFileUpload('#attachment_drag_drop_area', '#attachment_list_item_template',
         '/upload_attachment/')
 
-    prepareFileUpload('#result_file_drag_drop_area', '#attachment_list_item_template',
-        '/upload_attachment/')
-
+    prepareFileUpload('#result_file_drag_drop_area', '#result_file_list_item_template',
+        '/merge_result_file/')

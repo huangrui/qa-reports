@@ -1,4 +1,4 @@
-li#attachment_list_item_template style="display:none"
+li#result_file_list_item_template style="display:none"
   .filename
   img src="/images/progress.gif"
   span.progress_bar
@@ -10,14 +10,12 @@ h2#raw_result_files Original Result Files
 - if result_files.present? || @editing
   div#result_file_drag_drop_area
 
-    ul#raw_result_file_list class="item_list attachment #{'editing' if @editing}"
-      span#raw_file_attachment_list_ready
-        - result_files.each do |file|
-          li
-            a href=file.pretty_url target="_blank" #{file.filename}
+    ul.file_list class="item_list attachment #{'editing' if @editing}"
+      span.file_list_ready
+        = render :partial => "reports/result_file_list", :locals => {:files => result_files}
 
     - if @editing
-        a#merge_button.small_btn + Merge result file
+        a.upload_button.small_btn + Merge result file
         br style="clear: both;"
 
         - session_key = Rails.application.config.session_options[:key]
@@ -28,4 +26,4 @@ h2#raw_result_files Original Result Files
           span#session_key
             #{session_key}
 - else
-  | Result files deleted
+  | No result files available

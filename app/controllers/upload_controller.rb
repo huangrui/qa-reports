@@ -69,6 +69,23 @@ class UploadController < ApplicationController
     render :json => { :ok => '1', :html_content => html_content}
   end
 
+  def merge_result_file
+    file = filestream_from_qq_param
+
+    session = MeegoTestSession.find(params[:id])
+    @editing = true
+
+    session.merge_result_files!([file])
+    if session.errors.empty? && session.save
+      session.update_attribute(:editor, current_user)
+      expire_caches_for(session)
+      html_content = render_to_string :partial => 'reports/result_file_list.html.slim', :locals => {:files => session.result_files}
+      render :json => { :ok => '1', :html_content => html_content}
+    else
+      render :json => { :ok => '0', :errors => session.errors}, :status => :unprocessable_entity
+    end
+  end
+
   def upload
     params[:meego_test_session][:result_files] = FileAttachment.where(:id => params.delete(:drag_n_drop_attachments))
 
