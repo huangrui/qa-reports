@@ -389,8 +389,7 @@ class MeegoTestSession < ActiveRecord::Base
   end
 
   def merge!(report_hash)
-    result_files ||= []
-    result_files += report_hash[:result_files] || []
+    self.result_files += report_hash[:result_files] || []
 
     current_features = features.index_by &:name
     to_update, to_create = report_hash[:features_attributes].

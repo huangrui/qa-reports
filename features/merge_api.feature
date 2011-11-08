@@ -13,6 +13,9 @@ Feature: Merge API
     When I merge with the latest report using result file "sample.csv"
     Then the API responds ok
 
+    When I view the latest report
+    Then I should see "sample.csv" within "#raw_result_file_list"
+
   Scenario: Updating test report with multiple valid result files
     When I merge with the latest report using multiple files
     Then the API responds ok

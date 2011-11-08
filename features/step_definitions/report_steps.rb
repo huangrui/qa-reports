@@ -99,3 +99,7 @@ Then %r/^I should see the test case comments from the previous test report if th
   find_testcase_row("Test Case 1").should have_content("This comment should be used as a template")
   find_testcase_row("Test Case 2").should have_no_content("This comment should be overwritten with empty comment")
 end
+
+When /^I view the latest report$/ do
+  visit report_path(MeegoTestSession.latest)
+end
