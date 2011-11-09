@@ -1,8 +1,11 @@
 /**
- * http://github.com/valums/file-uploader
+ * http://github.com/tomilaine/file-uploader
+ * forked from http://github.com/valums/file-uploader
  *
  * Multiple file upload component with progress-bar, drag-and-drop.
  * © 2010 Andrew Valums ( andrew(at)valums.com )
+ *
+ * Modified by Tomi Laine and Toni Jyrkinen
  *
  * Licensed under GNU GPL 2 or later and GNU LGPL 2 or later, see license.txt.
  */
