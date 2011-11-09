@@ -14,7 +14,7 @@ Feature: Merge API
     Then the API responds ok
 
     When I view the latest report
-    Then I should see "sample.csv" within "#raw_result_file_list"
+    Then I should see "sample.csv" within "#result_file_drag_drop_area .file_list"
 
   Scenario: Updating test report with multiple valid result files
     When I merge with the latest report using multiple files
