@@ -208,8 +208,9 @@ end
 
 # For uploading attachments
 Then "I should see the uploaded attachments" do
-  Then %{I should see "ajax-loader.gif" within "#file_attachment_list"}
-  And %{I should see "icon_alert.gif" within "#file_attachment_list"}
+  list = "#attachment_drag_drop_area .file_list"
+  Then %{I should see "ajax-loader.gif" within "#{list}"}
+  And %{I should see "icon_alert.gif" within "#{list}"}
 end
 
 # Checking for a feature named N/A when had cases without a feature

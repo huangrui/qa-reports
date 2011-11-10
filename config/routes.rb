@@ -13,6 +13,7 @@ Meegoqa::Application.routes.draw do
   match '/upload_post' => 'upload#upload', :via => "post"
   match '/upload_report' => 'upload#upload_report', :via => "post"
   match '/upload_attachment' => 'upload#upload_attachment', :via => "post"
+  match '/merge_result_file' => 'upload#merge_result_file', :via => "post"
 
   match '/api/import' => 'api#import_data', :via => "post"
   match '/api/get_token' => 'api#get_token', :via => "get"
