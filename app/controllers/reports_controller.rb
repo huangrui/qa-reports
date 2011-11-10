@@ -92,6 +92,8 @@ class ReportsController < ApplicationController
 
   def update
     @report = MeegoTestSession.find(params[:id])
+    params[:report][:release_id] = Release.find_by_name(params.delete(:release)[:name]).id
+    params[:report][:profile_id] = Profile.find_by_name(params.delete(:profile)[:name]).id
     @report.update_attributes(params[:report]) # Doesn't check for failure
     @report.update_attribute(:editor, current_user)
 
