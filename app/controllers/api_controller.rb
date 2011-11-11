@@ -73,6 +73,8 @@ class ApiController < ApplicationController
 
     begin
       @test_session.save!
+      @test_session.title = "(#{@test_session.id.to_s}) " + @test_session.title
+      @test_session.save!
 
       report_url = url_for :controller => 'reports', :action => 'show', :release_version => @test_session.release.name, :target => data[:target], :testset => data[:testset], :product => data[:product], :id => @test_session.id
       render :json => {:ok => '1', :url => report_url}

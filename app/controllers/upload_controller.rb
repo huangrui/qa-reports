@@ -99,6 +99,8 @@ class UploadController < ApplicationController
     set_suggestions
 
     if @test_session.errors.empty? and @test_session.save
+      @test_session.title = "(#{@test_session.id.to_s}) " + @test_session.title
+      @test_session.save
       redirect_to preview_report_path(@test_session)
     else
       @profiles = Profile.names

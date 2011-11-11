@@ -39,7 +39,7 @@ class ReportFactory
     params[:tested_at] = Time.now.to_s unless params[:tested_at].present?
 
     title_post = ""
-    title_post = " Build_ID: #{params[:build_id]}" if params[:build_id].present?
+    title_post = " Build ID: #{params[:build_id]}" if params[:build_id].present?
 
     tested_at = DateTime.parse(params[:tested_at]).strftime('%Y-%m-%d')
     tested_at << title_post
