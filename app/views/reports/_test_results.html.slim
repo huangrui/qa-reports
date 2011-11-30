@@ -86,7 +86,7 @@ h2#test_results
           th.th_total Total
           th.th_passed Passed
           th.th_failed Failed
-          th.th_not_testable Block
+          th.th_not_testable Blocked
           th.th_pass_rate Pass%
           th.th_graph &nbsp;
           th.th_notes Comments
@@ -102,7 +102,7 @@ h2#test_results
               th.th_total Total
               th.th_passed Passed
               th.th_failed Failed
-              th.th_not_testable Block
+              th.th_not_testable Blocked
               = history_headers(@history)
               th.th_result.current_feature_history_result Current
           = render :partial => 'feature_pass_rate_history_summary', :collection => @report_show.features
@@ -115,7 +115,7 @@ h2#test_results
             th.th_total Total
             th.th_passed Passed
             th.th_failed Failed
-            th.th_not_testable Block
+            th.th_not_testable Blocked
             = build_pass_rate_headers(@build_diff)
             th.th_result.current_feature_build_result *#{@report_show.build_id}
             th style="border-bottom-style: none;"
