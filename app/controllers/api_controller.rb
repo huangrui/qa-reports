@@ -24,7 +24,11 @@ class ApiController < ApplicationController
   include CacheHelper
 
   cache_sweeper :meego_test_session_sweeper, :only => [:import_data]
-  before_filter :authenticate_user!, :except => :reports_by_limit_and_time
+  before_filter :api_authentication, :except => [:reports_by_limit_and_time]
+
+  def record_not_found
+    head :not_found
+  end
 
   def import_data
     data = request.query_parameters.merge(request.request_parameters)
@@ -78,6 +82,17 @@ class ApiController < ApplicationController
       render :json => {:ok => '0', :errors => error_messages}
     end
 
+  end
+
+  def merge_result
+    report = MeegoTestSession.find(params[:id])
+    report.merge_result_files!(params[:result_files])
+    if report.errors.empty? && report.save
+      report.update_attribute(:editor, current_user)
+      head :ok
+    else
+      render :json => {:errors => report.errors}, :status => :unprocessable_entity
+    end
   end
 
   def update_result
@@ -164,6 +179,11 @@ class ApiController < ApplicationController
 
   def errmsg_invalid_version(version)
     {:release_version => "Incorrect release version '#{version}'. Valid ones are #{Release.names.join(',')}."}
+  end
+
+  def api_authentication
+      return render :status => 403, :json => {:errors => "Missing authentication token."} if params[:auth_token].nil?
+      return render :status => 403, :json => {:errors => "Invalid authentication token."} unless user_signed_in?
   end
 
 end

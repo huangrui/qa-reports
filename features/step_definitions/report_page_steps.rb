@@ -26,7 +26,7 @@ When /I view the group report "([^"]*)"$/ do |report_string|
 end
 
 Then %r/^I should see the download link for the result file "([^"]*)"$/ do |result_file|
-  with_scope('#raw_file_attachment_list_ready') do
+  with_scope('#result_file_drag_drop_area .file_list_ready') do
     find_link(result_file)
   end
 end

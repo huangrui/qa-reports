@@ -4,14 +4,13 @@ class XMLResultFileParser
   include MeasurementUtils
 
   def parse(io)
-    features = {}
-    Nokogiri::XML(io) { |config| config.strict } .css('set').each do |set|
-      feature = set['feature'] || set['name']
-      features[feature] ||= {}
-      features[feature].merge! parse_test_cases(set)
+    Nokogiri::XML(io) { |config| config.strict } .css('set').map do |set|
+      { :set => set, :name => (set['feature'] || set['name']) }
+    end .inject({}) do |features, feature|
+      test_cases = parse_test_cases(feature[:set])
+      (features[feature[:name]] ||= {}).merge! test_cases unless test_cases.empty?
+      features
     end
-
-    features.delete_if {|feature, test_cases| test_cases.empty? }
   end
 
   def parse_test_cases(set)

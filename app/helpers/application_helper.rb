@@ -43,13 +43,13 @@ module ApplicationHelper
 
   # FIXME: Cleanup with link_to_unless_current
   def release_version_navigation(current_version, target='', testset='', product='')
-    html = '<ul class="clearfix">'
+    html = %{<ul id="release_filters" class="clearfix tabs" selected="/#{current_version}">}
     link_text = ''
     Release.names.each do |release|
       if release =~ /\d+\.\d+/
         if release == current_version
             html += '<li class="current">'
-            link_text = "MeeGo v#{release}"
+            link_text = "v#{release}"
         else
             html += '<li>'
             link_text = "v#{release}"
@@ -57,7 +57,7 @@ module ApplicationHelper
       elsif release =~ /^[A-Za-z][0-9]$/
         if release.downcase.eql? current_version.downcase
           html += '<li class="current">'
-          link_text = "MeeGo #{release}"
+          link_text = "#{release}"
         else
           html += '<li>'
           link_text = "#{release}"
@@ -84,7 +84,7 @@ module ApplicationHelper
         end
       end
 
-      html += link_to link_text, root_url + path
+      html += link_to link_text, "/" + path
       html += '</li>'
     end
 

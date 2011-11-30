@@ -7,7 +7,6 @@ Feature: Manage reports
 
   @smoke
   Scenario: Viewing a report
-    Then I should see "MeeGo" within "#version_navi"
     And I should see the header
 
     And I should see "Check home screen"

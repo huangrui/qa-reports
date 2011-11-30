@@ -20,9 +20,10 @@ Given %r/^there's an existing report$/ do
 end
 
 Given %r/^there's a "([^"]*)" report created "([^"]*)" days ago$/ do |categories, count|
-  profile, testset, product = categories.split '/'
+  release, profile, testset, product = categories.split '/'
+  release, profile, testset, product = nil, release, profile, testset if !product
   report  = FactoryGirl.build(:test_report,
-    :release => Release.first,
+    :release => (release ? Release.find_by_name(release) : Release.first),
     :profile => Profile.find_by_name(profile),
     :testset => testset,
     :product => product,
@@ -97,4 +98,8 @@ Then %r/^I should see the test case comments from the previous test report if th
   click_link_or_button('+ see 1 passing tests')
   find_testcase_row("Test Case 1").should have_content("This comment should be used as a template")
   find_testcase_row("Test Case 2").should have_no_content("This comment should be overwritten with empty comment")
+end
+
+When /^I view the latest report$/ do
+  visit report_path(MeegoTestSession.latest)
 end
