@@ -34,7 +34,7 @@ require 'report_exporter'
 class ReportsController < ApplicationController
   include CacheHelper
   layout        'report'
-  before_filter :authenticate_user!,         :except => [:index, :show, :print, :compare]
+  before_filter :authenticate_user!,         :except => [:index, :categories, :show, :print, :compare]
   before_filter :validate_path_params,       :only   => [:show, :print]
   cache_sweeper :meego_test_session_sweeper, :only   => [:update, :delete, :publish]
 
@@ -45,6 +45,10 @@ class ReportsController < ApplicationController
       format.html { render :layout => 'application' }
       format.json { render :json   => @index_model  }
     end
+  end
+
+  def categories
+    render :json  => Index.find_by_release(release, params[:scope])
   end
 
   def preview
@@ -88,6 +92,8 @@ class ReportsController < ApplicationController
 
   def update
     @report = MeegoTestSession.find(params[:id])
+    params[:report][:release_id] = Release.find_by_name(params.delete(:release)[:name]).id if params[:release].present?
+    params[:report][:profile_id] = Profile.find_by_name(params.delete(:profile)[:name]).id if params[:profile].present?
     @report.update_attributes(params[:report]) # Doesn't check for failure
     @report.update_attribute(:editor, current_user)
 

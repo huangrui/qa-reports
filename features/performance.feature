@@ -32,7 +32,7 @@ Feature: Loading times
 
   @performance
   Scenario: Upload bigger reports via API and compare them and load history
-    Given I am an user with a REST authentication token
+    Given I am a user with a REST authentication token
 
     When I start the timer
 

@@ -80,6 +80,10 @@ class MeegoTestSession < ActiveRecord::Base
     @month ||= tested_at.strftime("%B %Y")
   end
 
+  def meego_test_session
+    self
+  end
+
   def self.fetch_fully(id)
     find(id, :include =>
          {:features =>
@@ -337,8 +341,6 @@ class MeegoTestSession < ActiveRecord::Base
     RESULT_NAMES.invert[result] || RESULT_NAMES.invert(MeegoTestCase::NA)
   end
 
-
-
   def update_report_result(user, params, published = true)
     tmp = ReportFactory.new.build(params)
     parsing_errors = tmp.errors[:result_files]
@@ -362,4 +364,41 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 
+  def merge_result_files!(files)
+    unless files.present?
+      errors.add :result_files, "No result files."
+      return self
+    end
+
+    files.each do |f|
+      unless f.respond_to?(:path)
+        errors.add :result_files, "Invalid file: #{f.to_s}."
+        return self
+      end
+    end
+
+    begin
+      new_data = ReportFactory.new.parse_results(files)
+    rescue ParseError => e
+      errors.add :result_files, "Invalid file: #{e.message}"
+      return self
+    end
+
+    logger.info "new_data: #{new_data.inspect}"
+    merge!(new_data)
+  end
+
+  def merge!(report_hash)
+    self.result_files += report_hash[:result_files] || []
+
+    current_features = features.index_by &:name
+    to_update, to_create = report_hash[:features_attributes].
+                           partition {|fh| current_features.has_key? fh[:name]}
+
+    to_update.each { |fh| current_features[fh[:name]].merge! fh }
+
+    to_create.each { |fh| features.create fh }
+
+    self
+  end
 end

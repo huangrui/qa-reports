@@ -1,4 +1,4 @@
-Given %r/^I am an user with a REST authentication token$/ do
+Given %r/^I am a user with a REST authentication token$/ do
   if !User.find_by_email('resting@man.net')
     FactoryGirl.create(:user,
       :name                  => 'John Restless',
@@ -208,8 +208,9 @@ end
 
 # For uploading attachments
 Then "I should see the uploaded attachments" do
-  Then %{I should see "ajax-loader.gif" within "#file_attachment_list"}
-  And %{I should see "icon_alert.gif" within "#file_attachment_list"}
+  list = "#attachment_drag_drop_area .file_list"
+  Then %{I should see "ajax-loader.gif" within "#{list}"}
+  And %{I should see "icon_alert.gif" within "#{list}"}
 end
 
 # Checking for a feature named N/A when had cases without a feature
@@ -300,6 +301,11 @@ Then %r/^the REST result "([^"]*)" is "([^"]*)"$/ do |key, value|
   json.should eql(value), assert_msg
 end
 
+Then %r/^the REST result "([^"]*)" contains "([^"]*)"$/ do |key, value|
+  json = ActiveSupport::JSON.decode(@response.body)
+  assert json[key].to_s =~ /#{value}/i, "Did not find \"#{value}\" in the message \"#{json[key].inspect}\""
+end
+
 def get_testsessionid(file)
   FileAttachment.where('file_file_name like ?', '%' + file).first.attachable_id
 end
@@ -322,4 +328,8 @@ Then %r/^resulting JSON should match file "([^"]*)"$/ do |file1|
   json = ActiveSupport::JSON.decode(response.body)
   json[0]['qa_id'].should == get_testsessionid(file1)
   json.count.should == 1
+end
+
+Then %r/^I get a "([^"]*)" response code$/ do |code|
+  response.code.should == code
 end

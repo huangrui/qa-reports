@@ -1,11 +1,11 @@
 - content_for :version_navi do
   #version_navi
     = release_version_navigation(release.name)
-    ul#report_filters
-      li
-        a href="/reports.json" Recent
+    ul#report_filters.tabs selected="/recent"
       li.current
-        a href="/reports.json?show_all=true" All
+        a href="/recent" Recent
+      li
+        a href="/all" All
 
 #index_page
   table#report_navigation style="display:none"

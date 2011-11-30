@@ -1,12 +1,18 @@
 module MeegoTestCaseHelper
 
-  RESULTS = {MeegoTestCase::FAIL      => "Fail",
-             MeegoTestCase::NA        => "Block",
-             MeegoTestCase::PASS      => "Pass",
-             MeegoTestCase::MEASURED  => "Measured"}
+  RESULT_TO_TXT = {MeegoTestCase::FAIL      => "Fail",
+                   MeegoTestCase::NA        => "Block",
+                   MeegoTestCase::PASS      => "Pass",
+                   MeegoTestCase::MEASURED  => "Measured"}
+
+  TXT_TO_RESULT = RESULT_TO_TXT.invert
 
   def result_to_txt(result)
-    RESULTS[result] or "Block"
+    RESULT_TO_TXT[result] or "Block"
+  end
+
+  def txt_to_result(txt)
+    TXT_TO_RESULT[txt] or MeegoTestCase::NA
   end
 
   def result_html(model)
