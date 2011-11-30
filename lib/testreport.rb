@@ -54,10 +54,16 @@ module MeegoTestReport
       line.gsub! /'''''(.+?)'''''/, "<b><i>\\1</i></b>"
       line.gsub! /'''(.+?)'''/, "<b>\\1</b>"
       line.gsub! /''(.+?)''/, "<i>\\1</i>"
-      line.gsub! /#{BUGZILLA_CONFIG['link_uri']}(\d+)/, "<a class=\"bugzilla fetch bugzilla_status bugzilla_append\" href=\""+BUGZILLA_CONFIG['link_uri']+"\\1\">\\1</a>"
+      line.gsub! /#{BUGZILLA_CONFIG['link_uri']}(\w+)-(\d+)/, "<a class=\"bugzilla fetch bugzilla_status bugzilla_append\" href=\""+BUGZILLA_CONFIG['link_uri']+"\\1-\\2\">\\1-\\2</a>"
       line.gsub! /\[\[(http[s]?:\/\/.+?) (.+?)\]\]/, "<a href=\"\\1\">\\2</a>"
-      line.gsub! /\[\[(\d+)\]\]/, "<a class=\"bugzilla fetch bugzilla_status bugzilla_append\" href=\""+BUGZILLA_CONFIG['link_uri']+"\\1\">\\1</a>"
 
+      #Disable the bugzilla config
+      #line.gsub! /\[\[(\d+)\]\]/, "<a class=\"bugzilla fetch bugzilla_status bugzilla_append\" href=\""+BUGZILLA_CONFIG['link_uri']+"\\1\">\\1</a>"
+
+      #For jira bug link
+      #line.gsub! /\[\[(\w+)-(\d+)\]\]/, "<a class=\"bugzilla privatefetch bugzilla_status bugzilla_append\" href=\"http://wanshuang-vm1.sh.intel.com:8080/jira/browse/\\1-\\2\">\\1-\\2</a>"
+      line.gsub! /\[\[(\w+)-(\d+)\]\]/, "<a class=\"bugzilla fetch bugzilla_status bugzilla_append\" href=\""+BUGZILLA_CONFIG['link_uri']+"\\1-\\2\">\\1-\\2</a>"
+      line.gsub! /\[\[(\w+)-(\d+)\(internal\)\]\]/, "<a class=\"bugzilla privatefetch bugzilla_status bugzilla_append\" href=\""+BUGZILLA_CONFIG['private_link_uri']+"\\1-\\2\">\\1-\\2(internal)</a>"
       if line =~ /^====\s*(.+)\s*====$/
         html << "<h5>#{$1}</h5>"
       elsif line =~ /^===\s*(.+)\s*===$/

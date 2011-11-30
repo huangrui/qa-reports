@@ -297,7 +297,7 @@ function applyBugzillaInfo(node, info) {
         $node.addClass("invalid");
     } else {
         var status = info.status;
-        if (status == 'RESOLVED' || status == 'VERIFIED') {
+        if (status == 'Resolved' || status == 'Released' || status == 'Verified') {
             $node.addClass("resolved");
             status = info.resolution;
         } else {
@@ -319,6 +319,7 @@ function applyBugzillaInfo(node, info) {
     $node.removeClass("fetch");
 }
 
+// Rui Fetch bug info
 function fetchBugzillaInfo() {
     var bugIds = [];
     var searchUrl = "/fetch_bugzilla_data";

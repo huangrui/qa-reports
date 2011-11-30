@@ -1,15 +1,16 @@
 # Configuration for Bugzilla integration
 
 # Bugzilla server config
-server: bugs.meego.com
+server: bugs.tizen.org
 port: 443
 use_ssl: true
 
 # Query URI template (comma separated list of ids appended)
-uri: /buglist.cgi?bugidtype=include&columnlist=short_desc%2Cbug_status%2Cresolution&query_format=advanced&ctype=csv&bug_id=
+uri: /jira/rest/api/2.0.alpha1/issue/
 
 # The URL used to link to bugs (bug id appended)
-link_uri: http://bugs.meego.com/show_bug.cgi?id=
+link_uri: https://bugs.tizen.org/jira/browse/
+private_link_uri: https://saobs.jf.intel.com/jira/browse/
 
 # Proxy server address and port (leave empty if not needed)
 proxy_server: 
@@ -18,5 +19,5 @@ proxy_port:
 # HTTP Basic authentication. These are asked during deployment. Notice that
 # you need these only if you must login with HTTP Basic Auth to access
 # Bugzilla - i.e. your browsers displays a popup window asking for credentials.
-http_username: 
-http_password: 
+http_username: huangrui
+http_password: hr123456
