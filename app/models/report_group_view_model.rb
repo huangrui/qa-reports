@@ -19,9 +19,9 @@ class ReportGroupViewModel
     @all_reports ||= find_all_reports
   end
 
-  def reports_by_range(range)
+  def reports_by_range(range, by_build=nil)
     @report_ranges ||= {}
-    @report_ranges[range] ||= find_report_range(range)
+    @report_ranges[range] ||= find_report_range(range, by_build)
   end
 
   def report_object(report)
@@ -36,12 +36,20 @@ class ReportGroupViewModel
       :target => report.profile.name,
       :testset => report.testset,
       :product => report.product,
+      :build_id => report.build_id,
       :id => report.id }
   end
 
-  def report_range_by_month(range)
-    reports_by_range(range).group_by(&:month).map do |month, reports|
-      { :name => month,
+#  def report_range_by_month(range)
+#    reports_by_range(range).group_by(&:month).map do |month, reports|
+#      { :name => month,
+#        :reports => reports.map { |report| report_object(report) } }
+#    end
+#  end
+
+  def report_range_by_build(range)
+    reports_by_range(range, 1).group_by(&:build_id).map do |build_id, reports|
+      { :name => build_id,
         :reports => reports.map { |report| report_object(report) } }
     end
   end
@@ -66,12 +74,13 @@ class ReportGroupViewModel
     @trend_graph_data_rel ||= calculate_trend_graph_data(true)
   end
 
+  # If order by build id ,please set second argument as 1 for comparision the latest reports
   def latest
-    reports_by_range((0..1))[0] rescue nil
+    reports_by_range((0..1), 1)[0] rescue nil
   end
 
   def previous
-    reports_by_range((0..1))[1] rescue nil
+    reports_by_range((0..1), 1)[1] rescue nil
   end
 
   private
@@ -99,11 +108,18 @@ class ReportGroupViewModel
       values.first
   end
 
-  def find_report_range(range)
-    reports = MeegoTestSession.published.includes(:release).
-      where(@params).
-      limit(range.count).offset(range.begin).
-      order("tested_at DESC, created_at DESC")
+  def find_report_range(range,by_build)
+    if by_build.nil?
+      reports = MeegoTestSession.published.includes(:release).
+        where(@params).
+        limit(range.count).offset(range.begin).
+        order("tested_at DESC, created_at DESC")
+    else
+      reports = MeegoTestSession.published.includes(:release).
+        where(@params).
+        limit(range.count).offset(range.begin).
+        order("build_id DESC, tested_at DESC, created_at DESC")
+    end
 
     # TODO: Could reports just be wrapped in ReportShows that have the count methods?
     #       Or use directly the association count calls e.g. passed.count.

@@ -80,8 +80,10 @@ module Graph
     data.na     = na     = []
     data.labels = labels = []
 
+    sessions.sort! {|a,b| a.build_id <=> b.build_id}
+    sessions.reverse!
     sessions.reverse_each do |s|
-      labels << s.format_date
+      labels << s.build_id
       total_cases = s.total_cases
       if total_cases > 0
         if relative
