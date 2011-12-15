@@ -16,9 +16,14 @@
     thead
       tr
         = render :partial => "shared/comparison_result_filter_buttons"
-        th.column_head_1 =@reports[0].formatted_date
-        th.column_head_separate
-        th.column_head_1 =@reports[1].formatted_date
+        - if @reports[0].build_id == @reports[1].build_id
+          th.column_head_1 =@reports[0].formatted_date
+          th.column_head_separate
+          th.column_head_1 =@reports[1].formatted_date
+        - else
+          th.column_head_1 =@reports[0].build_id
+          th.column_head_separate
+          th.column_head_1 =@reports[1].build_id
 
     tbody
       = render :partial => "feature", :collection => @comparison.features
