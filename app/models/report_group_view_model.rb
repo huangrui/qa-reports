@@ -4,12 +4,13 @@ require 'graph'
 class ReportGroupViewModel
   include Graph
 
-  def initialize(release_name, profile_name, testset, product)
+  def initialize(release_name, profile_name, testset, product, build_id)
     @params = {
       :release_id => Release.find_by_name(release_name),
       :profile_id => Profile.find_by_name(profile_name),
       :testset => testset,
-      :product => product
+      :product => product,
+      :build_id => build_id
     }.delete_if { |key, value| value.nil? }
 
     raise ActiveRecord::RecordNotFound if MeegoTestSession.published.where(@params).count == 0

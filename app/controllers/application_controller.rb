@@ -21,7 +21,7 @@
 #
 
 class ApplicationController < ActionController::Base
-  helper_method :release, :profile, :testset, :product
+  helper_method :release, :profile, :testset, :product, :build_id
   before_filter :update_session_data, :profile
 
   #protect_from_forgery
@@ -46,6 +46,10 @@ class ApplicationController < ActionController::Base
 
   def product
     @product ||= params[:product]
+  end
+
+  def build_id
+    @build_id ||= params[:build_id]
   end
 
 private

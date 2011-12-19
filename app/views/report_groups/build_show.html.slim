@@ -1,0 +1,67 @@
+#index_page
+  = breadcrumbs
+
+  - content_for :version_navi do
+    #version_navi
+     = release_version_navigation(release.name, profile.name, testset, product)
+
+  / Template for new month tables
+  div.month_template style="display:none"
+    table.month
+      thead
+        tr
+          td.index_month_title colspan="3"
+            strong.name Month 2020
+      tbody.reports
+        tr
+          td.date
+          td.report_name
+            a.name
+          td.graph
+            .htmlgraph
+              .passed &nbsp;
+              .failed &nbsp;
+              .na     &nbsp;
+          td.year style="display:none"
+
+  table#infinite_scroll_results style="display:none"
+
+  table#report_filtered_navigation.filtered
+    thead
+      tr
+        th.filtered scope="col"
+         = group_report_title
+         a.rss href=rss_path title="RSS feed"
+    tr
+      td.filtered
+        - if @group_report.trend_graph_data_abs
+          .chart_actions.stack_chart
+            #canvas_wrapper style="width:700px; height:260px"
+              canvas#trend_graph_abs height="250" width="700"
+            a#abs_button.ui_btn.inactive Absolute values
+            a#rel_button.ui_btn Relative %
+            a#csv_report_link href=group_report_csv_path(release.name, profile.name, testset, product) Download as CSV
+
+        - if @group_report.comparison
+          .index_section
+            a.compare href=compare_latest_to_previous_url See detailed comparison
+            = render :partial => "shared/report_comparison_summary", :locals => {:comparison => @group_report.comparison}
+
+        #reports_by_month.index_month
+
+  div style="display:none"
+    span#report_list_url #{{build_list_path(release.name, profile.name, build_id, testset, product)}}
+    - if @group_report.trend_graph_data_abs and @group_report.trend_graph_data_rel
+      span#trend_abs_passed  #{@group_report.trend_graph_data_abs.passed.join(',')}
+      span#trend_abs_failed  #{@group_report.trend_graph_data_abs.failed.join(',')}
+      span#trend_abs_na      #{@group_report.trend_graph_data_abs.na.join(',')}
+      span#trend_labels      #{@group_report.trend_graph_data_abs.labels.join(',')}
+      span#trend_rel_passed  #{@group_report.trend_graph_data_rel.passed.join(',')}
+      span#trend_rel_failed  #{@group_report.trend_graph_data_rel.failed.join(',')}
+      span#trend_rel_na      #{@group_report.trend_graph_data_rel.na.join(',')}
+
+  = javascript_include_tag "jquery-infinite-scroll/jquery.infinitescroll.js"
+  = javascript_include_tag "report_group.js"
+
+javascript:
+  max_cases = #{{@group_report.max_cases}}
