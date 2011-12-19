@@ -30,15 +30,32 @@ module ApplicationHelper
   end
 
  def breadcrumbs
-  html = '<div id="breadcrumb"><li><a href="' + root_path + '">Home</a></li>'
+   html = '<div id="breadcrumb"><li><a href="' + root_path + '">Home</a></li>'
 
 
-  html += ('<li> &rsaquo; ' + link_to_unless_current(@profile.name, group_report_path(release.name, @profile.name)) + '</li>') if @profile
-  html += ('<li> &rsaquo; ' + link_to_unless_current(@testset, group_report_path(release.name, @profile.name, @testset)) + '</li>') if @testset
-  html += ('<li> &rsaquo; ' + link_to_unless_current(@product, group_report_path(release.name, @profile.name, @testset, @product)) + '</li>') if @product
-  html += ('<li> &rsaquo; ' + @test_session.title + '</li>') if @test_session
-  html += '</div>'
-  html.html_safe
+   html += ('<li> &rsaquo; ' + link_to_unless_current(@profile.name, group_report_path(release.name, @profile.name)) + '</li>') if @profile
+   html += ('<li> &rsaquo; ' + link_to_unless_current(@testset, group_report_path(release.name, @profile.name, @testset)) + '</li>') if @testset
+   html += ('<li> &rsaquo; ' + link_to_unless_current(@product, group_report_path(release.name, @profile.name, @testset, @product)) + '</li>') if @product
+   html += ('<li> &rsaquo; ' + @test_session.title + '</li>') if @test_session
+   html += '</div>'
+   html.html_safe
+ end
+
+ def group_report_build_path(bid, path)
+   offset = path.index('/', 1)
+   build_path = '/build/' + bid
+   path.insert(offset, build_path)
+ end
+
+ def breadcrumbs_build
+   html = '<div id="breadcrumb"><li><a href="' + root_path + '">Home</a></li>'
+
+   html += ('<li> &rsaquo; ' + link_to_unless_current(@profile.name, group_report_build_path(@build_id, group_report_path(release.name, @profile.name))) + '</li>') if @profile
+   html += ('<li> &rsaquo; ' + link_to_unless_current(@testset, group_report_build_path(@build_id, group_report_path(release.name, @profile.name, @testset))) + '</li>') if @testset
+   html += ('<li> &rsaquo; ' + link_to_unless_current(@product, group_report_build_path(@build_id, group_report_path(release.name, @profile.name, @testset, @product))) + '</li>') if @product
+   html += ('<li> &rsaquo; ' + @test_session.title + '</li>') if @test_session
+   html += '</div>'
+   html.html_safe
  end
 
   # FIXME: Cleanup with link_to_unless_current

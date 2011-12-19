@@ -8,8 +8,7 @@ module ReportGroupsHelper
     path = report_list_path(rel, pro, tes, prd)
     offset = path.index('/', 1)
     build_path = '/build/' + bid
-    path = path.insert(offset, build_path)
-    return path
+    path.insert(offset, build_path)
   end
 
   def compare_latest_to_previous_url
