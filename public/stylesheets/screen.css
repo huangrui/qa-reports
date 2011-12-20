@@ -2224,6 +2224,12 @@ div.field.last {
     margin-bottom: -30px;
 }
 
+#build_index_link {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+}
+
 #home_edit_link, #home_edit_done_link {
     position: absolute;
     top: 8px;
