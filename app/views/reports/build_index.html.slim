@@ -19,16 +19,9 @@
         td.testsets
           div
             a.name
-            input.inplace-edit style="display:none;"
-            a.compare compare
             ul.products
               li
                 a.name
-                input.inplace-edit style="display:none;"
-
-  - if user_signed_in?
-    a#home_edit_link href='#'
-    a#home_edit_done_link.small_btn href='#' Done
 
 - content_for :view_specific_js do
   javascript:

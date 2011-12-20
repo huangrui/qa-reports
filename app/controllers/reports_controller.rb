@@ -48,7 +48,7 @@ class ReportsController < ApplicationController
   end
 
   def build_index
-    @index_model = Index.find_by_release(release, params[:show_all])
+    @index_model = Index.find_by_build_release(release, params[:show_all])
     @show_rss = true
     respond_to do |format|
       format.html { render :layout => 'application' }
