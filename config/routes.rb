@@ -34,6 +34,7 @@ Meegoqa::Application.routes.draw do
   constraints(:release_version => /[a-zA-Z0-9._-]+/, :id => /[0-9]+/, :build_id => /[a-zA-Z0-9._-]+/) do
 
     match '(/:release_version)/index'                                                             => 'reports#index',             :via => "get"
+    match '(/:release_version)/build/:scope.json'                                                 => 'reports#build_categories',  :via => "get"
     match '(/:release_version)/build_index'                                                       => 'reports#build_index',       :via => "get"
     match '/:release_version/build/:build_id/(:target(/:product(/:testset)))/report_list(/:page)' => 'report_groups#report_page', :via => "get", :as => :group_report
     match '/:release_version/build/:build_id/(:target(/:product(/:testset)))'                     => 'report_groups#build_show',  :via => "get", :as => :group_report

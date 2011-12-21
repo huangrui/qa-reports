@@ -54,7 +54,7 @@ $(document).ready ->
 
     $.post post_url, data, (res, status) ->
       [_, release, scope] = location.hash.split '/'
-      $.get "/#{release}/#{scope}.json", (view_model) ->
+      $.get "/#{release}/build/#{scope}.json", (view_model) ->
         $navigation.render(view_model, directives).show()
         editMode()
 
@@ -121,7 +121,7 @@ $(document).ready ->
       $("#report_filters .current a").click()
 
   Spine.Route.add "/:release/:scope": (params) ->
-    $.get "/#{params.release}/#{params.scope}.json", (view_model) ->
+    $.get "/#{params.release}/build/#{params.scope}.json", (view_model) ->
       $navigation.render(view_model, directives).show()
 
   Spine.Route.setup()

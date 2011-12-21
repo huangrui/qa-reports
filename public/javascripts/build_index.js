@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 20 Dec 2011 08:16:49 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 21 Dec 2011 08:47:00 GMT from
  * /home/rui/qa-reports/new/huangruis-qa-reports/app/coffeescripts/build_index.coffee
  */
 
@@ -82,7 +82,7 @@ $(document).ready(function() {
     return $.post(post_url, data, function(res, status) {
       var release, scope, _, _ref;
       _ref = location.hash.split('/'), _ = _ref[0], release = _ref[1], scope = _ref[2];
-      return $.get("/" + release + "/" + scope + ".json", function(view_model) {
+      return $.get("/" + release + "/build/" + scope + ".json", function(view_model) {
         $navigation.render(view_model, directives).show();
         return editMode();
       });
@@ -170,7 +170,7 @@ $(document).ready(function() {
   };
   Spine.Route.add({
     "/:release/:scope": function(params) {
-      return $.get("/" + params.release + "/" + params.scope + ".json", function(view_model) {
+      return $.get("/" + params.release + "/build/" + params.scope + ".json", function(view_model) {
         return $navigation.render(view_model, directives).show();
       });
     }

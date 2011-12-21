@@ -60,6 +60,10 @@ class ReportsController < ApplicationController
     render :json  => Index.find_by_release(release, params[:scope])
   end
 
+  def build_categories
+    render :json  => Index.find_by_build_release(release, params[:scope])
+  end
+
   def preview
     populate_report_fields
     populate_edit_fields
