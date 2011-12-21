@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 21 Dec 2011 11:43:25 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 21 Dec 2011 12:29:45 GMT from
  * /home/rui/qa-reports/new/huangruis-qa-reports/app/coffeescripts/build_index.coffee
  */
 
@@ -9,6 +9,9 @@ $(document).ready(function() {
   directives = {
     profiles: {
       build_ids: {
+        'name@href': function() {
+          return this.url;
+        },
         products: {
           'name@href': function() {
             return this.url;

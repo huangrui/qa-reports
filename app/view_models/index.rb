@@ -48,6 +48,7 @@ class Index
           :build_ids  => build_ids.select{|bd| bd.build_id.present?}.group_by(&:build_id).map do |build_id, products|
             {
               :name     => build_id,
+              :url      => "/#{release.name}/build/#{build_id}/#{profile}",
               :products => products.select{|pd| pd.product.present?}.group_by(&:product).map do |product, testsets|
                   {
                     :name           => product,
