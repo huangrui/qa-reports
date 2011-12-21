@@ -1,5 +1,5 @@
-/* DO NOT MODIFY. This file was compiled Wed, 21 Dec 2011 12:29:45 GMT from
- * /home/rui/qa-reports/new/huangruis-qa-reports/app/coffeescripts/build_index.coffee
+/* DO NOT MODIFY. This file was compiled Wed, 21 Dec 2011 14:39:18 GMT from
+ * /home/rui/qareports/huangruis-qa-reports/app/coffeescripts/build_index.coffee
  */
 
 $(document).ready(function() {
@@ -8,6 +8,9 @@ $(document).ready(function() {
   $editables = $();
   directives = {
     profiles: {
+      'name@href': function() {
+        return this.url;
+      },
       build_ids: {
         'name@href': function() {
           return this.url;

@@ -4,6 +4,7 @@ $(document).ready ->
 
   directives =
     profiles:
+      'name@href': -> @url
       build_ids:
         'name@href': -> @url
         products:

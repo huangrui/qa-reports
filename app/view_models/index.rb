@@ -45,6 +45,7 @@ class Index
       ").group_by(&:profile).map do |profile, build_ids|
         {
           :name       => profile,
+          :url        => "/#{release.name}/#{profile}",
           :build_ids  => build_ids.select{|bd| bd.build_id.present?}.group_by(&:build_id).map do |build_id, products|
             {
               :name     => build_id,
