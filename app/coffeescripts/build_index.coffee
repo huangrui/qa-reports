@@ -4,14 +4,11 @@ $(document).ready ->
 
   directives =
     profiles:
-      'name@href': -> @url
-      testsets:
-        'name@href': -> @url
-        'compare@href': (element) -> if @comparison_url then @comparison_url else element.hide(); return ""
-        'inplace-edit@data-url': -> @url
+      build_ids:
         products:
           'name@href': -> @url
-          'inplace-edit@data-url': -> @url
+          testsets:
+            'name@href': -> @url
 
   undo = (input) ->
     $input = $(input)

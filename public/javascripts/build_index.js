@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 21 Dec 2011 08:47:00 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 21 Dec 2011 11:43:25 GMT from
  * /home/rui/qa-reports/new/huangruis-qa-reports/app/coffeescripts/build_index.coffee
  */
 
@@ -8,30 +8,15 @@ $(document).ready(function() {
   $editables = $();
   directives = {
     profiles: {
-      'name@href': function() {
-        return this.url;
-      },
-      testsets: {
-        'name@href': function() {
-          return this.url;
-        },
-        'compare@href': function(element) {
-          if (this.comparison_url) {
-            return this.comparison_url;
-          } else {
-            element.hide();
-            return "";
-          }
-        },
-        'inplace-edit@data-url': function() {
-          return this.url;
-        },
+      build_ids: {
         products: {
           'name@href': function() {
             return this.url;
           },
-          'inplace-edit@data-url': function() {
-            return this.url;
+          testsets: {
+            'name@href': function() {
+              return this.url;
+            }
           }
         }
       }
