@@ -48,7 +48,8 @@ module ApplicationHelper
  end
 
  def breadcrumbs_build
-   html = '<div id="breadcrumb"><li><a href="' + root_path + '">Home</a></li>'
+   build_root_path = root_path + 'build_index'
+   html = '<div id="breadcrumb"><li><a href="' + build_root_path + '">Home</a></li>'
 
    html += ('<li> &rsaquo; ' + link_to_unless_current(@profile.name, group_report_build_path(@build_id, group_report_path(release.name, @profile.name))) + '</li>') if @profile
    html += ('<li> &rsaquo; ' + link_to_unless_current(@product, group_report_build_path(@build_id, group_report_path(release.name, @profile.name, @product))) + '</li>') if @product
