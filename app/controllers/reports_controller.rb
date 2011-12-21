@@ -34,7 +34,7 @@ require 'report_exporter'
 class ReportsController < ApplicationController
   include CacheHelper
   layout        'report'
-  before_filter :authenticate_user!,         :except => [:index, :build_index, :categories, :show, :print, :compare]
+  before_filter :authenticate_user!,         :except => [:index, :build_index, :categories, :build_categories, :show, :print, :compare]
   before_filter :validate_path_params,       :only   => [:show, :print]
   cache_sweeper :meego_test_session_sweeper, :only   => [:update, :delete, :publish]
 
