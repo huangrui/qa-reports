@@ -48,11 +48,11 @@ class Index
           :url        => "/#{release.name}/#{profile}",
           :build_ids  => build_ids.select{|bd| bd.build_id.present?}.group_by(&:build_id).map do |build_id, products|
             {
-              :name     => build_id,
+              :name     => "Build " + build_id + ':',
               :url      => "/#{release.name}/build/#{build_id}/#{profile}",
               :products => products.select{|pd| pd.product.present?}.group_by(&:product).map do |product, testsets|
                   {
-                    :name           => product,
+                    :name           => product + ':',
                     :url            => "/#{release.name}/build/#{build_id}/#{profile}/#{product}",
                     :testsets       => testsets.map do |testset|
                       {
