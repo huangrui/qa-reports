@@ -2228,6 +2228,19 @@ div.field.last {
     position: absolute;
     top: 8px;
     left: 8px;
+    color: #aaa;
+    text-align: left;
+    text-decoration: none;
+    font-weight: bold;
+    display: block;
+    width: 155px;
+    height: 16px;
+    line-height: 14px;
+}
+
+#build_index_link:hover {
+    color: #F20089;
+    background-position: right -16px;
 }
 
 #home_edit_link, #home_edit_done_link {
