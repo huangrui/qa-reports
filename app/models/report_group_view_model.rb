@@ -84,6 +84,10 @@ class ReportGroupViewModel
     reports_by_range((0..1), 1)[1] rescue nil
   end
 
+  def report_size
+    @report_ranges[0..39].size
+  end
+
   private
 
   def calculate_trend_graph_data (relative)

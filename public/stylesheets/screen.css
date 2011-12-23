@@ -2297,3 +2297,10 @@ div.field.last {
     background: #fff8de;
     color: #ed0089;
 }
+
+.axis {
+    -moz-transform:translate(24px, 5px) rotate(35deg);
+    -moz-transform-origin:40% 100%;
+    -webkit-transform:translate(24px, 5px) rotate(35deg);
+    -webkit-transform-origin:40% 100%;
+}

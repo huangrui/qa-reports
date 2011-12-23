@@ -83,7 +83,7 @@ module Graph
     sessions.sort! {|a,b| a.build_id <=> b.build_id}
     sessions.reverse!
     sessions.reverse_each do |s|
-      labels << s.id
+      labels << s.build_id
       total_cases = s.total_cases
       if total_cases > 0
         if relative

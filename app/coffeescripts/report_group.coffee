@@ -91,3 +91,8 @@ $ () ->
 
   $(window).trigger('infinitescroll.scrollpage', 1)
 
+  size_str = []
+  for i in trend_labels
+    size_str.push i if i != ""
+
+  $($(".bluff-text")[i]).addClass("axis") for i in [($(".bluff-text").size() - size_str.length) .. $(".bluff-text").size() - 1]
