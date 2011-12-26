@@ -15,11 +15,11 @@ $(document).ready(function() {
         'name@href': function() {
           return this.url;
         },
-        products: {
+        testsets: {
           'name@href': function() {
             return this.url;
           },
-          testsets: {
+          products: {
             'name@href': function() {
               return this.url;
             }

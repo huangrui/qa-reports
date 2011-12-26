@@ -36,8 +36,8 @@ Meegoqa::Application.routes.draw do
     match '(/:release_version)/index'                                                             => 'reports#index',             :via => "get"
     match '(/:release_version)/build/:scope.json'                                                 => 'reports#build_categories',  :via => "get"
     match '(/:release_version)/build_index'                                                       => 'reports#build_index',       :via => "get"
-    match '/:release_version/build/:build_id/(:target(/:product(/:testset)))/report_list(/:page)' => 'report_groups#report_page', :via => "get", :as => :group_report
-    match '/:release_version/build/:build_id/(:target(/:product(/:testset)))'                     => 'report_groups#build_show',  :via => "get", :as => :group_report
+    match '/:release_version/build/:build_id/(:target(/:testset(/:product)))/report_list(/:page)' => 'report_groups#report_page', :via => "get", :as => :group_report
+    match '/:release_version/build/:build_id/(:target(/:testset(/:product)))'                     => 'report_groups#build_show',  :via => "get", :as => :group_report
     match '(/:release_version)/:scope.json'                                                       => 'reports#categories',        :via => "get"
 
     match '/:release_version/:target/:testset'                          => 'test_sets#update',          :via => "put"

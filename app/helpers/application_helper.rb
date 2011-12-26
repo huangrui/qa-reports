@@ -52,8 +52,8 @@ module ApplicationHelper
    html = '<div id="breadcrumb"><li><a href="' + build_root_path + '">Home</a></li>'
 
    html += ('<li> &rsaquo; ' + link_to_unless_current(@profile.name, group_report_build_path(@build_id, group_report_path(release.name, @profile.name))) + '</li>') if @profile
-   html += ('<li> &rsaquo; ' + link_to_unless_current(@product, group_report_build_path(@build_id, group_report_path(release.name, @profile.name, @product))) + '</li>') if @product
-   html += ('<li> &rsaquo; ' + link_to_unless_current(@testset, group_report_build_path(@build_id, group_report_path(release.name, @profile.name, @product, @testset))) + '</li>') if @testset
+   html += ('<li> &rsaquo; ' + link_to_unless_current(@testset, group_report_build_path(@build_id, group_report_path(release.name, @profile.name, @testset))) + '</li>') if @testset
+   html += ('<li> &rsaquo; ' + link_to_unless_current(@product, group_report_build_path(@build_id, group_report_path(release.name, @profile.name, @testset, @product))) + '</li>') if @product
    html += ('<li> &rsaquo; ' + @test_session.title + '</li>') if @test_session
    html += '</div>'
    html.html_safe

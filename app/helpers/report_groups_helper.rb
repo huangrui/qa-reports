@@ -5,7 +5,7 @@ module ReportGroupsHelper
   end
 
   def build_list_path(rel, pro, bid, tes, prd)
-    path = report_list_path(rel, pro, prd, tes)
+    path = report_list_path(rel, pro, tes, prd)
     offset = path.index('/', 1)
     build_path = '/build/' + bid
     path.insert(offset, build_path)
