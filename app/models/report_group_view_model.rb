@@ -68,11 +68,19 @@ class ReportGroupViewModel
   end
 
   def trend_graph_data_abs
-    @trend_graph_data_abs ||= calculate_trend_graph_data(false)
+    if @params[:build_id].nil?
+      @trend_graph_data_abs ||= calculate_trend_graph_data(false, true)
+    else
+      @trend_graph_data_abs ||= calculate_trend_graph_data(false)
+    end
   end
 
   def trend_graph_data_rel
-    @trend_graph_data_rel ||= calculate_trend_graph_data(true)
+    if @params[:build_id].nil?
+      @trend_graph_data_rel ||= calculate_trend_graph_data(true, true)
+    else
+      @trend_graph_data_rel ||= calculate_trend_graph_data(true)
+    end
   end
 
   # If order by build id ,please set second argument as 1 for comparision the latest reports
@@ -90,13 +98,13 @@ class ReportGroupViewModel
 
   private
 
-  def calculate_trend_graph_data (relative)
+  def calculate_trend_graph_data (relative, nobuild_id=false)
     trend_length = 20
 
     chosen, days = find_trend_sessions(reports_by_range((0..trend_length - 1)), trend_length)
 
     if chosen.length > 0
-      generate_trend_graph_data(chosen, days, relative, trend_length)
+      generate_trend_graph_data(chosen, days, relative, trend_length, nobuild_id)
     end
   end
 

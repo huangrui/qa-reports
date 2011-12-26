@@ -33,7 +33,10 @@ $ () ->
       size_str = []
       for i in trend_labels
         size_str.push i if i != ""
-      $($(".bluff-text")[i]).addClass("axis") for i in [($(".bluff-text").size() - size_str.length) .. $(".bluff-text").size() - 1]
+      if size_str[0].indexOf('/') == -1
+        $($(".bluff-text")[i]).addClass("axis") for i in [($(".bluff-text").size() - size_str.length) .. $(".bluff-text").size() - 1]
+      else
+        $($(".bluff-text")[i]).addClass("buildaxis") for i in [($(".bluff-text").size() - size_str.length) .. $(".bluff-text").size() - 1]
 
     draw_abs_graph = () ->
       draw_graph(trend_abs_passed, trend_abs_failed, trend_abs_na)

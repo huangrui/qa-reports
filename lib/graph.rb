@@ -73,7 +73,7 @@ module Graph
     return chosen, days
   end
 
-  def generate_trend_graph_data(sessions, days, relative=false, num=20)
+  def generate_trend_graph_data(sessions, days, relative=false, num=20, nobuild_id=false)
     data = Data.new
     data.passed = passed = []
     data.failed = failed = []
@@ -83,7 +83,11 @@ module Graph
     sessions.sort! {|a,b| a.build_id <=> b.build_id}
     sessions.reverse!
     sessions.reverse_each do |s|
-      labels << s.build_id
+      if nobuild_id
+        labels << s.build_id
+      else
+        labels << s.testset + '/' + s.product + '/' + s.id.to_s
+      end
       total_cases = s.total_cases
       if total_cases > 0
         if relative

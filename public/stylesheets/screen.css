@@ -2299,8 +2299,18 @@ div.field.last {
 }
 
 .axis {
-    -moz-transform:translate(24px, 5px) rotate(35deg);
+    text-align:left !important;
+    -moz-transform:translate(24px, 10px) rotate(35deg);
     -moz-transform-origin:40% 100%;
-    -webkit-transform:translate(24px, 5px) rotate(35deg);
+    -webkit-transform:translate(24px, 10px) rotate(35deg);
+    -webkit-transform-origin:40% 100%;
+}
+
+
+.buildaxis {
+    text-align:left !important;
+    -moz-transform:translate(45px, 25px) rotate(35deg);
+    -moz-transform-origin:40% 100%;
+    -webkit-transform:translate(45px, 25px) rotate(35deg);
     -webkit-transform-origin:40% 100%;
 }
