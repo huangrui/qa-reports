@@ -30,6 +30,10 @@ $ () ->
       g.data('n/a',  na_values,     '#ddd')
       g.labels = trend_labels
       g.draw()
+      size_str = []
+      for i in trend_labels
+        size_str.push i if i != ""
+      $($(".bluff-text")[i]).addClass("axis") for i in [($(".bluff-text").size() - size_str.length) .. $(".bluff-text").size() - 1]
 
     draw_abs_graph = () ->
       draw_graph(trend_abs_passed, trend_abs_failed, trend_abs_na)
@@ -90,9 +94,3 @@ $ () ->
         $first_child.remove().find('.reports tr').appendTo($previous_month.find('.reports'))
 
   $(window).trigger('infinitescroll.scrollpage', 1)
-
-  size_str = []
-  for i in trend_labels
-    size_str.push i if i != ""
-
-  $($(".bluff-text")[i]).addClass("axis") for i in [($(".bluff-text").size() - size_str.length) .. $(".bluff-text").size() - 1]
