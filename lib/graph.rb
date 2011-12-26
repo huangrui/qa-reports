@@ -80,6 +80,7 @@ module Graph
     data.na     = na     = []
     data.labels = labels = []
 
+    sessions.sort! {|a,b| a.id <=> b.id}
     sessions.sort! {|a,b| a.build_id <=> b.build_id}
     sessions.reverse!
     sessions.reverse_each do |s|
