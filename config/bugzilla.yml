@@ -9,8 +9,8 @@ use_ssl: true
 uri: /jira/rest/api/2.0.alpha1/issue/
 
 # The URL used to link to bugs (bug id appended)
-link_uri: https://bugs.tizen.org/jira/browse/
-private_link_uri: https://saobs.jf.intel.com/jira/browse/
+link_uri:
+private_link_uri:
 
 # Proxy server address and port (leave empty if not needed)
 proxy_server: 
@@ -19,5 +19,5 @@ proxy_port:
 # HTTP Basic authentication. These are asked during deployment. Notice that
 # you need these only if you must login with HTTP Basic Auth to access
 # Bugzilla - i.e. your browsers displays a popup window asking for credentials.
-http_username: huangrui
-http_password: hr123456
+http_username:
+http_password:
