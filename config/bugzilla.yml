@@ -9,8 +9,8 @@ use_ssl: true
 uri: /jira/rest/api/2.0.alpha1/issue/
 
 # The URL used to link to bugs (bug id appended)
-link_uri:
-private_link_uri:
+link_uri: https://bugs.tizen.org/jira/browse/
+private_link_uri: https://saobs.jf.intel.com/jira/browse/
 
 # Proxy server address and port (leave empty if not needed)
 proxy_server: 
