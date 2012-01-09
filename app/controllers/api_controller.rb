@@ -142,7 +142,7 @@ class ApiController < ApplicationController
   def reports_by_limit_and_time
     begin
       raise ArgumentError, "Limit not defined" if not params.has_key? :limit_amount
-      sessions = MeegoTestSession.published.order("updated_at asc").limit(params[:limit_amount])
+      sessions = MeegoTestSession.published.order("updated_at DESC").limit(params[:limit_amount])
       if params.has_key? :begin_time
         begin_time = DateTime.parse params[:begin_time]
         sessions = sessions.where('updated_at > ?', begin_time)
