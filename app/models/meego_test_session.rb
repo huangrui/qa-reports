@@ -54,7 +54,7 @@ class MeegoTestSession < ActiveRecord::Base
   has_many :result_files,     :class_name => 'FileAttachment', :as => :attachable, :dependent => :destroy, :conditions => {:attachment_type => 'result_file'}
   has_many :attachments,      :class_name => 'FileAttachment', :as => :attachable, :dependent => :destroy, :conditions => {:attachment_type => 'attachment'}
 
-  validates_presence_of :title, :testset, :product
+  validates_presence_of :title, :testset, :product, :build_id
   validates_presence_of :result_files
   validates_presence_of :author
   validates_presence_of :release, :profile
@@ -308,9 +308,11 @@ class MeegoTestSession < ActiveRecord::Base
     # And for the record: at least these characters break the navigation:
     # . % \ / (yes, dot is there as well for some oddball reason)
     allowed = /\A[\w\ \-:;,\(\)]+\z/
+    build_allowed = /\A[\d.]+\z/
 
     errors.add :testset, "Incorrect test set. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( )" unless testset.match(allowed)
     errors.add :product, "Incorrect product. Please use only characters A-Z, a-z, 0-9, spaces and these special characters: , : ; - _ ( )"  unless product.match(allowed)
+    errors.add :build_id, "Incorrect build id. Please use only characters 0-9, and special character dot: .\nExample: Tizen_20120106.1_netbook-ia32-pinetrail => build id is 20120106.1"  unless build_id.match(build_allowed)
   end
 
   def generate_defaults!

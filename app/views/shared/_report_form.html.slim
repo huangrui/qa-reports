@@ -38,7 +38,7 @@
 .field
   label for="report_test_build_id"
     | Build id:
-    .help_tag optional
+    .help_tag Mandatory
   = f.text_field :build_id, :id => "report_test_build_id", :class => "text build_id", :tabindex => 5
   small.suggestions
     | e.g. #{render :partial=>'shared/suggestion', :collection => @build_ids[0,3], :spacer_template => 'shared/comma'}
