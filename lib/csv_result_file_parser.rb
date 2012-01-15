@@ -39,13 +39,17 @@ class CSVResultFileParser
   def parse(io)
     begin
       # TODO: Remove check when dropping support for version 1
-      if format_head_size(io) >= 11 then
-        FasterCSV.parse(io, @FCSV_settings) {|row| parse_row(row) }
+      if check_et_format?(io)
+        FasterCSV.parse(io, @FCSV_settings) {|row| parse_row_for_et(row) }
       else
-        if format_head_size(io) >= 5 then
-          FasterCSV.parse(io, @FCSV_settings) {|row| parse_row_version_1(row) }
+        if format_head_size(io) >= 11 then
+          FasterCSV.parse(io, @FCSV_settings) {|row| parse_row(row) }
         else
-          FasterCSV.parse(io, @FCSV_settings) {|row| parse_row_version_testcase_management(row) }
+          if format_head_size(io) >= 5 then
+            FasterCSV.parse(io, @FCSV_settings) {|row| parse_row_version_1(row) }
+          else
+            FasterCSV.parse(io, @FCSV_settings) {|row| parse_row_version_testcase_management(row) }
+          end
         end
       end
     rescue NoMethodError
@@ -75,6 +79,16 @@ class CSVResultFileParser
     # on we will not require all of those to be present, but for now
     # there has to be some differences so we can determine the version
     first_line.split(',').length
+  end
+
+  def check_et_format?(io)
+    first_line = io.readline
+    io.rewind
+    unless first_line["Component"].nil? && first_line["component"].nil?
+      return true
+    else
+      return false
+    end
   end
 
   def parse_row_version_1(row)
@@ -161,5 +175,8 @@ class CSVResultFileParser
          :sort_index => 0
        }]
     end
+  end
+
+  def parse_row_for_et(row)
   end
 end
