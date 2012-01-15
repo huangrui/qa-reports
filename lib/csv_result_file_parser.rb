@@ -6,10 +6,21 @@ class FasterCSV
       @valid_headers ||= (self.headers() & CSVResultFileParser::REQUIRED_CSV_FIELDS).length == CSVResultFileParser::REQUIRED_CSV_FIELDS.length
     end
 
+    def has_valid_headers_for_et?
+      # Check that all required headers are there
+      @valid_headers ||= (self.headers() & CSVResultFileParser::REQUIRED_CSV_FIELDS_FOR_ET).length == CSVResultFileParser::REQUIRED_CSV_FIELDS_FOR_ET.length
+    end
+
     def has_valid_data?
       (self[:feature] &&
        self[:test_case] &&
        self.fields(:pass, :fail, :na, :measured).count("1") == 1)
+    end
+
+    def has_valid_data_for_et?
+      (self[:component] &&
+       self[:name] &&
+       self[:status])
     end
   end
 end
@@ -24,6 +35,12 @@ class CSVResultFileParser
     :pass,
     :fail,
     :na
+  ]
+
+  REQUIRED_CSV_FIELDS_FOR_ET = [
+    :component,
+    :name,
+    :status
   ]
 
   def initialize
@@ -178,5 +195,45 @@ class CSVResultFileParser
   end
 
   def parse_row_for_et(row)
+    raise ParseError.new("unknown"), "Incorrect file format. Check CSV headers" unless row.has_valid_headers_for_et?
+    raise ParseError.new("unknown"), "Incorrect file format. Component, test case name, or test case status missing" unless row.has_valid_data_for_et?
+
+    feature = row[:component].toutf8.strip
+
+    unless row[:description].nil?
+      testcase = row[:name].toutf8.strip + ": " + row[:description].toutf8.strip
+    else
+      testcase = row[:name].toutf8.strip
+    end
+
+    comment = row[:comment].try(:toutf8).try(:strip) || ""
+
+    bugs = row[:bug].try(:toutf8).try(:strip) || ""
+
+    unless bugs.empty?
+      if comment.empty?
+        comment << "Bug info: " + bugs
+      else
+        comment << "  Bug info: " + bugs
+      end
+    end
+
+    result = case
+             when (row[:status].toutf8.strip.downcase == "pass") || (row[:status].toutf8.strip.downcase == "passed" )  then MeegoTestCase::PASS
+             when (row[:status].toutf8.strip.downcase == "fail") || (row[:status].toutf8.strip.downcase == "failed" )  then MeegoTestCase::FAIL
+             when (row[:status].toutf8.strip.downcase == "block") || (row[:status].toutf8.strip.downcase == "blocked" )  then MeegoTestCase::NA
+             when row[:status].toutf8.strip.downcase == "measured" then MeegoTestCase::MEASURED
+             else -10
+             end
+
+    unless result == -10
+      @features[feature] ||= {}
+      @features[feature][testcase] = {
+        :name                    => testcase,
+        :comment                 => comment,
+        :measurements_attributes => parse_measurements(row) || [],
+        :result                  => result
+      }
+    end
   end
 end
