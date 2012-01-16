@@ -195,45 +195,51 @@ class CSVResultFileParser
   end
 
   def parse_row_for_et(row)
-    raise ParseError.new("unknown"), "Incorrect file format. Check CSV headers" unless row.has_valid_headers_for_et?
-    raise ParseError.new("unknown"), "Incorrect file format. Component, test case name, or test case status missing" unless row.has_valid_data_for_et?
+    unless row[:name].nil?
+      raise ParseError.new("unknown"), "Incorrect file format. Check CSV headers" unless row.has_valid_headers_for_et?
+      raise ParseError.new("unknown"), "Incorrect file format. Component, test case name, or test case status missing" unless row.has_valid_data_for_et?
 
-    feature = row[:component].toutf8.strip
+      feature = row[:component].toutf8.strip
 
-    unless row[:description].nil?
-      testcase = row[:name].toutf8.strip + ": " + row[:description].toutf8.strip
-    else
-      testcase = row[:name].toutf8.strip
-    end
-
-    comment = row[:comment].try(:toutf8).try(:strip) || ""
-
-    bugs = row[:bug].try(:toutf8).try(:strip) || ""
-
-    unless bugs.empty?
-      if comment.empty?
-        comment << "Bug info: " + bugs
+      unless row[:description].nil?
+        testcase = row[:name].toutf8.strip + ": " + row[:description].toutf8.strip
       else
-        comment << "  Bug info: " + bugs
+        testcase = row[:name].toutf8.strip
       end
-    end
 
-    result = case
-             when (row[:status].toutf8.strip.downcase == "pass") || (row[:status].toutf8.strip.downcase == "passed" )  then MeegoTestCase::PASS
-             when (row[:status].toutf8.strip.downcase == "fail") || (row[:status].toutf8.strip.downcase == "failed" )  then MeegoTestCase::FAIL
-             when (row[:status].toutf8.strip.downcase == "block") || (row[:status].toutf8.strip.downcase == "blocked" )  then MeegoTestCase::NA
-             when row[:status].toutf8.strip.downcase == "measured" then MeegoTestCase::MEASURED
-             else -10
-             end
+      comment = row[:comment].try(:toutf8).try(:strip) || ""
 
-    unless result == -10
-      @features[feature] ||= {}
-      @features[feature][testcase] = {
-        :name                    => testcase,
-        :comment                 => comment,
-        :measurements_attributes => parse_measurements(row) || [],
-        :result                  => result
-      }
+      bugs = row[:bug].try(:toutf8).try(:strip) || ""
+
+      unless bugs.empty?
+        if comment.empty?
+          comment << "Bug info: " + bugs
+        else
+          comment << "  Bug info: " + bugs
+        end
+      end
+
+      result = case
+               when (row[:status].toutf8.strip.downcase == "pass") || (row[:status].toutf8.strip.downcase == "passed" )  then MeegoTestCase::PASS
+               when (row[:status].toutf8.strip.downcase == "fail") || (row[:status].toutf8.strip.downcase == "failed" )  then MeegoTestCase::FAIL
+               when (row[:status].toutf8.strip.downcase == "block") || (row[:status].toutf8.strip.downcase == "blocked" )  then MeegoTestCase::NA
+               when row[:status].toutf8.strip.downcase == "measured" then MeegoTestCase::MEASURED
+               else -10
+               end
+
+      unless result == -10
+        @features[feature] ||= {}
+        @features[feature][testcase] = {
+          :name                    => testcase,
+          :comment                 => comment,
+          :measurements_attributes => parse_measurements(row) || [],
+          :result                  => result
+        }
+      end
+    else
+      if row[:entitytype].empty?
+        raise ParseError.new("unknown"), "Incorrect file format. Component, test case name, or test case status missing" unless row.has_valid_data_for_et?
+      end
     end
   end
 end
