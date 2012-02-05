@@ -4,6 +4,7 @@ class MeegoTestCase < ActiveRecord::Base
   default_scope where(:deleted => false)
   scope :deleted, where(:deleted => true)
 
+  belongs_to :special_feature
   belongs_to :feature
   belongs_to :meego_test_session
 

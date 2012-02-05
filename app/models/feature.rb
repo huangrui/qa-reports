@@ -25,6 +25,7 @@ require 'graph'
 
 class Feature < ActiveRecord::Base
   belongs_to :meego_test_session
+  has_many :special_features, :dependent => :destroy, :order => "id DESC"
   has_many :meego_test_cases, :autosave => false, :dependent => :destroy
   has_many :test_cases,       :class_name => "MeegoTestCase", :autosave => false,     :order => "id DESC"
   has_many :passed,           :class_name => "MeegoTestCase", :conditions => { :result => MeegoTestCase::PASS     }

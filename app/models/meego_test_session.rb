@@ -44,6 +44,7 @@ class MeegoTestSession < ActiveRecord::Base
   belongs_to :profile
 
   has_many :features,         :dependent => :destroy, :order => "id DESC"
+  has_many :special_features, :autosave => false,     :order => "id DESC"
   has_many :meego_test_cases, :autosave => false,     :order => "id DESC"
   has_many :test_cases,       :class_name => "MeegoTestCase", :autosave => false,     :order => "id DESC"
   has_many :passed,           :class_name => "MeegoTestCase", :conditions => { :result => MeegoTestCase::PASS     }
