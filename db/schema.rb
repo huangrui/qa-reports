@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120205110334) do
+ActiveRecord::Schema.define(:version => 20120213070852) do
 
   create_table "features", :force => true do |t|
     t.string  "name",                  :default => ""
@@ -63,6 +63,7 @@ ActiveRecord::Schema.define(:version => 20120205110334) do
   add_index "meego_test_cases", ["feature_id"], :name => "index_meego_test_cases_on_meego_test_set_id"
   add_index "meego_test_cases", ["meego_test_session_id", "name"], :name => "index_meego_test_cases_on_meego_test_session_id_and_name"
   add_index "meego_test_cases", ["meego_test_session_id"], :name => "index_meego_test_cases_on_meego_test_session_id"
+  add_index "meego_test_cases", ["special_feature_id"], :name => "index_meego_test_cases_on_special_feature_id"
 
   create_table "meego_test_sessions", :force => true do |t|
     t.string   "environment",                       :default => ""
@@ -132,6 +133,10 @@ ActiveRecord::Schema.define(:version => 20120205110334) do
     t.integer "feature_id",                            :null => false
     t.integer "meego_test_session_id",                 :null => false
   end
+
+  add_index "special_features", ["feature_id"], :name => "index_special_features_on_feature_id"
+  add_index "special_features", ["meego_test_session_id"], :name => "index_special_features_on_meego_test_session_id"
+  add_index "special_features", ["name"], :name => "index_special_features_on_name"
 
   create_table "test_result_files", :force => true do |t|
     t.integer "meego_test_session_id", :null => false
