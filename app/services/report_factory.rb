@@ -76,8 +76,13 @@ class ReportFactory
       merge_results(features, new_features)
     end
 
-    params[:features_attributes] = features.map do |feature, test_cases|
-      { :name => feature, :meego_test_cases_attributes => test_cases.values }
+    params[:features_attributes] = features.map do |feature, special_features|
+      {
+        :name => feature,
+        :special_features_attributes => special_features.map do |special_feature, test_cases|
+          {:name => special_feature, :meego_test_cases_attributes => test_cases.values }
+        end
+      }
     end
   end
 

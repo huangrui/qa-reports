@@ -201,6 +201,8 @@ class CSVResultFileParser
 
       feature = row[:component].toutf8.strip
 
+      special_feature = row[:feature].try(:toutf8).try(:strip) || ""
+
       unless row[:description].nil?
         testcase = row[:name].toutf8.strip + ": " + row[:description].toutf8.strip
       else
@@ -229,7 +231,8 @@ class CSVResultFileParser
 
       unless result == -10
         @features[feature] ||= {}
-        @features[feature][testcase] = {
+        @features[feature][special_feature] ||= {}
+        @features[feature][special_feature][testcase] = {
           :name                    => testcase,
           :comment                 => comment,
           :measurements_attributes => parse_measurements(row) || [],
