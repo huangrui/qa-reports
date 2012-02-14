@@ -26,14 +26,14 @@ require 'graph'
 class Feature < ActiveRecord::Base
   belongs_to :meego_test_session
   has_many :special_features, :dependent => :destroy, :order => "id DESC"
-  has_many :meego_test_cases, :autosave => false, :dependent => :destroy
+  has_many :meego_test_cases, :autosave => false
   has_many :test_cases,       :class_name => "MeegoTestCase", :autosave => false,     :order => "id DESC"
   has_many :passed,           :class_name => "MeegoTestCase", :conditions => { :result => MeegoTestCase::PASS     }
   has_many :failed,           :class_name => "MeegoTestCase", :conditions => { :result => MeegoTestCase::FAIL     }
   has_many :na,               :class_name => "MeegoTestCase", :conditions => { :result => MeegoTestCase::NA       }
   has_many :measured,         :class_name => "MeegoTestCase", :conditions => { :result => MeegoTestCase::MEASURED }
 
-  after_create :save_test_cases
+  before_create :save_special_features
 
   include ReportSummary
   include Graph
@@ -77,23 +77,16 @@ class Feature < ActiveRecord::Base
     "#test-set-%i" % id
   end
 
-  def meego_test_cases_attributes=(attributes)
-    attributes.each { |test_case_attributes| meego_test_cases.build(test_case_attributes) }
+  def special_features_attributes=(attributes)
+    attributes.each { |feature_attributes| special_features.build(feature_attributes) }
   end
 
-  def save_test_cases
-    test_cases = []
-    meego_test_cases.each do |test_case|
-      test_case.feature_id = id
-      test_case.meego_test_session_id = meego_test_session_id
-      if !test_case.measurements.empty? or !test_case.serial_measurements.empty?
-        test_case.save!
-      else
-        test_cases << test_case
-      end
+  def save_special_features
+    spec_feas = []
+    special_features.each do |spec_fea|
+      spec_fea.meego_test_session_id = meego_test_session_id
+      spec_feas << spec_fea
     end
-
-    MeegoTestCase.import test_cases, :validate => false
   end
 
   def merge!(feature_hash)
