@@ -73,7 +73,7 @@ class ReportFactory
 
       raise ParseError.new(result_attachment.filename), result_attachment.filename + " didn't contain any valid test cases" if new_features.empty?
 
-      merge_results(features, new_features)
+      merge_features(features, new_features)
     end
 
     params[:features_attributes] = features.map do |feature, special_features|
@@ -86,10 +86,17 @@ class ReportFactory
     end
   end
 
-  def merge_results(features, new_features)
-    new_features.each do |feature, tcs|
+  def merge_features(features, new_features)
+    new_features.each do |feature, spec_feas|
       features[feature] ||= {}
-      features[feature].merge!(tcs)
+      merge_spec_features(features[feature], spec_feas)
+    end
+  end
+
+  def merge_spec_features(features, new_features)
+    new_features.each do |feature, spec_feas|
+      features[feature] ||= {}
+      features[feature].merge!(spec_feas)
     end
   end
 
