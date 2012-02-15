@@ -30,4 +30,16 @@ class SpecialFeature < ActiveRecord::Base
 
     MeegoTestCase.import test_cases, :validate => false
   end
+
+  def merge!(feature_hash)
+    current_cases = test_cases.index_by &:name
+    existing_cases, new_cases = feature_hash[:meego_test_cases_attributes].
+                           partition {|ch| current_cases.has_key? ch[:name] }
+
+    test_cases.delete existing_cases.map { |ch| current_cases[ch[:name]].destroy }
+
+    (existing_cases + new_cases).each do |ch|
+      test_cases.create ch.merge({:meego_test_session_id => meego_test_session.id, :feature_id => feature.id})
+    end
+  end
 end
