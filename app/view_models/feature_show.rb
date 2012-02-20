@@ -18,4 +18,9 @@ class FeatureShow < SummaryShow
   def graph_img_tag(max_cases)
     @feature.html_graph total_passed, total_failed, total_na, max_cases
   end
+
+  def special_features
+    @special_features ||= @feature.special_features.map { |special_feature| SpecialFeatureShow.new(special_feature, @build_diff) }
+  end
+
 end

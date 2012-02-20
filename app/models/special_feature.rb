@@ -1,3 +1,5 @@
+require 'testreport'
+
 class SpecialFeature < ActiveRecord::Base
   belongs_to :meego_test_session
   belongs_to :feature
@@ -10,6 +12,8 @@ class SpecialFeature < ActiveRecord::Base
   has_many :measured,         :class_name => "MeegoTestCase", :conditions => { :result => MeegoTestCase::MEASURED }
 
   after_create :save_test_cases
+
+  include ReportSummary
 
   def meego_test_cases_attributes=(attributes)
     attributes.each { |test_case_attributes| meego_test_cases.build(test_case_attributes) }
