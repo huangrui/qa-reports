@@ -69,7 +69,7 @@ h2#test_results
             td class=@report_show.change_class(:nft_index)
               em= @report_show.percentage_change(:nft_index)
 
-    h3#test_features Test Results by Feature
+    h3#test_features Test Results by Component
 
     - if contain_history(@history) or @build_diff.present?
       span.sort
@@ -82,7 +82,7 @@ h2#test_results
     table.feature_detailed_results#test_results_by_feature
       thead.even
         tr
-          th.th_feature Feature
+          th.th_feature Component
           th.th_total Total
           th.th_passed Passed
           th.th_failed Failed
@@ -98,7 +98,7 @@ h2#test_results
         table.feature_detailed_results_with_passrate_history#test_feature_history_results style="display:none"
           thead.even
             tr
-              th.th_feature Feature
+              th.th_feature Component
               th.th_total Total
               th.th_passed Passed
               th.th_failed Failed
@@ -111,7 +111,7 @@ h2#test_results
       table.feature_detailed_results_with_build_id#test_feature_build_results style="display:none"
         thead.even
           tr
-            th.th_feature Feature
+            th.th_feature Component
             th.th_total Total
             th.th_passed Passed
             th.th_failed Failed
