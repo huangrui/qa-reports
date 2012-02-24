@@ -1,16 +1,15 @@
 - testcase = testcase_history
-tr.testcase
-  td.testcase_name= testcase.name
-  - @history.reverse_each do |h|
-    - tc = testcase.find_matching_case(h)
-    - if tc
-      td class="testcase_result history_result #{result_class(tc)}" #{result_html(tc)}
-    - else
-      td class="testcase_result history_result" -
-  td class="testcase_result #{result_class(testcase)} current_result" #{result_html(testcase)}
-  td class="testcase_notes" rowspan="#{testcase.all_measurements.size if testcase.has_measurements? }"
-    .content
-      = comment_html(testcase)
-      - if testcase.attachment
-        - attachment = testcase.attachment
-        a class="note_attachment #{'image_attachment' if attachment.image?}" href="#{attachment.pretty_url}" title=attachment.filename =attachment.pretty_url
+td.testcase_name= testcase.name
+- @history.reverse_each do |h|
+  - tc = testcase.find_matching_case(h)
+  - if tc
+    td class="testcase_result history_result #{result_class(tc)}" #{result_html(tc)}
+  - else
+    td class="testcase_result history_result" -
+td class="testcase_result #{result_class(testcase)} current_result" #{result_html(testcase)}
+td class="testcase_notes" rowspan="#{testcase.all_measurements.size if testcase.has_measurements? }"
+  .content
+    = comment_html(testcase)
+    - if testcase.attachment
+      - attachment = testcase.attachment
+      a class="note_attachment #{'image_attachment' if attachment.image?}" href="#{attachment.pretty_url}" title=attachment.filename =attachment.pretty_url
