@@ -1,0 +1,5 @@
+- special_feature_build.non_nft_cases.each do |testcase|
+  tr.testcase
+    - if special_feature_build.non_nft_cases[0].eql? testcase
+      td.specialfeature rowspan="#{special_feature_build.non_nft_cases.size}" #{special_feature_build.name}
+    = render :partial => "testcase_build", :object => testcase
