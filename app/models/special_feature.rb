@@ -48,6 +48,10 @@ class SpecialFeature < ActiveRecord::Base
     meego_test_cases.select {|tc| !tc.has_measurements?}
   end
 
+  def non_nft_fail_na_cases
+    testcases = self.non_nft_cases.select{|tc| tc.result != MeegoTestCase::PASS}
+  end
+
   def save_test_cases
     test_cases = []
     meego_test_cases.each do |test_case|

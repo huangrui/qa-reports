@@ -1,4 +1,4 @@
 - special_feature.non_nft_cases.each do |testcase|
-  tr class="testcase #{result_class(testcase, 'result_')}" id="testcase-#{testcase.id}" style=hide_passing(testcase) value="#{special_feature.test_cases.size}/#{special_feature.failed.size+special_feature.na.size}"
+  tr class="testcase #{result_class(testcase, 'result_')}" id="testcase-#{testcase.id}" style=hide_passing(testcase) value="#{special_feature.non_nft_cases.size}/#{special_feature.non_nft_fail_na_cases.size}"
     td.specialfeature  #{special_feature.name}
     = render :partial => "testcase", :object => testcase
