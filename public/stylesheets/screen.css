@@ -1699,6 +1699,11 @@ td.feature_record_grading.edit:hover {
 select.grading_select {
     font-size: 11px;}
 
+.specialfeature {
+    width: 10%;
+    text-align: center;
+}
+
 .testcase td {
     border-bottom: 1px solid #eee;
     border-left: none;

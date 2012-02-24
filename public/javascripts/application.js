@@ -382,9 +382,68 @@ function filterResults(rowsToHide, typeText) {
         }
     }
 
+    function swapresults($tbody) {
+        if ($tbody[0].firstElementChild.hasAttribute("value"))
+        {
+            var group_tr = $tbody.find(".testcase");
+            var count = $tbody.find("tr:hidden").length;
+            i = 0;
+            k = 0;
+            if (count > 0)
+            {
+              dis_count_init = group_tr[0].attributes.getNamedItem("value").nodeValue.split("/");
+              k = parseInt(dis_count_init);
+              first_tag = 0;
+              while (i < group_tr.size())
+              {
+                group_tr[i].firstElementChild.removeAttribute("style");
+                dis_count = group_tr[i].attributes.getNamedItem("value").nodeValue.split("/");
+                all_val = parseInt(dis_count[0]);
+                fail_na_val = parseInt(dis_count[1]);
+                if (i == k)
+                {
+                  k += all_val;
+                  first_tag = 0;
+                }
+                if (group_tr[i].className == "testcase result_pass")
+                  group_tr[i].setAttribute("style", "display:none");
+                else
+                {
+                  if (first_tag == 0)
+                  {
+                    group_tr[i].firstElementChild.setAttribute("rowspan", dis_count[1]);
+                    first_tag = 1;
+                  }
+                  else
+                    group_tr[i].firstElementChild.setAttribute("style", "display:none");
+                }
+                i++;
+              }
+            }
+            else
+            {
+              while (i < group_tr.size())
+              {
+                if (i == k)
+                {
+                  group_tr[i].firstElementChild.removeAttribute("style");
+                  dis_count = group_tr[i].attributes.getNamedItem("value").nodeValue.split("/");
+                  all_val = parseInt(dis_count[0]);
+                  group_tr[i].firstElementChild.setAttribute("rowspan", dis_count[0]);
+                  k += all_val;
+                }
+                else
+                  group_tr[i].firstElementChild.setAttribute("style", "display:none");
+                i++;
+              }
+            }
+        }
+    }
+
     var updateToggles = function() {
         $("a.see_all_toggle").each(function() {
           $tbody = $(this).parents("tbody").next("tbody");
+          swapresults($tbody);
           updateToggle($tbody, $(this));
         });
     }
@@ -479,6 +538,7 @@ function filterResults(rowsToHide, typeText) {
             var $this = $(this);
             $tbody = $this.parents("tbody").next("tbody");
             $tbody.find(rowsToHide).toggle();
+            swapresults($tbody);
             updateToggle($tbody, $this);
             return false;
         });

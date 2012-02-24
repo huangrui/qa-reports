@@ -59,6 +59,10 @@ class Feature < ActiveRecord::Base
     meego_test_cases.select {|tc| tc.has_measurements?}
   end
 
+  def non_nft_special_features
+    special_features.select &:has_non_nft?
+  end
+
   def non_nft_cases
     meego_test_cases.select {|tc| !tc.has_measurements?}
   end

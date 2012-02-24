@@ -1,7 +1,7 @@
 tbody
-tr.feature_name id="test-set-#{feature.id}"
-  td colspan="3"
-    = print_title_link(feature.name)
-    a.see_all_toggle href="#"
+  tr.feature_name id="test-set-#{feature.id}"
+    td colspan="4"
+      = print_title_link(feature.name)
+      a.see_all_toggle href="#"
 tbody
-  = render :partial => "testcase", :collection => feature.non_nft_cases
+  = render :partial => "special_feature", :collection => feature.non_nft_special_features

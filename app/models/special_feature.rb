@@ -44,6 +44,10 @@ class SpecialFeature < ActiveRecord::Base
     attributes.each { |test_case_attributes| meego_test_cases.build(test_case_attributes) }
   end
 
+  def non_nft_cases
+    meego_test_cases.select {|tc| !tc.has_measurements?}
+  end
+
   def save_test_cases
     test_cases = []
     meego_test_cases.each do |test_case|
