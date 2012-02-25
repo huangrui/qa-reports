@@ -24,6 +24,7 @@
 #
 
 require 'testreport'
+require 'graph'
 
 class SpecialFeature < ActiveRecord::Base
   belongs_to :meego_test_session
@@ -39,6 +40,7 @@ class SpecialFeature < ActiveRecord::Base
   after_create :save_test_cases
 
   include ReportSummary
+  include Graph
 
   def meego_test_cases_attributes=(attributes)
     attributes.each { |test_case_attributes| meego_test_cases.build(test_case_attributes) }

@@ -69,15 +69,15 @@ h2#test_results
             td class=@report_show.change_class(:nft_index)
               em= @report_show.percentage_change(:nft_index)
 
-    h3#test_features Test Results by Component
+    h3#test_components Test Results by Component
 
     - if contain_history(@history) or @build_diff.present?
       span.sort
-        a.see_feature_comment_button.sort_btn#detailed_feature.active href="#" See comment and grading
+        a.see_component_comment_button.sort_btn#detailed_feature.active href="#" See comment and grading
         - if contain_history(@history)
-          a.see_feature_history_button.sort_btn#detailed_feature href="#" See history pass%
+          a.see_component_history_button.sort_btn#detailed_feature href="#" See history pass%
         - unless @build_diff.empty?
-          a.see_feature_build_button.sort_btn#detailed_feature href="#" See build pass%
+          a.see_component_build_button.sort_btn#detailed_feature href="#" See build pass%
 
     table.feature_detailed_results#test_results_by_feature
       thead.even
@@ -122,6 +122,31 @@ h2#test_results
               div style="position:relative;"
 
         = render :partial => 'feature_pass_rate_build_summary', :collection => @report_show.features
+
+
+    h3#test_features Test Results by Feature
+
+    - if contain_history(@history) or @build_diff.present?
+      span.sort
+        a.see_feature_comment_button.sort_btn#detailed_feature.active href="#" See comment and grading
+        - if contain_history(@history)
+          a.see_feature_history_button.sort_btn#detailed_feature href="#" See history pass%
+        - unless @build_diff.empty?
+          a.see_feature_build_button.sort_btn#detailed_feature href="#" See build pass%
+
+    table.feature_detailed_results#test_results_by_feature
+      thead.even
+        tr
+          th.th_feature Component
+          th.th_special_feature Feature
+          th.th_total Total
+          th.th_passed Passed
+          th.th_failed Failed
+          th.th_not_testable Blocked
+          th.th_pass_rate Pass%
+          th.th_graph &nbsp;
+
+      = render :partial => 'special_feature_summary', :collection => @report_show.non_empty_features, :locals => {:max_cases => @report_show.max_feature_cases}
 
 - data = @report.summary_data
 

@@ -1,0 +1,18 @@
+- special_feature_summary.special_features.each do |special_feature|
+  tr class="special_feature_record #{row_class(special_feature_summary_counter)}" id="special-feature-#{special_feature_summary.id}"
+    - if special_feature_summary.special_features[0].eql? special_feature
+      - if @email
+        td rowspan="#{special_feature_summary.special_features.size}"
+          = special_feature_summary.name
+      - else
+        td rowspan="#{special_feature_summary.special_features.size}"
+          a href=special_feature_summary.test_set_link
+            = print_title(special_feature_summary.name)
+  
+    td =special_feature.name
+    td.total=special_feature.total_cases
+    td.pass=special_feature.total_passed
+    td.fail=special_feature.total_failed
+    td.na=special_feature.total_na
+    td.rate=special_feature.percentage(:pass_rate)
+    td=special_feature.graph_img_tag(max_cases)
