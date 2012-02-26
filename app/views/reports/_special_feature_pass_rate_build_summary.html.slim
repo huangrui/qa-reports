@@ -1,0 +1,23 @@
+- special_feature_pass_rate_build_summary.special_features.each do |special_feature|
+  - special_feature_summary = special_feature_pass_rate_build_summary
+  tr class="feature_record #{row_class(special_feature_pass_rate_build_summary_counter)}" id="feature-#{special_feature_summary.id}"
+    - if special_feature_summary.special_features[0].eql? special_feature
+      - if @email
+        td rowspan="#{special_feature_summary.special_features.size}"
+          = speical_feature_summary.name
+      - else
+        td rowspan="#{special_feature_summary.special_features.size}"
+          a href=special_feature_summary.test_set_link
+            = print_title(special_feature_summary.name)
+  
+    td =special_feature.name
+    td.total=special_feature.total_cases
+    td.pass=special_feature.total_passed
+    td.fail=special_feature.total_failed
+    td.na=special_feature.total_na
+    - special_feature.history(@build_diff).reverse_each do |feature|
+      - if feature
+        td.test_feature_pass_rate.feature_build_result = feature.percentage(:pass_rate)
+      - else
+        td class="test_feature_pass_rate feature_build_result" -
+    td.rate.current_feature_build_result = special_feature.percentage(:pass_rate)
