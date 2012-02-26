@@ -73,13 +73,13 @@ h2#test_results
 
     - if contain_history(@history) or @build_diff.present?
       span.sort
-        a.see_component_comment_button.sort_btn#detailed_feature.active href="#" See comment and grading
+        a.see_component_comment_button.sort_btn#detailed_component.active href="#" See comment and grading
         - if contain_history(@history)
-          a.see_component_history_button.sort_btn#detailed_feature href="#" See history pass%
+          a.see_component_history_button.sort_btn#detailed_component href="#" See history pass%
         - unless @build_diff.empty?
-          a.see_component_build_button.sort_btn#detailed_feature href="#" See build pass%
+          a.see_component_build_button.sort_btn#detailed_component href="#" See build pass%
 
-    table.feature_detailed_results#test_results_by_feature
+    table.component_detailed_results#test_results_by_component
       thead.even
         tr
           th.th_feature Component
@@ -95,7 +95,7 @@ h2#test_results
       = render :partial => 'feature_summary', :collection => @report_show.non_empty_features, :locals => {:max_cases => @report_show.max_feature_cases}
 
     - if contain_history(@history)
-        table.feature_detailed_results_with_passrate_history#test_feature_history_results style="display:none"
+        table.component_detailed_results_with_passrate_history#test_component_history_results style="display:none"
           thead.even
             tr
               th.th_feature Component
@@ -108,7 +108,7 @@ h2#test_results
           = render :partial => 'feature_pass_rate_history_summary', :collection => @report_show.features
 
     - unless @build_diff.empty?
-      table.feature_detailed_results_with_build_id#test_feature_build_results style="display:none"
+      table.component_detailed_results_with_build_id#test_component_build_results style="display:none"
         thead.even
           tr
             th.th_feature Component
@@ -147,6 +147,37 @@ h2#test_results
           th.th_graph &nbsp;
 
       = render :partial => 'special_feature_summary', :collection => @report_show.non_empty_features, :locals => {:max_cases => @report_show.max_feature_cases}
+
+    - if contain_history(@history)
+        table.feature_detailed_results_with_passrate_history#test_feature_history_results style="display:none"
+          thead.even
+            tr
+              th.th_feature Component
+              th.th_special_feature Feature
+              th.th_total Total
+              th.th_passed Passed
+              th.th_failed Failed
+              th.th_not_testable Blocked
+              = history_headers(@history)
+              th.th_result.current_feature_history_result Current
+          = render :partial => 'special_feature_pass_rate_history_summary', :collection => @report_show.features
+
+    - unless @build_diff.empty?
+      table.feature_detailed_results_with_build_id#test_feature_build_results style="display:none"
+        thead.even
+          tr
+            th.th_feature Component
+            th.th_special_feature Feature
+            th.th_total Total
+            th.th_passed Passed
+            th.th_failed Failed
+            th.th_not_testable Blocked
+            = build_pass_rate_headers(@build_diff)
+            th.th_result.current_feature_build_result *#{@report_show.build_id}
+            th style="border-bottom-style: none;"
+              div style="position:relative;"
+
+        = render :partial => 'special_feature_pass_rate_build_summary', :collection => @report_show.features
 
 - data = @report.summary_data
 

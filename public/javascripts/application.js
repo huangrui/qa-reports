@@ -449,6 +449,48 @@ function filterResults(rowsToHide, typeText) {
     }
 
 
+    $(".see_component_build_button").click(function(){
+      $("a#detailed_component.sort_btn").removeClass("active");
+      $("#test_component_by_feature").hide();
+      $('#test_component_history_results').hide();
+      $component_build.show();
+      $(this).addClass("active");
+      return false;
+    });
+
+    $(".see_component_comment_button").click(function(){
+      $("a#detailed_component.sort_btn").removeClass("active");
+      $("#test_component_build_results").hide();
+      $component_details.show();
+      $(this).addClass("active");
+      return false;
+    });
+
+    $(".see_the_same_component_build_button").click(function(){
+      $("a#detailed_case.sort_btn").removeClass("active");
+      $("#detailed_functional_test_results").hide();
+      $build.show();
+      $build.find(".see_the_same_build_button").addClass("active");
+      return false;
+    });
+   
+    $(".see_component_history_button").click(function(){
+        $("a#detailed_component.sort_btn").removeClass("active");
+        $("#test_results_by_component").hide();
+        $("#test_component_build_results").hide();
+        $component_history.show();
+        $(this).addClass("active");
+        return false;
+    });
+
+    $(".see_component_comment_button").click(function(){
+        $("a.see_feature_history_button").removeClass("active");
+        $(this).addClass("active");
+        $component_history.hide();
+        $component_details.show();
+        return false;
+    }); 
+
     $(".see_feature_build_button").click(function(){
       $("a#detailed_feature.sort_btn").removeClass("active");
       $("#test_results_by_feature").hide();
@@ -547,6 +589,9 @@ function filterResults(rowsToHide, typeText) {
     var $detail  = $("table.detailed_results").first();
     var $history = $("table.detailed_results.history");
     var $build = $("table.detailed_results.build");
+    var $component_details = $("table.component_detailed_results").first();
+    var $component_history = $("table.component_detailed_results_with_passrate_history");
+    var $component_build = $("table.component_detailed_results_with_build_id")
     var $feature_details = $("table.feature_detailed_results").first();
     var $feature_history = $("table.feature_detailed_results_with_passrate_history");
     var $feature_build = $("table.feature_detailed_results_with_build_id")

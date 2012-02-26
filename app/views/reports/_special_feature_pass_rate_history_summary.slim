@@ -1,0 +1,44 @@
+/
+/ This file is part of meego-test-reports
+/
+/ Copyright (C) 2010 Intel Corporation.
+/
+/ Authors: Huang Rui <rui.r.huang@intel.com>
+/
+/ This program is free software; you can redistribute it and/or
+/ modify it under the terms of the GNU Lesser General Public License
+/ version 2.1 as published by the Free Software Foundation.
+/
+/ This program is distributed in the hope that it will be useful, but
+/ WITHOUT ANY WARRANTY; without even the implied warranty of
+/ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+/ Lesser General Public License for more details.
+/
+/ You should have received a copy of the GNU Lesser General Public
+/ License along with this program; if not, write to the Free Software
+/ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+/ 02110-1301 USA
+/
+- special_feature_pass_rate_history_summary.special_features.each do |special_feature|
+  - special_feature_summary = special_feature_pass_rate_history_summary
+  tr class="feature_record #{row_class(special_feature_pass_rate_history_summary_counter)}" id="feature-#{special_feature_summary.id}"
+    - if special_feature_summary.special_features[0].eql? special_feature
+      - if @email
+        td rowspan="#{special_feature_summary.special_features.size}"
+          =special_feature_summary.name
+      - else
+        td rowspan="#{special_feature_summary.special_features.size}"
+          a href="#{special_feature_summary.test_set_link}" =print_title(special_feature_summary.name)
+
+    td =special_feature.name 
+    td.total =special_feature.total_cases
+    td.pass  =special_feature.total_passed
+    td.fail  =special_feature.total_failed
+    td.na    =special_feature.total_na
+
+    - special_feature.history(@history).reverse_each do |feature|
+      - if feature
+        td.test_feature_pass_rate.feature_history_result =feature.percentage(:pass_rate)
+      - else
+        td class="test_feature_pass_rate feature_history_result" -
+    td.rate.current_feature_history_result =special_feature.percentage(:pass_rate)

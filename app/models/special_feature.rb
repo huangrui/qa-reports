@@ -42,6 +42,18 @@ class SpecialFeature < ActiveRecord::Base
   include ReportSummary
   include Graph
 
+  def find_matching_special_feature(session)
+    return nil unless session
+    session.features.each do |f|
+      if f.name == self.feature.name
+        f.special_features.each do |sf|
+          return sf if sf.name == name
+        end
+      end
+    end
+    nil
+  end
+
   def meego_test_cases_attributes=(attributes)
     attributes.each { |test_case_attributes| meego_test_cases.build(test_case_attributes) }
   end
