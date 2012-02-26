@@ -484,12 +484,12 @@ function filterResults(rowsToHide, typeText) {
     });
 
     $(".see_component_comment_button").click(function(){
-        $("a.see_feature_history_button").removeClass("active");
+        $("a.see_component_history_button").removeClass("active");
         $(this).addClass("active");
         $component_history.hide();
         $component_details.show();
         return false;
-    }); 
+    });
 
     $(".see_feature_build_button").click(function(){
       $("a#detailed_feature.sort_btn").removeClass("active");
