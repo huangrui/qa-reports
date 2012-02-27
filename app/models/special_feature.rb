@@ -16,7 +16,7 @@
 #
 # Authors:
 #       Huang Rui  <rui.r.huang@intel.com>
-# Date Created: 2012/03/20
+# Date Created: 2012/02/20
 #
 # Modifications:
 #          Modificator  Date
