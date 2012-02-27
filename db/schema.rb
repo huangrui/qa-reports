@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120213070852) do
+ActiveRecord::Schema.define(:version => 20120227061153) do
 
   create_table "features", :force => true do |t|
     t.string  "name",                  :default => ""
@@ -33,6 +33,18 @@ ActiveRecord::Schema.define(:version => 20120213070852) do
   end
 
   add_index "file_attachments", ["attachable_id"], :name => "index_file_attachments_on_attachable_id"
+
+  create_table "mappings", :force => true do |t|
+    t.string  "feature",         :null => false
+    t.string  "special_feature", :null => false
+    t.string  "test_case",       :null => false
+    t.integer "profile_id",      :null => false
+  end
+
+  add_index "mappings", ["feature"], :name => "index_mappings_on_feature"
+  add_index "mappings", ["profile_id"], :name => "index_mappings_on_profile_id"
+  add_index "mappings", ["special_feature"], :name => "index_mappings_on_special_feature"
+  add_index "mappings", ["test_case"], :name => "index_mappings_on_test_case"
 
   create_table "meego_measurements", :force => true do |t|
     t.integer "meego_test_case_id"
