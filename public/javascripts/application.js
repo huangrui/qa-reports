@@ -451,7 +451,7 @@ function filterResults(rowsToHide, typeText) {
 
     $(".see_component_build_button").click(function(){
       $("a#detailed_component.sort_btn").removeClass("active");
-      $("#test_component_by_feature").hide();
+      $("#test_results_by_component").hide();
       $('#test_component_history_results').hide();
       $component_build.show();
       $(this).addClass("active");
