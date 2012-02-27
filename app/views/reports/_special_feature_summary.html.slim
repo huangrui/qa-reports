@@ -20,3 +20,7 @@
     td.na=special_feature.total_na
     td.rate=special_feature.percentage(:pass_rate)
     td=special_feature.graph_img_tag(max_cases)
+
+    td class="feature_record_grading"
+      span class="content #{grading_class(special_feature)}"
+        |&nbsp;&nbsp;

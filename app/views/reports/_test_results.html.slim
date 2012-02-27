@@ -145,6 +145,7 @@ h2#test_results
           th.th_not_testable Blocked
           th.th_pass_rate Pass%
           th.th_graph &nbsp;
+          th.th_grading Grading
 
       = render :partial => 'special_feature_summary', :collection => @report_show.non_empty_features, :locals => {:max_cases => @report_show.max_feature_cases}
 

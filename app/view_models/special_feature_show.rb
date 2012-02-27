@@ -1,6 +1,6 @@
 class SpecialFeatureShow < SummaryShow
 
-  delegate :name,
+  delegate :name, :grading,
            :to => :@special_feature
 
   def initialize(feature, build_diff=[])
