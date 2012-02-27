@@ -1700,6 +1700,7 @@ select.grading_select {
     font-size: 11px;}
 
 .specialfeature {
+    border-right: 1px solid #ccc;
     width: 10%;
     text-align: center;
 }

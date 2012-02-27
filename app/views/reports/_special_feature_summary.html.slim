@@ -2,14 +2,18 @@
   tr class="special_feature_record #{row_class(special_feature_summary_counter)}" id="special-feature-#{special_feature_summary.id}"
     - if special_feature_summary.special_features[0].eql? special_feature
       - if @email
-        td rowspan="#{special_feature_summary.special_features.size}"
+        td rowspan="#{special_feature_summary.special_features.size}" style="vertical-align: top;"
           = special_feature_summary.name
       - else
-        td rowspan="#{special_feature_summary.special_features.size}"
+        td rowspan="#{special_feature_summary.special_features.size}" style="vertical-align: top;"
           a href=special_feature_summary.test_set_link
             = print_title(special_feature_summary.name)
-  
-    td =special_feature.name
+
+    - if special_feature_summary.special_features[0].eql? special_feature
+      td =special_feature.name
+    - else
+      td style="border-left: 1px solid #ccc;"
+        =special_feature.name
     td.total=special_feature.total_cases
     td.pass=special_feature.total_passed
     td.fail=special_feature.total_failed
