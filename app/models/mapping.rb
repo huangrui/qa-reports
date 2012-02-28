@@ -24,4 +24,5 @@
 #
 
 class Mapping < ActiveRecord::Base
+  belongs_to :profile
 end
