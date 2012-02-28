@@ -53,11 +53,35 @@ class CSVResultFileParser
     }
   end
 
-  def parse(io)
+  ############################################################################
+  #  Begin with inserting mappings
+  #####
+
+  def parse_mapping(io)
+    FasterCSV.parse(io, @FCSV_settings) {|row| parse_row_for_mapping(row)}
+  end
+
+  def parse_row_for_mapping(row)
+    mapping_features = {
+      :feature => row[:component],
+      :special_feature => row[:feature],
+      :test_case => row[:case],
+      :profile => Profile.find_by_name(row[:profile])
+    }
+    mapping_record = Mapping.new(mapping_features)
+    mapping_record.save!
+    mapping_record
+  end
+
+  #####
+  #   End inserting
+  ############################################################################
+
+  def parse(io, profile_id)
     begin
       # TODO: Remove check when dropping support for version 1
       if check_et_format?(io)
-        FasterCSV.parse(io, @FCSV_settings) {|row| parse_row_for_et(row) }
+        FasterCSV.parse(io, @FCSV_settings) {|row| parse_row_for_et(row, profile_id) }
       else
         if format_head_size(io) >= 11 then
           FasterCSV.parse(io, @FCSV_settings) {|row| parse_row(row) }
@@ -194,7 +218,7 @@ class CSVResultFileParser
     end
   end
 
-  def parse_row_for_et(row)
+  def parse_row_for_et(row, profile_id)
     unless row[:name].nil?
       raise ParseError.new("unknown"), "Incorrect file format. Check CSV headers" unless row.has_valid_headers_for_et?
       raise ParseError.new("unknown"), "Incorrect file format. Component, test case name, or test case status missing" unless row.has_valid_data_for_et?
@@ -230,6 +254,12 @@ class CSVResultFileParser
                end
 
       unless result == -10
+        if special_feature.blank?
+          special_feature_buffer = Mapping.find(:all ,:conditions => ["feature = ? and test_case = ? and profile_id = ?", row[:component], row[:name], profile_id], :order => "id DESC")
+          unless special_feature_buffer.blank?
+            special_feature = special_feature_buffer.first[:special_feature]
+          end
+        end
         @features[feature] ||= {}
         @features[feature][special_feature] ||= {}
         @features[feature][special_feature][testcase] = {

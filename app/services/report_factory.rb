@@ -27,6 +27,11 @@ class ReportFactory
     test_session
   end
 
+  def create_mapping(params)
+    file = params[:result_files].first.file.to_file
+    mapping_hash = CSVResultFileParser.new.parse_mapping(file)
+  end
+
   def parse_results(files)
     data = {:result_files_attributes => files.map {|f| {:file => f, :attachment_type => :result_file}} }
     parse_result_files(data)
@@ -60,7 +65,7 @@ class ReportFactory
     params[:result_files].each do |result_attachment|
       file = result_attachment.file.to_file
       if result_attachment.filename =~ /.csv$/i
-        new_features = CSVResultFileParser.new.parse(file)
+        new_features = CSVResultFileParser.new.parse(file, params[:profile].id)
       elsif result_attachment.filename =~ /.xml$/i
         begin
           new_features = XMLResultFileParser.new.parse(file)
