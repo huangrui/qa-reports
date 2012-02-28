@@ -93,7 +93,7 @@ class ApiController < ApplicationController
 
   def merge_result
     report = MeegoTestSession.find(params[:id])
-    report.merge_result_files!(params[:result_files])
+    report.merge_result_files!(params[:result_files], report[:profile_id])
     if report.errors.empty? && report.save
       report.update_attribute(:editor, current_user)
       head :ok

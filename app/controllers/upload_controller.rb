@@ -75,7 +75,7 @@ class UploadController < ApplicationController
     session = MeegoTestSession.find(params[:id])
     @editing = true
 
-    session.merge_result_files!([file])
+    session.merge_result_files!([file], session[:profile_id])
     if session.errors.empty? && session.save
       session.update_attribute(:editor, current_user)
       expire_caches_for(session)

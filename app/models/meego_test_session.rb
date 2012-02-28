@@ -367,7 +367,7 @@ class MeegoTestSession < ActiveRecord::Base
     end
   end
 
-  def merge_result_files!(files)
+  def merge_result_files!(files, profile_id)
     unless files.present?
       errors.add :result_files, "No result files."
       return self
@@ -381,7 +381,7 @@ class MeegoTestSession < ActiveRecord::Base
     end
 
     begin
-      new_data = ReportFactory.new.parse_results(files)
+      new_data = ReportFactory.new.parse_results(files, profile_id)
     rescue ParseError => e
       errors.add :result_files, "Invalid file: #{e.message}"
       return self
