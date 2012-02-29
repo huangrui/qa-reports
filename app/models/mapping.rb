@@ -25,4 +25,9 @@
 
 class Mapping < ActiveRecord::Base
   belongs_to :profile
+
+  def self.fetch_feature_mappings(component_name, case_name, profile_id)
+    find(:all ,:conditions => ["feature = ? and test_case = ? and profile_id = ?", component_name, case_name, profile_id], :order => "id DESC")
+  end
+
 end

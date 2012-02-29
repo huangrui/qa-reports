@@ -68,8 +68,14 @@ class CSVResultFileParser
       :test_case => row[:case],
       :profile => Profile.find_by_name(row[:profile])
     }
-    mapping_record = Mapping.new(mapping_features)
-    mapping_record.save!
+    mapping_record = Mapping.fetch_feature_mappings(mapping_features[:feature], mapping_features[:test_case], mapping_features[:profile].id).first
+    if mapping_record.blank?
+      mapping_record = Mapping.new(mapping_features)
+      mapping_record.save!
+    else
+      mapping_record.update_attribute(:special_feature, mapping_features[:special_feature])
+      mapping_record.save!
+    end
     mapping_record
   end
 
@@ -255,7 +261,7 @@ class CSVResultFileParser
 
       unless result == -10
         if special_feature.blank?
-          special_feature_buffer = Mapping.find(:all ,:conditions => ["feature = ? and test_case = ? and profile_id = ?", row[:component], row[:name], profile_id], :order => "id DESC")
+          special_feature_buffer = Mapping.fetch_feature_mappings(row[:component], row[:name], profile_id)
           unless special_feature_buffer.blank?
             special_feature = special_feature_buffer.first[:special_feature]
           end
