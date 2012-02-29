@@ -34,7 +34,7 @@ class ApiController < ApplicationController
     data = request.query_parameters.merge(request.request_parameters)
     data.delete(:auth_token)
     errors = []
-    if data[:insert_mapping].eql? "importing"
+    if data[:mapping_action].eql? "import"
       data[:result_files] = collect_files(data, "mapping_result", errors)
       @mapping = ReportFactory.new.create_mapping(data.clone)
       render :json => {:ok => '1'}
