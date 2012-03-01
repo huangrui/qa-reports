@@ -54,11 +54,15 @@ class CSVResultFileParser
   end
 
   ############################################################################
-  #  Begin with inserting mappings
+  #  Begin with mapping actions
   #####
 
   def parse_mapping(io)
     FasterCSV.parse(io, @FCSV_settings) {|row| parse_row_for_mapping(row)}
+  end
+
+  def parse_mapping_for_del(io)
+    FasterCSV.parse(io, @FCSV_settings) {|row| parse_row_for_mapping_for_del(row)}
   end
 
   def parse_row_for_mapping(row)
@@ -79,8 +83,18 @@ class CSVResultFileParser
     mapping_record
   end
 
+  def parse_row_for_mapping_for_del(row)
+    mapping_features = {
+      :feature => row[:component],
+      :special_feature => row[:feature],
+      :test_case => row[:case],
+      :profile => Profile.find_by_name(row[:profile])
+    }
+    Mapping.delete_feature_mappings(mapping_features[:feature], mapping_features[:special_feature], mapping_features[:test_case], mapping_features[:profile].id)
+  end
+
   #####
-  #   End inserting
+  #   End mapping
   ############################################################################
 
   def parse(io, profile_id)

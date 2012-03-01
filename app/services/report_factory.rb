@@ -32,6 +32,11 @@ class ReportFactory
     mapping_hash = CSVResultFileParser.new.parse_mapping(file)
   end
 
+  def delete_mapping(params)
+    file = params[:result_files].first.file.to_file
+    mapping_hash = CSVResultFileParser.new.parse_mapping_for_del(file)
+  end
+
   def parse_results(files, profile_id)
     data = {:result_files_attributes => files.map {|f| {:file => f, :attachment_type => :result_file}} }
     data[:profile] = Profile.find(profile_id)

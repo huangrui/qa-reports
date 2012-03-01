@@ -39,53 +39,59 @@ class ApiController < ApplicationController
       @mapping = ReportFactory.new.create_mapping(data.clone)
       render :json => {:ok => '1'}
     else
-      data[:result_files] = collect_files(data, "report", errors)
-      data[:attachments]  = collect_files(data, "attachment", errors)
+      if data[:mapping_action].eql? "delete"
+        data[:result_files] = collect_files(data, "mapping_result", errors)
+        @mapping = ReportFactory.new.delete_mapping(data.clone)
+        render :json => {:ok => '1'}
+      else
+        data[:result_files] = collect_files(data, "report", errors)
+        data[:attachments]  = collect_files(data, "attachment", errors)
 
-      if !errors.empty?
-        render :json => {:ok => '0', :errors => "Request contained invalid files: " + errors.join(',')}
-        return
-      end
+        if !errors.empty?
+          render :json => {:ok => '0', :errors => "Request contained invalid files: " + errors.join(',')}
+          return
+        end
 
-      data[:hardware] ||= data[:hwproduct]
-      data[:product] ||= data[:hardware]
-      data[:testset] ||= data[:testtype]
-      data.delete(:hwproduct)
-      data.delete(:testtype)
-      data.delete(:hardware)
-      data[:build_id] ||= data.delete(:build_id_txt) if data[:build_id_txt]
+        data[:hardware] ||= data[:hwproduct]
+        data[:product] ||= data[:hardware]
+        data[:testset] ||= data[:testtype]
+        data.delete(:hwproduct)
+        data.delete(:testtype)
+        data.delete(:hardware)
+        data[:build_id] ||= data.delete(:build_id_txt) if data[:build_id_txt]
 
-      begin
-        return render :json => {:ok => '0', :errors => {:target, "can't be blank"}} if not data[:target]
-        return render :json => {:ok => '0', :errors => {:target, "Incorrect target '#{data[:target]}'. Valid ones are: #{Profile.names.join(',')}."}} if not Profile.find_by_name(data[:target])
-        @test_session = ReportFactory.new.build(data.clone)
-        return render :json => {:ok => '0', :errors => errmsg_invalid_version(data[:release_version])} if not @test_session.release
-        @test_session.author = current_user
-        @test_session.editor = current_user
-        @test_session.published = true
+        begin
+          return render :json => {:ok => '0', :errors => {:target, "can't be blank"}} if not data[:target]
+          return render :json => {:ok => '0', :errors => {:target, "Incorrect target '#{data[:target]}'. Valid ones are: #{Profile.names.join(',')}."}} if not Profile.find_by_name(data[:target])
+          @test_session = ReportFactory.new.build(data.clone)
+          return render :json => {:ok => '0', :errors => errmsg_invalid_version(data[:release_version])} if not @test_session.release
+          @test_session.author = current_user
+          @test_session.editor = current_user
+          @test_session.published = true
 
-      rescue ActiveRecord::UnknownAttributeError => error
-        render :json => {:ok => '0', :errors => error.message}
-        return
-      end
+        rescue ActiveRecord::UnknownAttributeError => error
+          render :json => {:ok => '0', :errors => error.message}
+          return
+        end
 
-      # Check the errors
-      if @test_session.errors.length > 0
-        render :json => {:ok => '0', :errors => @test_session.errors}
-        return
-      end
+        # Check the errors
+        if @test_session.errors.length > 0
+          render :json => {:ok => '0', :errors => @test_session.errors}
+          return
+        end
 
-      begin
-        @test_session.save!
-        @test_session.title = "(#{@test_session.id.to_s}) " + @test_session.title
-        @test_session.save!
+        begin
+          @test_session.save!
+          @test_session.title = "(#{@test_session.id.to_s}) " + @test_session.title
+          @test_session.save!
 
-        report_url = url_for :controller => 'reports', :action => 'show', :release_version => @test_session.release.name, :target => data[:target], :testset => data[:testset], :product => data[:product], :id => @test_session.id
-        render :json => {:ok => '1', :url => report_url}
-      rescue ActiveRecord::RecordInvalid => invalid
-        error_messages = {}
-        invalid.record.errors.each {|key, value| error_messages[key] = value}
-        render :json => {:ok => '0', :errors => error_messages}
+          report_url = url_for :controller => 'reports', :action => 'show', :release_version => @test_session.release.name, :target => data[:target], :testset => data[:testset], :product => data[:product], :id => @test_session.id
+          render :json => {:ok => '1', :url => report_url}
+        rescue ActiveRecord::RecordInvalid => invalid
+          error_messages = {}
+          invalid.record.errors.each {|key, value| error_messages[key] = value}
+          render :json => {:ok => '0', :errors => error_messages}
+        end
       end
     end
 

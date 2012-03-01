@@ -30,4 +30,8 @@ class Mapping < ActiveRecord::Base
     find(:all ,:conditions => ["feature = ? and test_case = ? and profile_id = ?", component_name, case_name, profile_id], :order => "id DESC")
   end
 
+  def self.delete_feature_mappings(component_name, feature_name, case_name, profile_id)
+    delete_all(["feature = ? and special_feature = ? and test_case = ? and profile_id = ?", component_name, feature_name, case_name, profile_id])
+  end
+
 end
